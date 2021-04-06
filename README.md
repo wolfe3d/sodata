@@ -1,0 +1,2 @@
+# sodata
+ Science Olympiad Data
