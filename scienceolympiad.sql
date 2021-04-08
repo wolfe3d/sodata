@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 07, 2021 at 01:05 AM
+-- Generation Time: Apr 08, 2021 at 01:40 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -31,9 +31,44 @@ SET time_zone = "+00:00";
 CREATE TABLE `awards` (
   `awardID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL,
-  `date` date NOT NULL,
+  `dateAwarded` date NOT NULL,
   `tournamentID` int(11) NOT NULL,
   `note` varchar(200) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `courses`
+--
+
+CREATE TABLE `courses` (
+  `course` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `level` varchar(10) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `coursescompleted`
+--
+
+CREATE TABLE `coursescompleted` (
+  `completedID` int(11) NOT NULL,
+  `course` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `studentID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `coursesenrolled`
+--
+
+CREATE TABLE `coursesenrolled` (
+  `enrolledID` int(11) NOT NULL,
+  `course` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -76,6 +111,19 @@ INSERT INTO `events` (`event`, `type`) VALUES
 ('Wright Stuff', 'Build'),
 ('Write It CAD It', 'Build'),
 ('Write It Do It', 'Build');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eventschoice`
+--
+
+CREATE TABLE `eventschoice` (
+  `eventsChoiceID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `priority` int(11) NOT NULL DEFAULT '5'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -166,10 +214,10 @@ INSERT INTO `phonetype` (`phoneType`) VALUES
 
 CREATE TABLE `studentplacement` (
   `studentPlacementID` int(11) NOT NULL,
-  `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `tournament` int(11) NOT NULL,
+  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tournamentID` int(11) NOT NULL,
   `place` int(11) NOT NULL,
-  `partner` int(11) NOT NULL
+  `partnerID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -284,6 +332,24 @@ ALTER TABLE `awards`
   ADD PRIMARY KEY (`awardID`);
 
 --
+-- Indexes for table `courses`
+--
+ALTER TABLE `courses`
+  ADD PRIMARY KEY (`course`);
+
+--
+-- Indexes for table `coursescompleted`
+--
+ALTER TABLE `coursescompleted`
+  ADD PRIMARY KEY (`completedID`);
+
+--
+-- Indexes for table `coursesenrolled`
+--
+ALTER TABLE `coursesenrolled`
+  ADD PRIMARY KEY (`enrolledID`);
+
+--
 -- Indexes for table `events`
 --
 ALTER TABLE `events`
@@ -341,6 +407,18 @@ ALTER TABLE `tournamentinfo`
 --
 ALTER TABLE `awards`
   MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `coursescompleted`
+--
+ALTER TABLE `coursescompleted`
+  MODIFY `completedID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `coursesenrolled`
+--
+ALTER TABLE `coursesenrolled`
+  MODIFY `enrolledID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `eventsyear`
