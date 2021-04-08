@@ -56,7 +56,7 @@ if($result)
 </script>
 	</head>
 	<body>
-	
+
 	<button onclick="$('#findStudent').show();$(this).hide();">Search</button>
 	<form id="findStudent" method="post" action="student.php">
 		<fieldset>
@@ -69,13 +69,17 @@ if($result)
 				<label for="last">Lastname</label>
 				<input id="last" name="last" type="text">
 			</p>
+			<p>
+				<label for="event">Event</label>
+				<?php include("eventsselect.php")?>
+			</p>
 			</fieldset>
 			<p>
 				<input class="submit" type="submit" value="Submit">
 			</p>
 		</fieldset>
 	</form>
-	
+
 	<button onclick="$('#addStudent').show();$(this).hide();">Add</button>
 	<form id="addStudent" method="post" action="studentadd.php">
 		<fieldset>
@@ -153,7 +157,7 @@ if($result)
 			</p>
 		</fieldset>
 	</form>
-	
+
 
 <?php include("studentslist.php")?>
 

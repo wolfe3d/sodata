@@ -5,6 +5,8 @@ $output = "";
 
 $last = $mysqlConn->real_escape_string($_REQUEST['last']);
 $first = $mysqlConn->real_escape_string($_REQUEST['first']);
+$eventYear = $mysqlConn->real_escape_string($_REQUEST['eventsList']); //TODO: allow for searching by event
+
 $query = "SELECT * from `students` where ";
 //check to see what is searched for
 if($last&&$first)
@@ -53,7 +55,7 @@ if($result)
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".$row['phoneType']."):".$row['phone']."</div>";
-		}	
+		}
 		if($row['parent1Last'])
 		{
 			$output .="<h3>Parent(s)</h3>";

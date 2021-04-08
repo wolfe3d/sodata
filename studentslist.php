@@ -34,7 +34,7 @@ if($result)
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".$row['phoneType']."):".$row['phone']."</div>";
-		}	
+		}
 		if($row['parent1Last'])
 		{
 			$output .="<h3>Parent(s)</h3>";
@@ -43,6 +43,17 @@ if($result)
 			{
 				$output .="<div>".$row['parent2First']." ".$row['parent2Last'].",".$row['parent2Email'].",".$row['parent2Phone']."</div>";
 			}
+		}
+		//find student's events
+		$query = "SELECT * FROM `eventschoice` t1 INNER JOIN `eventsyear` t2 ON t1.`eventID`=t2.`eventID` WHERE `studentID`=".$row['studentID'];// where `field` = $fieldId";
+		$resultEventsChoice = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$eventsChoice ="";
+		if (mysqli_num_rows($resultEventsChoice)>0)
+		{
+				$output .="<h3>Events</h3>";
+				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
+					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . " " . $rowEventsChoice['event'] . "</div>";
+				endwhile;
 		}
 	endwhile;
 	$output .="</div>";
