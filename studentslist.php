@@ -46,14 +46,35 @@ if($result)
 		}
 		//find student's events
 		$query = "SELECT * FROM `eventschoice` t1 INNER JOIN `eventsyear` t2 ON t1.`eventID`=t2.`eventID` WHERE `studentID`=".$row['studentID'];// where `field` = $fieldId";
-		$resultEventsChoice = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$eventsChoice ="";
+		$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if (mysqli_num_rows($resultEventsChoice)>0)
 		{
 				$output .="<h3>Events</h3>";
 				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
 					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . " " . $rowEventsChoice['event'] . "</div>";
 				endwhile;
+		}
+
+		//find student's courses completed
+		$query = "SELECT * FROM `coursescompleted` t1 INNER JOIN `courses` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourses)>0)
+		{
+			$output .="<h3>Course Completed - Level</h3>";
+			while ($rowCourse = $resultCourses->fetch_assoc()):
+				$output .= "<div id='coursesCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+			endwhile;
+		}
+
+		//find student's courses enrolled but not yet completed
+		$query = "SELECT * FROM `coursesenrolled` t1 INNER JOIN `courses` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourses)>0)
+		{
+			$output .="<h3>Courses Enrolled - Level</h3>";
+			while ($rowCourse = $resultCourses->fetch_assoc()):
+				$output .= "<div id='coursesEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+			endwhile;
 		}
 	endwhile;
 	$output .="</div>";
