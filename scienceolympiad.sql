@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2021 at 01:40 AM
+-- Generation Time: Apr 08, 2021 at 10:47 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -43,9 +43,24 @@ CREATE TABLE `awards` (
 --
 
 CREATE TABLE `courses` (
+  `courseID` int(11) NOT NULL,
   `course` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `level` varchar(10) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `courses`
+--
+
+INSERT INTO `courses` (`courseID`, `course`, `level`) VALUES
+(1, 'Biology', 'AP'),
+(2, 'Biology', 'Honors'),
+(3, 'Biology', 'On level'),
+(4, 'Chemistry', 'AP'),
+(5, 'Chemistry', 'Honors'),
+(6, 'Chemistry', 'On level'),
+(7, 'Organic Chemisty', 'College'),
+(8, 'Genetics', 'College');
 
 -- --------------------------------------------------------
 
@@ -54,10 +69,19 @@ CREATE TABLE `courses` (
 --
 
 CREATE TABLE `coursescompleted` (
-  `completedID` int(11) NOT NULL,
-  `course` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `myID` int(11) NOT NULL,
+  `courseID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `coursescompleted`
+--
+
+INSERT INTO `coursescompleted` (`myID`, `courseID`, `studentID`) VALUES
+(7, 2, 6),
+(8, 1, 6),
+(10, 5, 6);
 
 -- --------------------------------------------------------
 
@@ -66,10 +90,17 @@ CREATE TABLE `coursescompleted` (
 --
 
 CREATE TABLE `coursesenrolled` (
-  `enrolledID` int(11) NOT NULL,
-  `course` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `myID` int(11) NOT NULL,
+  `courseID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `coursesenrolled`
+--
+
+INSERT INTO `coursesenrolled` (`myID`, `courseID`, `studentID`) VALUES
+(3, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -94,6 +125,7 @@ INSERT INTO `events` (`event`, `type`) VALUES
 ('Circuit Lab', 'Hybrid Lab'),
 ('Codebusters', 'Core Knowledge (Test Only)'),
 ('Designer Genes', 'Core Knowledge (Test Only)'),
+('Detector Building', 'Hybrid Build'),
 ('Digital Structures', 'Build'),
 ('Disease Detectives', 'Core Knowledge (Test Only)'),
 ('Dynamic Planet', 'Core Knowledge (Test Only)'),
@@ -121,9 +153,22 @@ INSERT INTO `events` (`event`, `type`) VALUES
 CREATE TABLE `eventschoice` (
   `eventsChoiceID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL,
-  `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `eventID` int(11) NOT NULL,
   `priority` int(11) NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `eventschoice`
+--
+
+INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`) VALUES
+(1, 1, 1, 5),
+(15, 6, 15, 1),
+(16, 6, 16, 1),
+(17, 6, 5, 1),
+(19, 6, 2, 2),
+(20, 6, 1, 2),
+(21, 6, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -132,7 +177,7 @@ CREATE TABLE `eventschoice` (
 --
 
 CREATE TABLE `eventsyear` (
-  `yearID` int(11) NOT NULL,
+  `eventID` int(11) NOT NULL,
   `year` int(11) NOT NULL,
   `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -141,7 +186,7 @@ CREATE TABLE `eventsyear` (
 -- Dumping data for table `eventsyear`
 --
 
-INSERT INTO `eventsyear` (`yearID`, `year`, `event`) VALUES
+INSERT INTO `eventsyear` (`eventID`, `year`, `event`) VALUES
 (1, 2021, 'Anatomy and Physiology'),
 (2, 2021, 'Astronomy'),
 (3, 2021, 'Boomilever'),
@@ -164,7 +209,9 @@ INSERT INTO `eventsyear` (`yearID`, `year`, `event`) VALUES
 (20, 2021, 'Sounds of Music'),
 (21, 2021, 'Water Quality'),
 (22, 2021, 'Wright Stuff'),
-(27, 2021, 'Write It CAD It');
+(27, 2021, 'Write It CAD It'),
+(28, 2022, 'Anatomy and Physiology'),
+(29, 2021, 'Detector Building');
 
 -- --------------------------------------------------------
 
@@ -335,19 +382,19 @@ ALTER TABLE `awards`
 -- Indexes for table `courses`
 --
 ALTER TABLE `courses`
-  ADD PRIMARY KEY (`course`);
+  ADD PRIMARY KEY (`courseID`);
 
 --
 -- Indexes for table `coursescompleted`
 --
 ALTER TABLE `coursescompleted`
-  ADD PRIMARY KEY (`completedID`);
+  ADD PRIMARY KEY (`myID`);
 
 --
 -- Indexes for table `coursesenrolled`
 --
 ALTER TABLE `coursesenrolled`
-  ADD PRIMARY KEY (`enrolledID`);
+  ADD PRIMARY KEY (`myID`);
 
 --
 -- Indexes for table `events`
@@ -357,10 +404,16 @@ ALTER TABLE `events`
   ADD UNIQUE KEY `event` (`event`);
 
 --
+-- Indexes for table `eventschoice`
+--
+ALTER TABLE `eventschoice`
+  ADD PRIMARY KEY (`eventsChoiceID`);
+
+--
 -- Indexes for table `eventsyear`
 --
 ALTER TABLE `eventsyear`
-  ADD UNIQUE KEY `yearID` (`yearID`);
+  ADD UNIQUE KEY `yearID` (`eventID`);
 
 --
 -- Indexes for table `eventtype`
@@ -409,22 +462,34 @@ ALTER TABLE `awards`
   MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `courses`
+--
+ALTER TABLE `courses`
+  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `coursescompleted`
 --
 ALTER TABLE `coursescompleted`
-  MODIFY `completedID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `coursesenrolled`
 --
 ALTER TABLE `coursesenrolled`
-  MODIFY `enrolledID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `eventschoice`
+--
+ALTER TABLE `eventschoice`
+  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `eventsyear`
 --
 ALTER TABLE `eventsyear`
-  MODIFY `yearID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `studentplacement`
