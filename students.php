@@ -26,7 +26,7 @@ if($result)
 
 	$().ready(function() {
 		$("#addStudent").hide();
-		$("#findStudent").hide();
+		$("#searchDiv").hide();
 		// validate signup form on keyup and submit
 		$("#addStudent").validate({
 			rules: {
@@ -57,7 +57,8 @@ if($result)
 	</head>
 	<body>
 
-	<button onclick="$('#findStudent').show();$(this).hide();">Search</button>
+	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
+	<div id="searchDiv">
 	<form id="findStudent" method="post" action="student.php">
 		<fieldset>
 			<legend>Find Student</legend>
@@ -70,16 +71,33 @@ if($result)
 				<input id="last" name="last" type="text">
 			</p>
 			<p>
-				<label for="event">Event</label>
-				<?php include("eventsselect.php")?>
-			</p>
-			</fieldset>
-			<p>
-				<input class="submit" type="submit" value="Submit">
+				<input class="submit" type="submit" value="Find By Name">
 			</p>
 		</fieldset>
 	</form>
-
+	<form id="findByEvent" method="post" action="student.php">
+		<fieldset>
+			<legend>Find Students by Event</legend>
+			<p>
+				<?php include("eventsselect.php")?>
+			</p>
+			<p>
+				<input class="submit" type="submit" value="Find By Event">
+			</p>
+		</fieldset>
+	</form>
+	<form id="findByCourse" method="post" action="student.php">
+		<fieldset>
+			<legend>Find Students by Coursework</legend>
+			<p>
+				<?php include("coursesselect.php")?>
+			</p>
+			<p>
+				<input class="submit" type="submit" value="Find By Course">
+			</p>
+		</fieldset>
+	</form>
+</div>
 	<button onclick="$('#addStudent').show();$(this).hide();">Add</button>
 	<form id="addStudent" method="post" action="studentadd.php">
 		<fieldset>
