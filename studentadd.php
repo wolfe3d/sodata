@@ -1,8 +1,8 @@
 <?php
 require_once ("../connectsodb.php");
 
-$last = $mysqlConn->real_escape_string($_POST['last']);
-$first = $mysqlConn->real_escape_string($_POST['first']);
+$last = $mysqlConn->real_escape_string($_POST['addLast']);
+$first = $mysqlConn->real_escape_string($_POST['addFirst']);
 $yearGraduating = intval($_POST['yearGraduating']);
 $email = $mysqlConn->real_escape_string($_POST['email']);
 $emailAlt = $mysqlConn->real_escape_string($_POST['emailAlt']);

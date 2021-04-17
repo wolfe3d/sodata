@@ -18,15 +18,15 @@ if($result)
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Pragma" content="no-cache">
-		<script src="../lib/jquery.js"></script>
-		<script src="../lib/jquery.validate.min.js"></script>
+		<script src="js/jquery-3.6.0.min.js"></script>
+		<script src="js/jquery.validate.min.js"></script>
 	  <script type="text/javascript">
 
 	$().ready(function() {
 		$("#addTo").hide();
 		$("#searchDiv").hide();
 		//Load Students
-		getStudentList({active: +$("#active").is(':checked')});
+		getList({active: +$("#active").is(':checked')});
 			// validate signup form on keyup and submit
 		$("#addTo").validate({
 			rules: {
@@ -55,27 +55,27 @@ if($result)
 
 		//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
 		$('#active').change(function() {
-        getStudentList({active: +$("#active").is(':checked')});
+        getList({active: +$("#active").is(':checked')});
     });
 		//when Find by Name is clicked, this initiates the search
 		$("#findStudent").on( "submit", function( event ) {
   		event.preventDefault();
-  		getStudentList( $( this ).serialize() );
+  		getList( $( this ).serialize() );
 		});
 		//when Find by Event is clicked, this initiates the search
 		$("#findByEvent").on( "submit", function( event ) {
 			event.preventDefault();
-			getStudentList( {eventsList: $("#eventsList").val()});
+			getList( {eventsList: $("#eventsList").val()});
 		});
 		//when Find by Course is clicked, this initiates the search
 		$("#findByCourse").on( "submit", function( event ) {
 			event.preventDefault();
-			getStudentList( {coursesList: $("#coursesList").val()});
+			getList( {coursesList: $("#coursesList").val()});
 		});
 	});
-	function getStudentList(myData)
+	function getList(myData)
 	{
-		alert(JSON.stringify(myData) );
+		//alert(JSON.stringify(myData) );
 		//myData is a json object type
 		var request = $.ajax({
 		 url: "studentslist.php",
@@ -95,7 +95,7 @@ if($result)
 	}
 </script>
 	</head>
-	<body>
+		<body id="top">
 		<div>
 			<input type="checkbox" id="active" name="active" value="1" checked>
 			<label for="active">Show only active students</label>
@@ -146,12 +146,12 @@ if($result)
 		<fieldset>
 			<legend>Add Student</legend>
 			<p>
-				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text">
+				<label for="addFirst">Firstname</label>
+				<input id="addFirst" name="addFirst" type="text">
 			</p>
 			<p>
-				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text">
+				<label for="addLast">Lastname</label>
+				<input id="addLast" name="addLast" type="text">
 			</p>
 			<p>
 				<label for="yearGraduating">Year Graduating</label>

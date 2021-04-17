@@ -68,8 +68,8 @@ if(mysqli_num_rows($resultCourses)>0)
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Pragma" content="no-cache">
-	<script src="../lib/jquery.js"></script>
-	<script src="../lib/jquery.validate.min.js"></script>
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/jquery.validate.min.js"></script>
   <script src="studentedit.js"></script>
 	</head>
 	<body>

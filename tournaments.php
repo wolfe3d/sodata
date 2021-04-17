@@ -6,15 +6,15 @@ require_once  ("../connectsodb.php");
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Pragma" content="no-cache">
-		<script src="../lib/jquery.js"></script>
-		<script src="../lib/jquery.validate.min.js"></script>
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/jquery.validate.min.js"></script>
 	  <script type="text/javascript">
 
 	$().ready(function() {
 		$("#addTo").hide();
 		$("#searchDiv").hide();
 		//Load Students
-		getStudentList({active: +$("#active").is(':checked')});
+		getList({});
 			// validate signup form on keyup and submit
 		$("#addTo").validate({
 			rules: {
@@ -41,24 +41,10 @@ require_once  ("../connectsodb.php");
             }
 		});
 
-		//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
-		$('#active').change(function() {
-        getStudentList({active: +$("#active").is(':checked')});
-    });
 		//when Find by Name is clicked, this initiates the search
 		$("#findStudent").on( "submit", function( event ) {
   		event.preventDefault();
-  		getStudentList( $( this ).serialize() );
-		});
-		//when Find by Event is clicked, this initiates the search
-		$("#findByEvent").on( "submit", function( event ) {
-			event.preventDefault();
-			getStudentList( {eventsList: $("#eventsList").val()});
-		});
-		//when Find by Course is clicked, this initiates the search
-		$("#findByCourse").on( "submit", function( event ) {
-			event.preventDefault();
-			getStudentList( {coursesList: $("#coursesList").val()});
+  		getList( $( this ).serialize() );
 		});
 			//Allow person to pick year
 			for (i = new Date().getFullYear()+1; i > 1973; i--)
@@ -66,12 +52,12 @@ require_once  ("../connectsodb.php");
 			    $('#tournamentYear').append($('<option />').val(i).html(i));
 			}
 	});
-	function getStudentList(myData)
+	function getList(myData)
 	{
 		//alert(JSON.stringify(myData) );
 		//myData is a json object type
 		var request = $.ajax({
-		 url: "studentslist.php",
+		 url: "tournamentslist.php",
 		 cache: false,
 		 method: "POST",
 		 data: myData,
@@ -90,10 +76,6 @@ require_once  ("../connectsodb.php");
 </script>
 	</head>
 	<body>
-		<div>
-			<input type="checkbox" id="active" name="active" value="1" checked>
-			<label for="active">Show only active students</label>
-		</div>
 	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
 	<div id="searchDiv">
 	<form id="findTournament">
