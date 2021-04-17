@@ -28,7 +28,7 @@ if($result)
 		$("#addStudent").hide();
 		$("#searchDiv").hide();
 		//Load Students
-		getStudentList();
+		getStudentList({active: +$("#active").is(':checked')});
 			// validate signup form on keyup and submit
 		$("#addStudent").validate({
 			rules: {
@@ -55,14 +55,21 @@ if($result)
             }
 		});
 
+		//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
+		$('#active').change(function() {
+        getStudentList({active: +$("#active").is(':checked')});
+    });
+		//when Find by Name is clicked, this initiates the search
 		$("#findStudent").on( "submit", function( event ) {
   		event.preventDefault();
   		getStudentList( $( this ).serialize() );
 		});
+		//when Find by Event is clicked, this initiates the search
 		$("#findByEvent").on( "submit", function( event ) {
 			event.preventDefault();
 			getStudentList( {eventsList: $("#eventsList").val()});
 		});
+		//when Find by Course is clicked, this initiates the search
 		$("#findByCourse").on( "submit", function( event ) {
 			event.preventDefault();
 			getStudentList( {coursesList: $("#coursesList").val()});
@@ -70,7 +77,7 @@ if($result)
 	});
 	function getStudentList(myData)
 	{
-		//alert(JSON.stringify(myData) );
+		alert(JSON.stringify(myData) );
 		//myData is a json object type
 		var request = $.ajax({
 		 url: "studentslist.php",
@@ -91,7 +98,10 @@ if($result)
 </script>
 	</head>
 	<body>
-
+		<div>
+			<input type="checkbox" id="active" name="active" value="1" checked>
+			<label for="active">Show only active students</label>
+		</div>
 	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
 	<div id="searchDiv">
 	<form id="findStudent">
