@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2021 at 10:47 PM
+-- Generation Time: Apr 17, 2021 at 02:32 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -168,7 +168,8 @@ INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`
 (17, 6, 5, 1),
 (19, 6, 2, 2),
 (20, 6, 1, 2),
-(21, 6, 3, 2);
+(21, 6, 3, 2),
+(22, 6, 28, 1);
 
 -- --------------------------------------------------------
 
@@ -261,10 +262,11 @@ INSERT INTO `phonetype` (`phoneType`) VALUES
 
 CREATE TABLE `studentplacement` (
   `studentPlacementID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
   `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tournamentID` int(11) NOT NULL,
+  `teamID` int(11) NOT NULL,
   `place` int(11) NOT NULL,
-  `partnerID` int(11) NOT NULL
+  `partnerID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -277,6 +279,7 @@ CREATE TABLE `students` (
   `studentID` int(11) NOT NULL,
   `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `active` int(11) NOT NULL DEFAULT '1',
   `yearGraduating` int(11) NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `emailAlt` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -296,23 +299,50 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`studentID`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
-(1, 'Huang', 'Susanna', 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
-(2, 'Melnikova', 'Tonya (Antonina)', 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 'Yan', 'Grace', 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'Joshi', 'Chinmay', 2022, 'chinmayj.walton@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(5, 'Lee', 'Rebecca (Eunjae)', 2021, 'eunjaerebecca@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(6, 'Feren', 'Emily', 2021, 'emferen3@gmail.com', '', 'cell', '7705555555', '', '', '', '', '', '', '', ''),
-(7, 'Peng', 'Cynthia', 2021, 'alcp6201@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(8, 'Rami', 'Rima', 2022, 'rimazazu@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(9, 'Shen', 'Grace', 2022, 'graceshen04@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(10, 'Wei', 'Banglue', 2021, 'banglueweiga@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(11, 'Lai', 'Sheena', 2021, 'sheenalai2012@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(12, 'Seigmund', 'Julian', 2023, 'juljs05@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(13, 'Huang', 'Faith', 2023, 'fyizhenh@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(14, 'Wang', 'Chris', 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(15, 'Yamin', 'Asad', 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(16, 'Mei', 'Andrew', 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO `students` (`studentID`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
+(1, 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
+(2, 'Melnikova', 'Tonya (Antonina)', 0, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'Joshi', 'Chinmay', 1, 2022, 'chinmayj.walton@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(5, 'Lee', 'Rebecca (Eunjae)', 0, 2021, 'eunjaerebecca@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(6, 'Feren', 'Emily', 0, 2021, 'emferen3@gmail.com', '', 'cell', '7705555555', '', '', '', '', '', '', '', ''),
+(7, 'Peng', 'Cynthia', 1, 2021, 'alcp6201@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(8, 'Rami', 'Rima', 1, 2022, 'rimazazu@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(9, 'Shen', 'Grace', 1, 2022, 'graceshen04@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(10, 'Wei', 'Banglue', 0, 2021, 'banglueweiga@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(11, 'Lai', 'Sheena', 0, 2021, 'sheenalai2012@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(12, 'Seigmund', 'Julian', 1, 2023, 'juljs05@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(13, 'Huang', 'Faith', 1, 2023, 'fyizhenh@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(14, 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(15, 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(16, 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `team`
+--
+
+CREATE TABLE `team` (
+  `teamID` int(11) NOT NULL,
+  `teamName` int(11) NOT NULL,
+  `tournamentID` int(11) NOT NULL,
+  `teamPlace` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `timeblock`
+--
+
+CREATE TABLE `timeblock` (
+  `blockID` int(11) NOT NULL,
+  `blockName` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `timeStart` datetime NOT NULL,
+  `timeEnd` datetime NOT NULL,
+  `teamID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -322,12 +352,12 @@ INSERT INTO `students` (`studentID`, `last`, `first`, `yearGraduating`, `email`,
 
 CREATE TABLE `tournament` (
   `tournamentID` int(11) NOT NULL,
-  `tournamentInfo` int(11) NOT NULL,
+  `tournamentInfoID` int(11) NOT NULL,
   `dateTournament` date DEFAULT NULL,
   `dateRegistration` date DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   `numberTeams` int(11) DEFAULT NULL,
-  `waltonPlace` int(11) NOT NULL,
+  `weighting` int(11) NOT NULL,
   `note` varchar(200) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -440,6 +470,18 @@ ALTER TABLE `students`
   ADD PRIMARY KEY (`studentID`);
 
 --
+-- Indexes for table `team`
+--
+ALTER TABLE `team`
+  ADD PRIMARY KEY (`teamID`);
+
+--
+-- Indexes for table `timeblock`
+--
+ALTER TABLE `timeblock`
+  ADD PRIMARY KEY (`blockID`);
+
+--
 -- Indexes for table `tournament`
 --
 ALTER TABLE `tournament`
@@ -483,7 +525,7 @@ ALTER TABLE `coursesenrolled`
 -- AUTO_INCREMENT for table `eventschoice`
 --
 ALTER TABLE `eventschoice`
-  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `eventsyear`
@@ -502,6 +544,18 @@ ALTER TABLE `studentplacement`
 --
 ALTER TABLE `students`
   MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `team`
+--
+ALTER TABLE `team`
+  MODIFY `teamID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `timeblock`
+--
+ALTER TABLE `timeblock`
+  MODIFY `blockID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tournament`

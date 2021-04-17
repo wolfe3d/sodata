@@ -1,17 +1,5 @@
 <?php
 require_once  ("../connectsodb.php");
-
-/*check to see if id exists*/
-$query = "SELECT * from `phonetype`";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-$phoneTypes="";
-if($result)
-{
-	while ($row = $result->fetch_assoc()):
-		$phoneTypes.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
-	endwhile;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,10 +60,15 @@ if($result)
 			event.preventDefault();
 			getStudentList( {coursesList: $("#coursesList").val()});
 		});
+			//Allow person to pick year
+			for (i = new Date().getFullYear()+1; i > 1973; i--)
+			{
+			    $('#tournamentYear').append($('<option />').val(i).html(i));
+			}
 	});
 	function getStudentList(myData)
 	{
-		alert(JSON.stringify(myData) );
+		//alert(JSON.stringify(myData) );
 		//myData is a json object type
 		var request = $.ajax({
 		 url: "studentslist.php",
@@ -93,6 +86,7 @@ if($result)
 		 $("#list").html("Search Error");
 		});
 	}
+
 </script>
 	</head>
 	<body>
@@ -102,41 +96,19 @@ if($result)
 		</div>
 	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
 	<div id="searchDiv">
-	<form id="findStudent">
+	<form id="findTournament">
 		<fieldset>
-			<legend>Find Student By name</legend>
+			<legend>Find Tournament</legend>
 			<p>
-				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text">
+				<label for="tournamentName">Tournament Name</label>
+				<input id="tournamentName" name="tournamentName" type="text">
 			</p>
 			<p>
-				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text">
+				<label for="tournamentYear">Tournament Year</label>
+				<select name="tournamentYear" id="tournamentYear"><option value="0">All Years</option></select> <span style="color=blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Name">
-			</p>
-		</fieldset>
-	</form>
-	<form id="findByEvent">
-		<fieldset>
-			<legend>Find Students by Event That They Signed Up For</legend>
-			<p>
-				<?php include("eventsselectb.php")?>
-			</p>
-			<p>
-				<input class="submit" type="submit" value="Find By Event">
-			</p>
-		</fieldset>
-	</form>
-	<form id="findByCourse">
-		<fieldset>
-			<legend>Find Students by Coursework</legend>
-			<p>
-				<?php include("coursesselect.php")?>
-			</p>
-			<p>
-				<input class="submit" type="submit" value="Find By Course">
+				<input class="submit" type="submit" value="Find Tournament">
 			</p>
 		</fieldset>
 	</form>
@@ -144,7 +116,8 @@ if($result)
 	<button onclick="$('#addTo').show();$(this).hide();">Add</button>
 	<form id="addTo" method="post" action="studentadd.php">
 		<fieldset>
-			<legend>Add Student</legend>
+			<legend>Add Tournament</legend>
+			<div>TODO: Change all Fields</div>
 			<p>
 				<label for="first">Firstname</label>
 				<input id="first" name="first" type="text">
@@ -194,31 +167,11 @@ if($result)
 					<input id="parent1Phone" name="parent1Phone" type="tel">
 				</p>
 			</fieldset>
-			<fieldset>
-				<legend>Parent 2</legend>
-				<p>
-					<label for="parent2First">First</label>
-					<input id="parent2First" name="parent2First" type="text">
-				</p>
-				<p>
-					<label for="parent2Last">Last</label>
-					<input id="parent2Last" name="parent2Last" type="text">
-				</p>
-				<p>
-					<label for="parent2Email">Email</label>
-					<input id="parent2Email" name="parent2Email" type="email">
-				</p>
-				<p>
-					<label for="parent2Phone">Phone</label>
-					<input id="parent2Phone" name="parent2Phone" type="tel">
-				</p>
-			</fieldset>
 			<p>
 				<input class="submit" type="submit" value="Submit">
 			</p>
 		</fieldset>
 	</form>
-
 
 <div id="list"></div>
 
