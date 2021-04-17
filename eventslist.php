@@ -26,6 +26,7 @@ if($result)
 
 
 		$output .="<div>Year: $grade ".$yearCollection."</div>";
+    $output .="<div>Type: ".$row['type']."</div>";
 
 	endwhile;
   $output .="</div>";
