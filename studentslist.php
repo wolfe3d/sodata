@@ -3,8 +3,31 @@ require_once ("../connectsodb.php");
 //text output
 $output = "";
 
-/*check to see if id exists*/
-$query = "SELECT * from `students` ORDER BY `students`.`last` ASC";// where `field` = $fieldId";
+
+$last = $mysqlConn->real_escape_string($_REQUEST['last']);
+$first = $mysqlConn->real_escape_string($_REQUEST['first']);
+$eventID = intval(($_REQUEST['eventsList']);
+$courseID = intval(($_REQUEST['coursesList']);
+
+$query = "SELECT * from `students`";
+//check to see what is searched for
+if($last&&$first)
+{
+	$query .= " where `last` LIKE '$last' AND `first` LIKE '$first' ORDER BY `last` ASC";
+}
+else if($last)
+{
+	$query .= " where `last` LIKE '$last' ORDER BY `last` ASC";
+}
+else if($first)
+{
+	$query .= "where `first` LIKE '$first' ORDER BY `first` ASC";
+}
+else
+{
+	//
+}
+
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)

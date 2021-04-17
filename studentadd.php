@@ -1,7 +1,5 @@
 <?php
 require_once ("../connectsodb.php");
-//text output
-$output = "";
 
 $last = $mysqlConn->real_escape_string($_POST['last']);
 $first = $mysqlConn->real_escape_string($_POST['first']);
@@ -21,12 +19,12 @@ $parent2Phone = $mysqlConn->real_escape_string($_POST['parent2Phone']);
 
 
 $queryInsert = "INSERT INTO `students` (`studentID`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, '$last', '$first', '$yearGraduating', '$email', '$emailAlt', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Email', '$parent1Phone', '$parent2Last', '$parent2First', '$parent2Email', '$parent2Phone');";
-if ($mysqlConn->query($queryInsert) === TRUE) 
+if ($mysqlConn->query($queryInsert) === TRUE)
 {
 	echo "New record created.\n";
 	include("student.php");
 }
-else 
+else
 {
 	echo json_encode(array("error"=>"Error_addStudent: $queryInsert $mysqlConn->error"));
 }

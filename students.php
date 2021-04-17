@@ -21,13 +21,15 @@ if($result)
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Pragma" content="no-cache">
 		<script src="../lib/jquery.js"></script>
-	<script src="../lib/jquery.validate.min.js"></script>
-   <script type="text/javascript">
+		<script src="../lib/jquery.validate.min.js"></script>
+	  <script type="text/javascript">
 
 	$().ready(function() {
 		$("#addStudent").hide();
 		$("#searchDiv").hide();
-		// validate signup form on keyup and submit
+		//Load Students
+		getStudentList();
+			// validate signup form on keyup and submit
 		$("#addStudent").validate({
 			rules: {
 				first: "required",
@@ -52,14 +54,47 @@ if($result)
                 form.submit();
             }
 		});
+
+		$( "#findStudent" ).on( "submit", function( event ) {
+  		event.preventDefault();
+  		getStudentList( $( this ).serialize() );
+		});
+		$( "#findByEvent" ).on( "submit", function( event ) {
+			event.preventDefault();
+			getStudentList( $( this ).serialize() );
+		});
+		$( "#findByCourse" ).on( "submit", function( event ) {
+			event.preventDefault();
+			getStudentList( $( this ).serialize() );
+		});
 	});
+	function getStudentList(myData)
+	{
+		alert(JSON.stringify(myData) );
+		//myData is a json object type
+		var request = $.ajax({
+		 url: "studentslist.php",
+		 cache: false,
+		 method: "POST",
+		 data: myData,
+		 dataType: "html"
+		});
+		request.done(function( html ) {
+		 //$("label[for='" + field + "']").append(html);
+		 $("#list").html(html);
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#list").html("Search Error");
+		});
+	}
 </script>
 	</head>
 	<body>
 
 	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
 	<div id="searchDiv">
-	<form id="findStudent" method="post" action="student.php">
+	<form id="findStudent">
 		<fieldset>
 			<legend>Find Student</legend>
 			<p>
@@ -86,7 +121,7 @@ if($result)
 			</p>
 		</fieldset>
 	</form>
-	<form id="findByCourse" method="post" action="student.php">
+	<form id="findByCourse" method="post" action="studentslist.php">
 		<fieldset>
 			<legend>Find Students by Coursework</legend>
 			<p>
@@ -177,7 +212,7 @@ if($result)
 	</form>
 
 
-<?php include("studentslist.php")?>
+<div id="list"></div>
 
 </body>
 </html>
