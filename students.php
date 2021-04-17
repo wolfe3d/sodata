@@ -55,22 +55,22 @@ if($result)
             }
 		});
 
-		$( "#findStudent" ).on( "submit", function( event ) {
+		$("#findStudent").on( "submit", function( event ) {
   		event.preventDefault();
   		getStudentList( $( this ).serialize() );
 		});
-		$( "#findByEvent" ).on( "submit", function( event ) {
+		$("#findByEvent").on( "submit", function( event ) {
 			event.preventDefault();
-			getStudentList( $( this ).serialize() );
+			getStudentList( {eventsList: $("#eventsList").val()});
 		});
-		$( "#findByCourse" ).on( "submit", function( event ) {
+		$("#findByCourse").on( "submit", function( event ) {
 			event.preventDefault();
-			getStudentList( $( this ).serialize() );
+			getStudentList( {coursesList: $("#coursesList").val()});
 		});
 	});
 	function getStudentList(myData)
 	{
-		alert(JSON.stringify(myData) );
+		//alert(JSON.stringify(myData) );
 		//myData is a json object type
 		var request = $.ajax({
 		 url: "studentslist.php",
@@ -96,7 +96,7 @@ if($result)
 	<div id="searchDiv">
 	<form id="findStudent">
 		<fieldset>
-			<legend>Find Student</legend>
+			<legend>Find Student By name</legend>
 			<p>
 				<label for="first">Firstname</label>
 				<input id="first" name="first" type="text">
@@ -110,18 +110,18 @@ if($result)
 			</p>
 		</fieldset>
 	</form>
-	<form id="findByEvent" method="post" action="student.php">
+	<form id="findByEvent">
 		<fieldset>
-			<legend>Find Students by Event</legend>
+			<legend>Find Students by Event That They Signed Up For</legend>
 			<p>
-				<?php include("eventsselect.php")?>
+				<?php include("eventsselectb.php")?>
 			</p>
 			<p>
 				<input class="submit" type="submit" value="Find By Event">
 			</p>
 		</fieldset>
 	</form>
-	<form id="findByCourse" method="post" action="studentslist.php">
+	<form id="findByCourse">
 		<fieldset>
 			<legend>Find Students by Coursework</legend>
 			<p>
