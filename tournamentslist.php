@@ -60,14 +60,25 @@ if($result)
 		//Address of the tournament
 
 		//If coach show the following information
-		$output .="<h3> Director Information</h3>";
-		if($row['director'])
+		$output .="<h3>Director Information</h3>";
+		$director=$row['director']?$row['director']:($row['directorEmail']?$row['directorEmail']:"");
+		if($row['directorEmail'])
 		{
-			$output .="<div>Director:".$row['director']."</div>";
+			$director = "<a href='".$row['directorEmail']."'>$director</a>";
 		}
-		if($row['dateRegistration'])
+		if($director)
 		{
-			$output .="<div>Normal Registration Date:".$row['dateRegistrationNormal']."</div>";
+			$output .="<div>Director: $director</div>";
+		}
+		else if($row['directorEmail'])
+		{
+			$output .="<div>Host: ".$row['host']."</div>";
+		}
+		if($row['monthRegistration'])
+		{
+			$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
+			$monthName = $dateObj->format('F'); // March
+			$output .="<div>Normal Month Registration: ".$monthName."</div>";
 		}
 	endwhile;
 	$output .="</div>";

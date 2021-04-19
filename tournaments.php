@@ -42,7 +42,7 @@ require_once  ("../connectsodb.php");
 		});
 
 		//when Find by Name is clicked, this initiates the search
-		$("#findStudent").on( "submit", function( event ) {
+		$("#findTournament").on( "submit", function( event ) {
   		event.preventDefault();
   		getList( $( this ).serialize() );
 		});
