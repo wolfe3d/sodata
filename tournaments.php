@@ -1,5 +1,6 @@
 <?php
 require_once  ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,8 +9,7 @@ require_once  ("../connectsodb.php");
 	<meta http-equiv="Pragma" content="no-cache">
 	<script src="js/jquery-3.6.0.min.js"></script>
 	<script src="js/jquery.validate.min.js"></script>
-	  <script type="text/javascript">
-
+	<script type="text/javascript">
 	$().ready(function() {
 		$("#addTo").hide();
 		$("#searchDiv").hide();
@@ -72,7 +72,6 @@ require_once  ("../connectsodb.php");
 		 $("#list").html("Search Error");
 		});
 	}
-
 </script>
 	</head>
 	<body>
@@ -100,35 +99,41 @@ require_once  ("../connectsodb.php");
 		<fieldset>
 			<legend>Add Tournament</legend>
 			<div>TODO: Change all Fields</div>
+			//TODO: select previous tournament or add tournament
+
 			<p>
 				<label for="first">Firstname</label>
 				<input id="first" name="first" type="text">
 			</p>
 			<p>
-				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text">
+				<label for="dateTournament">Tournament Date</label>
+				<input id="dateTournament" name="dateTournament" type="date">
 			</p>
 			<p>
-				<label for="yearGraduating">Year Graduating</label>
-				<input id="yearGraduating" name="yearGraduating" type="text">
+				<label for="dateRegistration">Registration Date</label>
+				<input id="dateRegistration" name="dateRegistration" type="date">
 			</p>
 			<p>
-				<label for="email">Email</label>
-				<input id="email" name="email" type="email">
+				<label for="year">Tournament Rules Year</label>
+				<input id="year" name="year" type="text">
 			</p>
 			<p>
-				<label for="emailAlt">Alternate Email</label>
-				<input id="emailAlt" name="emailAlt" type="email">
-			</p>
-			<p>
-				<label for="phoneType">Phone Type</label>
-				<select id="phoneType" name="text">
+				<label for="type">Tournament Type</label>
+				<select id="type" name="text">
 					<?=$phoneTypes?>
 				</select>
 			</p>
 			<p>
-				<label for="phone">Phone</label>
-				<input id="phone" name="phone" type="tel">
+				<label for="numberTeams">Number of Teams Registered</label>
+				<input id="numberTeams" name="numberTeams" type="text">
+			</p>
+			<p>
+				<label for="weighting">Weighting</label>
+				<input id="weighting" name="weighting" type="text">
+			</p>
+			<p>
+				<label for="note">Other Notes</label>
+				<input id="note" name="note" type="text">
 			</p>
 			<fieldset>
 				<legend>Parent 1</legend>

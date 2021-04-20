@@ -1,5 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+
 
 //get list of events
 $query = "SELECT * FROM `eventsyear` t1 INNER JOIN `events` t2 ON t1.`event`=t2.`event` ORDER BY t1.`year` DESC, t1.`event` ASC";// where `field` = $fieldId";

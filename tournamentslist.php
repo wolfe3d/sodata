@@ -1,5 +1,7 @@
 <?php
-require_once ("../connectsodb.php");
+require_once  ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+
 //text output
 $output = "";
 
@@ -30,6 +32,10 @@ if($result)
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['name']." - ".$row['year']."</h2>";
+		if($_SESSION['userData']['privilege']==1)
+		{
+			$output .="<div><a href='tournamentedit.php?tournamentID=".$row['tournamentID']."'>Edit</a></div>";
+		}
 		if($row['websiteHost'])
 		{
 			$output .="<div>Host: <a href='".$row['websiteHost']."'>".$row['host']."</a></div>";
@@ -38,9 +44,8 @@ if($result)
 		{
 			$output .="<div>Host: ".$row['host']."</div>";
 		}
-
+		//Address of the tournament
 		$output .="<div>Address: ".$row['address']."</div>";
-		$output .="<div><a href='tournamentedit.php?tournamentID=".$row['tournamentID']."'>Edit</a></div>";
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
 		$output .="<div>Date Registration: ".$row['dateRegistration']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
@@ -57,29 +62,33 @@ if($result)
 		{
 			$output .="<div>SciOly Competition Website: <a href='".$row['websiteSciOly']."'>".$row['websiteSciOly']."</a></div>";
 		}
-		//Address of the tournament
 
-		//If coach show the following information
-		$output .="<h3>Director Information</h3>";
-		$director=$row['director']?$row['director']:($row['directorEmail']?$row['directorEmail']:"");
-		if($row['directorEmail'])
+		//Show Director information to coaches only
+		if($_SESSION['userData']['privilege']==1)
 		{
-			$director = "<a href='".$row['directorEmail']."'>$director</a>";
+			//Director Information
+			$output .="<h3>Director Information</h3>";
+			$director=$row['director']?$row['director']:($row['directorEmail']?$row['directorEmail']:"");
+			if($row['directorEmail'])
+			{
+				$director = "<a href='".$row['directorEmail']."'>$director</a>";
+			}
+			if($director)
+			{
+				$output .="<div>Director: $director</div>";
+			}
+			else if($row['directorEmail'])
+			{
+				$output .="<div>Host: ".$row['host']."</div>";
+			}
+			if($row['monthRegistration'])
+			{
+				$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
+				$monthName = $dateObj->format('F'); // March
+				$output .="<div>Normal Month Registration: ".$monthName."</div>";
+			}
 		}
-		if($director)
-		{
-			$output .="<div>Director: $director</div>";
-		}
-		else if($row['directorEmail'])
-		{
-			$output .="<div>Host: ".$row['host']."</div>";
-		}
-		if($row['monthRegistration'])
-		{
-			$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
-			$monthName = $dateObj->format('F'); // March
-			$output .="<div>Normal Month Registration: ".$monthName."</div>";
-		}
+
 	endwhile;
 	$output .="</div>";
 }

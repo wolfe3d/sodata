@@ -1,5 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+
 
 $last = $mysqlConn->real_escape_string($_POST['addLast']);
 $first = $mysqlConn->real_escape_string($_POST['addFirst']);

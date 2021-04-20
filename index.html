@@ -15,6 +15,25 @@
 			<link rel="stylesheet" href="css/style.css" />
 			<link rel="stylesheet" href="css/style-xlarge.css" />
 		</noscript>
+		<script type="text/javascript">
+		$().ready(function() {
+			//myData is a json object type
+			var request = $.ajax({
+			 url: "login.php",
+			 cache: false,
+			 method: "POST",
+			 dataType: "html"
+			});
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+			 $("#loginPage").html(html);
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			 $("#loginPage").html("Search Error");
+			});
+		});
+	</script>
 	</head>
 	<body id="top">
 
@@ -28,6 +47,7 @@
 						<li><a id="tournamentBtn" href="#tournaments">Tournaments</a></li>
 						<li><a id="summercampBtn" href="#summercamp">Summer Camp</a></li>
 						<li><a id="contactBtn" href="#contact">Contact</a></li>
+						<li><a id="loginBtn" href="#login">Login</a></li>
 						<li><a id="supportBtn"href="#support" class="button special">Support Us</a></li>
 					</ul>
 				</nav>
@@ -120,6 +140,18 @@ since 1994. For more information about our team, please send an email to <a href
 					</div>
 				</div>
 			</section>
+
+			<!-- Support -->
+				<section id="login" class="wrapper style1">
+					<div class="container">
+						<div class="row">
+							<div class="12u">
+								<h2>Login</h2>
+								<div id="loginPage">Login to database</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
 		<!-- Footer -->
 			<footer id="footer">

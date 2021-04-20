@@ -1,5 +1,6 @@
 <?php
 require_once  ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
 //get list of events
 $query = "SELECT * FROM `courses` ORDER BY `course` ASC";// where `field` = $fieldId";
