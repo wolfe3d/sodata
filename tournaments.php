@@ -94,6 +94,8 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 		</fieldset>
 	</form>
 </div>
+<?php if($_SESSION['userData']['privilege']>2)
+		{ ?>
 	<button onclick="$('#addTo').show();$(this).hide();">Add</button>
 	<form id="addTo" method="post" action="studentadd.php">
 		<fieldset>
@@ -159,7 +161,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 			</p>
 		</fieldset>
 	</form>
-
+<?php }?>
 <div id="list"></div>
 
 </body>

@@ -1,6 +1,17 @@
 <?php
 // Include configuration file
-require_once '../connectsodb.php';
+require_once  ("../connectsodb.php");
+// Include Google API client library
+require_once 'google-api-php-client/vendor/autoload.php';
+// Call Google API
+$gClient = new Google_Client();
+$gClient->setClientId(GOOGLE_CLIENT_ID);
+$gClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+$gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
+$gClient->addScope(['email', 'profile']);
+//$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
+
+$google_oauth =new Google_Service_Oauth2($gClient);
 
 // Include User library file
 require_once 'User.class.php';
