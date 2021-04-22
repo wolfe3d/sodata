@@ -1,6 +1,5 @@
 <?php
 class User {
-    private $userTbl    = 'users';
 
     function __construct($conn){
         if(!isset($this->db)){
@@ -18,7 +17,7 @@ class User {
     function checkUser($data = array()){
         if(!empty($data)){
             // Check whether the user already exists in the database
-            $checkQuery = "SELECT * FROM ".$this->userTbl." WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
+            $checkQuery = "SELECT * FROM `users` WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
             $checkResult = $this->db->query($checkQuery);
 
             // Add modified time to the data array
