@@ -24,7 +24,7 @@ else if($year)
 }
 
 $query .= " ORDER BY t2.`name` ASC";
-$output .=$query;
+$output .=$_SESSION['userData']['privilege']>2?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
@@ -32,7 +32,7 @@ if($result)
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['name']." - ".$row['year']."</h2>";
-		if($_SESSION['userData']['privilege']==1)
+		if($_SESSION['userData']['privilege']>2)
 		{
 			$output .="<div><a href='tournamentedit.php?tournamentID=".$row['tournamentID']."'>Edit</a></div>";
 		}
@@ -60,11 +60,11 @@ if($result)
 		}
 		if($row['websiteSciOly'])
 		{
-			$output .="<div>SciOly Competition Website: <a href='".$row['websiteSciOly']."'>".$row['websiteSciOly']."</a></div>";
+			$output .="<div>Scilympiad Competition Website: <a href='".$row['websiteSciOly']."'>".$row['websiteSciOly']."</a></div>";
 		}
 
 		//Show Director information to coaches only
-		if($_SESSION['userData']['privilege']==1)
+		if($_SESSION['userData']['privilege']>2)
 		{
 			//Director Information
 			$output .="<h3>Director Information</h3>";

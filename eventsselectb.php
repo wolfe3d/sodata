@@ -1,6 +1,7 @@
 <?php
 //this event select just gives the name of the event
 require_once  ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
 //get list of events
 $query = "SELECT * FROM `events` ORDER BY `event` ASC";// where `field` = $fieldId";
