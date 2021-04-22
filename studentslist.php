@@ -58,6 +58,7 @@ if($eventName)
 	if($studentIDs !="")
 	{
 		$query.=" where $activeQuery t1.`studentID` IN ($studentIDs)";
+		echo $query;
 	}
 	else {
 		echo "No one is signed up for the $eventName.";

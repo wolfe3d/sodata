@@ -3,8 +3,40 @@ require_once ("../connectsodb.php");
 //text output
 $output = "";
 
+$year = intval($_POST['year']);
+
 /*check to see if id exists*/
-$query = "SELECT * from `events` ORDER BY `events`.`event` ASC";// where `field` = $fieldId";
+$query = "SELECT * from `events`";// where `field` = $fieldId";
+
+
+if($year)
+{
+	$yearQuery = "SELECT `event` FROM `eventsyear` WHERE `year` LIKE $year";
+	// echo $yearQuery;
+	$result = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	$eventNames = "";
+	while ($row = $result->fetch_assoc()):
+		//make array of results
+
+		if($eventNames !="")
+		{
+			$eventNames .=",";
+		}
+		$eventNames .= "'".$row['event']."'";
+	endwhile;
+
+	if($eventNames !="")
+	{
+		$query.=" where `events`.`event` IN ($eventNames)";
+	}
+	else {
+		echo "There are no events in the year $year.";
+		return 0;
+	}
+}
+
+
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)

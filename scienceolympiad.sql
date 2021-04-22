@@ -142,7 +142,6 @@ INSERT INTO `events` (`event`, `type`) VALUES
 ('Water Quality', 'Hybrid Lab'),
 ('Wright Stuff', 'Build'),
 ('Write It CAD It', 'Build'),
-('Write It Do It', 'Build');
 
 -- --------------------------------------------------------
 

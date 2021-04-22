@@ -23,6 +23,7 @@ if($result)
 
 	$().ready(function() {
 		$("#addTo").hide();
+		$("#searchDiv").hide();
 			// validate signup form on keyup and submit
 		$("#addTo").validate({
 			rules: {
@@ -38,10 +39,53 @@ if($result)
             }
 		});
 
+		//when Find by Name is clicked, this initiates the search
+		$("#findEvent").on( "submit", function( event ) {
+  		event.preventDefault();
+  		getList( $( this ).serialize() );
+		});
+
 	});
+	function getList(myData)
+	{
+		//alert(JSON.stringify(myData) );
+		//myData is a json object type
+		var request = $.ajax({
+		 url: "eventslist.php",
+		 cache: false,
+		 method: "POST",
+		 data: myData,
+		 dataType: "html"
+		});
+		request.done(function( html ) {
+		 //$("label[for='" + field + "']").append(html);
+		 $("#list").html(html);
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#list").html("Search Error");
+		});
+	}
+
 		</script>
 	</head>
-	<body>
+	<body id="top">
+	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
+	<div id="searchDiv">
+	<form id="findEvent">
+		<fieldset>
+			<legend>Find Event by year</legend>
+			<p>
+				<label for="year">Year</label>
+				<input id="year" name="year" type="text">
+			</p>
+			<p>
+				<input class="submit" type="submit" value="Find By Year">
+			</p>
+		</fieldset>
+	</form>
+</div>
+
 	<button onclick="$('#addTo').show();$(this).hide();">Add</button>
 	<form id="addTo" method="post" action="eventadd.php">
 		<fieldset>
