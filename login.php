@@ -50,6 +50,10 @@ if($gClient->getAccessToken()){
     // Storing user data in the session
     $_SESSION['userData'] = $userData;
 
+		if ($gClient->isAccessTokenExpired()) {
+			$output .="<div style='color:red'>Token Expired...Attempting to Refresh</div>";
+		  $gClient->fetchAccessTokenWithRefreshToken($gClient->getRefreshToken());
+		}
     // Render user profile data
     if(!empty($userData)){
         //$output     = '<h2>Google Account Details</h2>';
