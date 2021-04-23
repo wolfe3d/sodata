@@ -37,7 +37,7 @@ class User {
                 $whereSql = " WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
 
                 // Update user data in the database
-                $query = "UPDATE ".$this->userTbl." SET ".$colvalSet.$whereSql;
+                $query = "UPDATE `users` SET ".$colvalSet.$whereSql;
                 $update = $this->db->query($query);
             }else{
                 // Add created time to the data array
@@ -56,7 +56,7 @@ class User {
                 }
 
                 // Insert user data in the database
-                $query = "INSERT INTO ".$this->userTbl." (".$columns.") VALUES (".$values.")";
+                $query = "INSERT INTO `users` (".$columns.") VALUES (".$values.")";
                 $insert = $this->db->query($query);
             }
 
