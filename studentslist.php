@@ -102,7 +102,9 @@ if($result)
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
-		$output .="<div><a href='studentedit.php?studentID=".$row['studentID']."'>Edit</a></div>";
+		$output .="<div><a href='studentedit.php?studentID=".$row['studentID']."'>Edit</a>";
+		$output .= $_SESSION['userData']['privilege']>2?"<a href='studentRemove(".$row['studentID'].")'>Remove</a>":"";
+		$output .= "</div>";
 		$grade = 9;
 		if (date("M")>5)
 		{

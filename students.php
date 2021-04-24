@@ -94,6 +94,31 @@ if($result)
 		request.fail(function( jqXHR, textStatus ) {
 		 $("#list").html("Search Error");
 		});
+		<?php
+		if ($_SESSION['userData']['privilege']>2)
+		{
+			?>
+		function studentRemove(myStudentID)
+		{
+			//alert(JSON.stringify(myData) );
+			//myData is a json object type
+
+			var request = $.ajax({
+			 url: "studentremove.php",
+			 cache: false,
+			 method: "POST",
+			 data: {studentID:myStudentID},
+			 dataType: "html"
+			});
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+			 $("#list").html(html);
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			 $("#list").html("Removal Error");
+			});
+			<?php } ?>
 	}
 </script>
 	</head>

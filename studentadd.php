@@ -1,7 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
-
+require_once  ("functions.php");
 
 $last = $mysqlConn->real_escape_string($_POST['addLast']);
 $first = $mysqlConn->real_escape_string($_POST['addFirst']);
@@ -19,12 +19,14 @@ $parent2First = $mysqlConn->real_escape_string($_POST['parent2First']);
 $parent2Email = $mysqlConn->real_escape_string($_POST['parent2Email']);
 $parent2Phone = $mysqlConn->real_escape_string($_POST['parent2Phone']);
 
+//check students for randomID
+$uniqueToken = get_uniqueToken($mysqlConn, 'students');
 
-$queryInsert = "INSERT INTO `students` (`studentID`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, '$last', '$first', '$yearGraduating', '$email', '$emailAlt', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Email', '$parent1Phone', '$parent2Last', '$parent2First', '$parent2Email', '$parent2Phone');";
+$queryInsert = "INSERT INTO `students` (`studentID`, `uniqueToken`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, '$uniqueToken', '$last', '$first', '$yearGraduating', '$email', '$emailAlt', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Email', '$parent1Phone', '$parent2Last', '$parent2First', '$parent2Email', '$parent2Phone');";
 if ($mysqlConn->query($queryInsert) === TRUE)
 {
 	echo "New record created.\n";
-	include("student.php");
+	include("students.php");
 }
 else
 {
