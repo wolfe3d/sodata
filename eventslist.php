@@ -1,6 +1,6 @@
 <?php
 require_once  ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+// require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 //text output
 $output = "";
 
@@ -12,12 +12,12 @@ $query = "SELECT * from `events`";// where `field` = $fieldId";
 
 if($year)
 {
-	$yearQuery = "SELECT `event` FROM `eventsyear` WHERE `year` LIKE $year";
+	$yearQuery = "SELECT `event` FROM `eventsyear` WHERE `year` = $year";
 	// echo $yearQuery;
-	$result = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	$eventNames = "";
-	while ($row = $result->fetch_assoc()):
+	while ($row = $resultYear1->fetch_assoc()):
 		//make array of results
 
 		if($eventNames !="")
@@ -26,6 +26,7 @@ if($year)
 		}
 		$eventNames .= "'".$row['event']."'";
 	endwhile;
+	// echo $eventNames;
 
 	if($eventNames !="")
 	{
@@ -46,11 +47,11 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['event']."</h2>";
 
-		$query = "SELECT * from `eventsyear` WHERE eventsyear.`event` = '".$row['event']."' ORDER BY `eventsyear`.`year` ASC";// where `field` = $fieldId";
-		$resultYear = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$query = "SELECT * from `eventsyear` WHERE `eventsyear`.`event` = '".$row['event']."' ORDER BY `eventsyear`.`year` ASC";// where `field` = $fieldId";
+		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 		$yearCollection = "";
-		while ($rowYear = $resultYear->fetch_assoc()):
+		while ($rowYear = $resultYear2->fetch_assoc()):
 			if($yearCollection){
 				$yearCollection.=", ";
 			}
