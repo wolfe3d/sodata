@@ -1,6 +1,6 @@
 <?php
 require_once  ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+// require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
 $query = "SELECT * from `eventtype`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -10,6 +10,17 @@ if($result)
 {
 	while ($row = $result->fetch_assoc()):
 		$eventTypes.="<option value = '".$row['type']."'>".$row['type']."</option>";
+	endwhile;
+}
+
+$query = "SELECT DISTINCT `year` FROM `eventsyear`";
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+$eventYears="";
+if($result)
+{
+	while ($row = $result->fetch_assoc()):
+		$eventYears.="<option value = '".$row['year']."'>".$row['year']."</option>";
 	endwhile;
 }
 ?>
@@ -26,6 +37,7 @@ if($result)
 	$().ready(function() {
 		$("#addTo").hide();
 		$("#searchDiv").hide();
+		getList({});
 			// validate signup form on keyup and submit
 		$("#addTo").validate({
 			rules: {
@@ -79,7 +91,9 @@ if($result)
 			<legend>Find Event by year</legend>
 			<p>
 				<label for="year">Year</label>
-				<input id="year" name="year" type="text">
+				<select id="year" name="year" type="text">
+						<?=$eventYears?>
+				</select>
 			</p>
 			<p>
 				<input class="submit" type="submit" value="Find By Year">
@@ -119,5 +133,3 @@ if($result)
 
 </body>
 </html>
-
-<?php include('eventslist.php');?>
