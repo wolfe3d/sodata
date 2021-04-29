@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 29, 2021 at 04:06 AM
+-- Generation Time: Apr 29, 2021 at 04:38 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -48,8 +48,17 @@ CREATE TABLE `coaches` (
   `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `emailSchool` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
   `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `coaches`
+--
+
+INSERT INTO `coaches` (`coachID`, `userID`, `last`, `first`, `email`, `emailSchool`, `position`) VALUES
+(1, 1, 'Wolfe', 'Douglas', 'wolfewhs@gmail.com', 'douglas.wolfe@cobbk12.org', 'Co-Head Coach'),
+(2, 2, 'Taylor', 'Wes', 'addme@gmail.com', 'wesley.taylor@cobbk12.org', 'Co-Head Coach');
 
 -- --------------------------------------------------------
 
@@ -268,6 +277,13 @@ CREATE TABLE `officers` (
   `year` int(11) NOT NULL,
   `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `officers`
+--
+
+INSERT INTO `officers` (`officerID`, `studentID`, `year`, `position`) VALUES
+(1, 5, 2021, 'Captain');
 
 -- --------------------------------------------------------
 
@@ -503,7 +519,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
 (3, 'google', '108096504576017257484', 1, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh5.googleusercontent.com/-xBUQOO0KKg4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnraWKDqGUboz-j5XPO4TBysjpH8Q/s96-c/photo.jpg', '2021-04-20 22:39:04', '2021-04-27 16:38:26'),
-(9, 'google', '109397293342063106702', 3, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-28 08:32:04');
+(9, 'google', '109397293342063106702', 3, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-29 04:36:51');
 
 --
 -- Indexes for dumped tables
@@ -514,6 +530,12 @@ INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_na
 --
 ALTER TABLE `awards`
   ADD PRIMARY KEY (`awardID`);
+
+--
+-- Indexes for table `coaches`
+--
+ALTER TABLE `coaches`
+  ADD PRIMARY KEY (`coachID`);
 
 --
 -- Indexes for table `courses`
@@ -629,6 +651,12 @@ ALTER TABLE `awards`
   MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `coaches`
+--
+ALTER TABLE `coaches`
+  MODIFY `coachID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
@@ -662,7 +690,7 @@ ALTER TABLE `eventsyear`
 -- AUTO_INCREMENT for table `officers`
 --
 ALTER TABLE `officers`
-  MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `rules`
