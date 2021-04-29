@@ -62,10 +62,12 @@ class User {
 								//If new user, check to see if the email of the user is already added.  If so, automatically give them access to their account.
 								$query = "UPDATE `students` SET `userID` = $userID WHERE `email` LIKE '" . $data['email'] . "'";
 								if ($this->db->query($query) === TRUE) {
+										$query = "UPDATE `users` SET `privilege` = 1 WHERE `userID`=$userID";
 								} else {
 									//if not a student email check coaches
 									$query = "UPDATE `coaches` SET `userID` = $userID WHERE `email` LIKE '" . $data['email'] ."'";
 									if ($this->db->query($query) === TRUE) {
+										$query = "UPDATE `users` SET `privilege` = 1 WHERE `userID`=$userID";
 									} else {
 										//If the email does not match or the email is not google, give the user a chance to provide token to link account.
 										//TODO add a way for a user to do this.
