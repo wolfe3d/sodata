@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 21, 2021 at 12:00 AM
+-- Generation Time: Apr 29, 2021 at 04:06 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -34,6 +34,21 @@ CREATE TABLE `awards` (
   `dateAwarded` date NOT NULL,
   `tournamentID` int(11) NOT NULL,
   `note` varchar(200) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `coaches`
+--
+
+CREATE TABLE `coaches` (
+  `coachID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -81,7 +96,9 @@ CREATE TABLE `coursescompleted` (
 INSERT INTO `coursescompleted` (`myID`, `courseID`, `studentID`) VALUES
 (7, 2, 6),
 (8, 1, 6),
-(10, 5, 6);
+(10, 5, 6),
+(12, 1, 1),
+(13, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -100,7 +117,8 @@ CREATE TABLE `coursesenrolled` (
 --
 
 INSERT INTO `coursesenrolled` (`myID`, `courseID`, `studentID`) VALUES
-(3, 2, 6);
+(3, 2, 6),
+(10, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -143,6 +161,7 @@ INSERT INTO `events` (`event`, `type`) VALUES
 ('Water Quality', 'Hybrid Lab'),
 ('Wright Stuff', 'Build'),
 ('Write It CAD It', 'Build'),
+('Write It Do It', 'Build');
 
 -- --------------------------------------------------------
 
@@ -162,14 +181,16 @@ CREATE TABLE `eventschoice` (
 --
 
 INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`) VALUES
-(1, 1, 1, 5),
 (15, 6, 15, 1),
 (16, 6, 16, 1),
 (17, 6, 5, 1),
 (19, 6, 2, 2),
 (20, 6, 1, 2),
 (21, 6, 3, 2),
-(22, 6, 28, 1);
+(22, 6, 28, 1),
+(23, 1, 1, 1),
+(24, 1, 3, 1),
+(25, 1, 18, 1);
 
 -- --------------------------------------------------------
 
@@ -238,6 +259,19 @@ INSERT INTO `eventtype` (`type`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `officers`
+--
+
+CREATE TABLE `officers` (
+  `officerID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
+  `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `phonetype`
 --
 
@@ -300,6 +334,8 @@ CREATE TABLE `studentplacement` (
 
 CREATE TABLE `students` (
   `studentID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
+  `uniqueToken` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `active` int(11) NOT NULL DEFAULT '1',
@@ -322,23 +358,24 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`studentID`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
-(1, 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
-(2, 'Melnikova', 'Tonya (Antonina)', 0, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'Joshi', 'Chinmay', 1, 2022, 'chinmayj.walton@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(5, 'Lee', 'Rebecca (Eunjae)', 0, 2021, 'eunjaerebecca@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(6, 'Feren', 'Emily', 0, 2021, 'emferen3@gmail.com', '', 'cell', '7705555555', '', '', '', '', '', '', '', ''),
-(7, 'Peng', 'Cynthia', 1, 2021, 'alcp6201@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(8, 'Rami', 'Rima', 1, 2022, 'rimazazu@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(9, 'Shen', 'Grace', 1, 2022, 'graceshen04@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(10, 'Wei', 'Banglue', 0, 2021, 'banglueweiga@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(11, 'Lai', 'Sheena', 0, 2021, 'sheenalai2012@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(12, 'Seigmund', 'Julian', 1, 2023, 'juljs05@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(13, 'Huang', 'Faith', 1, 2023, 'fyizhenh@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(14, 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(15, 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(16, 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO `students` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
+(1, 0, '', 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
+(2, 0, '', 'Melnikova', 'Tonya (Antonina)', 0, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 0, '', 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 0, '', 'Joshi', 'Chinmay', 1, 2022, 'chinmayj.walton@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(5, 0, '', 'Lee', 'Rebecca (Eunjae)', 0, 2021, 'eunjaerebecca@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(6, 0, '', 'Feren', 'Emily', 0, 2021, 'emferen3@gmail.com', '', 'cell', '7705555555', '', '', '', '', '', '', '', ''),
+(7, 0, '', 'Peng', 'Cynthia', 1, 2021, 'alcp6201@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(8, 0, '', 'Rami', 'Rima', 1, 2022, 'rimazazu@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(9, 0, '', 'Shen', 'Grace', 1, 2022, 'graceshen04@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(10, 0, '', 'Wei', 'Banglue', 0, 2021, 'banglueweiga@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(11, 0, '', 'Lai', 'Sheena', 0, 2021, 'sheenalai2012@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(12, 0, '', 'Seigmund', 'Julian', 1, 2023, 'juljs05@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(13, 0, '', 'Huang', 'Faith', 1, 2023, 'fyizhenh@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(14, 0, '', 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(15, 0, '', 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(16, 0, '', 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(22, 9, '', 'Wolfe', 'Doug', 1, 2022, 'dougwolfejr@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -450,7 +487,6 @@ CREATE TABLE `users` (
   `oauth_provider` enum('google','facebook','twitter','linkedin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'google',
   `oauth_uid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `privilege` int(11) DEFAULT NULL,
-  `studentID` int(11) DEFAULT NULL,
   `first_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `last_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -465,9 +501,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `studentID`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
-(2, 'google', '109397293342063106702', 3, NULL, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-20 01:36:24', '2021-04-20 23:10:05'),
-(3, 'google', '108096504576017257484', 1, NULL, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh5.googleusercontent.com/-xBUQOO0KKg4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnraWKDqGUboz-j5XPO4TBysjpH8Q/s96-c/photo.jpg', '2021-04-20 22:39:04', '2021-04-20 23:08:44');
+INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
+(3, 'google', '108096504576017257484', 1, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh5.googleusercontent.com/-xBUQOO0KKg4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnraWKDqGUboz-j5XPO4TBysjpH8Q/s96-c/photo.jpg', '2021-04-20 22:39:04', '2021-04-27 16:38:26'),
+(9, 'google', '109397293342063106702', 3, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-28 08:32:04');
 
 --
 -- Indexes for dumped tables
@@ -521,6 +557,12 @@ ALTER TABLE `eventsyear`
 --
 ALTER TABLE `eventtype`
   ADD PRIMARY KEY (`type`);
+
+--
+-- Indexes for table `officers`
+--
+ALTER TABLE `officers`
+  ADD PRIMARY KEY (`officerID`);
 
 --
 -- Indexes for table `phonetype`
@@ -596,25 +638,31 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `coursescompleted`
 --
 ALTER TABLE `coursescompleted`
-  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `coursesenrolled`
 --
 ALTER TABLE `coursesenrolled`
-  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `eventschoice`
 --
 ALTER TABLE `eventschoice`
-  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `eventsyear`
 --
 ALTER TABLE `eventsyear`
   MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `officers`
+--
+ALTER TABLE `officers`
+  MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rules`
@@ -632,7 +680,7 @@ ALTER TABLE `studentplacement`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `team`
@@ -662,7 +710,7 @@ ALTER TABLE `tournamentinfo`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

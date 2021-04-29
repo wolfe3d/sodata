@@ -36,7 +36,7 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 {
 	$eventsChoice .="<div>Year-Priority Event Name</div>";
 	while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href='' onclick=\"removeEvent('" . $rowEventsChoice['eventsChoiceID'] . "');return false;\">Remove</a></div>";
+		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:removeEvent('" . $rowEventsChoice['eventsChoiceID'] . "')\">Remove</a></div>";
 	endwhile;
 }
 
@@ -49,7 +49,7 @@ if(mysqli_num_rows($resultCourses)>0)
 {
 	$coursesCompleted .="<div>Course Name - Level</div>";
 	while ($rowCourse = $resultCourses->fetch_assoc()):
-		$coursesCompleted .= "<div id='coursesCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href='' onclick=\"removeCourse('" . $rowCourse['myID'] . "','coursesCompleted');return false;\">Remove</a></div>";
+		$coursesCompleted .= "<div id='coursesCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href=\"javascript:removeCourse('" . $rowCourse['myID'] . "','coursesCompleted')\">Remove</a></div>";
 	endwhile;
 }
 
@@ -66,16 +66,6 @@ if(mysqli_num_rows($resultCourses)>0)
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="Pragma" content="no-cache">
-	<script src="js/jquery-3.6.0.min.js"></script>
-	<script src="js/jquery.validate.min.js"></script>
-  <script src="studentedit.js"></script>
-	</head>
-	<body>
 <form id="studentUpdate" method="post" action="studentUpdate.php">
 		<fieldset>
 			<legend>Edit Student</legend>
@@ -170,6 +160,7 @@ if(mysqli_num_rows($resultCourses)>0)
 			</fieldset>
 		</fieldset>
 	</form>
+	<a href="#user">Back</a>
 	<div id='eventAndPriority'>
 		<?php include("eventsselect.php")?>
 		<div id="priority">
@@ -184,5 +175,3 @@ if(mysqli_num_rows($resultCourses)>0)
 		</div>
 	</div>
 	<?php include("coursesselect.php")?>
-</body>
-</html>

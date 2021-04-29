@@ -1,5 +1,37 @@
 <?php
 
+//Check to make sure google is logged in and set variables
+function checkGoogle($gClient,$db)
+{
+	// Include Google API client library
+  require_once 'google-api-php-client/vendor/autoload.php';
+	// Include User library file
+	require_once 'User.class.php';
+
+  $google_oauth =new Google_Service_Oauth2($gClient);
+  $gpUserProfile = $google_oauth->userinfo->get();
+
+      // Initialize User class
+      $user = new User($db);
+
+      // Getting user profile info
+      $gpUserData = array();
+      $gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
+      $gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
+      $gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
+      $gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
+      $gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
+      $gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
+      $gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
+
+      // Insert or update user data to the database
+      $gpUserData['oauth_provider'] = 'google';
+      $userData = $user->checkUser($gpUserData);
+
+      // Storing user data in the session
+      $_SESSION['userData'] = $userData;
+}
+
 /**
  * Generate a random string, using a cryptographically secure
  * pseudorandom number generator (random_int)

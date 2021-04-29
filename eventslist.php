@@ -66,7 +66,5 @@ if($result)
   $output .="</div>";
 }
 
-
-
 echo $output;
 ?>

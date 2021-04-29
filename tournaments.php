@@ -2,79 +2,7 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 ?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="Pragma" content="no-cache">
-	<script src="js/jquery-3.6.0.min.js"></script>
-	<script src="js/jquery.validate.min.js"></script>
-	<script type="text/javascript">
-	$().ready(function() {
-		$("#addTo").hide();
-		$("#searchDiv").hide();
-		//Load Students
-		getList({});
-			// validate signup form on keyup and submit
-		$("#addTo").validate({
-			rules: {
-				first: "required",
-				last: "required",
-				yearGraduating: "required",
-				email: {
-					required: true,
-					email: true
-				},
-			},
-			messages: {
-				first: "*Please enter the student\'s first name",
-				last: "*Please enter the student\'s last name",
-				yearGraduating: {
-					required: "*Enter the year the student is graduating",
-				},
-				email: {
-					required: "*Enter the student\'s email.",
-				},
-			},
-			submitHandler: function(form) {
-                form.submit();
-            }
-		});
-
-		//when Find by Name is clicked, this initiates the search
-		$("#findTournament").on( "submit", function( event ) {
-  		event.preventDefault();
-  		getList( $( this ).serialize() );
-		});
-			//Allow person to pick year
-			for (i = new Date().getFullYear()+1; i > 1973; i--)
-			{
-			    $('#tournamentYear').append($('<option />').val(i).html(i));
-			}
-	});
-	function getList(myData)
-	{
-		//alert(JSON.stringify(myData) );
-		//myData is a json object type
-		var request = $.ajax({
-		 url: "tournamentslist.php",
-		 cache: false,
-		 method: "POST",
-		 data: myData,
-		 dataType: "html"
-		});
-		request.done(function( html ) {
-		 //$("label[for='" + field + "']").append(html);
-		 $("#list").html(html);
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-		 $("#list").html("Search Error");
-		});
-	}
-</script>
-	</head>
-	<body>
+<div>
 	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
 	<div id="searchDiv">
 	<form id="findTournament">
@@ -163,6 +91,4 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 	</form>
 <?php }?>
 <div id="list"></div>
-
-</body>
-</html>
+</div>

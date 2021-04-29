@@ -24,67 +24,7 @@ if($result)
 	endwhile;
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="Pragma" content="no-cache">
-		<script src="../lib/jquery.js"></script>
-		<script src="../lib/jquery.validate.min.js"></script>
-	  <script type="text/javascript">
-
-	$().ready(function() {
-		$("#addTo").hide();
-		$("#searchDiv").hide();
-		getList({});
-			// validate signup form on keyup and submit
-		$("#addTo").validate({
-			rules: {
-				event_name: "required",
-				type: "required",
-			},
-			messages: {
-				event_name: "*Please enter the name event",
-				type: "*Please enter the event type",
-			},
-			submitHandler: function(form) {
-                form.submit();
-            }
-		});
-
-		//when Find by Name is clicked, this initiates the search
-		$("#findEvent").on( "submit", function( event ) {
-  		event.preventDefault();
-  		getList( $( this ).serialize() );
-		});
-
-	});
-	function getList(myData)
-	{
-		//alert(JSON.stringify(myData) );
-		//myData is a json object type
-		var request = $.ajax({
-		 url: "eventslist.php",
-		 cache: false,
-		 method: "POST",
-		 data: myData,
-		 dataType: "html"
-		});
-		request.done(function( html ) {
-		 //$("label[for='" + field + "']").append(html);
-		 $("#list").html(html);
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-		 $("#list").html("Search Error");
-		});
-	}
-
-		</script>
-	</head>
-	<body id="top">
-	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
+<div>
 	<div id="searchDiv">
 	<form id="findEvent">
 		<fieldset>
@@ -102,7 +42,7 @@ if($result)
 	</form>
 </div>
 
-	<button onclick="$('#addTo').show();$(this).hide();">Add</button>
+	<button onclick="$('#addTo').toggle();">Add</button>
 	<form id="addTo" method="post" action="eventadd.php">
 		<fieldset>
 			<legend>Add Event</legend>
@@ -130,6 +70,4 @@ if($result)
 
 
 <div id="list"></div>
-
-</body>
-</html>
+</div>

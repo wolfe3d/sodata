@@ -1,3 +1,7 @@
+<?php
+require_once ("../connectsodb.php");
+ //Check to make sure user is logged in and has privileges
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -18,6 +22,17 @@
 		<script type="text/javascript">
 		$().ready(function() {
 			//myData is a json object type
+			/*var loginUrl = "login.php";
+			if($("#loginBtn").text() == "Logout"){
+				loginUrl = "logout.php";
+			}*/
+			checkPage();
+			$(window).on('hashchange', function() {
+				checkPage();
+			});
+		});
+		function loginout()
+		{
 			var request = $.ajax({
 			 url: "login.php",
 			 cache: false,
@@ -27,16 +42,36 @@
 			request.done(function( html ) {
 			 //$("label[for='" + field + "']").append(html);
 			 $("#loginPage").html(html);
+			 $( "#login").show("fast");
 			});
 
 			request.fail(function( jqXHR, textStatus ) {
 			 $("#loginPage").html("Search Error");
 			});
-		});
+		}
+		function checkPage(){
+			var myHash = location.hash.substr(1);
+			$("section:not(#banner)").hide();
+			if(myHash)
+			{
+				if(myHash=="login")
+				{
+					loginout();
+				}
+				else {
+					$( "#"+myHash ).show( "slow", function() {
+								// Animation complete.
+					});
+				}
+			}
+			else
+			{
+				$( "#main" ).show( "slow", function() {	});
+			}
+		}
 	</script>
 	</head>
 	<body id="top">
-
 		<!-- Header -->
 			<header id="header" class="skel-layers-fixed">
 				<h1><a href="#">Walton Science Olympiad</a></h1>
@@ -47,7 +82,7 @@
 						<li><a id="tournamentBtn" href="#tournaments">Tournaments</a></li>
 						<li><a id="summercampBtn" href="#summercamp">Summer Camp</a></li>
 						<li><a id="contactBtn" href="#contact">Contact</a></li>
-						<li><a id="loginBtn" href="#login">Login</a></li>
+						<li><a id='loginBtn' href='#login'>Login</a></li>
 						<li><a id="supportBtn"href="#support" class="button special">Support Us</a></li>
 					</ul>
 				</nav>
@@ -164,26 +199,4 @@ since 1994. For more information about our team, please send an email to <a href
 			</footer>
 
 	</body>
-	<script>
-	$(window).on('hashchange', function() {
-		checkPage();
-	});
-	$( document ).ready(function() {
-    		checkPage();
-	});
-	function checkPage(){
-		var myHash = location.hash.substr(1);
-		$("section:not(#banner)").hide();
-		if(myHash)
-		{
-			$( "#"+myHash ).show( "slow", function() {
-    				// Animation complete.
-			});
-		}
-		else
-		{
-			$( "#main" ).show( "slow", function() {	});
-		}
-	}
-	</script>
 </html>

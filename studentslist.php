@@ -102,8 +102,8 @@ if($result)
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
-		$output .="<div><a href='studentedit.php?studentID=".$row['studentID']."'>Edit</a>";
-		$output .= $_SESSION['userData']['privilege']>2?"<a href='studentRemove(".$row['studentID'].")'>Remove</a>":"";
+		$output .="<div><a href='javascript:studentEdit(".$row['studentID'].")'>Edit</a> ";
+		$output .= $_SESSION['userData']['privilege']>2?"<a href='javascript:studentRemove(".$row['studentID'].")'>Remove</a>":"";
 		$output .= "</div>";
 		$grade = 9;
 		if (date("M")>5)
@@ -141,7 +141,7 @@ if($result)
 		$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if (mysqli_num_rows($resultEventsChoice)>0)
 		{
-				$output .="<h3>Events</h3>";
+				$output .="<br><h3>Events</h3>";
 				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
 					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . " " . $rowEventsChoice['event'] . "</div>";
 				endwhile;
@@ -152,7 +152,7 @@ if($result)
 		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if(mysqli_num_rows($resultCourses)>0)
 		{
-			$output .="<h3>Course Completed - Level</h3>";
+			$output .="<br><h3>Courses Completed - Level</h3>";
 			while ($rowCourse = $resultCourses->fetch_assoc()):
 				$output .= "<div id='coursesCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
@@ -163,7 +163,7 @@ if($result)
 		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if(mysqli_num_rows($resultCourses)>0)
 		{
-			$output .="<h3>Courses Enrolled - Level</h3>";
+			$output .="<br><h3>Courses Enrolled - Level</h3>";
 			while ($rowCourse = $resultCourses->fetch_assoc()):
 				$output .= "<div id='coursesEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;

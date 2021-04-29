@@ -58,19 +58,20 @@ class User {
                 // Insert user data in the database
                 $query = "INSERT INTO `users` (".$columns.") VALUES (".$values.")";
                 $insert = $this->db->query($query);
-
-								//TODO : add below
+								$userID = $this->db->insert_id;
 								//If new user, check to see if the email of the user is already added.  If so, automatically give them access to their account.
-								//If the email does not match or the email is not google, give the user a chance to provide token to link account.
-								if ($insert === TRUE)
-								{
-									echo $mysqlConn->insert_id;
+								$query = "UPDATE `students` SET `userID` = $userID WHERE `email` LIKE '" . $data['email'] . "'";
+								if ($this->db->query($query) === TRUE) {
+								} else {
+									//if not a student email check coaches
+									$query = "UPDATE `coaches` SET `userID` = $userID WHERE `email` LIKE '" . $data['email'] ."'";
+									if ($this->db->query($query) === TRUE) {
+									} else {
+										//If the email does not match or the email is not google, give the user a chance to provide token to link account.
+										//TODO add a way for a user to do this.
+									}
 								}
-								else
-								{
-									error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-									echo "0";
-								}
+							//If the email does not match or the email is not google, give the user a chance to provide token to link account.
 						}
 
             // Get user data from the database
