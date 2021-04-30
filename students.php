@@ -27,7 +27,7 @@ if($_SESSION['userData']['privilege']>1)
 			<input type="checkbox" id="active" name="active" value="1" checked>
 			<label for="active">Show only active students</label>
 		</div><?=$addStudentText?>
-		<div onclick="$('#searchDiv').toggle();"><i class="gg-search" style="display: inline-block"></i> Search </div>
+		<a href="javascript:toggleSearch()"><i class="gg-search" style="display: inline-block"></i> Search </a>
 
 	<div id="searchDiv">
 	<form id="findStudent">

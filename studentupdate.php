@@ -31,6 +31,7 @@ if ($mysqlConn->query($queryUpdate) === TRUE)
 }
 else
 {
+	echo $queryUpdate;
 	echo "Error modifying Student/Coach";
 }
 ?>

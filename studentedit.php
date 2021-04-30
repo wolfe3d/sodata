@@ -112,6 +112,12 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 <form id="studentUpdate" method="post" action="studentUpdate.php">
 		<fieldset>
 			<legend>Edit Student</legend>
+			<?php if($_SESSION['userData']['privilege']>2)
+			{				?>
+			<p>
+				<input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?> onchange="studentUpdate(<?=$studentID?>,'student',this.id,+$(this).is(':checked'))"><label for="active">Active</label>
+			</p>
+		<?php } ?>
 			<p>
 				<label for="first">Firstname</label>
 				<input id="first" name="first" type="text" value="<?=$row['first']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">

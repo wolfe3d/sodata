@@ -25,6 +25,7 @@ if($result)
 }
 ?>
 <div>
+	<a href="javascript:toggleSearch()">Find</a>
 	<div id="searchDiv">
 	<form id="findEvent">
 		<fieldset>
@@ -42,7 +43,7 @@ if($result)
 	</form>
 </div>
 
-	<button onclick="$('#addTo').toggle();">Add</button>
+<a href="javascript:toggleAdd()">Add</a>
 	<form id="addTo" method="post" action="eventadd.php">
 		<fieldset>
 			<legend>Add Event</legend>

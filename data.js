@@ -396,6 +396,14 @@ function coachEdit(myID)
 ///////////////////
 ///Event functions
 //////////////////
+function toggleSearch()
+{
+	$('#searchDiv').toggle();
+}
+function toggleAdd()
+{
+	$('#addTo').toggle();
+}
 
 function prepareEventsPage()
 {
