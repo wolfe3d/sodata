@@ -6,7 +6,7 @@ $event = $mysqlConn->real_escape_string($_POST['event_name']);
 $type = $mysqlConn->real_escape_string($_POST['type']);
 
 
-$queryInsert = "INSERT INTO `events` (`event`, `type`) VALUES ( '$event', '$type');";
+$queryInsert = "INSERT INTO `event` (`event`, `type`) VALUES ( '$event', '$type');";
 if ($mysqlConn->query($queryInsert) === TRUE)
 {
 	echo "New record created.\n";

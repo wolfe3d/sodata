@@ -7,7 +7,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 $output ="<div>";
 //Get current year
 $year = date("M")>5?date("Y")+1:date("Y");
-$query = "SELECT * FROM `officers` t1 INNER JOIN `students` t2 ON t1.`studentID`=t2.`studentID` WHERE `year`=$year";
+$query = "SELECT * FROM `officer` t1 INNER JOIN `student` t2 ON t1.`studentID`=t2.`studentID` WHERE `year`=$year";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 

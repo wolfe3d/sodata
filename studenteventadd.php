@@ -9,7 +9,7 @@ $studentID = intval($_REQUEST['studentID']);
 $eventID = intval($_REQUEST['eventID']);
 $priority = intval($_REQUEST['priority']);
 
-$query = "INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`) VALUES (NULL, '$studentID', '$eventID', '$priority') ";
+$query = "INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) VALUES (NULL, '$studentID', '$eventID', '$priority') ";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo $mysqlConn->insert_id;

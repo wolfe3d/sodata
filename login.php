@@ -11,7 +11,6 @@ $gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
 $gClient->addScope(['email', 'profile']);
 //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
 
-$google_oauth =new Google_Service_Oauth2($gClient);
 
 // Include User library file
 require_once 'User.class.php';
@@ -28,6 +27,7 @@ if(isset($_SESSION['token'])){
 
 if($gClient->getAccessToken()){
     // Get user profile data from google
+		$google_oauth =new Google_Service_Oauth2($gClient);
     $gpUserProfile = $google_oauth->userinfo->get();
 
     // Initialize User class

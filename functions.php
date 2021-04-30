@@ -1,5 +1,36 @@
 <?php
+//print out privilege editing
+function editPrivilege($privilege,$userID,$db)
+{
+	$output = "";
+	if($_SESSION['userData']['privilege']>$privilege-1) //student must have the current privilege or higher
+	{
+		$output .= "<fieldset><legend>Privilege</legend><p>";
+		//make an adjustable privilege container for website manager to give higher privileges
+		//show privilege
+		if(empty($row['userID']))
+		{
+				$output .= "User has never logged in with registered account.";
+		}
+		else {
 
+			$query = "SELECT * FROM `user` WHERE `id`=".$row['userID'];// where `field` = $fieldId";
+			$resultPrivilege = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$rowPriv = $resultPrivilege->fetch_assoc();
+			if ($rowPriv['privilege'])
+			{
+					$output .= "<label for='privilege'>Privilege</label>";
+					$output .= "<input id='privilege' name='privilege' type='text' value='".$rowPriv['privilege']."' onchange='userPrivilege(".$row['userID'].",this.id,this.value)'>";
+			}
+			else
+			{
+					$output .=  "User has never logged in with registered account.";
+			}
+		}
+		$output .=  "</p></fieldset>";
+	}
+	return $output;
+}
 //Check to make sure google is logged in and set variables
 function checkGoogle($gClient,$db)
 {

@@ -7,12 +7,12 @@ $output = "";
 $year = intval($_POST['year']);
 
 /*check to see if id exists*/
-$query = "SELECT * from `events`";// where `field` = $fieldId";
+$query = "SELECT * from `event`";// where `field` = $fieldId";
 
 
 if($year)
 {
-	$yearQuery = "SELECT `event` FROM `eventsyear` WHERE `year` = $year";
+	$yearQuery = "SELECT `event` FROM `eventyear` WHERE `year` = $year";
 	// echo $yearQuery;
 	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -30,7 +30,7 @@ if($year)
 
 	if($eventNames !="")
 	{
-		$query.=" where `events`.`event` IN ($eventNames)";
+		$query.=" where `event`.`event` IN ($eventNames)";
 	}
 	else {
 		echo "There are no events in the year $year.";
@@ -47,7 +47,7 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$output .="<hr><h2>".$row['event']."</h2>";
 
-		$query = "SELECT * from `eventsyear` WHERE `eventsyear`.`event` = '".$row['event']."' ORDER BY `eventsyear`.`year` ASC";// where `field` = $fieldId";
+		$query = "SELECT * from `eventyear` WHERE `eventyear`.`event` = '".$row['event']."' ORDER BY `eventyear`.`year` ASC";// where `field` = $fieldId";
 		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 		$yearCollection = "";

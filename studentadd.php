@@ -20,9 +20,9 @@ $parent2Email = $mysqlConn->real_escape_string($_POST['parent2Email']);
 $parent2Phone = $mysqlConn->real_escape_string($_POST['parent2Phone']);
 
 //check students for randomID
-$uniqueToken = get_uniqueToken($mysqlConn, 'students');
+$uniqueToken = get_uniqueToken($mysqlConn, 'student');
 
-$queryInsert = "INSERT INTO `students` (`studentID`, `uniqueToken`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, '$uniqueToken', '$last', '$first', '$yearGraduating', '$email', '$emailAlt', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Email', '$parent1Phone', '$parent2Last', '$parent2First', '$parent2Email', '$parent2Phone');";
+$queryInsert = "INSERT INTO `student` (`studentID`, `uniqueToken`, `last`, `first`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, '$uniqueToken', '$last', '$first', '$yearGraduating', '$email', '$emailAlt', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Email', '$parent1Phone', '$parent2Last', '$parent2First', '$parent2Email', '$parent2Phone');";
 if ($mysqlConn->query($queryInsert) === TRUE)
 {
 	echo "New record created.\n";

@@ -2,9 +2,19 @@ $().ready(function() {
 //wait for the page to load before the following is run
 	checkPage();
 	$(window).on('hashchange', function() {
-		checkPage();
+		var splitHash = location.hash.substr(1).split("-");
+		if(splitHash[1])
+		{
+			//alert (splitHash[1]);
+			//ignore hashes with dashes that are used for edit and other single pages
+			//TODO: Maybe add special functions for some edit pages later.
+		}
+		else
+		{
+				checkPage();
+		}
 	});
-	setTimeout(function() { loadpage("user.php") }, 350000);
+	setTimeout(function() { loadpage("user") }, 350000);
 });
 function checkPage(){
 	var myHash = location.hash.substr(1);
@@ -153,6 +163,8 @@ function studentRemove(myStudentID)
 	});
 }
 
+
+
 ///////////////////
 ///Student Edit functions
 //////////////////
@@ -167,6 +179,7 @@ function studentEdit(myStudentID)
 	});
 	request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
+	 window.location.hash = '#student-edit-'+ myStudentID;
 	 $("#mainContainer").html(html);
 	 $("#eventAndPriority").hide();
 	 $("#coursesListDiv").hide();
@@ -313,14 +326,14 @@ function addCourse(student, table)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function updateStudent(student, field,value)
+function studentUpdate(myID,table,field,value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
 	 url: "studentupdate.php",
 	 cache: false,
 	 method: "POST",
-	 data: { studentID: student, myfield : field, myvalue : value },
+	 data: { myid: myID, mytable:table, myfield : field, myvalue : value },
 	 dataType: "text"
  });
 
@@ -333,6 +346,51 @@ function updateStudent(student, field,value)
  request.fail(function( jqXHR, textStatus ) {
 	 alert( "Request failed: " + textStatus );
  });
+}
+function userPrivilege(myUser, field,value)
+{
+	//alert(JSON.stringify(myData) );
+	//myData is a json object type
+
+	var request = $.ajax({
+	 url: "userprivilege.php",
+	 cache: false,
+	 method: "POST",
+	 data: {userID: myUser, privilege: value},
+	 dataType: "text"
+	});
+	request.done(function( html ) {
+	 $(".modified").remove(); //removes any old update notices
+	 $("#"+field).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+	 alert( "Request failed: " + textStatus );
+	});
+}
+
+
+///////////////////
+///Student Edit functions
+//////////////////
+function coachEdit(myID)
+{
+	var request = $.ajax({
+	 url: "coachedit.php",
+	 cache: false,
+	 method: "POST",
+	 data: {coachID:myID},
+	 dataType: "html"
+	});
+	request.done(function( html ) {
+	 //$("label[for='" + field + "']").append(html);
+	 window.location.hash = '#coach-edit-'+ myID;
+	 $("#mainContainer").html(html);
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+	 $("#mainContainer").html("Removal Error");
+	});
 }
 
 ///////////////////

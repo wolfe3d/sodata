@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 29, 2021 at 04:38 AM
+-- Generation Time: Apr 30, 2021 at 03:22 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -25,58 +25,58 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `awards`
+-- Table structure for table `award`
 --
 
-CREATE TABLE `awards` (
+CREATE TABLE `award` (
   `awardID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL,
   `dateAwarded` date NOT NULL,
   `tournamentID` int(11) NOT NULL,
-  `note` varchar(200) COLLATE utf8mb4_general_ci NOT NULL
+  `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coaches`
+-- Table structure for table `coach`
 --
 
-CREATE TABLE `coaches` (
+CREATE TABLE `coach` (
   `coachID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
-  `emailSchool` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
-  `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+  `userID` int(11) DEFAULT NULL,
+  `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `emailSchool` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `position` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `coaches`
+-- Dumping data for table `coach`
 --
 
-INSERT INTO `coaches` (`coachID`, `userID`, `last`, `first`, `email`, `emailSchool`, `position`) VALUES
-(1, 1, 'Wolfe', 'Douglas', 'wolfewhs@gmail.com', 'douglas.wolfe@cobbk12.org', 'Co-Head Coach'),
-(2, 2, 'Taylor', 'Wes', 'addme@gmail.com', 'wesley.taylor@cobbk12.org', 'Co-Head Coach');
+INSERT INTO `coach` (`coachID`, `userID`, `last`, `first`, `email`, `emailSchool`, `position`) VALUES
+(1, 3, 'Wolfe', 'Douglas', 'wolfewhs@gmail.com', 'douglas.wolfe@cobbk12.org', 'Co-Head Coach'),
+(2, NULL, 'Taylor', 'Wes', 'addme@gmail.com', 'wesley.taylor@cobbk12.org', 'Co-Head Coach');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `courses`
+-- Table structure for table `course`
 --
 
-CREATE TABLE `courses` (
+CREATE TABLE `course` (
   `courseID` int(11) NOT NULL,
-  `course` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `level` varchar(10) COLLATE utf8mb4_general_ci NOT NULL
+  `course` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `courses`
+-- Dumping data for table `course`
 --
 
-INSERT INTO `courses` (`courseID`, `course`, `level`) VALUES
+INSERT INTO `course` (`courseID`, `course`, `level`) VALUES
 (1, 'Biology', 'AP'),
 (2, 'Biology', 'Honors'),
 (3, 'Biology', 'On level'),
@@ -89,20 +89,20 @@ INSERT INTO `courses` (`courseID`, `course`, `level`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coursescompleted`
+-- Table structure for table `coursecompleted`
 --
 
-CREATE TABLE `coursescompleted` (
+CREATE TABLE `coursecompleted` (
   `myID` int(11) NOT NULL,
   `courseID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `coursescompleted`
+-- Dumping data for table `coursecompleted`
 --
 
-INSERT INTO `coursescompleted` (`myID`, `courseID`, `studentID`) VALUES
+INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
 (7, 2, 6),
 (8, 1, 6),
 (10, 5, 6),
@@ -112,39 +112,39 @@ INSERT INTO `coursescompleted` (`myID`, `courseID`, `studentID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coursesenrolled`
+-- Table structure for table `courseenrolled`
 --
 
-CREATE TABLE `coursesenrolled` (
+CREATE TABLE `courseenrolled` (
   `myID` int(11) NOT NULL,
   `courseID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `coursesenrolled`
+-- Dumping data for table `courseenrolled`
 --
 
-INSERT INTO `coursesenrolled` (`myID`, `courseID`, `studentID`) VALUES
+INSERT INTO `courseenrolled` (`myID`, `courseID`, `studentID`) VALUES
 (3, 2, 6),
 (10, 1, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
+-- Table structure for table `event`
 --
 
-CREATE TABLE `events` (
-  `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+CREATE TABLE `event` (
+  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `events`
+-- Dumping data for table `event`
 --
 
-INSERT INTO `events` (`event`, `type`) VALUES
+INSERT INTO `event` (`event`, `type`) VALUES
 ('Anatomy and Physiology', 'Core Knowledge (Test Only)'),
 ('Astronomy', 'Core Knowledge (Test Only)'),
 ('Boomilever', 'Build'),
@@ -175,21 +175,21 @@ INSERT INTO `events` (`event`, `type`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `eventschoice`
+-- Table structure for table `eventchoice`
 --
 
-CREATE TABLE `eventschoice` (
-  `eventsChoiceID` int(11) NOT NULL,
+CREATE TABLE `eventchoice` (
+  `eventChoiceID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL,
   `eventID` int(11) NOT NULL,
   `priority` int(11) NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `eventschoice`
+-- Dumping data for table `eventchoice`
 --
 
-INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`) VALUES
+INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) VALUES
 (15, 6, 15, 1),
 (16, 6, 16, 1),
 (17, 6, 5, 1),
@@ -204,20 +204,41 @@ INSERT INTO `eventschoice` (`eventsChoiceID`, `studentID`, `eventID`, `priority`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `eventsyear`
+-- Table structure for table `eventtype`
 --
 
-CREATE TABLE `eventsyear` (
-  `eventID` int(11) NOT NULL,
-  `year` int(11) NOT NULL,
-  `event` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+CREATE TABLE `eventtype` (
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `eventsyear`
+-- Dumping data for table `eventtype`
 --
 
-INSERT INTO `eventsyear` (`eventID`, `year`, `event`) VALUES
+INSERT INTO `eventtype` (`type`) VALUES
+('Build'),
+('Core Knowledge (Test Only)'),
+('Hybrid Build'),
+('Hybrid Lab'),
+('Laboratory or Hands On');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eventyear`
+--
+
+CREATE TABLE `eventyear` (
+  `eventID` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
+  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `eventyear`
+--
+
+INSERT INTO `eventyear` (`eventID`, `year`, `event`) VALUES
 (1, 2021, 'Anatomy and Physiology'),
 (2, 2021, 'Astronomy'),
 (3, 2021, 'Boomilever'),
@@ -247,42 +268,21 @@ INSERT INTO `eventsyear` (`eventID`, `year`, `event`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `eventtype`
+-- Table structure for table `officer`
 --
 
-CREATE TABLE `eventtype` (
-  `type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `eventtype`
---
-
-INSERT INTO `eventtype` (`type`) VALUES
-('Build'),
-('Core Knowledge (Test Only)'),
-('Hybrid Build'),
-('Hybrid Lab'),
-('Laboratory or Hands On');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `officers`
---
-
-CREATE TABLE `officers` (
+CREATE TABLE `officer` (
   `officerID` int(11) NOT NULL,
   `studentID` int(11) NOT NULL,
   `year` int(11) NOT NULL,
-  `position` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+  `position` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `officers`
+-- Dumping data for table `officer`
 --
 
-INSERT INTO `officers` (`officerID`, `studentID`, `year`, `position`) VALUES
+INSERT INTO `officer` (`officerID`, `studentID`, `year`, `position`) VALUES
 (1, 5, 2021, 'Captain');
 
 -- --------------------------------------------------------
@@ -292,7 +292,7 @@ INSERT INTO `officers` (`officerID`, `studentID`, `year`, `position`) VALUES
 --
 
 CREATE TABLE `phonetype` (
-  `phoneType` varchar(20) COLLATE utf8mb4_general_ci NOT NULL
+  `phoneType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -307,10 +307,10 @@ INSERT INTO `phonetype` (`phoneType`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rules`
+-- Table structure for table `rule`
 --
 
-CREATE TABLE `rules` (
+CREATE TABLE `rule` (
   `ruleID` int(11) NOT NULL,
   `level` int(3) NOT NULL,
   `year` int(11) NOT NULL,
@@ -318,10 +318,10 @@ CREATE TABLE `rules` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `rules`
+-- Dumping data for table `rule`
 --
 
-INSERT INTO `rules` (`ruleID`, `level`, `year`, `fileName`) VALUES
+INSERT INTO `rule` (`ruleID`, `level`, `year`, `fileName`) VALUES
 (1, 3, 2021, 'Science_Olympiad_Div_C_2021.pdf'),
 (2, 2, 2021, 'Science_Olympiad_Div_B_2021.pdf'),
 (3, 3, 2020, 'Science_Olympiad_Div_C_2020.pdf'),
@@ -330,35 +330,20 @@ INSERT INTO `rules` (`ruleID`, `level`, `year`, `fileName`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `studentplacement`
+-- Table structure for table `student`
 --
 
-CREATE TABLE `studentplacement` (
-  `studentPlacementID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL,
-  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `teamID` int(11) NOT NULL,
-  `place` int(11) NOT NULL,
-  `partnerID` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `students`
---
-
-CREATE TABLE `students` (
+CREATE TABLE `student` (
   `studentID` int(11) NOT NULL,
   `userID` int(11) DEFAULT NULL,
-  `uniqueToken` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `last` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `first` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `uniqueToken` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `active` int(11) NOT NULL DEFAULT '1',
   `yearGraduating` int(11) NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `emailAlt` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `phoneType` varchar(12) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'cell',
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `emailSchool` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phoneType` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'cell',
   `phone` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `parent1Last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `parent1First` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -371,10 +356,10 @@ CREATE TABLE `students` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `students`
+-- Dumping data for table `student`
 --
 
-INSERT INTO `students` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailAlt`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
+INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
 (1, 0, '', 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
 (2, 0, '', 'Melnikova', 'Tonya (Antonina)', 0, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 0, '', 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -391,7 +376,24 @@ INSERT INTO `students` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `
 (14, 0, '', 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
 (15, 0, '', 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
 (16, 0, '', 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(22, 9, '', 'Wolfe', 'Doug', 1, 2022, 'dougwolfejr@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(22, 9, '', 'Wolfe', 'Doug', 1, 2022, 'dougwolfejr@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, NULL, '', 'Last', 'Wolfe', 1, 2025, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(24, NULL, '', 'He', 'Jessica', 1, 2024, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `studentplacement`
+--
+
+CREATE TABLE `studentplacement` (
+  `studentPlacementID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `teamID` int(11) NOT NULL,
+  `place` int(11) NOT NULL,
+  `partnerID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -414,7 +416,7 @@ CREATE TABLE `team` (
 
 CREATE TABLE `timeblock` (
   `blockID` int(11) NOT NULL,
-  `blockName` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `blockName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `timeStart` datetime NOT NULL,
   `timeEnd` datetime NOT NULL,
   `teamID` int(11) NOT NULL
@@ -435,7 +437,7 @@ CREATE TABLE `tournament` (
   `type` int(11) DEFAULT NULL,
   `numberTeams` int(11) DEFAULT NULL,
   `weighting` int(11) NOT NULL,
-  `note` varchar(200) COLLATE utf8mb4_general_ci NOT NULL
+  `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -463,14 +465,14 @@ INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, 
 
 CREATE TABLE `tournamentinfo` (
   `tournamentInfoID` int(11) NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `host` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `address` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
-  `addressBilling` varchar(300) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `websiteHost` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `websiteSciOly` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `director` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `directorEmail` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `host` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `address` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `addressBilling` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `websiteHost` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `websiteSciOly` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `director` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `directorEmail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `monthRegistration` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -495,10 +497,10 @@ INSERT INTO `tournamentinfo` (`tournamentInfoID`, `name`, `host`, `address`, `ad
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `user`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `oauth_provider` enum('google','facebook','twitter','linkedin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'google',
   `oauth_uid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -514,65 +516,59 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `user`
 --
 
-INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
-(3, 'google', '108096504576017257484', 1, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh5.googleusercontent.com/-xBUQOO0KKg4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucnraWKDqGUboz-j5XPO4TBysjpH8Q/s96-c/photo.jpg', '2021-04-20 22:39:04', '2021-04-27 16:38:26'),
-(9, 'google', '109397293342063106702', 3, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-29 04:36:51');
+INSERT INTO `user` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
+(3, 'google', '108096504576017257484', 1, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJyVjZvobWp9Wd8bdGAb96Ehc4g_UHqWbpXFVO9r=s96-c', '2021-04-20 22:39:04', '2021-04-30 01:42:26'),
+(9, 'google', '109397293342063106702', 4, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-30 01:11:15');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `awards`
+-- Indexes for table `award`
 --
-ALTER TABLE `awards`
+ALTER TABLE `award`
   ADD PRIMARY KEY (`awardID`);
 
 --
--- Indexes for table `coaches`
+-- Indexes for table `coach`
 --
-ALTER TABLE `coaches`
+ALTER TABLE `coach`
   ADD PRIMARY KEY (`coachID`);
 
 --
--- Indexes for table `courses`
+-- Indexes for table `course`
 --
-ALTER TABLE `courses`
+ALTER TABLE `course`
   ADD PRIMARY KEY (`courseID`);
 
 --
--- Indexes for table `coursescompleted`
+-- Indexes for table `coursecompleted`
 --
-ALTER TABLE `coursescompleted`
+ALTER TABLE `coursecompleted`
   ADD PRIMARY KEY (`myID`);
 
 --
--- Indexes for table `coursesenrolled`
+-- Indexes for table `courseenrolled`
 --
-ALTER TABLE `coursesenrolled`
+ALTER TABLE `courseenrolled`
   ADD PRIMARY KEY (`myID`);
 
 --
--- Indexes for table `events`
+-- Indexes for table `event`
 --
-ALTER TABLE `events`
+ALTER TABLE `event`
   ADD PRIMARY KEY (`event`),
   ADD UNIQUE KEY `event` (`event`);
 
 --
--- Indexes for table `eventschoice`
+-- Indexes for table `eventchoice`
 --
-ALTER TABLE `eventschoice`
-  ADD PRIMARY KEY (`eventsChoiceID`);
-
---
--- Indexes for table `eventsyear`
---
-ALTER TABLE `eventsyear`
-  ADD UNIQUE KEY `yearID` (`eventID`);
+ALTER TABLE `eventchoice`
+  ADD PRIMARY KEY (`eventChoiceID`);
 
 --
 -- Indexes for table `eventtype`
@@ -581,9 +577,15 @@ ALTER TABLE `eventtype`
   ADD PRIMARY KEY (`type`);
 
 --
--- Indexes for table `officers`
+-- Indexes for table `eventyear`
 --
-ALTER TABLE `officers`
+ALTER TABLE `eventyear`
+  ADD UNIQUE KEY `yearID` (`eventID`);
+
+--
+-- Indexes for table `officer`
+--
+ALTER TABLE `officer`
   ADD PRIMARY KEY (`officerID`);
 
 --
@@ -593,22 +595,22 @@ ALTER TABLE `phonetype`
   ADD UNIQUE KEY `phoneType` (`phoneType`);
 
 --
--- Indexes for table `rules`
+-- Indexes for table `rule`
 --
-ALTER TABLE `rules`
+ALTER TABLE `rule`
   ADD PRIMARY KEY (`ruleID`) USING BTREE;
+
+--
+-- Indexes for table `student`
+--
+ALTER TABLE `student`
+  ADD PRIMARY KEY (`studentID`);
 
 --
 -- Indexes for table `studentplacement`
 --
 ALTER TABLE `studentplacement`
   ADD PRIMARY KEY (`studentPlacementID`);
-
---
--- Indexes for table `students`
---
-ALTER TABLE `students`
-  ADD PRIMARY KEY (`studentID`);
 
 --
 -- Indexes for table `team`
@@ -635,9 +637,9 @@ ALTER TABLE `tournamentinfo`
   ADD PRIMARY KEY (`tournamentInfoID`);
 
 --
--- Indexes for table `users`
+-- Indexes for table `user`
 --
-ALTER TABLE `users`
+ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -645,70 +647,70 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `awards`
+-- AUTO_INCREMENT for table `award`
 --
-ALTER TABLE `awards`
+ALTER TABLE `award`
   MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `coaches`
+-- AUTO_INCREMENT for table `coach`
 --
-ALTER TABLE `coaches`
+ALTER TABLE `coach`
   MODIFY `coachID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `courses`
+-- AUTO_INCREMENT for table `course`
 --
-ALTER TABLE `courses`
+ALTER TABLE `course`
   MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `coursescompleted`
+-- AUTO_INCREMENT for table `coursecompleted`
 --
-ALTER TABLE `coursescompleted`
+ALTER TABLE `coursecompleted`
   MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `coursesenrolled`
+-- AUTO_INCREMENT for table `courseenrolled`
 --
-ALTER TABLE `coursesenrolled`
+ALTER TABLE `courseenrolled`
   MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `eventschoice`
+-- AUTO_INCREMENT for table `eventchoice`
 --
-ALTER TABLE `eventschoice`
-  MODIFY `eventsChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+ALTER TABLE `eventchoice`
+  MODIFY `eventChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
--- AUTO_INCREMENT for table `eventsyear`
+-- AUTO_INCREMENT for table `eventyear`
 --
-ALTER TABLE `eventsyear`
+ALTER TABLE `eventyear`
   MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
--- AUTO_INCREMENT for table `officers`
+-- AUTO_INCREMENT for table `officer`
 --
-ALTER TABLE `officers`
+ALTER TABLE `officer`
   MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `rules`
+-- AUTO_INCREMENT for table `rule`
 --
-ALTER TABLE `rules`
+ALTER TABLE `rule`
   MODIFY `ruleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `student`
+--
+ALTER TABLE `student`
+  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `studentplacement`
 --
 ALTER TABLE `studentplacement`
   MODIFY `studentPlacementID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `students`
---
-ALTER TABLE `students`
-  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `team`
@@ -735,9 +737,9 @@ ALTER TABLE `tournamentinfo`
   MODIFY `tournamentInfoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT for table `user`
 --
-ALTER TABLE `users`
+ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 

@@ -13,13 +13,16 @@ require_once ("functions.php");
  $gClient->addScope(['email', 'profile']);
  //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
  if(isset($_GET['code'])){
+	 echo "code set";
      $gClient->authenticate($_GET['code']);
      $_SESSION['token'] = $gClient->getAccessToken();
      header('Location: ' . filter_var(GOOGLE_REDIRECT_URL, FILTER_SANITIZE_URL));
  }
 
+
  if(isset($_SESSION['token'])){
-     $gClient->setAccessToken($_SESSION['token']);
+ //	echo "token set:".print_r($_SESSION['token']);
+ 	$gClient->setAccessToken($_SESSION['token']);
  }
 
  if($gClient->getAccessToken()){
@@ -27,6 +30,14 @@ require_once ("functions.php");
  }else{
 	 header("Location:index.php#login");
  }
+
+ $google_oauth =new Google_Service_Oauth2($gClient);
+ $gpUserProfile = $google_oauth->userinfo->get();
+if(empty($gpUserProfile['id']))
+{
+	//header("Location:logout.php");
+	echo "yo google user is invalid.  Check your setup...Wolfe!";
+}
 
  function loginoutBtn()
  {

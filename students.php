@@ -15,12 +15,18 @@ if($result)
 		$phoneTypes.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
 	endwhile;
 }
+
+$addStudentText ="";
+if($_SESSION['userData']['privilege']>1)
+{
+	$addStudentText .="<div><a href='javascript:studentEdit()'>Add Student</a></div>";
+}
 ?>
 <div>
 		<div>
 			<input type="checkbox" id="active" name="active" value="1" checked>
 			<label for="active">Show only active students</label>
-		</div>
+		</div><?=$addStudentText?>
 		<div onclick="$('#searchDiv').toggle();"><i class="gg-search" style="display: inline-block"></i> Search </div>
 
 	<div id="searchDiv">
