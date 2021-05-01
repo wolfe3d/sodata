@@ -80,6 +80,7 @@ function getList(myPage, myData)
 	request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
 	 $("#list").html(html);
+	 $('html, body').animate({scrollTop: $("#list").offset().top + "px"}, 1500);
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
