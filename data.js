@@ -137,7 +137,7 @@ function prepareStudentsPage()
 	//when Find by Course is clicked, this initiates the search
 	$("#findByCourse").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {coursesList: $("#coursesList").val()});
+		getList("studentslist.php", {courseList: $("#courseList").val()});
 	});
 }
 
@@ -182,7 +182,7 @@ function studentEdit(myStudentID)
 	 window.location.hash = '#student-edit-'+ myStudentID;
 	 $("#mainContainer").html(html);
 	 $("#eventAndPriority").hide();
-	 $("#coursesListDiv").hide();
+	 $("#courseListDiv").hide();
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -259,15 +259,16 @@ function addEvent(student, field, value)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function addCoursesChoice(student, table)
+function addCourseChoice(student, table)
 {
-	//adds the courses list selection
- $("#coursesListDiv").appendTo("#add"+table+"Div").show();
+	//adds the course list selection
+ $("#courseListDiv").appendTo("#add"+table+"Div").show();
+ $(".addCourseBtn").show();
+ $("#add"+table).hide();
  $("#addThisCourse").remove();
- $(".addCoursesBtn").show();
- $("#add"+table+"Div").append("<a id='addThisCourse' onclick=\"addCourse('"+student+"','"+table+"'); return false;\" href=''>Add</a>");
+ $("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:courseAdd('"+student+"','"+table+"')\">Add</a>");
 }
-function removeCourse(value, table)
+function courseRemove(value, table)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -297,14 +298,14 @@ function removeCourse(value, table)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function addCourse(student, table)
+function courseAdd(student, table)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
 	 url: "studentcourseadd.php",
 	 cache: false,
 	 method: "POST",
-	 data: { studentID: student, tableName : table, courseID : $("#coursesList").val() }, //TODO: must add priority
+	 data: { studentID: student, tableName : table, courseID : $("#courseList").val() }, //TODO: must add priority
 	 dataType: "text"
  });
 
@@ -314,7 +315,7 @@ function addCourse(student, table)
 	 if (myCourseID>0)
 	 {
 		 //returns the current update
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ $("#coursesList option:selected").text() + " <a href='' onclick=\"removeCourse('" + myCourseID + "','"+table+"');return false;\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ $("#courseList option:selected").text() + " <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
 	 }
 	 else
 	 {

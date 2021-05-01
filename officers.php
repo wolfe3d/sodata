@@ -34,9 +34,9 @@ if($result)
 		{
 			$output .="<div>Preferred Email:".$row['email']."</div>";
 		}
-		if($row['emailAlt'])
+		if($row['emailSchool'])
 		{
-			$output .="<div>Alternate Email:".$row['emailAlt']."</div>";
+			$output .="<div>Alternate Email:".$row['emailSchool']."</div>";
 		}
 		if($row['phone'])
 		{

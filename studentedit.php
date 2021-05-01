@@ -83,27 +83,27 @@ if($resultPhone)
 	endwhile;
 }
 
-//find student's courses completed
+//find student's course completed
 $query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$coursesCompleted ="";
-if(mysqli_num_rows($resultCourses)>0)
+$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$courseCompleted ="";
+if(mysqli_num_rows($resultCourse)>0)
 {
-	$coursesCompleted .="<div>Course Name - Level</div>";
-	while ($rowCourse = $resultCourses->fetch_assoc()):
-		$coursesCompleted .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href=\"javascript:removeCourse('" . $rowCourse['myID'] . "','coursesCompleted')\">Remove</a></div>";
+	$courseCompleted .="<div>Course Name - Level</div>";
+	while ($rowCourse = $resultCourse->fetch_assoc()):
+		$courseCompleted .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href=\"javascript:removeCourse('" . $rowCourse['myID'] . "','courseCompleted')\">Remove</a></div>";
 	endwhile;
 }
 
-//find student's courses enrolled but not yet completed
+//find student's course enrolled but not yet completed
 $query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$coursesEnrolled ="";
-if(mysqli_num_rows($resultCourses)>0)
+$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$courseEnrolled ="";
+if(mysqli_num_rows($resultCourse)>0)
 {
-	$coursesEnrolled .="<div>Course Name - Level</div>";
-	while ($rowCourse = $resultCourses->fetch_assoc()):
-		$coursesEnrolled .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href='' onclick=\"removeCourse('" . $rowCourse['myID'] . "','courseenrolled');return false;\">Remove</a> <a href='' onclick=\"moveCourse('" . $rowCourse['myID'] . "');return false;\">Completed</a></div>";
+	$courseEnrolled .="<div>Course Name - Level</div>";
+	while ($rowCourse = $resultCourse->fetch_assoc()):
+		$courseEnrolled .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href='' onclick=\"removeCourse('" . $rowCourse['myID'] . "','courseenrolled');return false;\">Remove</a> <a href='' onclick=\"moveCourse('" . $rowCourse['myID'] . "');return false;\">Completed</a></div>";
 	endwhile;
 }
 
@@ -136,8 +136,8 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 				<input id="email" name="email" type="email" value="<?=$row['email']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="emailAlt">School Email</label>
-				<input id="emailAlt" name="emailAlt" type="email" value="<?=$row['emailAlt']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="emailSchool">School Email</label>
+				<input id="emailSchool" name="emailSchool" type="email" value="<?=$row['emailSchool']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<label for="phoneType">Phone Type</label>
@@ -158,17 +158,15 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			</fieldset>
 			<fieldset>
 				<legend>Courses - Completed</legend>
-				<div id="coursesCompleted"><?=$coursesCompleted?></div>
-				<div id="addcoursesCompletedDiv">
-			</div>
-				<a id="addCoursesCompleted" class="addCoursesBtn" onclick="addCoursesChoice('<?=$studentID?>','coursecompleted');$(this).hide();return false;" href="">Add Course Completed</a>
+				<div id="courseCompleted"><?=$courseCompleted?></div>
+				<div id="addcoursecompletedDiv"></div>
+				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:addCourseChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses - Enrolled (but not completed)</legend>
-				<div id="coursesEnrolled"><?=$coursesEnrolled?></div>
-				<div id="addcoursesEnrolledDiv">
-			</div>
-				<a id="addcoursesEnrolled" class="addCoursesBtn" onclick="addCoursesChoice('<?=$studentID?>','courseenrolled');$(this).hide();return false;" href="">Add Course Enrolled</a>
+				<div id="courseEnrolled"><?=$courseEnrolled?></div>
+				<div id="addcourseenrolledDiv"></div>
+				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:addCourseChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
 			</fieldset>
 			<fieldset>
 				<legend>Parent 1</legend>
@@ -225,4 +223,4 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			</select>
 		</div>
 	</div>
-	<?php include("coursesselect.php")?>
+	<?php include("courseselect.php")?>

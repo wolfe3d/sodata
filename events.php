@@ -13,7 +13,7 @@ if($result)
 	endwhile;
 }
 
-$query = "SELECT DISTINCT `year` FROM `eventsyear`";
+$query = "SELECT DISTINCT `year` FROM `eventyear`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $eventYears="";

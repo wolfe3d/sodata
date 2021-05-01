@@ -61,7 +61,7 @@ if($_SESSION['userData']['privilege']>1)
 		<fieldset>
 			<legend>Find Students by Coursework</legend>
 			<p>
-				<?php include("coursesselect.php")?>
+				<?php include("courseselect.php")?>
 			</p>
 			<p>
 				<input class="submit" type="submit" value="Find By Course">

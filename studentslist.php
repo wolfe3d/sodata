@@ -10,7 +10,7 @@ $output = "";
 $last = $mysqlConn->real_escape_string($_POST['last']);
 $first = $mysqlConn->real_escape_string($_POST['first']);
 $eventName = $mysqlConn->real_escape_string($_POST['eventsList']);
-$courseID = intval($_POST['coursesList']);
+$courseID = intval($_POST['courseList']);
 $active = intval($_POST['active']);
 
 $activeQuery ="";
@@ -42,7 +42,7 @@ if($eventName)
 {
 	//Search for student signed up for event
 	//TODO: Also search for students who have competed in events previously
-	//$query = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventsyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
 	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE $activeQuery t3.`event` LIKE '$eventName'";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -70,7 +70,7 @@ if($eventName)
 if($courseID)
 {
 	//Search for student signed up for event
-	//$query = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
 	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `coursecompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `courseenrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE$activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -123,9 +123,9 @@ if($result)
 		{
 			$output .="<div>Google Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
 		}
-		if($row['emailAlt'])
+		if($row['emailSchool'])
 		{
-			$output .="<div>School Email: <a href='mailto: ".$row['emailAlt']."'>".$row['emailAlt']."</a></div>";
+			$output .="<div>School Email: <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></div>";
 		}
 		if($row['phone'])
 		{
@@ -133,7 +133,7 @@ if($result)
 		}
 		if($row['parent1Last'])
 		{
-			$output .="<h3>Parent(s)</h3>";
+			$output .="<br><h3>Parent(s)</h3>";
 			$output .="<div>".$row['parent1First']." ".$row['parent1Last'].",".$row['parent1Email'].",".$row['parent1Phone']."</div>";
 			if($row['parent2Last'])
 			{
@@ -153,22 +153,22 @@ if($result)
 
 		//find student's courses completed
 		$query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourses)>0)
+		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourse)>0)
 		{
 			$output .="<br><h3>Courses Completed - Level</h3>";
-			while ($rowCourse = $resultCourses->fetch_assoc()):
+			while ($rowCourse = $resultCourse->fetch_assoc()):
 				$output .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
 
 		//find student's courses enrolled but not yet completed
 		$query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourses)>0)
+		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourse)>0)
 		{
 			$output .="<br><h3>Courses Enrolled - Level</h3>";
-			while ($rowCourse = $resultCourses->fetch_assoc()):
+			while ($rowCourse = $resultCourse->fetch_assoc()):
 				$output .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
