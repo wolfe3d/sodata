@@ -275,7 +275,7 @@ function courseRemove(value, table)
 	 url: "studentcourseremove.php",
 	 cache: false,
 	 method: "POST",
-	 data: { tableName : table, myCourseID : value},
+	 data: { tableName : table, myID : value},
 	 dataType: "text"
  });
 
@@ -315,7 +315,7 @@ function courseAdd(student, table)
 	 if (myCourseID>0)
 	 {
 		 //returns the current update
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ $("#courseList option:selected").text() + " <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ $("#courseList option:selected").text() + " <a href=\"javascript:courseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>  <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
 	 }
 	 else
 	 {
@@ -327,6 +327,44 @@ function courseAdd(student, table)
 	 alert( "Request failed: " + textStatus );
  });
 }
+
+
+function courseCompleted(value, courseName)
+{
+	//todo
+ // validate signup form on keyup and submit
+ var request = $.ajax({
+	 url: "studentcoursecompleted.php",
+	 cache: false,
+	 method: "POST",
+	 data: { myID: value}, //TODO: must add priority
+	 dataType: "text"
+ });
+
+ request.done(function( text ) {
+	 $(".modified").remove(); //removes any old update notices
+	 var myCourseID = parseInt(text);
+	 if (myCourseID>0)
+	 {
+		 //returns the current update
+		 var table = "coursecompleted";
+		 var table2 = "courseenrolled";
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ courseName + " <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#"+table2+"-"+value).remove();
+		 $("#"+table2).append("<span class='modified' style='color:blue'>Course removed.</span>");
+	  }
+	 else
+	 {
+		 var table = "courseenrolled";
+		 $("#"+ table).append("<span class='modified' style='color:red'>Error while attempting to move a course. Please, report details to site admin.</span>");
+	 }
+ });
+
+ request.fail(function( jqXHR, textStatus ) {
+	 alert( "Request failed: " + textStatus );
+ });
+}
+
 function studentUpdate(myID,table,field,value)
 {
  // validate signup form on keyup and submit

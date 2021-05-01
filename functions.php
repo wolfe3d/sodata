@@ -25,7 +25,11 @@ function getCourses($db, $studentID, $tableName)
 	{
 		$myOutput .="<div>Course Name - Level</div>";
 		while ($row = $result->fetch_assoc()):
-			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " <a href=\"javascript:courseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
+			if($tableName == "courseenrolled")
+			{
+				$courseCompleted = "<a href=\"javascript:courseCompleted('" . $row['myID'] . "','" . $row['course'] . "')\">Completed</a>";
+			}
+			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  <a href=\"javascript:courseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
 		endwhile;
 	}
 	return $myOutput;

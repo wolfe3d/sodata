@@ -122,13 +122,13 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 				<a id="addEvent" onclick="addEventChoice(<?=$studentID?>);$(this).hide();return false;" href="">Add Event</a>
 			</fieldset>
 			<fieldset>
-				<legend>Courses - Completed</legend>
+				<legend>Courses Completed</legend>
 				<div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
 				<div id="addcoursecompletedDiv"></div>
 				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
 			</fieldset>
 			<fieldset>
-				<legend>Courses - Enrolled (but not completed)</legend>
+				<legend>Courses Enrolled (but not completed)</legend>
 				<div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
 				<div id="addcourseenrolledDiv"></div>
 				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>

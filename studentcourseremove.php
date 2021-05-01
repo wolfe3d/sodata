@@ -5,7 +5,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 //text output
 $output = "";
 
-$myID = intval($_REQUEST['myCourseID']);
+$myID = intval($_REQUEST['myID']);
 $tableName = strtolower($mysqlConn->real_escape_string($_REQUEST['tableName']));
 
 $query = "DELETE FROM `$tableName` WHERE `$tableName`.`myID` = $myID";
