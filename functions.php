@@ -1,4 +1,36 @@
 <?php
+//get phone types student's course enrolled/completed
+function getPhoneTypes($db)
+{
+	$myOutput .= "";
+	$query = "SELECT * from `phonetype`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		while ($row = $result->fetch_assoc()):
+			//echo $row['phoneType'];
+			$myOutput.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
+		endwhile;
+	}
+	return $myOutput;
+}
+
+//find student's course enrolled/completed
+function getCourses($db, $studentID, $tableName)
+{
+	$myOutput .= "";
+	$query = "SELECT * FROM `$tableName` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(mysqli_num_rows($result)>0)
+	{
+		$myOutput .="<div>Course Name - Level</div>";
+		while ($row = $result->fetch_assoc()):
+			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " <a href=\"javascript:courseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
+		endwhile;
+	}
+	return $myOutput;
+}
+
 //print out privilege editing
 function editPrivilege($privilege,$userID,$db)
 {

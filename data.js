@@ -14,7 +14,7 @@ $().ready(function() {
 				checkPage();
 		}
 	});
-	setTimeout(function() { loadpage("user") }, 350000);
+	setTimeout(function() { loadpage("user") }, 3500000); //TODO: Update this as long as user is active
 });
 function checkPage(){
 	var myHash = location.hash.substr(1);
@@ -259,7 +259,7 @@ function addEvent(student, field, value)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function addCourseChoice(student, table)
+function courseAddChoice(student, table)
 {
 	//adds the course list selection
  $("#courseListDiv").appendTo("#add"+table+"Div").show();

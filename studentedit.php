@@ -72,41 +72,6 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 	endwhile;
 }
 
-//get $phoneTypes
-$query = "SELECT * from `phonetype`";
-$resultPhone = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$phoneTypes="";
-if($resultPhone)
-{
-	while ($rowPhone = $result->fetch_assoc()):
-		$phoneTypes.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
-	endwhile;
-}
-
-//find student's course completed
-$query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$courseCompleted ="";
-if(mysqli_num_rows($resultCourse)>0)
-{
-	$courseCompleted .="<div>Course Name - Level</div>";
-	while ($rowCourse = $resultCourse->fetch_assoc()):
-		$courseCompleted .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href=\"javascript:removeCourse('" . $rowCourse['myID'] . "','courseCompleted')\">Remove</a></div>";
-	endwhile;
-}
-
-//find student's course enrolled but not yet completed
-$query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$courseEnrolled ="";
-if(mysqli_num_rows($resultCourse)>0)
-{
-	$courseEnrolled .="<div>Course Name - Level</div>";
-	while ($rowCourse = $resultCourse->fetch_assoc()):
-		$courseEnrolled .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . " <a href='' onclick=\"removeCourse('" . $rowCourse['myID'] . "','courseenrolled');return false;\">Remove</a> <a href='' onclick=\"moveCourse('" . $rowCourse['myID'] . "');return false;\">Completed</a></div>";
-	endwhile;
-}
-
 $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 ?>
 <form id="studentUpdate" method="post" action="studentUpdate.php">
@@ -142,7 +107,7 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			<p>
 				<label for="phoneType">Phone Type</label>
 				<select id="phoneType" name="text" value="<?=$row['phoneType']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
-					<?=$phoneTypes?>
+					<?=getPhoneTypes($mysqlConn)?>
 				</select>
 			</p>
 			<p>
@@ -158,15 +123,15 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			</fieldset>
 			<fieldset>
 				<legend>Courses - Completed</legend>
-				<div id="courseCompleted"><?=$courseCompleted?></div>
+				<div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
 				<div id="addcoursecompletedDiv"></div>
-				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:addCourseChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
+				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses - Enrolled (but not completed)</legend>
-				<div id="courseEnrolled"><?=$courseEnrolled?></div>
+				<div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
 				<div id="addcourseenrolledDiv"></div>
-				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:addCourseChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
+				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
 			</fieldset>
 			<fieldset>
 				<legend>Parent 1</legend>
