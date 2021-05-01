@@ -71,7 +71,7 @@ if($courseID)
 {
 	//Search for student signed up for event
 	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `coursecompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `courseenrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE$activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
+	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `coursecompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `courseenrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE $activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
@@ -100,14 +100,14 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 
 if($result)
 {
-	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
+		$output .="<div id='student-". $row['studentID'] ."'>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
 		if($_SESSION['userData']['privilege']>1||$_SESSION['userData']['id']==$row['userID'])
 		{
 			$output .="<div><a href='javascript:studentEdit(".$row['studentID'].")'>Edit</a> ";
 		}
-		$output .= $_SESSION['userData']['privilege']>2?"<a href='javascript:studentRemove(".$row['studentID'].")'>Remove</a>":"";
+		$output .= $_SESSION['userData']['privilege']>3?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
 		$output .= "</div>";
 		$grade = 9;
 		if (date("M")>5)
@@ -196,9 +196,9 @@ if($result)
 			}
 		}
 	}
+	$output .="</div>";
 endwhile; // end loop through student list
 	//complete enclosing div
-	$output .="</div>";
 }
 echo $output;
 ?>

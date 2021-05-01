@@ -23,14 +23,16 @@ if($_SESSION['userData']['privilege']>1)
 }
 ?>
 <div>
+		<?=$addStudentText?>
+		<a href="javascript:toggleSearch()"><i class="gg-search" style="display: inline-block"></i> Search </a>
+
+
+	<form id="findStudent">
 		<div>
 			<input type="checkbox" id="active" name="active" value="1" checked>
 			<label for="active">Show only active students</label>
-		</div><?=$addStudentText?>
-		<a href="javascript:toggleSearch()"><i class="gg-search" style="display: inline-block"></i> Search </a>
-
-	<div id="searchDiv">
-	<form id="findStudent">
+		</div>
+		<div id="searchDiv">
 		<fieldset>
 			<legend>Find Student By name</legend>
 			<p>
@@ -67,7 +69,8 @@ if($_SESSION['userData']['privilege']>1)
 				<input class="submit" type="submit" value="Find By Course">
 			</p>
 		</fieldset>
+		</div>
 	</form>
-</div>
+
 <div id="list"></div>
 </div>

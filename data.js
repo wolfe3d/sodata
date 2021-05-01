@@ -79,7 +79,7 @@ function getList(myPage, myData)
 	});
 	request.done(function( html ) {
 	 $("#list").html(html);
-	 $('html, body').animate({scrollTop: $("#list").offset().top + "px"}, 1500);//move to search results
+	 $('body,html').animate({scrollTop: $("#list").offset().top + "px"}, "slow");//move to search results
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -132,35 +132,37 @@ function prepareStudentsPage()
 	//when Find by Event is clicked, this initiates the search
 	$("#findByEvent").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {eventsList: $("#eventsList").val()});
+		getList("studentslist.php", {eventsList: $("#eventsList").val(),active:1});
 	});
 	//when Find by Course is clicked, this initiates the search
 	$("#findByCourse").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {courseList: $("#courseList").val()});
+		getList("studentslist.php", {courseList: $("#courseList").val(),active:1});
 	});
 }
 
-function studentRemove(myStudentID)
+function studentRemove(myStudentID, studentName)
 {
-	//alert(JSON.stringify(myData) );
-	//myData is a json object type
+ if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This is removes all of their data and it is permanent!!!"))
+ {
+		var request = $.ajax({
+		 url: "studentremove.php",
+		 cache: false,
+		 method: "POST",
+		 data: {studentID:myStudentID},
+		 dataType: "html"
+		});
+		request.done(function( html ) {
+		 $(".modified").remove(); //remove any old modified notes
+		 $("#student-" + myStudentID).before("<div class='modified' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
+		 $("#student-" + myStudentID).remove(); //remove element
+		});
 
-	var request = $.ajax({
-	 url: "studentremove.php",
-	 cache: false,
-	 method: "POST",
-	 data: {studentID:myStudentID},
-	 dataType: "html"
-	});
-	request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 $("#list").html(html);
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-	 $("#list").html("Removal Error");
-	});
+		request.fail(function( jqXHR, textStatus ) {
+			$(".modified").remove();
+			$("#student-" + myStudentID).before("<div class='modified' style='color:red'>Removal Error:"+textStatus+"</div");
+		});
+	}
 }
 
 
