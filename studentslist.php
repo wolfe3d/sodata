@@ -103,6 +103,11 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='student-". $row['studentID'] ."'>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
+		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
+		if($officerPos)
+		{
+			$output .="<h3>$officerPos</h3>";
+		}
 		if($_SESSION['userData']['privilege']>1||$_SESSION['userData']['id']==$row['userID'])
 		{
 			$output .="<div><a href='javascript:studentEdit(".$row['studentID'].")'>Edit</a> ";

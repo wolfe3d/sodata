@@ -1,5 +1,18 @@
 <?php
 //get phone types student's course enrolled/completed
+function getOfficerPosition($db,$studentID)
+{
+	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['position'];
+	}
+	return "";
+}
+
+//get phone types student's course enrolled/completed
 function getPhoneTypes($db)
 {
 	$myOutput = "";
