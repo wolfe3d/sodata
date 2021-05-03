@@ -1,13 +1,32 @@
 <?php
-//get phone types student's course enrolled/completed
+//get Current Officer Position
 function getOfficerPosition($db,$studentID)
 {
-	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID";
+	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		$row = $result->fetch_assoc();
 		return $row['position'];
+	}
+	return "";
+}
+
+//get Previous Officer Position List
+function getPreviousOfficerPosition($db,$studentID)
+{
+	$myOutput = "";
+	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
+	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		while ($row = $result->fetch_assoc()):
+			$myOutput .= $myOutput ? ", ":"";
+			$myOutput .= $row['year']."-".$row['position'];
+		endwhile;
+		return $myOutput;
 	}
 	return "";
 }

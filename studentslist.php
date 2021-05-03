@@ -115,7 +115,7 @@ if($result)
 		$output .= $_SESSION['userData']['privilege']>3?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
 		$output .= "</div>";
 		$grade = 9;
-		if (date("M")>5)
+		if (date("m")>5)
 		{
 			$grade = 12-($row['yearGraduating']-date("Y")+1);
 		}
@@ -135,6 +135,11 @@ if($result)
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".$row['phoneType']."):".$row['phone']."</div>";
+		}
+		$officerPosPrev = getPreviousOfficerPosition($mysqlConn,$row['studentID']);
+		if($officerPosPrev)
+		{
+			$output .="<div>Previous Postions: $officerPosPrev</div>";
 		}
 		if($row['parent1Last'])
 		{

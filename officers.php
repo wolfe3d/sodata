@@ -2,18 +2,18 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
-
-//text output
-$output ="<div>";
+//TODO: Add year choice to look at previous years
 //Get current year
-$year = date("M")>4?date("Y")+1:date("Y");
+$year = date("m")>4 ? date("Y")+1 : date("Y");
+$yearBeg = $year-1;
 $query = "SELECT * FROM `officer` t1 INNER JOIN `student` t2 ON t1.`studentID`=t2.`studentID` WHERE `year`=$year";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {
-	$output .="<div>Officers from May ".$year-1 ."-$year</div>";
+	$output ="<div>";
+	$output .="<div>Officers from May $yearBeg - $year</div>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<div>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
@@ -22,7 +22,7 @@ if($result)
 			$output .="<h3>".$row['position']."</h3>";
 		}
 		$grade = 9;
-		if (date("M")>5)
+		if (date("m")>5)
 		{
 			$grade = 12-($row['yearGraduating']-date("Y")+1);
 		}
@@ -45,6 +45,7 @@ if($result)
 		}
 		$output .="</div>";
 	endwhile;
+	$output .="</div>";
 }
 echo $output;
 ?>
