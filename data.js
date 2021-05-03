@@ -251,7 +251,7 @@ function eventAdd(student, field, value)
 	 if (eventID>0)
 	 {
 		 //returns the current update
-		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + " <a href=\"javascript:eventRemove('" + eventID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + " <a href=\"javascript:eventRemove('" + eventID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {

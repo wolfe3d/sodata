@@ -147,7 +147,7 @@ if($result)
 		{
 				$output .="<br><h3>Events</h3>";
 				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . " " . $rowEventsChoice['event'] . "</div>";
+					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . "</div>";
 				endwhile;
 		}
 
