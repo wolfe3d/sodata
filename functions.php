@@ -2,7 +2,7 @@
 //get phone types student's course enrolled/completed
 function getPhoneTypes($db)
 {
-	$myOutput .= "";
+	$myOutput = "";
 	$query = "SELECT * from `phonetype`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
@@ -18,7 +18,7 @@ function getPhoneTypes($db)
 //find student's course enrolled/completed
 function getCourses($db, $studentID, $tableName)
 {
-	$myOutput .= "";
+	$myOutput = "";
 	$query = "SELECT * FROM `$tableName` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)

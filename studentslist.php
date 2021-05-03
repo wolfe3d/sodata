@@ -7,10 +7,10 @@ require_once  ("functions.php");
 $output = "";
 
 
-$last = $mysqlConn->real_escape_string($_POST['last']);
-$first = $mysqlConn->real_escape_string($_POST['first']);
-$eventName = $mysqlConn->real_escape_string($_POST['eventsList']);
-$courseID = intval($_POST['courseList']);
+$last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
+$first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
+$eventName = isset($_POST['eventsList'])?$mysqlConn->real_escape_string($_POST['eventsList']):0;
+$courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
 $active = intval($_POST['active']);
 
 $activeQuery ="";
@@ -147,7 +147,7 @@ if($result)
 		{
 				$output .="<br><h3>Events</h3>";
 				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . "</div>";
+					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . "</div>";
 				endwhile;
 		}
 
