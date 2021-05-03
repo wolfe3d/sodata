@@ -195,20 +195,22 @@ function loadEventsList()
 {
 	//maybe load events asynchronous
 }
-function addEventChoice(student)
+function eventAddChoice(student)
 {
 	//adds the event choice selection
- $("#eventAndPriority").clone().appendTo("#addEventsDiv").show();
- $("#addEventsDiv").append("<a id='addThisEvent' href='javascript:addEvent("+student+",this.id,this.value);'>Add</a>");
+	$("#eventAdd").hide();
+ $("#eventAndPriority").clone().appendTo("#eventAddDiv").show();
+ $("#eventAddDiv").append("<a id='addThisEvent' href='javascript:eventAdd("+student+",this.id,this.value);'>Add</a>");
+
 }
-function removeEvent(value)
+function eventRemove(value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
 	 url: "studenteventremove.php",
 	 cache: false,
 	 method: "POST",
-	 data: { eventsChoiceID: value},
+	 data: { eventChoiceID: value},
 	 dataType: "text"
  });
 
@@ -231,7 +233,7 @@ function removeEvent(value)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function addEvent(student, field, value)
+function eventAdd(student, field, value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -249,7 +251,7 @@ function addEvent(student, field, value)
 	 if (eventID>0)
 	 {
 		 //returns the current update
-		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + " <a href='javacript:removeEvent(" + eventID + ");'>Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + " <a href=\"javascript:eventRemove('" + eventID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {

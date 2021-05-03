@@ -68,7 +68,7 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 {
 	$eventsChoice .="<div>Year-Priority Event Name</div>";
 	while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:removeEvent('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
+		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:eventRemove('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
 	endwhile;
 }
 
@@ -117,9 +117,8 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			<fieldset>
 				<legend>Events</legend>
 				<div id="events"><?=$eventsChoice?></div>
-				<div id="addEventsDiv">
-			</div>
-				<a id="addEvent" onclick="addEventChoice(<?=$studentID?>);$(this).hide();return false;" href="">Add Event</a>
+				<div id="eventAddDiv"></div>
+				<a id="eventAdd" href="javascript:eventAddChoice(<?=$studentID?>)" href="">Add Event</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses Completed</legend>
