@@ -134,7 +134,7 @@ if($result)
 		}
 		if($row['phone'])
 		{
-			$output .="<div>Phone(".$row['phoneType']."):".$row['phone']."</div>";
+			$output .="<div>Phone(".$row['phoneType']."): ".$row['phone']."</div>";
 		}
 		$officerPosPrev = getPreviousOfficerPosition($mysqlConn,$row['studentID']);
 		if($officerPosPrev)
@@ -144,10 +144,10 @@ if($result)
 		if($row['parent1Last'])
 		{
 			$output .="<br><h3>Parent(s)</h3>";
-			$output .="<div>".$row['parent1First']." ".$row['parent1Last'].",".$row['parent1Email'].",".$row['parent1Phone']."</div>";
+			$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']."</div>";
 			if($row['parent2Last'])
 			{
-				$output .="<div>".$row['parent2First']." ".$row['parent2Last'].",".$row['parent2Email'].",".$row['parent2Phone']."</div>";
+				$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
 			}
 		}
 		//find student's events
