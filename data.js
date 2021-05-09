@@ -98,30 +98,6 @@ function prepareStudentsPage()
 	//Load Students
 	getList("studentslist.php",{active: +$("#active").is(':checked')});
 		// validate signup form on keyup and submit
-	$("#addTo").validate({
-		rules: {
-			first: "required",
-			last: "required",
-			yearGraduating: "required",
-			email: {
-				required: true,
-				email: true
-			},
-		},
-		messages: {
-			first: "*Please enter the student\'s first name",
-			last: "*Please enter the student\'s last name",
-			yearGraduating: {
-				required: "*Enter the year the student is graduating",
-			},
-			email: {
-				required: "*Enter the student\'s email.",
-			},
-		},
-		submitHandler: function(form) {
-							form.submit();
-					}
-	});
 
 	//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
 	$('#active').change(function() {
@@ -188,6 +164,46 @@ function studentEdit(myStudentID)
 	 $("#mainContainer").html(html);
 	 $("#eventAndPriority").hide();
 	 $("#courseListDiv").hide();
+	 $("#addTo").validate({
+ 		rules: {
+ 			first: "required",
+ 			last: "required",
+			parent1First: "required",
+			parent1Last: "required",
+ 			phone: 			{
+ 				phoneUS: true
+ 			},
+			parent1Phone: 			{
+				phoneUS: true
+			},
+ 			yearGraduating: "required",
+ 			email: {
+ 				required: true,
+ 				email: true
+ 			},
+			parent1Email: {
+				required: true,
+				email: true
+			},
+ 		},
+ 		messages: {
+ 			first: "*Please enter the student\'s first name",
+ 			last: "*Please enter the student\'s last name",
+ 			yearGraduating: {
+ 				required: "*Enter the year the student is graduating",
+ 			},
+ 			email: {
+ 				required: "*Enter the student\'s email.",
+ 			},
+ 			phone: {
+ 				required: "*Enter the phone number in the correct format.",
+ 			},
+ 		},
+ 		submitHandler: function(form) {
+ 							form.submit();
+ 					}
+ 	});
+
 	});
 
 	request.fail(function( jqXHR, textStatus ) {

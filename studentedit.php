@@ -74,7 +74,7 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 
 $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 ?>
-<form id="studentUpdate" method="post" action="studentUpdate.php">
+<form id="addTo" method="post" action="studentUpdate.php">
 		<fieldset>
 			<legend>Edit Student</legend>
 			<?php if($_SESSION['userData']['privilege']>2)
