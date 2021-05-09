@@ -51,7 +51,7 @@ if($result)
 		}
 
 
-		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`event` = '".$row['event']."' ORDER BY `eventyear`.`year` ASC";// where `field` = $fieldId";
+		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`event` = '".$mysqlConn->real_escape_string($row['event'])."' ORDER BY `eventyear`.`year` ASC";// where `field` = $fieldId";
 		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 		$yearCollection = "";
