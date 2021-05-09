@@ -1,6 +1,6 @@
 <?php
 require_once  ("../connectsodb.php");
-// require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
 $query = "SELECT * from `eventtype`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -25,7 +25,8 @@ if($result)
 }
 ?>
 <div>
-	<a href="javascript:toggleSearch()">Find</a>
+<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+
 	<div id="searchDiv">
 	<form id="findEvent">
 		<fieldset>
@@ -42,33 +43,8 @@ if($result)
 		</fieldset>
 	</form>
 </div>
-
-<a href="javascript:toggleAdd()">Add</a>
-	<form id="addTo" method="post" action="eventadd.php">
-		<fieldset>
-			<legend>Add Event</legend>
-			<p>
-				<label for="event_name">Event</label>
-				<input id="event_name" name="event_name" type="text">
-			</p>
-			<!-- <p>
-				<label for="type">Type</label>
-				<input id="type" name="type" type="type">
-			</p> -->
-			<p>
-				<label for="type">Event Type</label>
-				<select id="type" name="type" type="text">
-						<?=$eventTypes?>
-				</select>
-			</p>
-		</fieldset>
-		<fieldset>
-			<p>
-				<input class="submit" type="submit" value="Submit">
-			</p>
-		</fieldset>
-	</form>
-
+<input class="button fa" type="button" onclick="javascript:prepareEventsEditPage()" value="&#xf067; Add" />
+<input class="button fa" type="button" onclick="javascript:prepareEventsYearPage()" value="&#xf133; Edit Year" />
 
 <div id="list"></div>
 </div>

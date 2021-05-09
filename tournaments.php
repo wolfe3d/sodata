@@ -3,7 +3,7 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 ?>
 <div>
-	<button onclick="$('#searchDiv').show();$(this).hide();">Search</button>
+	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
 	<div id="searchDiv">
 	<form id="findTournament">
 		<fieldset>
@@ -24,7 +24,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 </div>
 <?php if($_SESSION['userData']['privilege']>2)
 		{ ?>
-	<button onclick="$('#addTo').show();$(this).hide();">Add</button>
+	<input class="button fa" type="button" onclick="javascript:prepareTournamentAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="studentadd.php">
 		<fieldset>
 			<legend>Add Tournament</legend>

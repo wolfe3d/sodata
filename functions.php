@@ -1,4 +1,62 @@
 <?php
+//get Event type options
+function getAllStudents($db, $active)
+{
+	$myOutput = "";
+	$where = $active==1?"WHERE `student`.`active` = 1":"";
+	$query = "SELECT * from `student` $where ORDER BY `last`,`first` ASC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	if($result)
+	{
+		$myOutput .="<select id='student' name='student' type='text'>";
+		while ($row = $result->fetch_assoc()):
+			//$selected = $row['type']==$type ? " selected " : "";
+			$myOutput.="<option value = '".$row['studentID']."'$selected>".$row['last'].", ".$row['first']."</option>";
+		endwhile;
+		$myOutput .="</select>";
+	}
+	return $myOutput;
+}
+//get Event type options
+function getEventTypes($db, $type)
+{
+	$myOutput = "";
+	$query = "SELECT * from `eventtype`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	if($result)
+	{
+		$myOutput .="<select id='typeName' name='typeName' type='text'>";
+		while ($row = $result->fetch_assoc()):
+			$selected = $row['type']==$type ? " selected " : "";
+			$myOutput.="<option value = '".$row['type']."'$selected>".$row['type']."</option>";
+		endwhile;
+		$myOutput .="</select>";
+	}
+	return $myOutput;
+}
+//Get all Science Olympiad years from 1982 to current year+1
+function getSOYears($myYear)
+{
+	$myOutput .= "<select id='year' name='year'>";
+	$i = getCurrentSOYear() + 1;
+	for ($i ; $i >= 1982; $i--) {
+				$selected = $myYear==$i ? "selected" : "";
+				$myOutput .="<option value='$i' $selected>$i</option>";
+	}
+	$myOutput .="</select>";
+	return $myOutput;
+}
+//get Current Science Olympiad year
+function getCurrentSOYear()
+{
+	if (date("m")>4)
+	{
+		return date("Y")+1;
+	}
+	return date("Y");
+}
 //get Current Officer Position
 function getOfficerPosition($db,$studentID)
 {
@@ -61,7 +119,7 @@ function getCourses($db, $studentID, $tableName)
 			{
 				$courseCompleted = "<a href=\"javascript:courseCompleted('" . $row['myID'] . "','" . $row['course'] . "')\">Completed</a>";
 			}
-			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  <a href=\"javascript:courseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
+			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  <a href=\"javascript:studentCourseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
 		endwhile;
 	}
 	return $myOutput;

@@ -19,13 +19,13 @@ if($result)
 $addStudentText ="";
 if($_SESSION['userData']['privilege']>1)
 {
-	$addStudentText .="<div><a href='javascript:studentEdit()'>Add Student</a></div>";
+	$addStudentText .="<input class='button fa' type='button' onclick='javascript:studentEdit()' value='&#xf067; Add' />";
 }
 ?>
 <div>
 		<?=$addStudentText?>
-		<a href="javascript:toggleSearch()"><i class="gg-search" style="display: inline-block"></i> Search </a>
-
+		<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+<br><br>
 
 	<form id="findStudent">
 		<div>

@@ -51,6 +51,9 @@ function loadpage(myUrl)
                case 'events': prepareEventsPage();
                break;
 
+							 case 'eventaddpop': prepareEventsAddPage();
+               break;
+
                case 'tournaments': prepareTournamentsPage();
                break;
 
@@ -198,12 +201,12 @@ function loadEventsList()
 function eventAddChoice(student)
 {
 	//adds the event choice selection
-	$("#eventAdd").hide();
- $("#eventAndPriority").clone().appendTo("#eventAddDiv").show();
- $("#eventAddDiv").append("<a id='addThisEvent' href='javascript:eventAdd("+student+",this.id,this.value);'>Add</a>");
+	$("#studentEventAdd").hide();
+ $("#eventAndPriority").clone().appendTo("#studentEventAddDiv").show();
+ $("#studentEventAddDiv").append("<a id='addThisEvent' href='javascript:studentEventAdd("+student+",this.id,this.value);'>Add</a>");
 
 }
-function eventRemove(value)
+function studentEventRemove(value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -233,7 +236,7 @@ function eventRemove(value)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function eventAdd(student, field, value)
+function studentEventAdd(student, field, value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -251,7 +254,7 @@ function eventAdd(student, field, value)
 	 if (eventID>0)
 	 {
 		 //returns the current update
-		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + " <a href=\"javascript:eventRemove('" + eventID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 $("#events").append("<div id='eventChoice-" + eventID + "'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + " <a href=\"javascript:studentEventRemove('" + eventID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {
@@ -263,16 +266,16 @@ function eventAdd(student, field, value)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function courseAddChoice(student, table)
+function studentCourseAddChoice(student, table)
 {
 	//adds the course list selection
  $("#courseListDiv").appendTo("#add"+table+"Div").show();
  $(".addCourseBtn").show();
  $("#add"+table).hide();
  $("#addThisCourse").remove();
- $("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:courseAdd('"+student+"','"+table+"')\">Add</a>");
+ $("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:studentCourseAdd('"+student+"','"+table+"')\">Add</a>");
 }
-function courseRemove(value, table)
+function studentCourseRemove(value, table)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -302,7 +305,7 @@ function courseRemove(value, table)
 	 alert( "Request failed: " + textStatus );
  });
 }
-function courseAdd(student, table)
+function studentCourseAdd(student, table)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
@@ -353,7 +356,7 @@ function courseCompleted(value, courseName)
 		 //returns the current update
 		 var table = "coursecompleted";
 		 var table2 = "courseenrolled";
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ courseName + " <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ courseName + " <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
 		 $("#"+table2+"-"+value).remove();
 		 $("#"+table2).append("<span class='modified' style='color:blue'>Course removed.</span>");
 	  }
@@ -412,7 +415,6 @@ function userPrivilege(myUser, field,value)
 	});
 }
 
-
 ///////////////////
 ///Student Edit functions
 //////////////////
@@ -443,37 +445,180 @@ function toggleSearch()
 {
 	$('#searchDiv').toggle();
 }
-function toggleAdd()
-{
-	$('#addTo').toggle();
-}
 
 function prepareEventsPage()
 {
-	$("#addTo").hide();
 	$("#searchDiv").hide();
 
 	getList("eventslist.php",{});
 		// validate signup form on keyup and submit
-	$("#addTo").validate({
-		rules: {
-			event_name: "required",
-			type: "required",
-		},
-		messages: {
-			event_name: "*Please enter the name event",
-			type: "*Please enter the event type",
-		},
-		submitHandler: function(form) {
-							form.submit();
-					}
-	});
 
 	//when Find by Name is clicked, this initiates the search
 	$("#findEvent").on( "submit", function( event ) {
 		event.preventDefault();
 		getList("eventslist.php", $( this ).serialize() );
 	});
+}
+
+function prepareEventsEditPage(myEvent)
+{
+	$("#mainHeader").html("Edit an Event");
+	 window.location.hash = '#event-edit-'+ myEvent;
+	 var request = $.ajax({
+	 	 url: "eventeditpop.php",
+	 	 cache: false,
+	 	 method: "POST",
+	 	 data: {eventName:myEvent},
+	 	 dataType: "html"
+	 	});
+
+	 	request.done(function( html ) {
+	 		$("#mainContainer").html(html);
+				prepareEventEditSubmit();
+	 	});
+
+	 request.fail(function( jqXHR, textStatus ) {
+	  $("#mainContainer").html("Error loading events edit page.");
+	 });
+}
+
+function prepareEventEditSubmit()
+{
+	// validate event form on keyup and submit
+	$("#addTo").validate({
+		rules: {
+			eventName: "required",
+			typeName: "required",
+		},
+		messages: {
+			eventName: "*Please enter the name of the event.",
+			typeName: "*Please enter the event type.",
+		},
+		submitHandler: function(form) {
+			event.preventDefault();
+
+			var request = $.ajax({
+			 url: "eventedit.php",
+			 cache: false,
+			 method: "POST",
+			 data: $("#addTo").serialize(),
+			 dataType: "text"
+			});
+
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+				if(html=="1")
+				{
+					window.location.hash = '#events';
+				}
+				else
+				{
+					$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
+				}
+			});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#mainContainer").html("Removal Error");
+		});
+		}
+	});
+}
+function prepareEventsYearPage(myYear)
+{
+	$("#mainHeader").html("Edit a Year's Events");
+
+	 window.location.hash = '#eventyear-edit-'+ myYear;
+	 var request = $.ajax({
+	 	 url: "eventyearaddpop.php",
+	 	 cache: false,
+	 	 method: "POST",
+	 	 data: {year:myYear},
+	 	 dataType: "html"
+	 	});
+
+	 	request.done(function( html ) {
+	 		$("#mainContainer").html(html);
+			prepareEventsYearAdd();
+	 	});
+
+	 request.fail(function( jqXHR, textStatus ) {
+	  $("#mainContainer").html("Error loading event's year page.");
+	 });
+}
+function prepareEventsYearAdd()
+{
+	//change year to add to
+	$("#year").change(function(){
+			prepareEventsYearPage($( "#year" ).val());
+	});
+	// validate event form on keyup and submit
+	$("#addTo").validate({
+		rules: {
+			eventName: "required",
+			typeName: "required",
+		},
+		messages: {
+			eventName: "*Please enter the name of the event.",
+			typeName: "*Please enter the event type.",
+		},
+		submitHandler: function(form) {
+			event.preventDefault();
+			var request = $.ajax({
+			 url: "eventyearadd.php",
+			 cache: false,
+			 method: "POST",
+			 data: $("#addTo").serialize(),
+			 dataType: "text"
+			});
+
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+			 $(".modified").remove(); //removes any old update notices
+				if(html>0)
+				{
+					//add event to list
+					$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList option:selected" ).text()+" <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
+				}
+				else
+				{
+					$("#eventsP").append("<div class='modified' style='color:red'>"+html+"</div>");
+				}
+			});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#mainContainer").html("Add event to year error");
+		});
+		}
+	});
+}
+function eventYearRemove(value)
+{
+ // validate signup form on keyup and submit
+ var request = $.ajax({
+	 url: "eventremove.php",
+	 cache: false,
+	 method: "POST",
+	 data: {eventID : value},
+	 dataType: "text"
+ });
+
+ request.done(function( html ) {
+	 $(".modified").remove(); //removes any old update notices
+	 if (html=="1")
+	 {
+		 //returns the current update
+		 $("#eventyear-"+value).remove();
+		 $("#eventsP").append("<span class='modified' style='color:blue'>Course removed.</span>");
+	 }
+	 else
+	 {
+		 $("#eventsP").append("<span class='modified' style='color:red'>Error while attempting to remove an event. Please, report details to site admin.</span>");
+	 }
+ });
+
+ request.fail(function( jqXHR, textStatus ) {
+	 alert( "Request failed: " + textStatus );
+ });
 }
 
 ///////////////////
@@ -522,4 +667,71 @@ function prepareTournamentsPage()
 			{
 			    $('#tournamentYear').append($('<option />').val(i).html(i));
 			}
+}
+
+///////////////////
+///Officer and Event Leader functions
+//////////////////
+function prepareOfficerAdd(myYear)
+{
+	 window.location.hash = '#officer-add';
+	 	$("#mainHeader").html("Add An Officer");
+		var request = $.ajax({
+			url: "officeraddpop.php",
+			cache: false,
+			method: "POST",
+			data: {year:myYear},
+			dataType: "html"
+		 });
+
+		 request.done(function( html ) {
+			 $("#mainContainer").html(html);
+				 prepareOfficerAddSubmit();
+		 });
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#mainContainer").html("Error loading events edit page.");
+		});
+ }
+
+ function prepareOfficerAddSubmit()
+ {
+	 // validate event form on keyup and submit
+		$("#addTo").validate({
+			rules: {
+				position: "required",
+			},
+			messages: {
+				eventName: "*Please enter the name of the leader's position.",
+			},
+			submitHandler: function(form) {
+				event.preventDefault();
+				//alert($("#addTo").serialize());
+				var request = $.ajax({
+				 url: "officeradd.php",
+				 cache: false,
+				 method: "POST",
+				 data: $("#addTo").serialize(),
+				 dataType: "text"
+				});
+
+				request.done(function( html ) {
+				 //$("label[for='" + field + "']").append(html);
+				 $(".modified").remove(); //removes any old update notices
+					if(html>0)
+					{
+						//add event to list
+						$("#addTo").append("<div class='modified' style='color:blue'>"+$("#student option:selected" ).text()+" added as "+ $("#position" ).val() +" for "+ $("#year option:selected" ).text()+"</div>");
+					}
+					else
+					{
+						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
+					}
+				});
+
+			request.fail(function( jqXHR, textStatus ) {
+			 $("#mainContainer").html("Add event to year error");
+			});
+			}
+		});
 }

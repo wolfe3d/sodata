@@ -68,7 +68,7 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 {
 	$eventsChoice .="<div>Year-Priority Event Name</div>";
 	while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:eventRemove('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
+		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:studentEventRemove('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
 	endwhile;
 }
 
@@ -117,20 +117,20 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 			<fieldset>
 				<legend>Events</legend>
 				<div id="events"><?=$eventsChoice?></div>
-				<div id="eventAddDiv"></div>
-				<a id="eventAdd" href="javascript:eventAddChoice(<?=$studentID?>)" href="">Add Event</a>
+				<div id="studentEventAddDiv"></div>
+				<a id="studentEventAdd" href="javascript:studentEventAddChoice(<?=$studentID?>)" href="">Add Event</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses Completed</legend>
 				<div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
 				<div id="addcoursecompletedDiv"></div>
-				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
+				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses Enrolled (but not completed)</legend>
 				<div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
 				<div id="addcourseenrolledDiv"></div>
-				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:courseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
+				<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
 			</fieldset>
 			<fieldset>
 				<legend>Parent 1</legend>

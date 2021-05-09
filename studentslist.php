@@ -151,7 +151,7 @@ if($result)
 			}
 		}
 		//find student's events
-		$query = "SELECT * FROM `eventchoice` t1 INNER JOIN `eventyear` t2 ON t1.`eventID`=t2.`eventID` WHERE `studentID`=".$row['studentID'];// where `field` = $fieldId";
+		$query = "SELECT * FROM `eventchoice` t1 INNER JOIN `eventyear` t2 ON t1.`eventID`=t2.`eventID` WHERE t1.`studentID`=".$row['studentID'];// where `field` = $fieldId";
 		$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if (mysqli_num_rows($resultEventsChoice)>0)
 		{
