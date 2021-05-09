@@ -11,7 +11,9 @@ $events .="<select id='eventsList' name='eventsList'>";
 	if($resultEventsList)
 	{
 		while ($rowEvents = $resultEventsList->fetch_assoc()):
-			$events .= "<option value='" . $rowEvents['event'] . "'>" . $rowEvents['event'] . " - " . $rowEvents['type']  ."</option>";
+			$event = htmlspecialchars($mysqlConn->real_escape_string($rowEvents['event']));
+			$type = $mysqlConn->real_escape_string($rowEvents['type']);
+			$events .= "<option value='$event'>$event - $type</option>";
 		endwhile;
 	}
 	$events.="</select></div>";

@@ -22,7 +22,7 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 if ($row = $result->fetch_assoc())
 {
 	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	echo "Duplicate entry of $eventName";
+	echo "Duplicate entry of ".$eventName;
 	exit();
 }
 

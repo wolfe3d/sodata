@@ -47,7 +47,7 @@ if($result)
 		//check for permissions to create edit an event btn
 		if($_SESSION['userData']['privilege']>2 )
 		{
-			$output .="<a href='javascript:prepareEventsEditPage(\"".$row['event']. "\")'>Edit</a>";
+			$output .="<a href='javascript:prepareEventsEditPage(\"".$mysqlConn->real_escape_string($row['event']). "\")'>Edit</a>";
 		}
 
 

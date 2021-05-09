@@ -28,7 +28,7 @@ while ($row = $result->fetch_assoc()):
 		$leaderStr ="Edit";
 		$leaderName = ", " . $row["first"] . " " . $row["last"];
 	}
-	$events .= "<div id='eventyear-".$row["eventID"]."'>".$row["event"]." - ". $row["type"] ."$leaderName <a href='javascript:eventYearLeader(\"".$row["eventID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventID"]."\")'>Remove Event</a></div>";
+	$events .= "<div id='eventyear-".$row["eventID"]."'>".$mysqlConn->real_escape_string($row["event"])." - ". $row["type"] ."$leaderName <a href='javascript:eventYearLeader(\"".$row["eventID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventID"]."\")'>Remove Event</a></div>";
 endwhile;
 ?>
 <form id="addTo" method="post" action="eventyearadd.php">

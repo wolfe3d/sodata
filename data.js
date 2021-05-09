@@ -563,12 +563,13 @@ function prepareEventsYearAdd()
 		},
 		submitHandler: function(form) {
 			event.preventDefault();
+			alert($("#addTo").serialize());
 			var request = $.ajax({
 			 url: "eventyearadd.php",
 			 cache: false,
 			 method: "POST",
 			 data: $("#addTo").serialize(),
-			 dataType: "text"
+			 dataType: "html"
 			});
 
 			request.done(function( html ) {

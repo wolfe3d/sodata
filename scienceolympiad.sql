@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.7
+-- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 30, 2021 at 03:22 AM
--- Server version: 8.0.18
--- PHP Version: 7.3.11
+-- Host: localhost:3306
+-- Generation Time: May 09, 2021 at 01:56 PM
+-- Server version: 8.0.23-0ubuntu0.20.04.1
+-- PHP Version: 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `award` (
-  `awardID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL,
+  `awardID` int NOT NULL,
+  `studentID` int NOT NULL,
   `dateAwarded` date NOT NULL,
-  `tournamentID` int(11) NOT NULL,
+  `tournamentID` int NOT NULL,
   `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,8 +43,8 @@ CREATE TABLE `award` (
 --
 
 CREATE TABLE `coach` (
-  `coachID` int(11) NOT NULL,
-  `userID` int(11) DEFAULT NULL,
+  `coachID` int NOT NULL,
+  `userID` int DEFAULT NULL,
   `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -67,7 +67,7 @@ INSERT INTO `coach` (`coachID`, `userID`, `last`, `first`, `email`, `emailSchool
 --
 
 CREATE TABLE `course` (
-  `courseID` int(11) NOT NULL,
+  `courseID` int NOT NULL,
   `course` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -84,7 +84,25 @@ INSERT INTO `course` (`courseID`, `course`, `level`) VALUES
 (5, 'Chemistry', 'Honors'),
 (6, 'Chemistry', 'On level'),
 (7, 'Organic Chemisty', 'College'),
-(8, 'Genetics', 'College');
+(8, 'Genetics', 'College'),
+(9, 'Physics 1', 'AP'),
+(10, 'Physics 2', 'AP'),
+(11, 'Physics C Mechanics', 'AP'),
+(12, 'Physics C Electromagnetism', 'AP'),
+(13, 'Physics Freshman', 'Honors'),
+(14, 'Physics Freshman', 'On level'),
+(15, 'Environmental Science', 'AP'),
+(16, 'Anatomy & Physiology OR Human Body Systems', 'Honors'),
+(17, 'Biotechnology', 'Honors'),
+(18, 'Forensics', 'On level'),
+(19, 'Intro to Engineering Design', 'Honors'),
+(20, 'Principles of Engineering', 'Honors'),
+(21, 'Digital Electronics', 'Honors'),
+(22, 'Aerospace Engineering', 'Honors'),
+(23, 'Computer Science Principles', 'AP'),
+(24, 'Computer Science', 'AP'),
+(25, 'Principles of Biomed Science', 'STEM'),
+(26, 'Medical Intervention', 'STEM');
 
 -- --------------------------------------------------------
 
@@ -93,9 +111,9 @@ INSERT INTO `course` (`courseID`, `course`, `level`) VALUES
 --
 
 CREATE TABLE `coursecompleted` (
-  `myID` int(11) NOT NULL,
-  `courseID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL
+  `myID` int NOT NULL,
+  `courseID` int NOT NULL,
+  `studentID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -103,11 +121,110 @@ CREATE TABLE `coursecompleted` (
 --
 
 INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
-(7, 2, 6),
-(8, 1, 6),
-(10, 5, 6),
 (12, 1, 1),
-(13, 2, 1);
+(13, 2, 1),
+(14, 15, 33),
+(15, 15, 32),
+(16, 15, 31),
+(17, 13, 16),
+(18, 2, 26),
+(19, 13, 26),
+(20, 20, 26),
+(21, 19, 26),
+(22, 15, 43),
+(23, 2, 35),
+(24, 9, 35),
+(25, 15, 36),
+(26, 2, 42),
+(27, 4, 42),
+(28, 2, 10),
+(29, 9, 10),
+(30, 10, 10),
+(31, 15, 41),
+(32, 2, 4),
+(33, 1, 4),
+(34, 11, 4),
+(35, 15, 7),
+(36, 2, 52),
+(37, 2, 49),
+(38, 2, 48),
+(39, 2, 27),
+(40, 1, 27),
+(41, 4, 27),
+(42, 11, 27),
+(45, 1, 6),
+(46, 2, 6),
+(47, 2, 29),
+(48, 15, 13),
+(49, 18, 50),
+(50, 2, 50),
+(51, 1, 50),
+(52, 2, 3),
+(53, 4, 3),
+(54, 15, 3),
+(55, 2, 51),
+(56, 2, 44),
+(57, 1, 44),
+(58, 9, 44),
+(59, 2, 54),
+(60, 2, 55),
+(61, 4, 55),
+(62, 15, 55),
+(63, 2, 56),
+(64, 18, 57),
+(65, 2, 57),
+(66, 2, 60),
+(67, 2, 58),
+(68, 4, 58),
+(69, 15, 58),
+(70, 4, 5),
+(71, 15, 5),
+(72, 11, 5),
+(74, 16, 50),
+(75, 16, 50),
+(76, 5, 50),
+(78, 23, 50),
+(79, 1, 29),
+(80, 16, 29),
+(81, 5, 29),
+(82, 17, 29),
+(83, 23, 29),
+(84, 5, 60),
+(85, 25, 60),
+(86, 16, 60),
+(87, 5, 55),
+(88, 5, 55),
+(89, 11, 55),
+(91, 15, 77),
+(92, 16, 77),
+(93, 2, 77),
+(94, 5, 77),
+(96, 1, 51),
+(97, 16, 51),
+(98, 25, 51),
+(99, 26, 51),
+(102, 4, 41),
+(103, 5, 41),
+(104, 19, 41),
+(105, 23, 41),
+(106, 16, 28),
+(107, 2, 28),
+(108, 5, 28),
+(109, 25, 28),
+(110, 4, 31),
+(111, 5, 31),
+(112, 19, 31),
+(113, 23, 31),
+(114, 19, 14),
+(115, 20, 14),
+(116, 21, 14),
+(119, 12, 4),
+(120, 4, 4),
+(121, 5, 4),
+(122, 19, 4),
+(123, 20, 4),
+(124, 23, 4),
+(125, 24, 4);
 
 -- --------------------------------------------------------
 
@@ -116,9 +233,9 @@ INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
 --
 
 CREATE TABLE `courseenrolled` (
-  `myID` int(11) NOT NULL,
-  `courseID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL
+  `myID` int NOT NULL,
+  `courseID` int NOT NULL,
+  `studentID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -126,8 +243,50 @@ CREATE TABLE `courseenrolled` (
 --
 
 INSERT INTO `courseenrolled` (`myID`, `courseID`, `studentID`) VALUES
-(3, 2, 6),
-(10, 1, 1);
+(10, 1, 1),
+(11, 4, 33),
+(12, 11, 33),
+(13, 24, 32),
+(15, 2, 16),
+(16, 15, 76),
+(17, 5, 26),
+(18, 9, 26),
+(19, 21, 26),
+(20, 4, 43),
+(21, 12, 35),
+(22, 4, 36),
+(23, 11, 36),
+(24, 1, 42),
+(25, 11, 42),
+(26, 11, 10),
+(27, 4, 41),
+(30, 15, 25),
+(31, 4, 7),
+(33, 1, 3),
+(34, 11, 3),
+(36, 15, 24),
+(38, 1, 57),
+(39, 15, 59),
+(40, 1, 58),
+(41, 11, 50),
+(42, 11, 29),
+(43, 9, 60),
+(44, 10, 60),
+(45, 4, 60),
+(46, 1, 60),
+(47, 26, 60),
+(48, 12, 55),
+(49, 1, 55),
+(50, 1, 77),
+(51, 4, 77),
+(52, 26, 77),
+(53, 11, 51),
+(54, 1, 28),
+(55, 26, 28),
+(56, 24, 31),
+(57, 11, 31),
+(58, 22, 14),
+(59, 7, 4);
 
 -- --------------------------------------------------------
 
@@ -148,6 +307,8 @@ INSERT INTO `event` (`event`, `type`) VALUES
 ('Anatomy and Physiology', 'Core Knowledge (Test Only)'),
 ('Astronomy', 'Core Knowledge (Test Only)'),
 ('Boomilever', 'Build'),
+('Bridges', 'Build'),
+('Cell Biology', 'Core Knowledge (Test Only)'),
 ('Chemistry Lab', 'Hybrid Lab'),
 ('Circuit Lab', 'Hybrid Lab'),
 ('Codebusters', 'Core Knowledge (Test Only)'),
@@ -156,18 +317,25 @@ INSERT INTO `event` (`event`, `type`) VALUES
 ('Digital Structures', 'Build'),
 ('Disease Detectives', 'Core Knowledge (Test Only)'),
 ('Dynamic Planet', 'Core Knowledge (Test Only)'),
+('Environmental Chemistry', 'Core Knowledge (Test Only)'),
 ('Experimental Design', 'Laboratory or Hands On'),
 ('Forensics', 'Hybrid Lab'),
 ('Fossils', 'Core Knowledge (Test Only)'),
 ('GeoLogic Mapping', 'Core Knowledge (Test Only)'),
 ('Gravity Vehicle', 'Build'),
+('Green Generation', 'Core Knowledge (Test Only)'),
+('Its About Time', 'Hybrid Build'),
 ('Machines', 'Hybrid Build'),
 ('Ornithology', 'Core Knowledge (Test Only)'),
 ('Ping Pong Parachute', 'Build'),
 ('Protein Modeling', 'Hybrid Build'),
+('Remote Sensing', 'Hybrid Build'),
+('Rocks & Minerals', 'Core Knowledge (Test Only)'),
 ('Sounds of Music', 'Hybrid Build'),
 ('test', 'Hybrid Build'),
+('Trajectory', 'Build'),
 ('Water Quality', 'Hybrid Lab'),
+('WiFi Lab', 'Hybrid Build'),
 ('Wright Stuff', 'Build'),
 ('Write It CAD It', 'Build'),
 ('Write It Do It', 'Build');
@@ -179,10 +347,10 @@ INSERT INTO `event` (`event`, `type`) VALUES
 --
 
 CREATE TABLE `eventchoice` (
-  `eventChoiceID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL,
-  `eventID` int(11) NOT NULL,
-  `priority` int(11) NOT NULL DEFAULT '5'
+  `eventChoiceID` int NOT NULL,
+  `studentID` int NOT NULL,
+  `eventID` int NOT NULL,
+  `priority` int NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -199,7 +367,219 @@ INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) 
 (22, 6, 28, 1),
 (23, 1, 1, 1),
 (24, 1, 3, 1),
-(25, 1, 18, 1);
+(25, 1, 18, 1),
+(26, 25, 3, 1),
+(27, 26, 2, 1),
+(29, 25, 7, 3),
+(30, 25, 11, 1),
+(31, 43, 10, 1),
+(32, 43, 17, 1),
+(33, 52, 12, 1),
+(34, 52, 13, 1),
+(35, 52, 7, 1),
+(36, 52, 17, 1),
+(37, 52, 9, 1),
+(38, 67, 12, 1),
+(39, 67, 5, 1),
+(40, 67, 13, 1),
+(41, 67, 22, 1),
+(42, 67, 22, 1),
+(43, 67, 27, 1),
+(44, 69, 28, 1),
+(45, 33, 9, 1),
+(46, 33, 4, 2),
+(47, 33, 1, 3),
+(48, 33, 27, 4),
+(49, 33, 14, 5),
+(50, 32, 21, 1),
+(51, 32, 4, 2),
+(52, 32, 10, 3),
+(53, 32, 11, 4),
+(54, 32, 19, 5),
+(55, 31, 21, 1),
+(56, 31, 4, 2),
+(57, 31, 18, 3),
+(58, 31, 11, 4),
+(59, 31, 2, 5),
+(60, 16, 15, 1),
+(61, 16, 29, 2),
+(62, 16, 5, 3),
+(63, 16, 22, 4),
+(64, 16, 16, 5),
+(65, 76, 2, 1),
+(66, 76, 14, 2),
+(67, 76, 20, 3),
+(68, 76, 12, 4),
+(69, 76, 9, 5),
+(70, 40, 18, 1),
+(71, 40, 16, 2),
+(72, 40, 3, 3),
+(73, 40, 15, 4),
+(74, 40, 5, 5),
+(75, 43, 10, 1),
+(76, 43, 21, 2),
+(77, 43, 9, 3),
+(78, 43, 13, 4),
+(79, 43, 27, 5),
+(81, 26, 11, 2),
+(82, 26, 27, 3),
+(83, 26, 16, 4),
+(84, 26, 6, 5),
+(85, 35, 18, 1),
+(86, 35, 12, 2),
+(87, 35, 20, 3),
+(88, 35, 16, 4),
+(89, 35, 5, 5),
+(90, 36, 2, 1),
+(91, 36, 10, 2),
+(92, 36, 6, 3),
+(93, 36, 27, 4),
+(94, 36, 9, 5),
+(95, 42, 7, 1),
+(96, 42, 4, 2),
+(97, 42, 1, 3),
+(98, 42, 19, 4),
+(99, 42, 9, 5),
+(100, 10, 14, 1),
+(101, 10, 20, 2),
+(102, 10, 5, 3),
+(103, 10, 11, 4),
+(104, 10, 13, 5),
+(105, 41, 21, 1),
+(106, 41, 4, 2),
+(107, 41, 11, 3),
+(108, 41, 10, 4),
+(109, 41, 22, 5),
+(110, 4, 1, 1),
+(111, 4, 2, 2),
+(112, 4, 7, 3),
+(113, 4, 29, 4),
+(114, 4, 6, 5),
+(115, 14, 3, 1),
+(116, 14, 22, 2),
+(117, 14, 15, 3),
+(118, 14, 18, 4),
+(119, 14, 16, 5),
+(120, 25, 7, 1),
+(121, 25, 22, 2),
+(122, 25, 11, 3),
+(123, 25, 3, 4),
+(124, 25, 16, 5),
+(125, 7, 17, 1),
+(126, 7, 21, 2),
+(127, 7, 9, 3),
+(128, 7, 4, 4),
+(129, 7, 13, 5),
+(130, 52, 7, 1),
+(131, 52, 1, 2),
+(132, 52, 9, 3),
+(133, 52, 12, 4),
+(134, 52, 22, 5),
+(135, 49, 11, 1),
+(136, 49, 27, 2),
+(137, 49, 1, 3),
+(138, 49, 6, 4),
+(139, 49, 9, 5),
+(140, 48, 3, 1),
+(141, 48, 16, 2),
+(142, 48, 22, 3),
+(143, 48, 18, 4),
+(144, 48, 15, 5),
+(145, 27, 7, 1),
+(146, 27, 4, 2),
+(147, 27, 20, 3),
+(148, 27, 9, 4),
+(149, 27, 12, 5),
+(150, 6, 18, 1),
+(151, 6, 15, 2),
+(152, 6, 22, 3),
+(153, 6, 18, 1),
+(154, 6, 15, 2),
+(155, 6, 27, 3),
+(156, 6, 20, 4),
+(157, 6, 22, 5),
+(158, 74, 16, 1),
+(160, 74, 12, 1),
+(161, 29, 9, 1),
+(162, 29, 19, 2),
+(163, 29, 7, 3),
+(164, 29, 4, 4),
+(165, 29, 12, 5),
+(166, 13, 10, 1),
+(167, 13, 21, 2),
+(168, 13, 9, 3),
+(169, 13, 13, 4),
+(170, 13, 27, 5),
+(171, 50, 7, 1),
+(172, 50, 12, 2),
+(173, 50, 20, 3),
+(174, 50, 18, 4),
+(175, 50, 9, 5),
+(176, 3, 7, 1),
+(177, 3, 9, 2),
+(178, 3, 19, 3),
+(179, 3, 6, 4),
+(180, 3, 11, 5),
+(181, 51, 6, 1),
+(182, 51, 2, 2),
+(183, 51, 11, 3),
+(184, 51, 13, 4),
+(185, 51, 17, 5),
+(186, 24, 12, 1),
+(187, 24, 9, 2),
+(188, 24, 17, 3),
+(189, 24, 4, 4),
+(190, 24, 1, 5),
+(191, 12, 15, 1),
+(192, 12, 18, 2),
+(193, 12, 3, 3),
+(194, 12, 16, 4),
+(195, 12, 22, 5),
+(196, 44, 1, 1),
+(197, 44, 7, 2),
+(198, 44, 13, 3),
+(199, 44, 17, 4),
+(200, 44, 27, 5),
+(201, 54, 7, 1),
+(202, 54, 11, 2),
+(203, 54, 12, 3),
+(204, 54, 2, 4),
+(205, 54, 9, 5),
+(206, 55, 4, 1),
+(207, 55, 1, 2),
+(208, 55, 6, 3),
+(209, 55, 12, 4),
+(210, 55, 21, 5),
+(211, 56, 29, 1),
+(212, 56, 16, 2),
+(213, 56, 13, 3),
+(214, 56, 22, 4),
+(215, 56, 27, 5),
+(216, 57, 27, 1),
+(217, 57, 1, 2),
+(218, 57, 7, 3),
+(219, 57, 12, 4),
+(220, 57, 9, 5),
+(221, 59, 3, 1),
+(222, 59, 5, 2),
+(223, 59, 1, 3),
+(224, 59, 4, 4),
+(225, 59, 18, 5),
+(226, 60, 1, 1),
+(227, 60, 5, 2),
+(228, 60, 4, 3),
+(229, 60, 12, 4),
+(230, 60, 21, 5),
+(231, 58, 19, 1),
+(232, 58, 1, 2),
+(233, 58, 7, 3),
+(234, 58, 27, 4),
+(235, 58, 9, 5),
+(236, 5, 22, 1),
+(237, 5, 21, 2),
+(238, 5, 14, 3),
+(239, 5, 27, 4),
+(240, 5, 10, 5);
 
 -- --------------------------------------------------------
 
@@ -229,41 +609,65 @@ INSERT INTO `eventtype` (`type`) VALUES
 --
 
 CREATE TABLE `eventyear` (
-  `eventID` int(11) NOT NULL,
-  `year` int(11) NOT NULL,
-  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+  `eventID` int NOT NULL,
+  `year` int NOT NULL,
+  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `studentID` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `eventyear`
 --
 
-INSERT INTO `eventyear` (`eventID`, `year`, `event`) VALUES
-(1, 2021, 'Anatomy and Physiology'),
-(2, 2021, 'Astronomy'),
-(3, 2021, 'Boomilever'),
-(4, 2021, 'Chemistry Lab'),
-(5, 2021, 'Circuit Lab'),
-(6, 2021, 'Codebusters'),
-(7, 2021, 'Designer Genes'),
-(8, 2021, 'Digital Structures'),
-(9, 2021, 'Disease Detectives'),
-(10, 2021, 'Dynamic Planet'),
-(11, 2021, 'Experimental Design'),
-(12, 2021, 'Forensics'),
-(13, 2021, 'Fossils'),
-(14, 2021, 'GeoLogic Mapping'),
-(15, 2021, 'Gravity Vehicle'),
-(16, 2021, 'Machines'),
-(17, 2021, 'Ornithology'),
-(18, 2021, 'Ping Pong Parachute'),
-(19, 2021, 'Protein Modeling'),
-(20, 2021, 'Sounds of Music'),
-(21, 2021, 'Water Quality'),
-(22, 2021, 'Wright Stuff'),
-(27, 2021, 'Write It CAD It'),
-(28, 2022, 'Anatomy and Physiology'),
-(29, 2021, 'Detector Building');
+INSERT INTO `eventyear` (`eventID`, `year`, `event`, `studentID`) VALUES
+(1, 2021, 'Anatomy and Physiology', 0),
+(2, 2021, 'Astronomy', 4),
+(3, 2021, 'Boomilever', 0),
+(4, 2021, 'Chemistry Lab', 0),
+(5, 2021, 'Circuit Lab', 0),
+(6, 2021, 'Codebusters', 0),
+(7, 2021, 'Designer Genes', 0),
+(8, 2021, 'Digital Structures', 0),
+(9, 2021, 'Disease Detectives', 0),
+(10, 2021, 'Dynamic Planet', 0),
+(11, 2021, 'Experimental Design', 0),
+(12, 2021, 'Forensics', 0),
+(13, 2021, 'Fossils', 0),
+(14, 2021, 'GeoLogic Mapping', 0),
+(15, 2021, 'Gravity Vehicle', 0),
+(16, 2021, 'Machines', 0),
+(17, 2021, 'Ornithology', 0),
+(18, 2021, 'Ping Pong Parachute', 0),
+(19, 2021, 'Protein Modeling', 0),
+(20, 2021, 'Sounds of Music', 0),
+(21, 2021, 'Water Quality', 0),
+(22, 2021, 'Wright Stuff', 0),
+(27, 2021, 'Write It CAD It', 0),
+(28, 2022, 'Anatomy and Physiology', 0),
+(29, 2021, 'Detector Building', 0),
+(30, 2022, 'Astronomy', NULL),
+(31, 2022, 'Cell Biology', NULL),
+(32, 2022, 'Chemistry Lab', NULL),
+(33, 2022, 'Codebusters', NULL),
+(34, 2022, 'Detector Building', NULL),
+(35, 2022, 'Disease Detectives', NULL),
+(36, 2022, 'Dynamic Planet', NULL),
+(37, 2022, 'Bridges', NULL),
+(38, 2022, 'Environmental Chemistry', NULL),
+(39, 2022, 'Experimental Design', NULL),
+(40, 2022, 'Forensics', NULL),
+(41, 2022, 'Gravity Vehicle', NULL),
+(42, 2022, 'Green Generation', NULL),
+(43, 2022, 'It', NULL),
+(44, 2022, 'Ornithology', NULL),
+(45, 2022, 'Ping Pong Parachute', NULL),
+(46, 2022, 'Remote Sensing', NULL),
+(47, 2022, 'Rocks & Minerals', NULL),
+(48, 2022, 'Trajectory', NULL),
+(49, 2022, 'WiFi Lab', NULL),
+(50, 2022, 'Wright Stuff', NULL),
+(51, 2022, 'Write It Do It', NULL),
+(52, 2022, 'Its About Time', NULL);
 
 -- --------------------------------------------------------
 
@@ -272,9 +676,9 @@ INSERT INTO `eventyear` (`eventID`, `year`, `event`) VALUES
 --
 
 CREATE TABLE `officer` (
-  `officerID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL,
-  `year` int(11) NOT NULL,
+  `officerID` int NOT NULL,
+  `studentID` int NOT NULL,
+  `year` int NOT NULL,
   `position` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -283,7 +687,26 @@ CREATE TABLE `officer` (
 --
 
 INSERT INTO `officer` (`officerID`, `studentID`, `year`, `position`) VALUES
-(1, 5, 2021, 'Captain');
+(1, 5, 2021, 'Captain'),
+(2, 3, 2021, 'Vice-Captain'),
+(3, 1, 2021, 'Vice-Captain'),
+(4, 8, 2021, 'Secretary'),
+(5, 6, 2021, 'Build-It Boss'),
+(6, 11, 2021, 'Testing Coordinator'),
+(7, 7, 2021, 'Testing Coordinator'),
+(8, 35, 2021, 'Team Competition Coordinator - A'),
+(9, 4, 2021, 'Team Competition Coordinator - C'),
+(10, 4, 2022, 'Captain'),
+(11, 1, 2022, 'Vice-Captain'),
+(14, 8, 2022, 'Vice-Captain'),
+(15, 25, 2022, 'Secretary'),
+(16, 14, 2022, 'Build-It Boss'),
+(17, 7, 2022, 'Testing Coordinator'),
+(18, 24, 2022, 'Testing Coordinator'),
+(19, 26, 2022, 'Database Manager'),
+(20, 28, 2022, 'Team Competition Coordinator - A'),
+(21, 13, 2022, 'Team Competition Coordinator - B'),
+(22, 29, 2022, 'Team Competition Coordinator - C');
 
 -- --------------------------------------------------------
 
@@ -311,9 +734,9 @@ INSERT INTO `phonetype` (`phoneType`) VALUES
 --
 
 CREATE TABLE `rule` (
-  `ruleID` int(11) NOT NULL,
-  `level` int(3) NOT NULL,
-  `year` int(11) NOT NULL,
+  `ruleID` int NOT NULL,
+  `level` int NOT NULL,
+  `year` int NOT NULL,
   `fileName` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -334,13 +757,13 @@ INSERT INTO `rule` (`ruleID`, `level`, `year`, `fileName`) VALUES
 --
 
 CREATE TABLE `student` (
-  `studentID` int(11) NOT NULL,
-  `userID` int(11) DEFAULT NULL,
+  `studentID` int NOT NULL,
+  `userID` int DEFAULT NULL,
   `uniqueToken` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `active` int(11) NOT NULL DEFAULT '1',
-  `yearGraduating` int(11) NOT NULL,
+  `active` int NOT NULL DEFAULT '1',
+  `yearGraduating` int NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `emailSchool` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `phoneType` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'cell',
@@ -360,25 +783,63 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES
-(1, 0, '', 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', NULL, 'Huang', 'add', 'add@me.com', '770-555-5555', 'Huang', 'two', NULL, NULL),
-(2, 0, '', 'Melnikova', 'Tonya (Antonina)', 0, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 0, '', 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 0, '', 'Joshi', 'Chinmay', 1, 2022, 'chinmayj.walton@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(5, 0, '', 'Lee', 'Rebecca (Eunjae)', 0, 2021, 'eunjaerebecca@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(6, 0, '', 'Feren', 'Emily', 0, 2021, 'emferen3@gmail.com', '', 'cell', '7705555555', '', '', '', '', '', '', '', ''),
-(7, 0, '', 'Peng', 'Cynthia', 1, 2021, 'alcp6201@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(8, 0, '', 'Rami', 'Rima', 1, 2022, 'rimazazu@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(9, 0, '', 'Shen', 'Grace', 1, 2022, 'graceshen04@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(10, 0, '', 'Wei', 'Banglue', 0, 2021, 'banglueweiga@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(11, 0, '', 'Lai', 'Sheena', 0, 2021, 'sheenalai2012@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(12, 0, '', 'Seigmund', 'Julian', 1, 2023, 'juljs05@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(13, 0, '', 'Huang', 'Faith', 1, 2023, 'fyizhenh@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(14, 0, '', 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(1, 21, '', 'Huang', 'Susanna', 1, 2022, 'Susanna.lmt.196@gmail.com', NULL, 'cell', '678-833-7075', ' Hu', 'Lillian', 'dd_1027@yahoo.com', '347-268-3292', 'Huang', 'two', NULL, NULL),
+(3, 0, '', 'Yan', 'Grace', 0, 2021, 'graceyan61317@gmail.com', NULL, 'cell', '770-309-9868', 'Zeng ', 'Xiaoyan ', 'xzengx@yahoo.com', '770-330-7097', NULL, NULL, NULL, NULL),
+(4, 12, '', 'Joshi', 'Chinmay', 1, 2022, 'chinmayj.walton@gmail.com', '', '', '425-217-9013', 'Joshi', 'Neha', 'nehapjoshi@yahoo.com', '4252159879', 'Joshi', 'Prasanna', 'prasmohanjoshi@gmail.com', '425-375-1369'),
+(5, 0, '', 'Lee', 'Rebecca (Eunjae)', 0, 2021, 'eunjaerebecca@gmail.com', '', '', '678-978-2635', 'Huh', 'Inhee', 'inhee319@gmail.com', '404-247-5442', '', '', '', ''),
+(6, 0, '', 'Feren', 'Emily', 0, 2021, 'emferen3@gmail.com', '', 'cell', '828-989-2539', 'Feren', 'Stephen', 'Sferen@gmail.com', '828-989-1561', '', '', '', ''),
+(7, 16, '', 'Peng', 'Cynthia', 1, 2022, 'alcp6201@gmail.com', '', '', '770-795-7109', 'Lu', 'Wendy', 'wendy_lu@yahoo.com', '770-380-4560', '', '', '', ''),
+(8, 14, '', 'Rami', 'Rima', 1, 2022, 'rimazazu@gmail.com', '', '', '4703883822', 'Rami', 'Rafi', '', '4044443440', 'Rami', 'Parviz', 'parviz_rami@yahoo.com', '4044444499'),
+(10, 0, '', 'Wei', 'Banglue', 0, 2021, 'banglueweiga@gmail.com', '', '', '4703042706', 'Liu', 'Shizen', 'shizhenliu@hotmail.com', '4704267236', '', '', '', ''),
+(11, 0, '', 'Lai', 'Sheena', 0, 2021, 'sheenalai2012@gmail.com', '', '', '404-955-2502', 'Bao', 'Jieqiong ', 'jbao24548@gmail.com', '770-971-5234', '', '', '', ''),
+(12, 0, '', 'Siegmund', 'Julian', 1, 2023, 'juljs05@gmail.com', '', '', '4049609241', '', '', '', '', '', '', '', ''),
+(13, 15, '', 'Huang', 'Faith', 1, 2023, 'fyizhenh@gmail.com', '', '', '770-294-0421', 'Huang', 'Rongbing', 'rongbing.huang@gmail.com', '770-309-7851', '', '', '', ''),
+(14, 19, '', 'Wang', 'Chris', 1, 2022, 'goodchris0831@gmail.com', 'Chris.Wang@students.cobbk12.org', '', '4702656105', 'Chang', 'Jung Chu', 'cjungchu@gmail.com', '6785388116', 'Wang', 'Tai', '', ''),
 (15, 0, '', 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
-(16, 0, '', 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
+(16, 10, '', 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '404-348-3229', 'Mei', 'Chase', 'chasemei@gmail.com', '470-403-0480', '', '', '', ''),
 (22, 9, '', 'Wolfe', 'Doug', 1, 2022, 'dougwolfejr@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (23, NULL, '', 'Last', 'Wolfe', 1, 2025, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(24, NULL, '', 'He', 'Jessica', 1, 2024, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(24, 17, '', 'He', 'Jennifer', 1, 2024, 'jenniferhe0203@gmail.com', NULL, 'cell', NULL, 'He', 'Jim ', 'jingwu_he@yahoo.com', '404-667-5076', 'Zhang ', 'Jun', 'shirley_jun@yahoo.com', '404-472-9421'),
+(25, 18, '', 'Hable', 'Christian', 1, 2024, 'cmhable@gmail.com', NULL, 'cell', '14043603478', 'Li', 'Jue', 'leejue@yahoo.com', '9012010337', 'Hable', 'Bill', 'billokc67@gmail.com', '7703164304'),
+(26, 10, '', 'Greig', 'Andrew', 1, 2022, 'acgreig@gmail.com', NULL, 'cell', '470-572-4613', 'Greig', 'David', 'dcgreig@gmail.com', '678-810-1685', 'Greig', 'Angela', 'angela.greig@cobbk12.org', '470-527-4613'),
+(27, NULL, '', 'Joo', 'Emily', 1, 2021, 'emilyjpie110@gmail.com', NULL, 'cell', '404-259-6032', 'Jeong', 'Youngmin', 'Joomin01@hotmail.com', '404-319-1613', NULL, NULL, NULL, NULL),
+(28, 13, '', 'Wei', 'Joanna (Zhuyun)', 1, 2023, 'joannawei05@gmail.com', 'zhuyun.wei@students.cobbk12.org', 'cell', '770-625-0188', 'Wei', 'Lusia ', NULL, '7706880586', 'Zhao', 'Sharp', NULL, '7708265888'),
+(29, 11, '', 'Yang', 'Emily', 1, 2022, 'emilysun1160@gmail.com', 'emily.yang916@students.cobbk12.org', 'cell', '678-559-8506', 'Sun', 'Weitao', 'weitao3@yahoo.com', '508-904-7561', 'Yang', 'Richard', NULL, '5089047549'),
+(31, NULL, '', 'Karuman', 'Akshita', 1, 2023, 'akshita.karuman@gmail.com', 'akshita.karuman@students.cobbk12.org', 'cell', '470-377-6656', 'Damodaran', 'Rajiv ', 'rajivdeepna@gmail.com', '404-510-6107', 'Rajiv', 'Deepna', '4703014030', NULL),
+(32, NULL, '', 'Kona', 'Abhishek', 1, 2022, 'abhishek.kona135@gmail.com', NULL, 'cell', '678-581-9817', 'Kona', 'Sirisha ', 'mail_sirisha@yahoo.com', '770-756-7967', NULL, NULL, NULL, NULL),
+(33, NULL, '', 'Kona', 'Abhinav', 1, 2022, 'avkona0325@gmail.com', NULL, 'cell', '404-953-1112', 'Kona', 'Sirisha', 'mail_sirisha@yahoo.com', '770-856-7967', NULL, NULL, NULL, NULL),
+(34, NULL, '', 'Dahiya', 'Anchita', 1, 2022, 'anniedahiya1@gmail.com', NULL, 'cell', '404-987-9517', 'Rani', 'Kirti', 'kirtirani@gmail.com', '804-316-8139', NULL, NULL, NULL, NULL),
+(35, NULL, '', 'Melnikova', 'Tonya (Antonina)', 1, 2021, 'tonya.melnik7@gmail.com', NULL, 'cell', '4048237643', ' Melnikov', 'Oleg', 'lerik78@gmail.com', '4048248439', NULL, NULL, NULL, NULL),
+(36, NULL, '', 'Roy', 'Aryan', 1, 2022, 'aryanaviroy@gmail.com', NULL, 'cell', '4702789888', 'Roy', 'Avijit', NULL, '6787884473', NULL, NULL, NULL, NULL),
+(40, NULL, '', 'Sankuratri', 'Anish ', 1, 2023, 'anishdfish@gmail.com', NULL, 'cell', '678-799-7579', ' Sankuratri', 'Kodanda', 'kodanda.rs@gmail.com', '678-862-2682', NULL, NULL, NULL, NULL),
+(41, NULL, '', 'Yetukuri', 'Rinky (Chaitanya Sri)', 1, 2023, 'rinky.yetukuri@gmail.com', 'chaitanya.yetukuri@students.cobbk12.org', 'cell', '470-454-5572', 'Yetukuri', 'Devaraju', 'devaraju.yetukuri@gmail.com', '404-386-1516', 'Ghanta', 'Hymavathi', NULL, '7705732366'),
+(42, NULL, '', 'Yamin', 'Asad', 1, 2022, 'yaminasad@gmail.com', NULL, 'cell', '7707576259', 'Yamin', 'Khalid ', 'khalid_yamin@msn.com', '4044027613', NULL, NULL, NULL, NULL),
+(43, NULL, '', 'Lee', 'Annabelle', 1, 2022, 'soyoonlee0629@gmail.com', NULL, 'cell', '6787885232', 'Lee', 'Jieun', 'jizzang2@hanmail.net', '6782963736', NULL, NULL, NULL, NULL),
+(44, NULL, '', 'Ramaswamy', 'Karthika', 1, 2021, 'karthika.v.ramaswamy@gmail.com', NULL, 'cell', '470-269-1542', ' Ramaswamy', 'Mohan', 'mohan_ramaswamy@yahoo.com', '678-516-1298', NULL, NULL, NULL, NULL),
+(48, NULL, '', 'Tyler', 'Dominick', 1, 2023, 'dttyler12@gmail.com', NULL, 'cell', '9843640083', 'Tyler', 'Caroline', 'carolinetyler@me.com', '919-619-1102', NULL, NULL, NULL, NULL),
+(49, NULL, '', 'Liu', 'David', 1, 2023, 'davidleoliu2@gmail.com', NULL, 'cell', '347-794-7932', 'Shi', 'Li', 'shili2720@gmail.com', '201-496-3599', NULL, NULL, NULL, NULL),
+(50, NULL, '', 'Guo', 'Fiona', 1, 2022, 'fitgps1@gmail.com', 'fiona.guo@students.cobbk12.org', 'cell', '6308352869', 'Guo', 'Gary (Qing)', 'gqyy2010@gmail.com', '6307683790', 'Zhou', 'Yuanyuan Zhou', NULL, '6306961085'),
+(51, NULL, '', 'Shen', 'Grace', 1, 2022, 'graceshen04@gmail.com', NULL, 'cell', '678-641-1633', 'Shen', 'Peiqing (Patrick)', 'pqshen@yahoo.com', '404-831-3696', 'Yin', 'Hong', NULL, '7703547057'),
+(52, NULL, '', 'Maslamani', 'Dana', 1, 2022, 'danamasla1999@gmail.com', NULL, 'cell', '4049920928', 'Maslamani', 'Badera ', 'Baderal@almaslamani.com', '4049802457', NULL, NULL, NULL, NULL),
+(53, NULL, '', 'Siegmund', 'Julian', 1, 2023, 'juljs05@gmail.com', NULL, 'cell', '4049609241', 'Siegmund', 'Heike', 'heike_b_siegmund@yahoo.com', '4044063729', NULL, NULL, NULL, NULL),
+(54, NULL, '', 'Gunjan', 'Mayank', 1, 2023, 'Mgunj1001@gmail.com', NULL, 'cell', '678-382-7232', 'Gunjan', 'Samir', 'gunjansk@yahoo.com', '859-559-1608', NULL, NULL, NULL, NULL),
+(55, NULL, '', 'Reddy', 'Megan', 1, 2022, 'meganreddys@gmail.com', 'megan.reddy@students.cobbk12.org', 'cell', '770-362-5455', 'Peddareddy', 'Lakshmi ', 'venkyrm@hotmail.com', '7045198345', 'Mukthapuram', 'Venkat ', NULL, '7703625455'),
+(56, NULL, '', 'Hari', 'Nandana', 1, 2023, 'nandanahari@hotmail.com', NULL, 'cell', '678-974-9505', 'Hari', 'Soumya', 'chat.to.soumya@gmail.com', '678-974-9505', NULL, NULL, NULL, NULL),
+(57, NULL, '', 'Dileep', 'Nivedita', 1, 2022, 'nivi.dileep@gmail.com', NULL, 'cell', '4046937018', 'Dileep', 'Ambili', 'pambilip@gmail.com', '4044169718', NULL, NULL, NULL, NULL),
+(58, NULL, '', 'Malladi', 'Pranav', 1, 2022, 'the.pranav123@gmail.com', NULL, 'cell', '4042022327', 'Malladi', 'Ravisankara', NULL, '6789937378', NULL, NULL, NULL, NULL),
+(59, NULL, '', 'Inan', 'Omer', 1, 2024, 'omer.m.inan2024@gmail.com', NULL, 'cell', '7705589882', 'Inan', 'Erin ', 'oeinan@hotmail.com', '6508148589', NULL, NULL, NULL, NULL),
+(60, NULL, '', 'Jain', 'Palak', 1, 2023, 'Jnpalak2005@gmail.com', 'Palak.jain@students.cobbk12.org', 'cell', '4704735588', 'Jain', 'Kirti', 'kirti.jain@adityabirla.com', '4044264207', 'Jain', 'Sonila', NULL, '2294161001'),
+(62, NULL, '', 'Venkatesh ', 'Saanvi', 1, 2024, 'saanvikv@gmail.com', NULL, 'cell', '470-633-9082', 'Venkatesh', 'Sheetal ', 'sheetalhs@gmail.com', '407-810-2494', NULL, NULL, NULL, NULL),
+(65, NULL, '', 'Shetty', 'Samrita', 1, 2024, 'SamritaSShetty@gmail.com', NULL, 'cell', '470-755-2844', ' Shetty', 'Samith', 'samithshetty@hotmail.com', '704-264-6312', NULL, NULL, NULL, NULL),
+(66, NULL, '', 'Clark', 'Sarah', 1, 2024, 'sarahkatclark06@gmail.com', NULL, 'cell', '678-644-4361', 'Clark', 'Jennifer', 'JenClark@aol.com', '205-249-7713', NULL, NULL, NULL, NULL),
+(67, NULL, '', 'Umesh', 'Shashank', 1, 2022, 'shashumesh@gmail.com', NULL, 'cell', '6789000148', 'Rajamani', 'Gayathri', 'gayathri.umesh@gmail.com', '4048837177', NULL, NULL, NULL, NULL),
+(69, NULL, '', 'Choi', 'Wonho', 1, 2022, 'wonhoc4161@gmail.com', NULL, 'cell', '4046617456', 'Choi', 'Yongmin', 'dr.choi70@gmail.com', '4705584262', NULL, NULL, NULL, NULL),
+(71, NULL, '', 'Vijay', 'Varun', 1, 2022, 'varunvj12@gmail.com', NULL, 'cell', '4047025555', 'Sundar', 'Vijaya', 'vijayaks19@gmail.com', '7709255322', NULL, NULL, NULL, NULL),
+(72, NULL, '', 'Raj', 'Shivani', 1, 2022, 'shivani.raj2630@gmail.com', NULL, 'cell', '4048074822', 'Venugopal', 'Sridevi', 'srijay2630@gmail.com', '4048015353', NULL, NULL, NULL, NULL),
+(73, NULL, '', 'Wang', 'Zachary', 1, 2021, 'zackzwang@gmail.con', NULL, 'cell', '470-535-1276', 'Wang', 'Thomas', 'tomswang@hotmail.com', '404-449-1094', NULL, NULL, NULL, NULL),
+(74, NULL, '', 'Gistren ', 'Jasmine ', 1, 2024, 'jazzy.gistren@gmail.com', NULL, 'cell', '239-235-9292', 'Gistern ', 'Joss ', 'jossgistren@yahoo.com', '239-888-0580', NULL, NULL, NULL, NULL),
+(76, NULL, '', 'Fang', 'Andrew', 1, 2024, 'Andrewdavidfang@gmail.com', NULL, 'cell', '678-221-4009', 'Fang', 'Yunnan', 'valinedna@yahoo.com', '614-805-4839', NULL, NULL, NULL, NULL),
+(77, NULL, '', 'Venkatesan', 'Priya', 1, 2025, 'priya.venki2016@gmail.com', 'waltonhighwebmaster@gmail.com', 'cell', '4049519235', 'Ganapathy', 'Lakshmi ', NULL, '6784629696', 'Sundaram', 'Venkatesan', NULL, '4049577350');
 
 -- --------------------------------------------------------
 
@@ -387,12 +848,12 @@ INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `a
 --
 
 CREATE TABLE `studentplacement` (
-  `studentPlacementID` int(11) NOT NULL,
-  `studentID` int(11) NOT NULL,
+  `studentPlacementID` int NOT NULL,
+  `studentID` int NOT NULL,
   `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `teamID` int(11) NOT NULL,
-  `place` int(11) NOT NULL,
-  `partnerID` int(11) DEFAULT NULL
+  `teamID` int NOT NULL,
+  `place` int NOT NULL,
+  `partnerID` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -402,10 +863,10 @@ CREATE TABLE `studentplacement` (
 --
 
 CREATE TABLE `team` (
-  `teamID` int(11) NOT NULL,
-  `teamName` int(11) NOT NULL,
-  `tournamentID` int(11) NOT NULL,
-  `teamPlace` int(11) NOT NULL
+  `teamID` int NOT NULL,
+  `teamName` int NOT NULL,
+  `tournamentID` int NOT NULL,
+  `teamPlace` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -415,11 +876,11 @@ CREATE TABLE `team` (
 --
 
 CREATE TABLE `timeblock` (
-  `blockID` int(11) NOT NULL,
+  `blockID` int NOT NULL,
   `blockName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `timeStart` datetime NOT NULL,
   `timeEnd` datetime NOT NULL,
-  `teamID` int(11) NOT NULL
+  `teamID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -429,14 +890,14 @@ CREATE TABLE `timeblock` (
 --
 
 CREATE TABLE `tournament` (
-  `tournamentID` int(11) NOT NULL,
-  `tournamentInfoID` int(11) NOT NULL,
+  `tournamentID` int NOT NULL,
+  `tournamentInfoID` int NOT NULL,
   `dateTournament` date DEFAULT NULL,
   `dateRegistration` date DEFAULT NULL,
-  `year` int(11) NOT NULL,
-  `type` int(11) DEFAULT NULL,
-  `numberTeams` int(11) DEFAULT NULL,
-  `weighting` int(11) NOT NULL,
+  `year` int NOT NULL,
+  `type` int DEFAULT NULL,
+  `numberTeams` int DEFAULT NULL,
+  `weighting` int NOT NULL,
   `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -464,7 +925,7 @@ INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, 
 --
 
 CREATE TABLE `tournamentinfo` (
-  `tournamentInfoID` int(11) NOT NULL,
+  `tournamentInfoID` int NOT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `host` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `address` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -473,7 +934,7 @@ CREATE TABLE `tournamentinfo` (
   `websiteSciOly` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `director` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `directorEmail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `monthRegistration` int(11) DEFAULT NULL
+  `monthRegistration` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -501,10 +962,10 @@ INSERT INTO `tournamentinfo` (`tournamentInfoID`, `name`, `host`, `address`, `ad
 --
 
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `oauth_provider` enum('google','facebook','twitter','linkedin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'google',
   `oauth_uid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `privilege` int(11) DEFAULT NULL,
+  `privilege` int DEFAULT NULL,
   `first_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `last_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -521,7 +982,19 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_name`, `last_name`, `email`, `gender`, `locale`, `picture`, `created`, `modified`) VALUES
 (3, 'google', '108096504576017257484', 1, 'Doug', 'Wolfe', 'wolfewhs@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJyVjZvobWp9Wd8bdGAb96Ehc4g_UHqWbpXFVO9r=s96-c', '2021-04-20 22:39:04', '2021-04-30 01:42:26'),
-(9, 'google', '109397293342063106702', 4, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-30 01:11:15');
+(9, 'google', '109397293342063106702', 4, 'Doug', 'W', 'dougwolfejr@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhWinau5RYqIDwGfGGEBoOVdd7KGnEhpNtBLvw-=s96-c', '2021-04-25 00:28:24', '2021-04-30 01:11:15'),
+(10, 'google', '103874619842696589534', 2, 'Andrew', 'Greig', 'acgreig@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gg9JZv6l6GPu9um1rRhi-x5zo9Jqet0vaLoLAHGjLY=s96-c', '2021-04-30 16:13:06', '2021-04-30 16:13:06'),
+(11, 'google', '107148355485375603861', 2, 'Emily', 'Yang', 'emilysun1160@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GiedMg4cRfkL8uZ33uE5u2lOaU5OY7mpm3sU0iwTA=s96-c', '2021-04-30 16:15:06', '2021-04-30 16:15:06'),
+(12, 'google', '111253112150007245823', 2, 'Chinmay', 'Joshi', 'chinmayj.walton@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJwYM7GKh9LHbuVnusA8J1HinDmdW46OweWnwH8V=s96-c', '2021-04-30 16:16:39', '2021-04-30 16:16:39'),
+(13, 'google', '102385444909511766502', 2, 'Joanna', 'Wei', 'joannawei05@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJz2Or3KG3rq2kdqGylvQKmPx4wZSJcmFNxy_uDS=s96-c', '2021-04-30 16:16:42', '2021-04-30 16:16:42'),
+(14, 'google', '112468442879454322251', 2, 'Rima', 'Rami', 'rimazazu@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gh0SZzmVio4hlx-u3JVxi8jLNlpqWj8PY3vP_s0ag=s96-c', '2021-04-30 16:16:47', '2021-04-30 16:16:47'),
+(15, 'google', '102894286402057637896', 2, 'Faith', 'Huang', 'fyizhenh@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GjXobT7gm6Vhtinx9kEyS51xaWyQnGmJq-hL14IKg=s96-c', '2021-04-30 16:17:15', '2021-04-30 16:17:15'),
+(16, 'google', '112051074721749425737', 2, 'Cynthia', 'Peng', 'alcp6201@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GgnKiqOhLb0sMRw86JMoUngv8-s2a1Em-MDXW3dOw=s96-c', '2021-04-30 16:17:17', '2021-04-30 16:17:17'),
+(17, 'google', '112356622834711211761', 2, 'Jennifer', 'He', 'jenniferhe0203@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gi6ufKCl3uXEE5zGz1g3e9rvZM3BI_AqgO7Sa_xSMc=s96-c', '2021-04-30 16:19:34', '2021-04-30 16:19:34'),
+(18, 'google', '118077389039177077874', 2, 'Christian', 'Hable', 'cmhable@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhQzK1HHb5u6f5PKC27AROoTQ580HKjMCgSEzmisw=s96-c', '2021-04-30 16:20:01', '2021-04-30 16:20:01'),
+(19, 'google', '100350629985317200334', 2, 'Chris', 'Wang', 'goodchris0831@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GiNQtjYqSwUSjM3lDaQ2EkJ7z-T2teAOULCcaR5=s96-c', '2021-04-30 16:20:21', '2021-04-30 16:20:21'),
+(20, 'google', '116164729655931508486', NULL, 'Walton', 'Habitat', 'waltonhabitatapps@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJwkHlAEdAzscu_kVXvMHKVPGiPKpbo5Gq9PYr54=s96-c', '2021-05-07 13:53:50', '2021-05-07 13:53:50'),
+(21, 'google', '103400986357747872543', 3, 'Susanna', 'H.', 'susanna.lmt.196@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gi2ZiKu7_c99MJ9TRbypNWntl-HdN-xnahSbopG=s96-c', '2021-05-07 16:24:01', '2021-05-07 16:24:01');
 
 --
 -- Indexes for dumped tables
@@ -650,97 +1123,97 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `award`
 --
 ALTER TABLE `award`
-  MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `awardID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `coach`
 --
 ALTER TABLE `coach`
-  MODIFY `coachID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `coachID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `courseID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `coursecompleted`
 --
 ALTER TABLE `coursecompleted`
-  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `myID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT for table `courseenrolled`
 --
 ALTER TABLE `courseenrolled`
-  MODIFY `myID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `myID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `eventchoice`
 --
 ALTER TABLE `eventchoice`
-  MODIFY `eventChoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `eventChoiceID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
 
 --
 -- AUTO_INCREMENT for table `eventyear`
 --
 ALTER TABLE `eventyear`
-  MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `eventID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `officer`
 --
 ALTER TABLE `officer`
-  MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `officerID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `rule`
 --
 ALTER TABLE `rule`
-  MODIFY `ruleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ruleID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `studentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `studentplacement`
 --
 ALTER TABLE `studentplacement`
-  MODIFY `studentPlacementID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `studentPlacementID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `teamID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `teamID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `timeblock`
 --
 ALTER TABLE `timeblock`
-  MODIFY `blockID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `blockID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
-  MODIFY `tournamentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `tournamentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tournamentinfo`
 --
 ALTER TABLE `tournamentinfo`
-  MODIFY `tournamentInfoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `tournamentInfoID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -23,8 +23,8 @@ if($_SESSION['userData']['privilege']>1)
 }
 ?>
 <div>
-		<?=$addStudentText?>
 		<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+		<?=$addStudentText?>
 <br><br>
 
 	<form id="findStudent">
