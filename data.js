@@ -144,8 +144,6 @@ function studentRemove(myStudentID, studentName)
 	}
 }
 
-
-
 ///////////////////
 ///Student Edit functions
 //////////////////

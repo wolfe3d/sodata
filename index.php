@@ -1,5 +1,12 @@
 <?php
 require_once ("../connectsodb.php");
+
+//If user is logged in to this site, then the following redirects the user to the database program.
+if($_SESSION['userData'])
+{
+	header("Location:data.php");
+	exit;
+}
  //Check to make sure user is logged in and has privileges
 ?>
 <!DOCTYPE HTML>
