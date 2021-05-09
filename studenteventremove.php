@@ -6,9 +6,9 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 //text output
 $output = "";
 
-$eventsChoiceID = intval($_REQUEST['eventsChoiceID']);
+$eventChoiceID = intval($_REQUEST['eventChoiceID']);
 
-$query = "DELETE FROM `eventschoice` WHERE `eventschoice`.`eventsChoiceID` = $eventsChoiceID";
+$query = "DELETE FROM `eventchoice` WHERE `eventchoice`.`eventChoiceID` = $eventChoiceID";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo "1";

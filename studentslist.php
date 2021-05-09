@@ -1,15 +1,16 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("functions.php");
 
 //text output
 $output = "";
 
 
-$last = $mysqlConn->real_escape_string($_POST['last']);
-$first = $mysqlConn->real_escape_string($_POST['first']);
-$eventName = $mysqlConn->real_escape_string($_POST['eventsList']);
-$courseID = intval($_POST['coursesList']);
+$last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
+$first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
+$eventName = isset($_POST['eventsList'])?$mysqlConn->real_escape_string($_POST['eventsList']):0;
+$courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
 $active = intval($_POST['active']);
 
 $activeQuery ="";
@@ -18,7 +19,7 @@ if($active)
 	$activeQuery = " t1.`active` = 1 AND ";
 }
 
-$query = "SELECT * from `students` t1";
+$query = "SELECT * from `student` t1";
 //check to see what is searched for
 if($last&&$first)
 {
@@ -41,8 +42,8 @@ if($eventName)
 {
 	//Search for student signed up for event
 	//TODO: Also search for students who have competed in events previously
-	//$query = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `eventschoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventsyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `eventschoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventsyear` t3 ON t2.`eventID`=t3.`eventID` WHERE $activeQuery t3.`event` LIKE '$eventName'";
+	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE $activeQuery t3.`event` LIKE '$eventName'";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
@@ -69,8 +70,8 @@ if($eventName)
 if($courseID)
 {
 	//Search for student signed up for event
-	//$query = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `eventschoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventsyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT t1.`studentID` from `students` t1 INNER JOIN `coursesCompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `coursesEnrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE$activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
+	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `coursecompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `courseenrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE $activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
@@ -99,12 +100,22 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 
 if($result)
 {
-	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
+		$output .="<div id='student-". $row['studentID'] ."'>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
-		$output .="<div><a href='studentedit.php?studentID=".$row['studentID']."'>Edit</a></div>";
+		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
+		if($officerPos)
+		{
+			$output .="<h3>$officerPos</h3>";
+		}
+		if($_SESSION['userData']['privilege']>1||$_SESSION['userData']['id']==$row['userID'])
+		{
+			$output .="<div><a href='javascript:studentEdit(".$row['studentID'].")'>Edit</a> ";
+		}
+		$output .= $_SESSION['userData']['privilege']>3?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
+		$output .= "</div>";
 		$grade = 9;
-		if (date("M")>5)
+		if (date("m")>5)
 		{
 			$grade = 12-($row['yearGraduating']-date("Y")+1);
 		}
@@ -115,19 +126,24 @@ if($result)
 		$output .="<div>Grade: $grade (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
-			$output .="<div>Preferred Email:".$row['email']."</div>";
+			$output .="<div>Google Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
 		}
-		if($row['emailAlt'])
+		if($row['emailSchool'])
 		{
-			$output .="<div>Alternate Email:".$row['emailAlt']."</div>";
+			$output .="<div>School Email: <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></div>";
 		}
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".$row['phoneType']."):".$row['phone']."</div>";
 		}
+		$officerPosPrev = getPreviousOfficerPosition($mysqlConn,$row['studentID']);
+		if($officerPosPrev)
+		{
+			$output .="<div>Previous Postions: $officerPosPrev</div>";
+		}
 		if($row['parent1Last'])
 		{
-			$output .="<h3>Parent(s)</h3>";
+			$output .="<br><h3>Parent(s)</h3>";
 			$output .="<div>".$row['parent1First']." ".$row['parent1Last'].",".$row['parent1Email'].",".$row['parent1Phone']."</div>";
 			if($row['parent2Last'])
 			{
@@ -135,39 +151,64 @@ if($result)
 			}
 		}
 		//find student's events
-		$query = "SELECT * FROM `eventschoice` t1 INNER JOIN `eventsyear` t2 ON t1.`eventID`=t2.`eventID` WHERE `studentID`=".$row['studentID'];// where `field` = $fieldId";
+		$query = "SELECT * FROM `eventchoice` t1 INNER JOIN `eventyear` t2 ON t1.`eventID`=t2.`eventID` WHERE t1.`studentID`=".$row['studentID'];// where `field` = $fieldId";
 		$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if (mysqli_num_rows($resultEventsChoice)>0)
 		{
-				$output .="<h3>Events</h3>";
+				$output .="<br><h3>Events</h3>";
 				while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventsChoiceID'] . "'>" . $rowEventsChoice['year'] . " " . $rowEventsChoice['event'] . "</div>";
+					$output .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . "</div>";
 				endwhile;
 		}
 
 		//find student's courses completed
-		$query = "SELECT * FROM `coursescompleted` t1 INNER JOIN `courses` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourses)>0)
+		$query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourse)>0)
 		{
-			$output .="<h3>Course Completed - Level</h3>";
-			while ($rowCourse = $resultCourses->fetch_assoc()):
-				$output .= "<div id='coursesCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+			$output .="<br><h3>Courses Completed - Level</h3>";
+			while ($rowCourse = $resultCourse->fetch_assoc()):
+				$output .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
 
 		//find student's courses enrolled but not yet completed
-		$query = "SELECT * FROM `coursesenrolled` t1 INNER JOIN `courses` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourses = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourses)>0)
+		$query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if(mysqli_num_rows($resultCourse)>0)
 		{
-			$output .="<h3>Courses Enrolled - Level</h3>";
-			while ($rowCourse = $resultCourses->fetch_assoc()):
-				$output .= "<div id='coursesEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+			$output .="<br><h3>Courses Enrolled - Level</h3>";
+			while ($rowCourse = $resultCourse->fetch_assoc()):
+				$output .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
-	endwhile;
+
+
+	//show privilege
+	if($_SESSION['userData']['privilege']>2)
+	{
+		if(empty($row['userID']))
+		{
+				$output .= "User has never logged in with registered account.";
+		}
+		else {
+			$query = "SELECT * FROM `user` WHERE `id`=".$row['userID'];// where `field` = $fieldId";
+			$ouput .= $query;
+			$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$rowPriv = $resultPrivilege->fetch_assoc();
+			if ($rowPriv['privilege'])
+			{
+				$output .= "<div>Privilege: ".$rowPriv['privilege']."</div>";
+			}
+			else
+			{
+				$output .= "User has never logged in with registered account.";
+			}
+		}
+	}
 	$output .="</div>";
+endwhile; // end loop through student list
+	//complete enclosing div
 }
 echo $output;
 ?>

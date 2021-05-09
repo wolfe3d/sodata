@@ -11,7 +11,6 @@ $gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
 $gClient->addScope(['email', 'profile']);
 //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
 
-$google_oauth =new Google_Service_Oauth2($gClient);
 
 // Include User library file
 require_once 'User.class.php';
@@ -28,6 +27,7 @@ if(isset($_SESSION['token'])){
 
 if($gClient->getAccessToken()){
     // Get user profile data from google
+		$google_oauth =new Google_Service_Oauth2($gClient);
     $gpUserProfile = $google_oauth->userinfo->get();
 
     // Initialize User class
@@ -56,20 +56,8 @@ if($gClient->getAccessToken()){
 		}
     // Render user profile data
     if(!empty($userData)){
-        //$output     = '<h2>Google Account Details</h2>';
-        $output .= '<div class="ac-data">';
-        $output .= '<img src="'.$userData['picture'].'">';
-        //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
-        $output .= '<p><b>Name:</b> '.$userData['first_name'].' '.$userData['last_name'].'</p>';
-        $output .= '<p><b>Email:</b> '.$userData['email'].'</p>';
-        //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
-        //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
-        $output .= '<p><b>Logged in with:</b> Google Account</p>';
-        $output .= '<p>Logout from <a href="logout.php">Google</a></p>';
-				$output .= "<p><a href='students.php'>Students List</a></p>";
-				$output .= "<p><a href='events.php'>Events List</a></p>";
-				$output .= "<p><a href='tournaments.php'>Tournaments List</a></p>";
-        $output .= '</div>';
+        //header("Location:index.php#user");
+				exit;
     }else{
         $output = '<h3 style="color:red">Some problem occurred, please try again.</h3>';
     }

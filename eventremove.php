@@ -2,15 +2,20 @@
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
-//TODO Check priviledge as either the student or admin
+if($_SESSION['userData']['privilege']<3 )
+{
+	echo "You do not have permissions to add/edit an event.";
+	exit();
+}
 
-//text output
-$output = "";
+$eventID = intval($_REQUEST['eventID']);
+if(empty($eventID))
+{
+	echo "Missing the eventID.  Cannot remove from database.";
+	exit;
+}
 
-$myID = intval($_REQUEST['myID']);
-$tableName = strtolower($mysqlConn->real_escape_string($_REQUEST['tableName']));
-
-$query = "DELETE FROM `$tableName` WHERE `$tableName`.`myID` = $myID";
+$query = "DELETE FROM `eventyear` WHERE `eventyear`.`eventID` = $eventID";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo "1";
