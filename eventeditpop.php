@@ -10,11 +10,11 @@ if($_SESSION['userData']['privilege']<3 )
 	exit();
 }
 
-$eventName = $mysqlConn->real_escape_string($_POST['eventName']);
+$eventID = intval($_POST['eventID']);
 $typeName = "";
-if(isset($eventName))
+if(isset($eventID))
 {
-	$query = "SELECT * FROM `event` WHERE `event` LIKE '$eventName'";
+	$query = "SELECT * FROM `event` WHERE `eventID` = $eventID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$row = $result->fetch_assoc();
 	$typeName = $row["type"];
@@ -22,7 +22,7 @@ if(isset($eventName))
 ?>
 <form id="addTo" method="post" action="eventedit.php">
 	<?php if($row){ ?>
-			<input id="eventOriginalName" name="eventOriginalName" type="hidden" value="<?=$row["event"]?>">
+			<input id="eventID" name="eventID" type="hidden" value="<?=$row["eventID"]?>">
 	<?php } ?>
 	<p>
 		<label for="eventName">Event</label>

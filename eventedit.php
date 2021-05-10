@@ -9,8 +9,8 @@ if($_SESSION['userData']['privilege']<3 )
 	exit();
 }
 
+$eventID = intval($_POST['eventID']);
 $eventName = $mysqlConn->real_escape_string($_POST['eventName']);
-$eventOriginalName = $mysqlConn->real_escape_string($_POST['eventOriginalName']);
 $typeName = $mysqlConn->real_escape_string($_POST['typeName']);
 
 if(empty($eventName))
@@ -20,16 +20,14 @@ if(empty($eventName))
 	exit();
 }
 
-if(empty($eventOriginalName)){
+if(empty($eventID)){
 	$query = "INSERT INTO `event` (`event`, `type`) VALUES ( '$eventName', '$typeName');";
 }
 else {
 	//update the event
-	$query = "UPDATE `event` SET `event` = '$eventName', `type` = '$typeName' WHERE `event`.`event` = '$eventOriginalName';";
-	//update any values in event year that are linked to the event
-	$query .= " UPDATE `eventyear` SET `event`= '$eventName' WHERE `eventyear`.`event` = '$eventOriginalName'";
+	$query = "UPDATE `event` SET `event`.`event` = '$eventName', `event`.`type` = '$typeName' WHERE `event`.`eventID` = $eventID";
 }
-$result = $mysqlConn->multi_query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if ($result)
 {

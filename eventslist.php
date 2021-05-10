@@ -12,21 +12,21 @@ $query = "SELECT * from `event`";// where `field` = $fieldId";
 
 if($year)
 {
-	$yearQuery = "SELECT `event` FROM `eventyear` WHERE `year` = $year";
+	$yearQuery = "SELECT `eventID` FROM `eventyear` WHERE `year` = $year";
 	// echo $yearQuery;
 	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-	$eventNames = "";
+	$eventIDs = "";
 	while ($row = $resultYear1->fetch_assoc()):
 		//make array of results
-		$eventNames .= $eventNames!=""?", ":"";
-		$eventNames .= "'".$row['event']."'";
+		$eventIDs .= $eventIDs!=""?", ":"";
+		$eventIDs .= "'".$row['eventID']."'";
 	endwhile;
 	// echo $eventNames;
 
-	if($eventNames !="")
+	if($eventIDs  !="")
 	{
-		$query.=" where `event`.`event` IN ($eventNames)";
+		$query.=" where `event`.`eventID` IN ($eventIDs)";
 	}
 	else {
 		echo "There are no events in the year $year.";
@@ -34,7 +34,11 @@ if($year)
 	}
 }
 
-
+$query.=" ORDER BY `event`";
+if($_SESSION['userData']['privilege']>2 ) //TODO: Remove in production
+{
+	echo $query ;
+}
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
@@ -47,11 +51,11 @@ if($result)
 		//check for permissions to create edit an event btn
 		if($_SESSION['userData']['privilege']>2 )
 		{
-			$output .="<a href='javascript:prepareEventsEditPage(\"".$mysqlConn->real_escape_string($row['event']). "\")'>Edit</a>";
+			$output .="<a href='javascript:prepareEventsEditPage(\"".$row['eventID']. "\")'>Edit</a>";
 		}
 
 
-		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`event` = '".$mysqlConn->real_escape_string($row['event'])."' ORDER BY `eventyear`.`year` ASC";// where `field` = $fieldId";
+		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`eventID` = '".($row['eventID'])."' ORDER BY `eventyear`.`year` ASC";
 		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 		$yearCollection = "";

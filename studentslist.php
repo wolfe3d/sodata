@@ -9,7 +9,7 @@ $output = "";
 
 $last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
 $first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
-$eventName = isset($_POST['eventsList'])?$mysqlConn->real_escape_string($_POST['eventsList']):0;
+$eventID = intval($_POST['eventsList']);
 $courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
 $active = intval($_POST['active']);
 
@@ -33,17 +33,17 @@ else if($first)
 {
 	$query .= " where $activeQuery t1.`first` LIKE '$first'";
 }
-else if($active && !$courseID && !$eventName)
+else if($active && !$courseID && !$eventID)
 {
 	$query .= " where t1.`active` = 1";
 }
 
-if($eventName)
+if($eventID)
 {
 	//Search for student signed up for event
 	//TODO: Also search for students who have competed in events previously
 	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE $activeQuery t3.`event` LIKE '$eventName'";
+	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `eventchoice` ON `student`.`studentID`=`eventchoice`.`studentID` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` WHERE $activeQuery `eventyear`.`eventID`=$eventID";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
@@ -62,7 +62,7 @@ if($eventName)
 		echo $query;
 	}
 	else {
-		echo "No one is signed up for the $eventName.";
+		echo "No one is signed up for the $eventID.";
 		return 0;
 	}
 }
@@ -151,7 +151,7 @@ if($result)
 			}
 		}
 		//find student's events
-		$query = "SELECT * FROM `eventchoice` t1 INNER JOIN `eventyear` t2 ON t1.`eventID`=t2.`eventID` WHERE t1.`studentID`=".$row['studentID'];// where `field` = $fieldId";
+		$query = "SELECT * FROM `eventchoice` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `eventchoice`.`studentID`=".$row['studentID'];// where `field` = $fieldId";
 		$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if (mysqli_num_rows($resultEventsChoice)>0)
 		{

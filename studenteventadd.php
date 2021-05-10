@@ -6,10 +6,10 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 $output = "";
 
 $studentID = intval($_REQUEST['studentID']);
-$eventID = intval($_REQUEST['eventID']);
+$eventyearID = intval($_REQUEST['eventyearID']);
 $priority = intval($_REQUEST['priority']);
 
-$query = "INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) VALUES (NULL, '$studentID', '$eventID', '$priority') ";
+$query = "INSERT INTO `eventchoice` (`studentID`, `eventyearID`, `priority`) VALUES ('$studentID', '$eventyearID', '$priority') ";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo $mysqlConn->insert_id;

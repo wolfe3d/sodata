@@ -61,8 +61,9 @@ if(!$row)
 }
 
 //find student's events
-$query = "SELECT * FROM `eventchoice` t1 INNER JOIN `eventyear` t2 ON t1.`eventID`=t2.`eventID` WHERE `studentID`=$studentID ORDER BY t2.`year` DESC, t1.`priority` ASC";// where `field` = $fieldId";
+$query = "SELECT * FROM `eventchoice` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `eventchoice`.`studentID`=$studentID ORDER BY `eventyear`.`year` DESC, `eventchoice`.`priority` ASC";
 $resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+echo $query;
 $eventsChoice ="";
 if(mysqli_num_rows($resultEventsChoice)>0)
 {
@@ -118,7 +119,7 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 				<legend>Events</legend>
 				<div id="events"><?=$eventsChoice?></div>
 				<div id="studentEventAddDiv"></div>
-				<a id="studentEventAdd" href="javascript:studentEventAddChoice(<?=$studentID?>)" href="">Add Event</a>
+				<a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
 			</fieldset>
 			<fieldset>
 				<legend>Courses Completed</legend>

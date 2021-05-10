@@ -16,7 +16,7 @@ if(empty($year))
 	$year = getCurrentSOYear();
 }
 
-$query .= "SELECT * from `eventyear` t1 INNER JOIN `event` t2 ON t1.`event`= t2.`event` LEFT JOIN `student` t3 ON t1.`studentID`= t3.`studentID` WHERE t1.`year` LIKE '$year' ORDER BY t1.`event` ASC ";
+$query .= "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` LEFT JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `event`.`event` ASC ";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $events = "";
@@ -28,7 +28,7 @@ while ($row = $result->fetch_assoc()):
 		$leaderStr ="Edit";
 		$leaderName = ", " . $row["first"] . " " . $row["last"];
 	}
-	$events .= "<div id='eventyear-".$row["eventID"]."'>".$mysqlConn->real_escape_string($row["event"])." - ". $row["type"] ."$leaderName <a href='javascript:eventYearLeader(\"".$row["eventID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventID"]."\")'>Remove Event</a></div>";
+	$events .= "<div id='eventyear-".$row["eventyearID"]."'>".$mysqlConn->real_escape_string($row["event"])." - ". $row["type"] ."$leaderName <a href='javascript:eventYearLeader(\"".$row["eventyearID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove Event</a></div>";
 endwhile;
 ?>
 <form id="addTo" method="post" action="eventyearadd.php">

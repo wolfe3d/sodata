@@ -8,14 +8,14 @@ if($_SESSION['userData']['privilege']<3 )
 	exit();
 }
 
-$eventID = intval($_REQUEST['eventID']);
-if(empty($eventID))
+$eventyearID = intval($_REQUEST['eventyearID']);
+if(empty($eventyearID))
 {
-	echo "Missing the eventID.  Cannot remove from database.";
+	echo "Missing the eventyearID.  Cannot remove from database.";
 	exit;
 }
 
-$query = "DELETE FROM `eventyear` WHERE `eventyear`.`eventID` = $eventID";
+$query = "DELETE FROM `eventyear` WHERE `eventyear`.`eventyearID` = $eventyearID";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo "1";
@@ -23,6 +23,6 @@ if ($mysqlConn->query($query) === TRUE)
 else
 {
 	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	echo "0";
+	echo $mysqlConn->error;
 }
 ?>
