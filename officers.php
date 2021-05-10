@@ -2,6 +2,7 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+userCheckPrivilege(1);
 require_once  ("functions.php");
 //TODO: Add year choice to look at previous years
 //Get current year
@@ -59,7 +60,7 @@ if($result)
 	$output .="</div>";
 }
 
-$query = "SELECT * FROM `eventyear` t1 INNER JOIN `student` t2 ON t1.`studentID`=t2.`studentID` WHERE `year`=$year";
+$query = "SELECT * FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year`=$year";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 

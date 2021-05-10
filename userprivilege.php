@@ -1,13 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
-
-//Check permissions to make these SDO_DAS_ChangeSummary
-if($_SESSION['userData']['privilege']<4)
-{
-	echo "The current user does not have privilege for this change.";
-	exit;
-}
+userCheckPrivilege(4);
 
 //text output
 $userID = intval($_REQUEST['userID']);

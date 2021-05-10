@@ -565,6 +565,8 @@ function prepareEventsYearAdd()
 	$("#year").change(function(){
 			prepareEventsYearPage($( "#year" ).val());
 	});
+	$("#addLeader").hide();
+	$("#eventID").hide();
 	// validate event form on keyup and submit
 	$("#addTo").validate({
 		rules: {
@@ -605,6 +607,83 @@ function prepareEventsYearAdd()
 		});
 		}
 	});
+}
+
+function eventYearLeader(myID)
+{
+	$("#mainHeader").html("Edit an Event's Leader");
+  var eventName = $("#eventyear-"+myID + " .event").html();
+	var eventLeaderName = $( "#eventyear-"+myID + " .eventleader" ).data( "id" );
+	var year = $( "#year" ).val();
+	 window.location.hash = '#eventyear-edit-leader-'+ myID;
+			var request = $.ajax({
+			 url: "eventyearleaderaddpop.php",
+			 cache: false,
+			 method: "POST",
+			 data: {},
+			 dataType: "html"
+			});
+
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+			 $(".modified").remove(); //removes any old update notices
+
+				if(html)
+				{
+					$("#mainContainer").html(html);
+					$("#eventID").html(myID).hide();
+					$("#eventName").html(eventName);
+					$("#year").html(year);
+					$("#student").val(eventLeaderName);
+					eventYearLeaderPrepare(myID);
+				}
+				else
+				{
+					$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
+				}
+			});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#mainContainer").html("Add leader to your eventyear error");
+		});
+}
+function eventYearLeaderPrepare(myID)
+{
+	$("#addLeader").one( "submit", function( event ) {
+		event.preventDefault();
+
+			var request = $.ajax({
+			 url: "eventyearleaderadd.php",
+			 cache: false,
+			 method: "POST",
+			 data: {eventyearID: myID, studentID: $("#student").val()},
+			 dataType: "html"
+			});
+
+			request.done(function( html ) {
+			 //$("label[for='" + field + "']").append(html);
+			 $(".modified").remove(); //removes any old update notices
+
+				if(html>0)
+				{
+					prepareEventsYearPage(2022);
+					//add eventleader to list
+					//$("#eventyear-"+ $("#eventID").html() + " .eventleader").html(" - " + $('#student option:selected').text());
+					//store the student id
+					//$( "#eventyear-"+ $("#eventID").html() + " .eventleader" ).data( "id", $("#student").val());
+					//change link to Edit Leader
+					//$("#leaderlink-"+$("#eventID").html()).html("Edit Leader");
+				}
+				else
+				{
+					$("#addLeader").append("<div class='modified' style='color:red'>"+html+"</div>");
+				}
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+		 		$("#addLeader").append("Add leader to your eventyear error");
+			});
+		});
 }
 function eventYearRemove(value)
 {

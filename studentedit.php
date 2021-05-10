@@ -1,6 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+userCheckPrivilege(3);
 require_once  ("functions.php");
 
 
@@ -11,12 +12,6 @@ $studentID = intval($_REQUEST['studentID']);
 if(empty($studentID))
 {
 	//no student id was sent, so initiate adding a student
-	//check for permissions to add a student
-	if($_SESSION['userData']['privilege']<2 )
-	{
-		echo "You do not have permissions to add a student.";
-		exit();
-	}
 	$defaultYear = date("Y")+4;
 	$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
 	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

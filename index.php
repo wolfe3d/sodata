@@ -1,8 +1,9 @@
 <?php
 require_once ("../connectsodb.php");
+require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 
 //If user is logged in to this site, then the following redirects the user to the database program.
-if($_SESSION['userData'])
+if(userHasPrivilege(1))
 {
 	header("Location:data.php");
 	exit;

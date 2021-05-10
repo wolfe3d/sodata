@@ -1,14 +1,9 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+userCheckPrivilege(3);
 require_once  ("functions.php");
 
-//check for permissions to add/edit an event
-if($_SESSION['userData']['privilege']<3 )
-{
-	echo "You do not have permissions to add/edit an event.";
-	exit();
-}
 
 $year = intval($_POST['year']);
 if(empty($year))
@@ -26,9 +21,9 @@ while ($row = $result->fetch_assoc()):
 	if($row['studentID'])
 	{
 		$leaderStr ="Edit";
-		$leaderName = ", " . $row["first"] . " " . $row["last"];
+		$leaderName = " - " . $row["last"] . ", " . $row["first"];
 	}
-	$events .= "<div id='eventyear-".$row["eventyearID"]."'>".$mysqlConn->real_escape_string($row["event"])." - ". $row["type"] ."$leaderName <a href='javascript:eventYearLeader(\"".$row["eventyearID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove Event</a></div>";
+	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'>".$row["event"]." - ". $row["type"] ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='javascript:eventYearLeader(\"".$row["eventyearID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove Event</a></div>";
 endwhile;
 ?>
 <form id="addTo" method="post" action="eventyearadd.php">

@@ -10,8 +10,9 @@ function getAllStudents($db, $active)
 	if($result)
 	{
 		$myOutput .="<select id='student' name='student' type='text'>";
+		$myOutput.="<option value = '0'>None</option>";
 		while ($row = $result->fetch_assoc()):
-			//$selected = $row['type']==$type ? " selected " : "";
+			$selected = "";//$row['type']==$type ? " selected " : "";
 			$myOutput.="<option value = '".$row['studentID']."'$selected>".$row['last'].", ".$row['first']."</option>";
 		endwhile;
 		$myOutput .="</select>";

@@ -1,12 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
-
-if($_SESSION['userData']['privilege']<3 )
-{
-	echo "You do not have permissions to add/edit an event.";
-	exit();
-}
+userCheckPrivilege(3);
 
 $year = intval($_POST['year']);
 $eventID = intval($_POST['eventsList']);
