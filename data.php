@@ -68,7 +68,7 @@ userCheckPrivilege(1);
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
 		<script src="data.js"></script>
-		<link rel="shortcut icon" href="scioly.ico">
+		<link rel="shortcut icon" href="waltonSO126.png">
 		<!--<link rel="stylesheet" href="css/jquery.modal.min.css" /> <!--Modal plugin -->
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
