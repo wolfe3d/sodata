@@ -666,7 +666,7 @@ function eventYearLeaderPrepare(myID)
 
 				if(html>0)
 				{
-					prepareEventsYearPage(2022);
+					prepareEventsYearPage($("#year").html());
 					//add eventleader to list
 					//$("#eventyear-"+ $("#eventID").html() + " .eventleader").html(" - " + $('#student option:selected').text());
 					//store the student id
