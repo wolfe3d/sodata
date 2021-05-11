@@ -15,7 +15,7 @@ require_once ("functions.php");
 	</div>
 	<br>
 	<div>
-		<input class="button" type="button" onclick="$.modal.close()" value="Cancel" />
+		<input class="button" type="button" onclick="javascript:prepareEventsYearPage($('#year').html())" value="Cancel" />
 		<input class="submit" type="submit" value="Add">
 	</div>
 </form>
