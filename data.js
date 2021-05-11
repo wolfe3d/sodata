@@ -122,7 +122,7 @@ function prepareStudentsPage()
 
 function studentRemove(myStudentID, studentName)
 {
- if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This is removes all of their data and it is permanent!!!"))
+ if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
  {
 		var request = $.ajax({
 		 url: "studentremove.php",
@@ -252,7 +252,7 @@ function studentEventRemove(value)
 function studentEventAdd(student, field, value)
 {
  // validate signup form on keyup and submit
- alert("got"+$("#eventsList").val());
+ //alert("got"+$("#eventsList").val());
  var request = $.ajax({
 	 url: "studenteventadd.php",
 	 cache: false,
