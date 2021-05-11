@@ -17,33 +17,33 @@ $active = intval($_POST['active']);
 $activeQuery ="";
 if($active)
 {
-	$activeQuery = " t1.`active` = 1 AND ";
+	$activeQuery = " `student`.`active` = 1 AND ";
 }
 
-$query = "SELECT * from `student` t1";
+$query = "SELECT * from `student`";
 //check to see what is searched for
 if($last&&$first)
 {
-	$query .= " where $activeQuery t1.`last` LIKE '$last' AND t1.`first` LIKE '$first'";
+	$query .= " where $activeQuery `student`.`last` LIKE '$last' AND `student`.`first` LIKE '$first'";
 }
 else if($last)
 {
-	$query .= " where $activeQuery  t1.`last` LIKE '$last'";
+	$query .= " where $activeQuery  `student`.`last` LIKE '$last'";
 }
 else if($first)
 {
-	$query .= " where $activeQuery t1.`first` LIKE '$first'";
+	$query .= " where $activeQuery `student`.`first` LIKE '$first'";
 }
 else if($active && !$courseID && !$eventID)
 {
-	$query .= " where t1.`active` = 1";
+	$query .= " where `student`.`active` = 1";
 }
 
 if($eventID)
 {
 	//Search for student signed up for event
 	//TODO: Also search for students who have competed in events previously
-	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
 	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `eventchoice` ON `student`.`studentID`=`eventchoice`.`studentID` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` WHERE $activeQuery `eventyear`.`eventID`=$eventID";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -59,11 +59,11 @@ if($eventID)
 	//output individual students who have signed up for an event
 	if($studentIDs !="")
 	{
-		$query.=" where $activeQuery t1.`studentID` IN ($studentIDs)";
-		echo $query;
+		$query.=" where $activeQuery `student`.`studentID` IN ($studentIDs)";
+		echo userHasPrivilege(3)?$query:"";
 	}
 	else {
-		echo "No one is signed up for the $eventID.";
+		echo "No one is signed up for this event($eventID).";
 		return 0;
 	}
 }
@@ -71,8 +71,8 @@ if($eventID)
 if($courseID)
 {
 	//Search for student signed up for event
-	//$query = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `eventchoice` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT t1.`studentID` from `student` t1 INNER JOIN `coursecompleted` t2 ON t1.`studentID`=t2.`studentID` INNER JOIN `courseenrolled` t3 ON t2.`studentID`=t3.`studentID` WHERE $activeQuery t2.`courseID`=$courseID OR t3.`courseID`=$courseID ";
+	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
+	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `coursecompleted` ON `student`.`studentID`=`coursecompleted`.`studentID` INNER JOIN `courseenrolled` ON `student`.`studentID`=`courseenrolled`.`studentID` WHERE $activeQuery `coursecompleted`.`courseID`=$courseID OR `courseenrolled`.`courseID`=$courseID ";
 	$output .=$eventQuery;
 	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
@@ -87,7 +87,7 @@ if($courseID)
 	//output individual students who have signed up for an event
 	if($studentIDs !="")
 	{
-		$query.=" where $activeQuery t1.`studentID` IN ($studentIDs)";
+		$query.=" where $activeQuery `student`.`studentID` IN ($studentIDs)";
 	}
 	else {
 		echo "No one is signed up for this course with ID=$courseID.";
@@ -95,7 +95,7 @@ if($courseID)
 	}
 }
 
-$query .= " ORDER BY t1.`last` ASC";
+$query .= " ORDER BY `student`.`last` ASC";
 $output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 

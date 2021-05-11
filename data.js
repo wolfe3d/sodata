@@ -86,7 +86,7 @@ function getList(myPage, myData)
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-	 $("#list").html("Search Error");
+	 $("#list").html("Search Error" + textStatus);
 	});
 }
 
