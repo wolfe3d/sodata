@@ -38,7 +38,7 @@ endwhile;
 		<?php include("eventsselectb.php");?>
 	</p>
 	<p>
-		<input class="button" type="button" onclick="window.location='#events'" value="Return" />
-		<input class="submit" type="submit" value="Add">
+		<input class="button fa" type="button" onclick="window.location='#events'" value="&#xf0a8; Return" />
+		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</p>
 </form>

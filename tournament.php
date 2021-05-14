@@ -1,40 +1,34 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+
 userCheckPrivilege(1);
 //text output
 $output = "";
 
-$name = $mysqlConn->real_escape_string($_POST['tournamentName']);
-$year = intval($_POST['tournamentYear']);
+$tournamentID = $mysqlConn->real_escape_string($_REQUEST['tournamentID']);
 
-$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` ";
-//check to see what is searched for
-if($name&&$year)
-{
-	$query .= " where `tournamentinfo`.`name` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
-}
-else if($name)
-{
-	$query .= " where `tournamentinfo`.`name` LIKE '$name'";
-}
-else if($year)
-{
-	$query .= " where `tournament`.`year` LIKE '$year' ";
-}
-
-$query .= " ORDER BY `tournamentinfo`.`name` ASC";
-$output .=userHasPrivilege(3)?$query:"";
+$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-if($result)
+/check to make sure the query was valid
+if(empty($result))
 {
-	$output .="<div>";
-	while ($row = $result->fetch_assoc()):
-		$tournamentTitle = $row['name']." - ".$row['year'];
-		$output .="<hr><h2>".$tournamentTitle."</h2>";
-		$output .="<input class='button fa' type='button' onclick='prepareTournamentPage(\"".$row['tournamentID']."\", \"". $tournamentTitle ."\")' value='&#xf108; View Details' />";
+	echo "Query Student Edit Failed.";
+	exit();
+}
 
+	$output .="<div>";
+ if($row = $result->fetch_assoc())
+ {
+		if(userHasPrivilege(3))
+		{
+			$output .="<div><input class='button fa' type='button' onclick='prepareTournamentEdit(\"".$row['tournamentID']."\")' value='&#xf0ad; Edit Information' />";
+			$output .=" <input class='button fa' type='button' onclick='tournamentAddTeams(\"".$row['tournamentID']."\")' value='&#xf0c0; Add Teams' />";
+			$output .=" <input class='button fa' type='button' onclick='tournamentAddTimeBlocks(\"".$row['tournamentID']."\")' value='&#xf017; Add Time Blocks' />";
+			$output .=" <input class='button fa' type='button' onclick='tournamentAddEvents(\"".$row['tournamentID']."\")' value='&#xf0c3; Add Events' />";
+			$output .="</div><br>";
+		}
 		if($row['websiteHost'])
 		{
 			$output .="<div>Host: <a href='".$row['websiteHost']."'>".$row['host']."</a></div>";
@@ -86,14 +80,9 @@ if($result)
 				$monthName = $dateObj->format('F'); // March
 				$output .="<div>Normal Month Registration: ".$monthName."</div>";
 			}
-
-			$output .="<div>Host: ".$row['host']."</div>";
 		}
-
-		$output .= "Add Team Schedules Here";
-
-	endwhile;
+	}
 	$output .="</div>";
-}
+	$output .= "<input class='button fa' type='button' onclick=\"window.location='#tournaments'\" value='&#xf0a8; Return' />";
 echo $output;
 ?>

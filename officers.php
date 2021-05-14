@@ -8,7 +8,7 @@ require_once  ("functions.php");
 //Get current year
 $year = getCurrentSOYear();
 $yearBeg = $year-1;
-$query = "SELECT * FROM `officer` t1 INNER JOIN `student` t2 ON t1.`studentID`=t2.`studentID` WHERE `year`=$year";
+$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -18,7 +18,7 @@ if($result)
 	$output .='<input class="button fa" type="button" onclick="javascript:needtoadd()" value="&#xf002; Find" />';
 	if($_SESSION['userData']['privilege']>3 )
 	{
-		$output .=' <input class="button fa" type="button" onclick="javascript:prepareOfficerAdd()" value="&#xf055; Add Officer" />';
+		$output .=' <input class="button fa" type="button" onclick="javascript:prepareOfficerAdd()" value="&#xf067; Add Officer" />';
 	}
 	$output .='<br><br>';
 	$output .="<h2>Officers May $yearBeg - $year</h2>";

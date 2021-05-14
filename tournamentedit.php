@@ -8,13 +8,14 @@ require_once  ("functions.php");
 //text output
 $output = "";
 
-$studentID = intval($_REQUEST['studentID']);
+$tournamentID = intval($_REQUEST['tournamentID']);
 if(empty($studentID))
 {
 	//no student id was sent, so initiate adding a student
 	$defaultYear = date("Y")+4;
-	$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	//TODO: ADD tournament if it does not exist
+	//$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+	//$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if ($result === TRUE)
 	{
 		$studentID =  $mysqlConn->insert_id;
@@ -26,7 +27,7 @@ if(empty($studentID))
 }
 
 //check to see if user has a valid studentID
-$query = "SELECT * FROM `student` WHERE `student`.`studentID` = $studentID";
+$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 //check to make sure the query was valid
@@ -54,70 +55,46 @@ if(!$row)
 	exit;
 }
 
-//find student's events
-$query = "SELECT * FROM `eventchoice` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `eventchoice`.`studentID`=$studentID ORDER BY `eventyear`.`year` DESC, `eventchoice`.`priority` ASC";
-$resultEventsChoice = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-echo $query;
-$eventsChoice ="";
-if(mysqli_num_rows($resultEventsChoice)>0)
-{
-	$eventsChoice .="<div>Year-Priority Event Name</div>";
-	while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:studentEventRemove('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
-	endwhile;
-}
-
-$privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 ?>
-<form id="addTo" method="post" action="studentUpdate.php">
+<form id="addTo" method="post" action="tournamentUpdate.php">
 		<fieldset>
-			<legend>Edit Student</legend>
-			<?php if($_SESSION['userData']['privilege']>2)
-			{				?>
+			<legend>Edit Tournament</legend>
 			<p>
-				<input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?> onchange="studentUpdate(<?=$studentID?>,'student',this.id,+$(this).is(':checked'))"><label for="active">Active</label>
-			</p>
-		<?php } ?>
-			<p>
-				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text" value="<?=$row['first']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="dateTournament">Competition Date</label>
+				<input id="dateTournament" name="dateTournament" type="dateTournament" value="<?=$row['dateTournament']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text" value="<?=$row['last']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="dateRegistration">Registration Date</label>
+				<input id="dateRegistration" name="dateRegistration" type="dateRegistration" value="<?=$row['dateRegistration']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="yearGraduating">Year Graduating</label>
-				<input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="year">Competition Year (National Rules Year)</label>
+				<input id="year" name="year" type="text" value="<?=$row['year']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<!--Changing Google Email may break functions TODO: Think about changing this ability-->
-				<label for="email">Google Email</label>
-				<input id="email" name="email" type="email" value="<?=$row['email']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
+				<input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="emailSchool">School Email</label>
-				<input id="emailSchool" name="emailSchool" type="email" value="<?=$row['emailSchool']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="numberTeams">Number of Teams Registered</label>
+				<input id="numberTeams" name="numberTeams" type="text" value="<?=$row['numberTeams']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="phoneType">Phone Type</label>
-				<select id="phoneType" name="text" value="<?=$row['phoneType']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
-					<?=getPhoneTypes($mysqlConn)?>
-				</select>
+				<label for="weighting">Weighting</label>
+				<input id="weighting" name="weighting" type="text" value="<?=$row['weighting']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
-				<label for="phone">Phone</label>
-				<input id="phone" name="phone" type="tel" value="<?=$row['phone']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<label for="note">Note(s)</label>
+				<input id="note" name="note" type="text" value="<?=$row['note']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<fieldset>
-				<legend>Events</legend>
-				<div id="events"><?=$eventsChoice?></div>
-				<div id="studentEventAddDiv"></div>
-				<a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
+				<legend>Tournament Information</legend>
+				<div id="name"></div>
+				<a id="name" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
 			</fieldset>
 			<fieldset>
-				<legend>Courses Completed</legend>
-				<div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
+				<legend>Host</legend>
+				<div id="host"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
 				<div id="addcoursecompletedDiv"></div>
 				<a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
 			</fieldset>

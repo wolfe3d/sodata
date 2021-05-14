@@ -726,30 +726,6 @@ function prepareTournamentsPage()
 		//Load Students
 		getList("tournamentslist.php",{});
 			// validate signup form on keyup and submit
-		$("#addTo").validate({
-			rules: {
-				first: "required",
-				last: "required",
-				yearGraduating: "required",
-				email: {
-					required: true,
-					email: true
-				},
-			},
-			messages: {
-				first: "*Please enter the student\'s first name",
-				last: "*Please enter the student\'s last name",
-				yearGraduating: {
-					required: "*Enter the year the student is graduating",
-				},
-				email: {
-					required: "*Enter the student\'s email.",
-				},
-			},
-			submitHandler: function(form) {
-                form.submit();
-            }
-		});
 
 		//when Find by Name is clicked, this initiates the search
 		$("#findTournament").on( "submit", function( event ) {
@@ -763,6 +739,36 @@ function prepareTournamentsPage()
 			}
 }
 
+function prepareTournamentPage(myID, myName)
+{
+	var request = $.ajax({
+	 url: "tournament.php",
+	 cache: false,
+	 method: "POST",
+	 data: {tournamentID: myID},
+	 dataType: "html"
+	});
+
+	request.done(function( html ) {
+	 //$("label[for='" + field + "']").append(html);
+	 $(".modified").remove(); //removes any old update notices
+
+		if(html)
+		{
+			window.location.hash = '#tournament-view-'+ myID;
+			$("#mainContainer").html(html);
+			$("#mainHeader").html(myName);
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").append("<div class='modified' style='color:red'>"+textStatus+"</div>");
+	});
+}
 ///////////////////
 ///Officer and Event Leader functions
 //////////////////
