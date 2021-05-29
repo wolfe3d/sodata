@@ -33,7 +33,7 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$tournamentTitle = $row['name']." - ".$row['year'];
 		$output .="<hr><h2>".$tournamentTitle."</h2>";
-		$output .="<input class='button fa' type='button' onclick='prepareTournamentPage(\"".$row['tournamentID']."\", \"". $tournamentTitle ."\")' value='&#xf108; View Details' />";
+		$output .="<input class='button fa' type='button' onclick='window.location.hash=\"tournament-view-".$row['tournamentID']."\"' value='&#xf108; View Details' />";
 
 		if($row['websiteHost'])
 		{

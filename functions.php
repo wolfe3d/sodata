@@ -159,35 +159,86 @@ function editPrivilege($privilege,$userID,$db)
 	return $output;
 }
 //Check to make sure google is logged in and set variables
-function checkGoogle($gClient,$db)
+function checkGoogle($gpUserProfile,$db)
 {
-	// Include Google API client library
-  require_once 'google-api-php-client/vendor/autoload.php';
 	// Include User library file
 	require_once 'User.class.php';
 
-  $google_oauth =new Google_Service_Oauth2($gClient);
-  $gpUserProfile = $google_oauth->userinfo->get();
+  // Initialize User class
+  $user = new User($db);
 
-      // Initialize User class
-      $user = new User($db);
+  // Getting user profile info
+  $gpUserData = array();
+  $gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
+  $gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
+  $gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
+  $gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
+  $gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
+  $gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
+  $gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
 
-      // Getting user profile info
-      $gpUserData = array();
-      $gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
-      $gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
-      $gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
-      $gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
-      $gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
-      $gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
-      $gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
+  // Insert or update user data to the database
+  $gpUserData['oauth_provider'] = 'google';
+  $userData = $user->checkUser($gpUserData);
 
-      // Insert or update user data to the database
-      $gpUserData['oauth_provider'] = 'google';
-      $userData = $user->checkUser($gpUserData);
+  // Storing user data in the session
+  $_SESSION['userData'] = $userData;
+}
 
-      // Storing user data in the session
-      $_SESSION['userData'] = $userData;
+//convert rgb color to hexadecimal
+function rgb($rgb) {
+    $ret = '';
+    foreach ($rgb as $x) {
+        // Make sure the RGB values are 0-255...
+        $x = max(0, min(255, $x));
+        // create a 2 digit hex value for this color component...
+        $ret .= ($x < 16 ? '0'.dechex($x) : dechex($x));
+    }
+    return '#'.$ret;
+}
+
+// Returns a color that is part of the rainbow -- not in order of ROYGBIV
+function rainbow($i) {
+    $rgb = array(255,255,0); //yellow
+    // Go through the RGB values and adjust the values by $amount...
+		switch($i) {
+			case 1:
+				$rgb = array(255,128,0); //orange
+				break;
+			case 2:
+				$rgb = array(255,0,0); //red
+				break;
+			case 3:
+				$rgb = array(255,0,128); //Rose
+				break;
+			case 4:
+				$rgb = array(255,0,255); //Magenta
+				break;
+			case 5:
+				$rgb = array(128,0,255); //violet
+				break;
+			case 6:
+				$rgb = array(0,0,255); //blue
+				break;
+			case 7:
+				$rgb = array(0,128,255); //Azure
+				break;
+			case 8:
+				$rgb = array(0,255,255); //cyan
+				break;
+			case 9:
+				$rgb = array(0,255,128); //Spring Green
+				break;
+			case 10:
+				$rgb = array(0,255,0); //Green
+				break;
+			case 11:
+				$rgb = array(128,255,0); //Chartreuse
+				break;
+		  default:
+		    // code block
+		}
+    return rgb($rgb);
 }
 
 /**

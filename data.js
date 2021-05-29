@@ -2,32 +2,35 @@ $().ready(function() {
 //wait for the page to load before the following is run
 	checkPage();
 	$(window).on('hashchange', function() {
-		var splitHash = location.hash.substr(1).split("-");
-		if(splitHash[1])
-		{
-			//alert (splitHash[1]);
-			//ignore hashes with dashes that are used for edit and other single pages
-			//TODO: Maybe add special functions for some edit pages later.
-		}
-		else
-		{
 				checkPage();
-		}
 	});
 	setTimeout(function() { loadpage("user") }, 3500000); //TODO: Update this as long as user is active
 });
 function checkPage(){
-	var myHash = location.hash.substr(1);
-	$("section:not(#banner)").hide();
-	if(myHash)
+	var splitHash = location.hash.substr(1).split("-");
+	if(splitHash[1])
 	{
-		loadpage(myHash);
-		$("#mainHeader").html(myHash);
+		//alert (splitHash[1]);
+		//ignore hashes with dashes that are used for edit and other single pages
+		//TODO: Maybe add special functions for some edit pages later.
+		if(splitHash[0]=="tournament")
+		{
+				tournament(splitHash[2], splitHash[1]);
+		}
 	}
 	else
 	{
-		loadpage("user");
-		$( "#main" ).show( "slow", function() {	});
+		$("section:not(#banner)").hide();
+		if(splitHash[0])
+		{
+			loadpage(splitHash[0]);
+			$("#mainHeader").html(splitHash[0]);
+		}
+		else
+		{
+			loadpage("user");
+			$( "#main" ).show( "slow", function() {	});
+		}
 	}
 }
 function loadpage(myUrl)
@@ -386,11 +389,11 @@ function courseCompleted(value, courseName)
  });
 }
 
-function studentUpdate(myID,table,field,value)
+function fieldUpdate(myID,table,field,value)
 {
  // validate signup form on keyup and submit
  var request = $.ajax({
-	 url: "studentupdate.php",
+	 url: "fieldupdate.php",
 	 cache: false,
 	 method: "POST",
 	 data: { myid: myID, mytable:table, myfield : field, myvalue : value },
@@ -739,13 +742,13 @@ function prepareTournamentsPage()
 			}
 }
 
-function prepareTournamentPage(myID, myName)
+function tournament(myID, type)
 {
 	var request = $.ajax({
-	 url: "tournament.php",
+	 url: "tournament"+type+".php",
 	 cache: false,
 	 method: "POST",
-	 data: {tournamentID: myID},
+	 data: {myID: myID},
 	 dataType: "html"
 	});
 
@@ -755,9 +758,17 @@ function prepareTournamentPage(myID, myName)
 
 		if(html)
 		{
-			window.location.hash = '#tournament-view-'+ myID;
+			//window.location.hash = '#tournament-view-'+ myID;
 			$("#mainContainer").html(html);
-			$("#mainHeader").html(myName);
+			$.when( $("#tournamentTitle") ).done(function( x ) {
+				//changes title after page loads
+				$("#tournamentTitle").hide();
+  			$("#mainHeader").html($("#tournamentTitle").html());
+			});
+			$.when( $(":submit") ).done(function( x ) {
+				addToSubmit(myID);
+			});
+			//$("#mainHeader").html(myName);
 		}
 		else
 		{
@@ -768,6 +779,50 @@ function prepareTournamentPage(myID, myName)
 	request.fail(function( jqXHR, textStatus ) {
 		$("#mainContainer").append("<div class='modified' style='color:red'>"+textStatus+"</div>");
 	});
+}
+
+//TODO Work on this function to make it as resusable as possible
+function addToSubmit(myID)
+{
+	$("#addTo").validate({
+		submitHandler: function(form) {
+			var formData = $("#addTo").serialize();
+			formData+='&tournamentID='+myID;
+			event.preventDefault();
+			//alert($("#addTo").serialize());
+			var request = $.ajax({
+			 url: $("#addTo").attr('action'), //"tournamentteaminsert.php",
+			 cache: false,
+			 method: "POST",
+			 data:  formData, //TODO:add for teamID for edited ones
+			 dataType: "html"
+			});
+
+		request.done(function( html ) {
+		 //$("label[for='" + field + "']").append(html);
+		 $(".modified").remove(); //removes any old update notices
+			if(html>0)
+			{
+				window.location.hash = '#tournament-view-'+myID;
+			}
+			else
+			{
+				$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+		 $("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
+		});
+		}
+	});
+
+	$('input').each(function() {
+					$(this).rules('add', {
+							required: true,
+					});
+			});
+
 }
 ///////////////////
 ///Officer and Event Leader functions

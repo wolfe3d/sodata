@@ -69,45 +69,45 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 
 $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 ?>
-<form id="addTo" method="post" action="studentUpdate.php">
+<form id="addTo" method="post" action="fieldUpdate.php">
 		<fieldset>
 			<legend>Edit Student</legend>
 			<?php if($_SESSION['userData']['privilege']>2)
 			{				?>
 			<p>
-				<input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?> onchange="studentUpdate(<?=$studentID?>,'student',this.id,+$(this).is(':checked'))"><label for="active">Active</label>
+				<input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?> onchange="fieldUpdate(<?=$studentID?>,'student',this.id,+$(this).is(':checked'))"><label for="active">Active</label>
 			</p>
 		<?php } ?>
 			<p>
 				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text" value="<?=$row['first']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="first" name="first" type="text" value="<?=$row['first']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text" value="<?=$row['last']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="last" name="last" type="text" value="<?=$row['last']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<label for="yearGraduating">Year Graduating</label>
-				<input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<!--Changing Google Email may break functions TODO: Think about changing this ability-->
 				<label for="email">Google Email</label>
-				<input id="email" name="email" type="email" value="<?=$row['email']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="email" name="email" type="email" value="<?=$row['email']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<label for="emailSchool">School Email</label>
-				<input id="emailSchool" name="emailSchool" type="email" value="<?=$row['emailSchool']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="emailSchool" name="emailSchool" type="email" value="<?=$row['emailSchool']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<p>
 				<label for="phoneType">Phone Type</label>
-				<select id="phoneType" name="text" value="<?=$row['phoneType']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<select id="phoneType" name="text" value="<?=$row['phoneType']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 					<?=getPhoneTypes($mysqlConn)?>
 				</select>
 			</p>
 			<p>
 				<label for="phone">Phone</label>
-				<input id="phone" name="phone" type="tel" value="<?=$row['phone']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+				<input id="phone" name="phone" type="tel" value="<?=$row['phone']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 			</p>
 			<fieldset>
 				<legend>Events</legend>
@@ -131,38 +131,38 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 				<legend>Parent 1</legend>
 				<p>
 					<label for="parent1First">First</label>
-					<input id="parent1First" name="parent1First" type="text" value="<?=$row['parent1First']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent1First" name="parent1First" type="text" value="<?=$row['parent1First']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent1Last">Last</label>
-					<input id="parent1Last" name="parent1Last" type="text" value="<?=$row['parent1Last']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent1Last" name="parent1Last" type="text" value="<?=$row['parent1Last']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent1Email">Email</label>
-					<input id="parent1Email" name="parent1Email" type="email" value="<?=$row['parent1Email']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent1Email" name="parent1Email" type="email" value="<?=$row['parent1Email']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent1Phone">Phone</label>
-					<input id="parent1Phone" name="parent1Phone" type="tel" value="<?=$row['parent1Phone']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent1Phone" name="parent1Phone" type="tel" value="<?=$row['parent1Phone']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 			</fieldset>
 			<fieldset>
 				<legend>Parent 2</legend>
 				<p>
 					<label for="parent2First">First</label>
-					<input id="parent2First" name="parent2First" type="text" value="<?=$row['parent2First']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent2First" name="parent2First" type="text" value="<?=$row['parent2First']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent2Last">Last</label>
-					<input id="parent2Last" name="parent2Last" type="text" value="<?=$row['parent2Last']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent2Last" name="parent2Last" type="text" value="<?=$row['parent2Last']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent2Email">Email</label>
-					<input id="parent2Email" name="parent2Email" type="email" value="<?=$row['parent2Email']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent2Email" name="parent2Email" type="email" value="<?=$row['parent2Email']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 				<p>
 					<label for="parent2Phone">Phone</label>
-					<input id="parent2Phone" name="parent2Phone" type="tel" value="<?=$row['parent2Phone']?>" onchange="studentUpdate(<?=$studentID?>,'student',this.id,this.value)">
+					<input id="parent2Phone" name="parent2Phone" type="tel" value="<?=$row['parent2Phone']?>" onchange="fieldUpdate(<?=$studentID?>,'student',this.id,this.value)">
 				</p>
 			</fieldset>
 		</fieldset>

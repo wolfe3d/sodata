@@ -6,27 +6,39 @@ userCheckPrivilege(1);
 //text output
 $output = "";
 
-$tournamentID = $mysqlConn->real_escape_string($_REQUEST['tournamentID']);
-
+$tournamentID = intval($_REQUEST['myID']);
 $query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-/check to make sure the query was valid
 if(empty($result))
 {
-	echo "Query Student Edit Failed.";
+	echo "Query Tournament View Failed.";
 	exit();
 }
 
+$row = $result->fetch_assoc();
+$numberTeams = $row["numberTeams"];
+
+//Get number of teams created
+$query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID";
+$resultTeams = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$amountOfCreatedTeams = $resultTeams->num_rows;
+
 	$output .="<div>";
- if($row = $result->fetch_assoc())
+ if($row)
  {
+	 $output .="<div id='tournamentTitle'>".$row['name']." - " . $row['year'] . "</div>";
+
 		if(userHasPrivilege(3))
 		{
-			$output .="<div><input class='button fa' type='button' onclick='prepareTournamentEdit(\"".$row['tournamentID']."\")' value='&#xf0ad; Edit Information' />";
-			$output .=" <input class='button fa' type='button' onclick='tournamentAddTeams(\"".$row['tournamentID']."\")' value='&#xf0c0; Add Teams' />";
-			$output .=" <input class='button fa' type='button' onclick='tournamentAddTimeBlocks(\"".$row['tournamentID']."\")' value='&#xf017; Add Time Blocks' />";
-			$output .=" <input class='button fa' type='button' onclick='tournamentAddEvents(\"".$row['tournamentID']."\")' value='&#xf0c3; Add Events' />";
+			$output .="<div><input class='button fa' type='button' onclick='window.location.hash=\"tournament-edit-".$row['tournamentID']."\"' value='&#xf0ad; Edit Information' />";
+			//only show add teams button if there needs to be more teams added
+			if($amountOfCreatedTeams<$numberTeams)
+			{
+				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamadd-".$row['tournamentID']."\"' value='&#xf0c0; Add Teams' />";
+			}
+			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-times-".$row['tournamentID']."\"' value='&#xf017; Time Blocks' />";
+			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-events-".$row['tournamentID']."\"' value='&#xf0c3; Events' />";
 			$output .="</div><br>";
 		}
 		if($row['websiteHost'])
@@ -80,7 +92,12 @@ if(empty($result))
 				$monthName = $dateObj->format('F'); // March
 				$output .="<div>Normal Month Registration: ".$monthName."</div>";
 			}
+			$output .="<br>";
 		}
+		while($rowTeam = $resultTeams->fetch_assoc()):
+			//TODO: Still need to implement edit team
+			$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$row['tournamentID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' /></p>";
+		endwhile;
 	}
 	$output .="</div>";
 	$output .= "<input class='button fa' type='button' onclick=\"window.location='#tournaments'\" value='&#xf0a8; Return' />";

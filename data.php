@@ -6,6 +6,7 @@ require_once ("functions.php");
 
  // Include Google API client library
  require_once 'google-api-php-client/vendor/autoload.php';
+
  // Call Google API
  $gClient = new Google_Client();
  $gClient->setClientId(GOOGLE_CLIENT_ID);
@@ -13,31 +14,47 @@ require_once ("functions.php");
  $gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
  $gClient->addScope(['email', 'profile']);
  //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
- if(isset($_GET['code'])){
-	 echo "code set";
-     $gClient->authenticate($_GET['code']);
-     $_SESSION['token'] = $gClient->getAccessToken();
-     header('Location: ' . filter_var(GOOGLE_REDIRECT_URL, FILTER_SANITIZE_URL));
- }
+
+ if (isset($_GET['code'])) {
+	 try {
+		 $gClient->authenticate($_GET['code']);
+		 $_SESSION['token'] = $gClient->getAccessToken();
+		 header('Location: ' . filter_var(GOOGLE_REDIRECT_URL, FILTER_SANITIZE_URL));
+	 } catch (Exception $exception) {
+		 if(userHasPrivilege(3))
+		 {
+		   echo "wolfe-catch enabled: (line 26 of data.php):";
+			 print_r($exception->getMessage());
+		 }
+	 }
+} else {
+	//echo "Wolfe - problem checking code";
+	 //$authUrl = $client->createAuthUrl();
+	// header('Location: index.php#login');
+}
+
+try {
+	if(isset($_SESSION['token'])){
+		//echo "token set:".print_r($_SESSION['token']);
+	 $gClient->setAccessToken($_SESSION['token']);
+	}
+
+	$google_oauth =new Google_Service_Oauth2($gClient);
+	$gpUserProfile = $google_oauth->userinfo->get(); //this is the line causing the following date_get_last_errors
+	checkGoogle($gpUserProfile,$mysqlConn);
+} catch (Exception $exception) {
+	if(userHasPrivilege(3))
+	{
+		echo "wolfe-catch enabled (line 48 of data.php):";
+		print_r($exception->getMessage());
+	}
+}
 
 
- if(isset($_SESSION['token'])){
- //	echo "token set:".print_r($_SESSION['token']);
- 	$gClient->setAccessToken($_SESSION['token']);
- }
-
- if($gClient->getAccessToken()){
-    checkGoogle($gClient,$mysqlConn);
- }else{
-	 header("Location:index.php#login");
- }
-
- $google_oauth =new Google_Service_Oauth2($gClient);
- $gpUserProfile = $google_oauth->userinfo->get();
 if(empty($gpUserProfile['id']))
 {
 	//header("Location:logout.php");
-	echo "yo google user is invalid.  Check your setup...Wolfe!";
+	echo "Your google user is invalid.  Check your setup...Wolfe!";
 }
 
  function loginoutBtn()
