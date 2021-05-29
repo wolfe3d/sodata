@@ -222,35 +222,12 @@ function studentEventAddChoice(studentID)
 	$("#eventAndPriority").clone().appendTo("#studentEventAddDiv").show();
 	$("#studentEventAddDiv").append("<a id='addThisEvent' href='javascript:studentEventAdd("+studentID+",this.id,this.value);'>Add</a>");
 }
-function studentEventRemove(value)
+function studentEventRemove(myID)
 {
- // validate signup form on keyup and submit
- var request = $.ajax({
-	 url: "studenteventremove.php",
-	 cache: false,
-	 method: "POST",
-	 data: { eventChoiceID: value},
-	 dataType: "text"
- });
-
- request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
-	 if (html=="1")
-	 {
-		 //returns the current update
-		 $("#eventChoice-"+value).remove();
-		 $("#events").append("<span class='modified' style='color:blue'>Event removed.</span>");
-	 }
-	 else
-	 {
-		 $("#events").append("<span class='modified' style='color:red'>Error while attempting to remove an event. Please, report details to site admin.</span>");
-	 }
- });
-
- request.fail(function( jqXHR, textStatus ) {
-	 alert( "Request failed: " + textStatus );
- });
+	if(confirm("Are you sure you want to delete the event, called " + $("#eventchoice"+"-"+myID +" .event").text() +", from the user?"))
+  {
+		rowRemove(myID,"eventchoice");
+	}
 }
 function studentEventAdd(student, field, value)
 {
@@ -267,11 +244,11 @@ function studentEventAdd(student, field, value)
  request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
 	 $(".modified").remove(); //removes any old update notices
-	 var eventyearID = parseInt(html);
-	 if (eventyearID>0)
+	 var eventchoiceID = parseInt(html);
+	 if (eventchoiceID>0)
 	 {
 		 //returns the current update
-		 $("#events").append("<div id='eventChoice-" + eventyearID + "'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + " <a href=\"javascript:studentEventRemove('" + eventyearID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 $("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {
@@ -292,36 +269,14 @@ function studentCourseAddChoice(student, table)
  $("#addThisCourse").remove();
  $("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:studentCourseAdd('"+student+"','"+table+"')\">Add</a>");
 }
-function studentCourseRemove(value, table)
+function studentCourseRemove(myID,table)
 {
- // validate signup form on keyup and submit
- var request = $.ajax({
-	 url: "studentcourseremove.php",
-	 cache: false,
-	 method: "POST",
-	 data: { tableName : table, myID : value},
-	 dataType: "text"
- });
-
- request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
-	 if (html=="1")
-	 {
-		 //returns the current update
-		 $("#"+table+"-"+value).remove();
-		 $("#"+table).append("<span class='modified' style='color:blue'>Course removed.</span>");
-	 }
-	 else
-	 {
-		 $("#"+table).append("<span class='modified' style='color:red'>Error while attempting to remove a course. Please, report details to site admin.</span>");
-	 }
- });
-
- request.fail(function( jqXHR, textStatus ) {
-	 alert( "Request failed: " + textStatus );
- });
+	if(confirm("Are you sure you want to delete the course, called " + $("#"+table+"-"+myID +" .course").text() +", from the user?"))
+  {
+		rowRemove(myID,table);
+	}
 }
+
 function studentCourseAdd(student, table)
 {
  // validate signup form on keyup and submit
@@ -339,7 +294,7 @@ function studentCourseAdd(student, table)
 	 if (myCourseID>0)
 	 {
 		 //returns the current update
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ $("#courseList option:selected").text() + " <a href=\"javascript:courseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>  <a href=\"javascript:courseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span> <a href=\"javascript:courseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>  <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
 	 }
 	 else
 	 {
@@ -373,7 +328,7 @@ function courseCompleted(value, courseName)
 		 //returns the current update
 		 var table = "coursecompleted";
 		 var table2 = "courseenrolled";
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'>"+ courseName + " <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
 		 $("#"+table2+"-"+value).remove();
 		 $("#"+table2).append("<span class='modified' style='color:blue'>Course removed.</span>");
 	  }
@@ -688,34 +643,12 @@ function eventYearLeaderPrepare(myID)
 			});
 		});
 }
-function eventYearRemove(value)
+function eventYearRemove(myID)
 {
- // validate signup form on keyup and submit
- var request = $.ajax({
-	 url: "eventyearremove.php",
-	 cache: false,
-	 method: "POST",
-	 data: {eventyearID : value},
-	 dataType: "text"
- });
-
- request.done(function( html ) {
-	 $(".modified").remove(); //removes any old update notices
-	 if (html=="1")
-	 {
-		 //returns the current update
-		 $("#eventyear-"+value).remove();
-		 $("#eventsP").append("<span class='modified' style='color:blue'>Event removed from this year.</span>");
-	 }
-	 else
-	 {
-		 $("#eventsP").append("<span class='modified' style='color:red'>Error while attempting to remove an event. Please, report details to site admin. " + html + "</span>");
-	 }
- });
-
- request.fail(function( jqXHR, textStatus ) {
-	 alert( "Request failed: " + textStatus );
- });
+	if(confirm("Are you sure you want to delete the eventyear: " + $("#eventyear-"+myID+" .event").text() +"?  This removes the event permanently from this year!!!"))
+  {
+		rowRemove(myID,"eventyear");
+	}
 }
 
 ///////////////////
@@ -823,6 +756,43 @@ function addToSubmit(myID)
 					});
 			});
 
+}
+
+function tournamentTimeblockRemove(myID)
+{
+	if(confirm("Are you sure you want to delete the time block" + myID +"?  This removes the time block permanently!!!"))
+  {
+		rowRemove(myID,"timeblock");
+	}
+}
+function rowRemove(myID,table)
+{
+ // validate signup form on keyup and submit
+ var request = $.ajax({
+	 url: "rowremove.php",
+	 cache: false,
+	 method: "POST",
+	 data: { myid: myID, mytable:table},
+	 dataType: "text"
+ });
+
+ request.done(function( html ) {
+	 if(html==1) 	 {
+		 $(".modified").remove(); //removes any old update notices
+		 $("#" + table + "-" + myID).before("<div class='modified' style='color:blue'>"+$("#" + table + "-" + myID).text()+" removed permanently.</div>"); //add note to show modification
+		 $("#" + table + "-" + myID).remove(); //remove element
+	 }
+	 else {
+		 $(".modified").remove();
+		 $("#" + table + "-" + myID).before("<div class='modified' style='color:red'>Removal Error:"+html+"</div");
+	 }
+ });
+
+ request.fail(function( jqXHR, textStatus ) {
+	 $(".modified").remove();
+	 $("#" + table + "-" + myID).before("<div class='modified' style='color:red'>Removal Error:"+textStatus+"</div");
+	 alert( "Request failed: " + textStatus );
+ });
 }
 ///////////////////
 ///Officer and Event Leader functions

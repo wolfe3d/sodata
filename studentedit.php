@@ -63,7 +63,7 @@ if(mysqli_num_rows($resultEventsChoice)>0)
 {
 	$eventsChoice .="<div>Year-Priority Event Name</div>";
 	while ($rowEventsChoice = $resultEventsChoice->fetch_assoc()):
-		$eventsChoice .= "<div id='eventChoice-" . $rowEventsChoice['eventChoiceID'] . "'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . " <a href=\"javascript:studentEventRemove('" . $rowEventsChoice['eventChoiceID'] . "')\">Remove</a></div>";
+		$eventsChoice .= "<div id='eventchoice-" . $rowEventsChoice['eventchoiceID'] . "'><span class='event'>" . $rowEventsChoice['year'] . "-" . $rowEventsChoice['priority'] . " " . $rowEventsChoice['event'] . "</span> <a href=\"javascript:studentEventRemove('" . $rowEventsChoice['eventchoiceID'] . "')\">Remove</a></div>";
 	endwhile;
 }
 

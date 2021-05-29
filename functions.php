@@ -110,6 +110,7 @@ function getPhoneTypes($db)
 function getCourses($db, $studentID, $tableName)
 {
 	$myOutput = "";
+	$tableID = $tableName . "ID";
 	$query = "SELECT * FROM `$tableName` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)
@@ -118,9 +119,9 @@ function getCourses($db, $studentID, $tableName)
 		while ($row = $result->fetch_assoc()):
 			if($tableName == "courseenrolled")
 			{
-				$courseCompleted = "<a href=\"javascript:courseCompleted('" . $row['myID'] . "','" . $row['course'] . "')\">Completed</a>";
+				$courseCompleted = "<a href=\"javascript:courseCompleted('" . $row[$tableID] . "','" . $row['course'] . "')\">Completed</a>";
 			}
-			$myOutput .= "<div id='$tableName-" . $row['myID'] . "'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  <a href=\"javascript:studentCourseRemove('" . $row['myID'] . "','$tableName')\">Remove</a></div>";
+			$myOutput .= "<div id='$tableName-" . $row[$tableID] . "'><span class='course'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  </span><a href=\"javascript:studentCourseRemove('" . $row[$tableID] . "','$tableName')\">Remove</a></div>";
 		endwhile;
 	}
 	return $myOutput;

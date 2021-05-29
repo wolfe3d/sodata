@@ -10,7 +10,7 @@ $studentID = intval($_REQUEST['studentID']);
 $courseID = intval($_REQUEST['courseID']);
 $tableName = strtolower ($mysqlConn->real_escape_string($_REQUEST['tableName']));
 
-$query = "INSERT INTO `$tableName` (`myID`, `studentID`, `courseID`) VALUES (NULL, '$studentID', '$courseID') ";
+$query = "INSERT INTO `$tableName` (`studentID`, `courseID`) VALUES ('$studentID', '$courseID') ";
 if ($mysqlConn->query($query) === TRUE)
 {
 	echo $mysqlConn->insert_id;
