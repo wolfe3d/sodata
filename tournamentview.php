@@ -7,7 +7,7 @@ userCheckPrivilege(1);
 $output = "";
 
 $tournamentID = intval($_REQUEST['myID']);
-$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
+$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentinfoID`= `tournamentinfo`.`tournamentinfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))

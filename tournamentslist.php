@@ -8,7 +8,7 @@ $output = "";
 $name = $mysqlConn->real_escape_string($_POST['tournamentName']);
 $year = intval($_POST['tournamentYear']);
 
-$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentInfoID`= `tournamentinfo`.`tournamentInfoID` ";
+$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentinfoID`= `tournamentinfo`.`tournamentinfoID` ";
 //check to see what is searched for
 if($name&&$year)
 {
