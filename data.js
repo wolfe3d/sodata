@@ -714,6 +714,36 @@ function tournament(myID, type)
 	});
 }
 
+function tournamentEventsAddAll(myID, year)
+{
+	var request = $.ajax({
+	 url: "tournamenteventsaddall.php",
+	 cache: false,
+	 method: "POST",
+	 data: {tournamentID: myID, year: year},
+	 dataType: "html"
+	});
+
+	request.done(function( html ) {
+	 //$("label[for='" + field + "']").append(html);
+	 $(".modified").remove(); //removes any old update notices
+
+		if(html=="1")
+		{
+			window.location.hash = window.location.hash + "-updated";
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").append("<div class='modified' style='color:red'>"+textStatus+"</div>");
+	});
+}
+
+
 //TODO Work on this function to make it as resusable as possible
 function addToSubmit(myID)
 {

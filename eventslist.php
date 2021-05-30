@@ -36,7 +36,7 @@ if($year)
 }
 
 $query.=" ORDER BY `event`";
-if($_SESSION['userData']['privilege']>2 ) //TODO: Remove in production
+if(userHasPrivilege(3))
 {
 	echo $query ;
 }

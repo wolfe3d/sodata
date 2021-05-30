@@ -3,7 +3,7 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(2);
 
-$teamID= intval($_POST['teamID']);
+$teamID= intval($_POST['myID']);
 if($teamID){
 		$query = "SELECT * FROM `team` WHERE `teamID` = $teamID";
 		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -11,7 +11,7 @@ if($teamID){
 		$teamName = $row['teamName'];
 }
 else {
-	echo "TeamID not set.";
+	echo "teamID not set.";
 }
 ?>
 <form id="addTo" method="post" action="tournamentteaminsert.php">

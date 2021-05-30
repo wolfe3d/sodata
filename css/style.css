@@ -288,15 +288,15 @@
 
 	input[type="checkbox"],
 	input[type="radio"] {
-		-moz-appearance: none;
+		/*-moz-appearance: none;
 		-webkit-appearance: none;
 		-o-appearance: none;
 		-ms-appearance: none;
-		appearance: none;
+		appearance: none;*/
 		display: block;
 		float: left;
 		margin-right: -2em;
-		opacity: 0;
+		/*opacity: 0;*/
 		width: 1em;
 		z-index: -1;
 	}
