@@ -44,10 +44,12 @@ try {
 	checkGoogle($gpUserProfile,$mysqlConn);
 } catch (Exception $exception) {
 	if(userHasPrivilege(3))
-	{
-		echo "wolfe-catch enabled (line 48 of data.php):";
-		print_r($exception->getMessage());
-	}
+		{
+			echo "wolfe-catch enabled (line 48 of data.php):";
+			print_r($exception->getMessage());
+		}
+		// Destroy entire session data
+		header("Location:logout.php");
 }
 
 

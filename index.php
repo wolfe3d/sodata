@@ -9,7 +9,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 //	exit;
 //}
 
-if (isset($_GET['code'])) {
+if (isset($_SESSION['token'])) {
 	try {
 		header("Location:data.php#user");
 	} catch (Exception $exception) {

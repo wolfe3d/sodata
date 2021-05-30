@@ -13,6 +13,6 @@ if($gClient) $gClient->revokeToken();
 session_destroy();
 
 // Redirect to homepage
-header("Location:index.php");
+header("Location:index.php#login");
 //echo "User logged out";
 ?>
