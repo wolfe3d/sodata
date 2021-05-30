@@ -58,7 +58,11 @@ if(mysqli_num_rows($result))
 			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th>" . $rowEvent["event"] ." <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>X</a></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 					$checkbox = "tournamenteventtime-".$timeblocks[$i]."-".$rowEvent['tournamenteventID'];
-			    $output .= "<td id='timeblock-".$timeblocks[$i]."'><input type='checkbox' id='$checkbox' name='$checkbox' value=''></td>";
+					//TODO How do I do this with multiple teams? 3 different checkboxes in each column
+					$queryEventTime = "SELECT * FROM `tournamenteventtime` WHERE `tournamentID` = $tournamentID ORDER BY `event`.`event` ASC";
+					$resultEventTime = $mysqlConn->query($queryEvent) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+//if there is a result then make box checked, if not do not check box.
+			    $output .= "<td id='timeblock-".$timeblocks[$i]."'><input type='checkbox' onchange='javascript:tournamentEventTimeSet($(this))' id='$checkbox' name='$checkbox' value=''></td>";
 			}
 			$output .= "</tr>";
 		endwhile;
