@@ -29,7 +29,7 @@ if (isset($_SESSION['token'])) {
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
-		<link rel="shortcut icon" href="scioly.ico">
+		<link rel="shortcut icon" href="images/waltonSO3.png">
 
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
