@@ -98,7 +98,7 @@ userCheckPrivilege(1);
 	<body id="top">
 		<!-- Header -->
 			<header id="header" class="skel-layers-fixed">
-				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu40.png"></img> <a href="#">Walton Science Olympiad</a></h1>
+				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> <a href="#">Walton Science Olympiad</a></h1>
 
 				<nav id="nav">
 					<ul>

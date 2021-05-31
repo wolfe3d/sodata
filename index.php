@@ -91,7 +91,7 @@ if (isset($_SESSION['token'])) {
 	<body id="top">
 		<!-- Header -->
 			<header id="header" class="skel-layers-fixed">
-				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu40.png"></img> <a href="#">Walton Science Olympiad</a></h1>
+				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> <a href="#">Walton Science Olympiad</a></h1>
 
 				<nav id="nav">
 					<ul>
@@ -106,8 +106,9 @@ if (isset($_SESSION['token'])) {
 			</header>
 
 		<!-- Banner -->
-			<section id="banner">
+			<section id="banner" style="padding-top:30px;padding-bottom:30px;">
 				<div class="inner">
+					<div><img style="vertical-align: top" height="400px" src="images/waltoncthulu1200white.png"></img></div>
 					<h2>Walton Science Olympiad</h2>
 					<p>Walton High School</p>
 				</div>
@@ -139,7 +140,8 @@ since 1994. For more information about our team, please send an email to <a href
 <h3>Dodgen Walton Division B Science Olympiad Tournament</h3>
 
 <div><a href="https://sites.google.com/site/dodgensciolyinvitationalreg/home">More Information Here</a></div>
-<div>Tournaments were held at Walton 2018 and 2019.</div>
+<div><a href="https://scilympiad.com/dodgen-walton">Our Scilympiad site</a></div>
+<div>Tournaments were held at Walton 2018, 2019, and 2020 (remote).</div>
 
 						</div>
 						<div class="6u">
