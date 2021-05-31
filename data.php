@@ -87,7 +87,7 @@ userCheckPrivilege(1);
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
 		<script src="data.js"></script>
-		<link rel="shortcut icon" href="images/waltonSO3.png">
+		<link rel="shortcut icon" href="images/waltoncthulu32.png">
 		<!--<link rel="stylesheet" href="css/jquery.modal.min.css" /> <!--Modal plugin -->
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
@@ -98,7 +98,7 @@ userCheckPrivilege(1);
 	<body id="top">
 		<!-- Header -->
 			<header id="header" class="skel-layers-fixed">
-				<h1><a href="#">Walton Science Olympiad</a></h1>
+				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu40.png"></img> <a href="#">Walton Science Olympiad</a></h1>
 
 				<nav id="nav">
 					<ul>
@@ -117,7 +117,9 @@ userCheckPrivilege(1);
 		<!-- One -->
 			<section id="main" class="wrapper style1">
 				<header class="major">
-					<h2 id="mainHeader">Home</h2>
+					<div style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="256px" src="images/waltoncthulu256.png"></img></div>
+					<h2 id="mainHeader"><a href="#">Home</a></h2>
+
 				</header>
 				<div class="container" id="mainContainer">
 					<div class="row">

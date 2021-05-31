@@ -29,7 +29,7 @@ if (isset($_SESSION['token'])) {
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
-		<link rel="shortcut icon" href="images/waltonSO3.png">
+		<link rel="shortcut icon" href="images/waltoncthulu32.png">
 
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
@@ -91,7 +91,7 @@ if (isset($_SESSION['token'])) {
 	<body id="top">
 		<!-- Header -->
 			<header id="header" class="skel-layers-fixed">
-				<h1><a href="#">Walton Science Olympiad</a></h1>
+				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu40.png"></img> <a href="#">Walton Science Olympiad</a></h1>
 
 				<nav id="nav">
 					<ul>
