@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 4.9.7
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: May 09, 2021 at 06:38 PM
--- Server version: 8.0.23-0ubuntu0.20.04.1
--- PHP Version: 7.4.3
+-- Host: localhost
+-- Generation Time: May 31, 2021 at 02:07 PM
+-- Server version: 8.0.18
+-- PHP Version: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `award` (
-  `awardID` int NOT NULL,
-  `studentID` int NOT NULL,
+  `awardID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
   `dateAwarded` date NOT NULL,
-  `tournamentID` int NOT NULL,
+  `tournamentID` int(11) NOT NULL,
   `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,8 +43,8 @@ CREATE TABLE `award` (
 --
 
 CREATE TABLE `coach` (
-  `coachID` int NOT NULL,
-  `userID` int DEFAULT NULL,
+  `coachID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
   `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -67,7 +67,7 @@ INSERT INTO `coach` (`coachID`, `userID`, `last`, `first`, `email`, `emailSchool
 --
 
 CREATE TABLE `course` (
-  `courseID` int NOT NULL,
+  `courseID` int(11) NOT NULL,
   `course` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -111,16 +111,16 @@ INSERT INTO `course` (`courseID`, `course`, `level`) VALUES
 --
 
 CREATE TABLE `coursecompleted` (
-  `myID` int NOT NULL,
-  `courseID` int NOT NULL,
-  `studentID` int NOT NULL
+  `coursecompletedID` int(11) NOT NULL,
+  `courseID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `coursecompleted`
 --
 
-INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
+INSERT INTO `coursecompleted` (`coursecompletedID`, `courseID`, `studentID`) VALUES
 (12, 1, 1),
 (13, 2, 1),
 (14, 15, 33),
@@ -224,7 +224,9 @@ INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
 (122, 19, 4),
 (123, 20, 4),
 (124, 23, 4),
-(125, 24, 4);
+(125, 24, 4),
+(127, 1, 69),
+(129, 10, 69);
 
 -- --------------------------------------------------------
 
@@ -233,16 +235,16 @@ INSERT INTO `coursecompleted` (`myID`, `courseID`, `studentID`) VALUES
 --
 
 CREATE TABLE `courseenrolled` (
-  `myID` int NOT NULL,
-  `courseID` int NOT NULL,
-  `studentID` int NOT NULL
+  `courseenrolledID` int(11) NOT NULL,
+  `courseID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `courseenrolled`
 --
 
-INSERT INTO `courseenrolled` (`myID`, `courseID`, `studentID`) VALUES
+INSERT INTO `courseenrolled` (`courseenrolledID`, `courseID`, `studentID`) VALUES
 (10, 1, 1),
 (11, 4, 33),
 (12, 11, 33),
@@ -295,6 +297,7 @@ INSERT INTO `courseenrolled` (`myID`, `courseID`, `studentID`) VALUES
 --
 
 CREATE TABLE `event` (
+  `eventID` int(11) NOT NULL,
   `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -303,42 +306,44 @@ CREATE TABLE `event` (
 -- Dumping data for table `event`
 --
 
-INSERT INTO `event` (`event`, `type`) VALUES
-('Anatomy and Physiology', 'Core Knowledge (Test Only)'),
-('Astronomy', 'Core Knowledge (Test Only)'),
-('Boomilever', 'Build'),
-('Bridges', 'Build'),
-('Cell Biology', 'Core Knowledge (Test Only)'),
-('Chemistry Lab', 'Hybrid Lab'),
-('Circuit Lab', 'Hybrid Lab'),
-('Codebusters', 'Core Knowledge (Test Only)'),
-('Designer Genes', 'Core Knowledge (Test Only)'),
-('Detector Building', 'Hybrid Build'),
-('Digital Structures', 'Build'),
-('Disease Detectives', 'Core Knowledge (Test Only)'),
-('Dynamic Planet', 'Core Knowledge (Test Only)'),
-('Environmental Chemistry', 'Core Knowledge (Test Only)'),
-('Experimental Design', 'Laboratory or Hands On'),
-('Forensics', 'Hybrid Lab'),
-('Fossils', 'Core Knowledge (Test Only)'),
-('GeoLogic Mapping', 'Core Knowledge (Test Only)'),
-('Gravity Vehicle', 'Build'),
-('Green Generation', 'Core Knowledge (Test Only)'),
-('Its About Time', 'Hybrid Build'),
-('Machines', 'Hybrid Build'),
-('Ornithology', 'Core Knowledge (Test Only)'),
-('Ping Pong Parachute', 'Build'),
-('Protein Modeling', 'Hybrid Build'),
-('Remote Sensing', 'Hybrid Build'),
-('Rocks & Minerals', 'Core Knowledge (Test Only)'),
-('Sounds of Music', 'Hybrid Build'),
-('test', 'Hybrid Build'),
-('Trajectory', 'Build'),
-('Water Quality', 'Hybrid Lab'),
-('WiFi Lab', 'Hybrid Build'),
-('Wright Stuff', 'Build'),
-('Write It CAD It', 'Build'),
-('Write It Do It', 'Build');
+INSERT INTO `event` (`eventID`, `event`, `type`) VALUES
+(1, 'Anatomy and Physiology', 'Core Knowledge (Test Only)'),
+(2, 'Astronomy', 'Core Knowledge (Test Only)'),
+(3, 'Boomilever', 'Build'),
+(4, 'Bridges', 'Build'),
+(5, 'Cell Biology', 'Core Knowledge (Test Only)'),
+(6, 'Chemistry Lab', 'Hybrid Lab'),
+(7, 'Circuit Lab', 'Hybrid Lab'),
+(8, 'Codebusters', 'Core Knowledge (Test Only)'),
+(9, 'Designer Genes', 'Core Knowledge (Test Only)'),
+(10, 'Detector Building', 'Hybrid Build'),
+(11, 'Digital Structures', 'Build'),
+(12, 'Disease Detectives', 'Core Knowledge (Test Only)'),
+(13, 'Dynamic Planet', 'Core Knowledge (Test Only)'),
+(14, 'Environmental Chemistry', 'Core Knowledge (Test Only)'),
+(15, 'Experimental Design', 'Laboratory or Hands On'),
+(16, 'Forensics', 'Hybrid Lab'),
+(17, 'Fossils', 'Core Knowledge (Test Only)'),
+(18, 'GeoLogic Mapping', 'Core Knowledge (Test Only)'),
+(19, 'Gravity Vehicle', 'Build'),
+(20, 'Green Generation', 'Core Knowledge (Test Only)'),
+(21, 'Its About Time', 'Hybrid Build'),
+(22, 'Machines', 'Hybrid Build'),
+(23, 'Ornithology', 'Core Knowledge (Test Only)'),
+(24, 'Ping Pong Parachute', 'Build'),
+(25, 'Protein Modeling', 'Hybrid Build'),
+(26, 'Remote Sensing', 'Hybrid Build'),
+(27, 'Rocks & Minerals', 'Core Knowledge (Test Only)'),
+(28, 'Sounds of Music', 'Hybrid Build'),
+(29, 'test', 'Hybrid Build'),
+(30, 'Trajectory', 'Build'),
+(31, 'Water Quality', 'Hybrid Lab'),
+(32, 'WiFi Lab', 'Hybrid Build'),
+(33, 'Wright Stuff', 'Build'),
+(34, 'Write It CAD It', 'Build'),
+(35, 'Write It Do It', 'Build'),
+(36, 'Anatomy and Physiology3', 'Core Knowledge (Test Only)'),
+(37, 'try', 'Build');
 
 -- --------------------------------------------------------
 
@@ -347,17 +352,17 @@ INSERT INTO `event` (`event`, `type`) VALUES
 --
 
 CREATE TABLE `eventchoice` (
-  `eventChoiceID` int NOT NULL,
-  `studentID` int NOT NULL,
-  `eventID` int NOT NULL,
-  `priority` int NOT NULL DEFAULT '5'
+  `eventchoiceID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `eventyearID` int(11) NOT NULL,
+  `priority` int(11) NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `eventchoice`
 --
 
-INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) VALUES
+INSERT INTO `eventchoice` (`eventchoiceID`, `studentID`, `eventyearID`, `priority`) VALUES
 (15, 6, 15, 1),
 (16, 6, 16, 1),
 (17, 6, 5, 1),
@@ -385,7 +390,6 @@ INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) 
 (41, 67, 22, 1),
 (42, 67, 22, 1),
 (43, 67, 27, 1),
-(44, 69, 28, 1),
 (45, 33, 9, 1),
 (46, 33, 4, 2),
 (47, 33, 1, 3),
@@ -579,7 +583,17 @@ INSERT INTO `eventchoice` (`eventChoiceID`, `studentID`, `eventID`, `priority`) 
 (237, 5, 21, 2),
 (238, 5, 14, 3),
 (239, 5, 27, 4),
-(240, 5, 10, 5);
+(240, 5, 10, 5),
+(250, 69, 0, 1),
+(251, 69, 0, 1),
+(252, 69, 0, 2),
+(253, 69, 0, 1),
+(254, 69, 0, 1),
+(262, 69, 30, 2),
+(266, 69, 28, 2),
+(268, 69, 47, 4),
+(269, 69, 48, 3),
+(270, 57, 32, 1);
 
 -- --------------------------------------------------------
 
@@ -609,65 +623,61 @@ INSERT INTO `eventtype` (`type`) VALUES
 --
 
 CREATE TABLE `eventyear` (
-  `eventID` int NOT NULL,
-  `year` int NOT NULL,
-  `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `studentID` int DEFAULT NULL
+  `eventyearID` int(11) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
+  `studentID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `eventyear`
 --
 
-INSERT INTO `eventyear` (`eventID`, `year`, `event`, `studentID`) VALUES
-(1, 2021, 'Anatomy and Physiology', 0),
-(2, 2021, 'Astronomy', 4),
-(3, 2021, 'Boomilever', 0),
-(4, 2021, 'Chemistry Lab', 0),
-(5, 2021, 'Circuit Lab', 0),
-(6, 2021, 'Codebusters', 0),
-(7, 2021, 'Designer Genes', 0),
-(8, 2021, 'Digital Structures', 0),
-(9, 2021, 'Disease Detectives', 0),
-(10, 2021, 'Dynamic Planet', 0),
-(11, 2021, 'Experimental Design', 0),
-(12, 2021, 'Forensics', 0),
-(13, 2021, 'Fossils', 0),
-(14, 2021, 'GeoLogic Mapping', 0),
-(15, 2021, 'Gravity Vehicle', 0),
-(16, 2021, 'Machines', 0),
-(17, 2021, 'Ornithology', 0),
-(18, 2021, 'Ping Pong Parachute', 0),
-(19, 2021, 'Protein Modeling', 0),
-(20, 2021, 'Sounds of Music', 0),
-(21, 2021, 'Water Quality', 0),
-(22, 2021, 'Wright Stuff', 0),
-(27, 2021, 'Write It CAD It', 0),
-(28, 2022, 'Anatomy and Physiology', 0),
-(29, 2021, 'Detector Building', 0),
-(30, 2022, 'Astronomy', NULL),
-(31, 2022, 'Cell Biology', NULL),
-(32, 2022, 'Chemistry Lab', NULL),
-(33, 2022, 'Codebusters', NULL),
-(34, 2022, 'Detector Building', NULL),
-(35, 2022, 'Disease Detectives', NULL),
-(36, 2022, 'Dynamic Planet', NULL),
-(37, 2022, 'Bridges', NULL),
-(38, 2022, 'Environmental Chemistry', NULL),
-(39, 2022, 'Experimental Design', NULL),
-(40, 2022, 'Forensics', NULL),
-(41, 2022, 'Gravity Vehicle', NULL),
-(42, 2022, 'Green Generation', NULL),
-(43, 2022, 'It', NULL),
-(44, 2022, 'Ornithology', NULL),
-(45, 2022, 'Ping Pong Parachute', NULL),
-(46, 2022, 'Remote Sensing', NULL),
-(47, 2022, 'Rocks & Minerals', NULL),
-(48, 2022, 'Trajectory', NULL),
-(49, 2022, 'WiFi Lab', NULL),
-(50, 2022, 'Wright Stuff', NULL),
-(51, 2022, 'Write It Do It', NULL),
-(52, 2022, 'Its About Time', NULL);
+INSERT INTO `eventyear` (`eventyearID`, `eventID`, `year`, `studentID`) VALUES
+(1, 1, 2021, 54),
+(2, 2, 2021, 4),
+(3, 3, 2021, 69),
+(4, 6, 2021, 0),
+(5, 7, 2021, 0),
+(6, 8, 2021, 0),
+(7, 9, 2021, 0),
+(8, 11, 2021, 0),
+(9, 12, 2021, 0),
+(10, 13, 2021, 0),
+(11, 15, 2021, 0),
+(12, 16, 2021, 0),
+(13, 17, 2021, 0),
+(14, 18, 2021, 0),
+(15, 19, 2021, 0),
+(16, 22, 2021, 0),
+(17, 23, 2021, 0),
+(18, 24, 2021, 0),
+(19, 25, 2021, 0),
+(20, 28, 2021, 0),
+(21, 31, 2021, 0),
+(22, 33, 2021, 0),
+(27, 34, 2021, 0),
+(28, 1, 2022, 67),
+(29, 10, 2021, 0),
+(32, 6, 2022, 66),
+(33, 8, 2022, 0),
+(36, 13, 2022, 34),
+(38, 14, 2022, NULL),
+(39, 15, 2022, 0),
+(40, 16, 2022, NULL),
+(41, 19, 2022, NULL),
+(42, 20, 2022, NULL),
+(43, 0, 2022, NULL),
+(44, 23, 2022, NULL),
+(45, 24, 2022, NULL),
+(46, 26, 2022, NULL),
+(47, 27, 2022, NULL),
+(48, 30, 2022, NULL),
+(49, 32, 2022, NULL),
+(52, 21, 2022, NULL),
+(53, 18, 2022, NULL),
+(54, 17, 2022, NULL),
+(55, 29, 2022, NULL);
 
 -- --------------------------------------------------------
 
@@ -676,9 +686,9 @@ INSERT INTO `eventyear` (`eventID`, `year`, `event`, `studentID`) VALUES
 --
 
 CREATE TABLE `officer` (
-  `officerID` int NOT NULL,
-  `studentID` int NOT NULL,
-  `year` int NOT NULL,
+  `officerID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
   `position` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -734,9 +744,9 @@ INSERT INTO `phonetype` (`phoneType`) VALUES
 --
 
 CREATE TABLE `rule` (
-  `ruleID` int NOT NULL,
-  `level` int NOT NULL,
-  `year` int NOT NULL,
+  `ruleID` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
   `fileName` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -757,13 +767,13 @@ INSERT INTO `rule` (`ruleID`, `level`, `year`, `fileName`) VALUES
 --
 
 CREATE TABLE `student` (
-  `studentID` int NOT NULL,
-  `userID` int DEFAULT NULL,
+  `studentID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
   `uniqueToken` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `first` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `active` int NOT NULL DEFAULT '1',
-  `yearGraduating` int NOT NULL,
+  `active` int(11) NOT NULL DEFAULT '1',
+  `yearGraduating` int(11) NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `emailSchool` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `phoneType` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'cell',
@@ -798,7 +808,7 @@ INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `a
 (15, 0, '', 'Yamin', 'Asad', 0, 2022, 'yaminasad@gmail.com', '', '', '', '', '', '', '', '', '', '', ''),
 (16, 10, '', 'Mei', 'Andrew', 0, 2023, 'andrewmei915@gmail.com', '', '', '404-348-3229', 'Mei', 'Chase', 'chasemei@gmail.com', '470-403-0480', '', '', '', ''),
 (22, 9, '', 'Wolfe', 'Doug', 1, 2022, 'dougwolfejr@gmail.com', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(23, NULL, '', 'Last', 'Wolfe', 1, 2025, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, 22, '', 'Last', 'Wolfe', 1, 2025, '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (24, 17, '', 'He', 'Jennifer', 1, 2024, 'jenniferhe0203@gmail.com', NULL, 'cell', NULL, 'He', 'Jim ', 'jingwu_he@yahoo.com', '404-667-5076', 'Zhang ', 'Jun', 'shirley_jun@yahoo.com', '404-472-9421'),
 (25, 18, '', 'Hable', 'Christian', 1, 2024, 'cmhable@gmail.com', NULL, 'cell', '14043603478', 'Li', 'Jue', 'leejue@yahoo.com', '9012010337', 'Hable', 'Bill', 'billokc67@gmail.com', '7703164304'),
 (26, 10, '', 'Greig', 'Andrew', 1, 2022, 'acgreig@gmail.com', NULL, 'cell', '470-572-4613', 'Greig', 'David', 'dcgreig@gmail.com', '678-810-1685', 'Greig', 'Angela', 'angela.greig@cobbk12.org', '470-527-4613'),
@@ -848,12 +858,12 @@ INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `a
 --
 
 CREATE TABLE `studentplacement` (
-  `studentPlacementID` int NOT NULL,
-  `studentID` int NOT NULL,
+  `studentPlacementID` int(11) NOT NULL,
+  `studentID` int(11) NOT NULL,
   `event` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `teamID` int NOT NULL,
-  `place` int NOT NULL,
-  `partnerID` int DEFAULT NULL
+  `teamID` int(11) NOT NULL,
+  `place` int(11) NOT NULL,
+  `partnerID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -863,11 +873,21 @@ CREATE TABLE `studentplacement` (
 --
 
 CREATE TABLE `team` (
-  `teamID` int NOT NULL,
-  `teamName` int NOT NULL,
-  `tournamentID` int NOT NULL,
-  `teamPlace` int NOT NULL
+  `teamID` int(11) NOT NULL,
+  `teamName` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `tournamentID` int(11) NOT NULL,
+  `teamPlace` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `team`
+--
+
+INSERT INTO `team` (`teamID`, `teamName`, `tournamentID`, `teamPlace`) VALUES
+(1, 'A', 0, NULL),
+(2, 'A', 6, NULL),
+(3, 'A', 7, NULL),
+(4, 'A', 7, NULL);
 
 -- --------------------------------------------------------
 
@@ -876,12 +896,27 @@ CREATE TABLE `team` (
 --
 
 CREATE TABLE `timeblock` (
-  `blockID` int NOT NULL,
-  `blockName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `timeblockID` int(11) NOT NULL,
   `timeStart` datetime NOT NULL,
   `timeEnd` datetime NOT NULL,
-  `teamID` int NOT NULL
+  `tournamentID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `timeblock`
+--
+
+INSERT INTO `timeblock` (`timeblockID`, `timeStart`, `timeEnd`, `tournamentID`) VALUES
+(13, '2021-01-16 00:00:00', '2021-01-16 02:00:00', 6),
+(17, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(18, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(19, '2021-01-16 00:00:00', '2021-01-16 03:00:00', 6),
+(20, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(21, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(22, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(23, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(24, '2021-01-16 00:00:00', '2021-01-16 00:00:00', 6),
+(25, '2020-10-10 11:00:00', '2020-10-10 11:50:00', 1);
 
 -- --------------------------------------------------------
 
@@ -890,14 +925,14 @@ CREATE TABLE `timeblock` (
 --
 
 CREATE TABLE `tournament` (
-  `tournamentID` int NOT NULL,
-  `tournamentInfoID` int NOT NULL,
+  `tournamentID` int(11) NOT NULL,
+  `tournamentInfoID` int(11) NOT NULL,
   `dateTournament` date DEFAULT NULL,
   `dateRegistration` date DEFAULT NULL,
-  `year` int NOT NULL,
-  `type` int DEFAULT NULL,
-  `numberTeams` int DEFAULT NULL,
-  `weighting` int NOT NULL,
+  `year` int(11) NOT NULL,
+  `type` int(11) DEFAULT NULL,
+  `numberTeams` int(11) DEFAULT NULL,
+  `weighting` int(11) NOT NULL,
   `note` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -911,7 +946,7 @@ INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, 
 (3, 3, '2020-11-28', '2020-11-07', 2021, NULL, 3, 100, ''),
 (4, 4, '2020-11-14', '2020-10-12', 2021, NULL, 3, 75, ''),
 (5, 5, '2020-12-19', '2020-09-10', 2021, NULL, 3, 75, ''),
-(6, 6, '2021-01-16', '2020-09-18', 2021, NULL, 1, 90, ''),
+(6, 6, '2021-01-16', '2020-09-18', 2021, 2, 1, 90, ''),
 (7, 7, '2021-01-16', '2020-12-10', 2021, NULL, 2, 50, ''),
 (8, 8, '2021-01-22', '2020-09-12', 2021, NULL, 1, 100, ''),
 (9, 9, '2021-01-30', '2020-09-01', 2021, NULL, 1, 100, ''),
@@ -921,11 +956,89 @@ INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tournamentevent`
+--
+
+CREATE TABLE `tournamentevent` (
+  `tournamenteventID` int(11) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `tournamentID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tournamentevent`
+--
+
+INSERT INTO `tournamentevent` (`tournamenteventID`, `eventID`, `tournamentID`) VALUES
+(3, 1, 6),
+(4, 2, 6),
+(5, 3, 6),
+(6, 6, 6),
+(7, 7, 6),
+(8, 8, 6),
+(9, 9, 6),
+(10, 11, 6),
+(11, 12, 6),
+(12, 13, 6),
+(13, 15, 6),
+(14, 16, 6),
+(15, 17, 6),
+(16, 18, 6),
+(17, 19, 6),
+(18, 22, 6),
+(19, 23, 6),
+(20, 24, 6),
+(21, 25, 6),
+(22, 28, 6),
+(23, 31, 6),
+(24, 33, 6),
+(25, 34, 6),
+(26, 10, 6),
+(27, 1, 1),
+(28, 2, 1),
+(29, 3, 1),
+(30, 6, 1),
+(31, 7, 1),
+(32, 8, 1),
+(33, 9, 1),
+(34, 11, 1),
+(35, 12, 1),
+(36, 13, 1),
+(37, 15, 1),
+(38, 16, 1),
+(39, 17, 1),
+(40, 18, 1),
+(41, 19, 1),
+(42, 22, 1),
+(43, 23, 1),
+(44, 24, 1),
+(45, 25, 1),
+(46, 28, 1),
+(47, 31, 1),
+(48, 33, 1),
+(49, 34, 1),
+(50, 10, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tournamenteventtime`
+--
+
+CREATE TABLE `tournamenteventtime` (
+  `tournamenteventID` int(11) NOT NULL,
+  `timeblockID` int(11) NOT NULL,
+  `teamID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tournamentinfo`
 --
 
 CREATE TABLE `tournamentinfo` (
-  `tournamentInfoID` int NOT NULL,
+  `tournamentInfoID` int(11) NOT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `host` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `address` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -934,7 +1047,7 @@ CREATE TABLE `tournamentinfo` (
   `websiteSciOly` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `director` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `directorEmail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `monthRegistration` int DEFAULT NULL
+  `monthRegistration` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -962,10 +1075,10 @@ INSERT INTO `tournamentinfo` (`tournamentInfoID`, `name`, `host`, `address`, `ad
 --
 
 CREATE TABLE `user` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `oauth_provider` enum('google','facebook','twitter','linkedin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'google',
   `oauth_uid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `privilege` int DEFAULT NULL,
+  `privilege` int(11) DEFAULT NULL,
   `first_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `last_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -994,7 +1107,8 @@ INSERT INTO `user` (`id`, `oauth_provider`, `oauth_uid`, `privilege`, `first_nam
 (18, 'google', '118077389039177077874', 2, 'Christian', 'Hable', 'cmhable@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GhQzK1HHb5u6f5PKC27AROoTQ580HKjMCgSEzmisw=s96-c', '2021-04-30 16:20:01', '2021-04-30 16:20:01'),
 (19, 'google', '100350629985317200334', 2, 'Chris', 'Wang', 'goodchris0831@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14GiNQtjYqSwUSjM3lDaQ2EkJ7z-T2teAOULCcaR5=s96-c', '2021-04-30 16:20:21', '2021-04-30 16:20:21'),
 (20, 'google', '116164729655931508486', NULL, 'Walton', 'Habitat', 'waltonhabitatapps@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a/AATXAJwkHlAEdAzscu_kVXvMHKVPGiPKpbo5Gq9PYr54=s96-c', '2021-05-07 13:53:50', '2021-05-07 13:53:50'),
-(21, 'google', '103400986357747872543', 3, 'Susanna', 'H.', 'susanna.lmt.196@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gi2ZiKu7_c99MJ9TRbypNWntl-HdN-xnahSbopG=s96-c', '2021-05-07 16:24:01', '2021-05-07 16:24:01');
+(21, 'google', '103400986357747872543', 3, 'Susanna', 'H.', 'susanna.lmt.196@gmail.com', '', 'en', 'https://lh3.googleusercontent.com/a-/AOh14Gi2ZiKu7_c99MJ9TRbypNWntl-HdN-xnahSbopG=s96-c', '2021-05-07 16:24:01', '2021-05-07 16:24:01'),
+(22, 'google', '', NULL, '', '', '', '', '', '', '2021-05-16 01:48:20', '2021-05-16 01:48:20');
 
 --
 -- Indexes for dumped tables
@@ -1022,26 +1136,26 @@ ALTER TABLE `course`
 -- Indexes for table `coursecompleted`
 --
 ALTER TABLE `coursecompleted`
-  ADD PRIMARY KEY (`myID`);
+  ADD PRIMARY KEY (`coursecompletedID`);
 
 --
 -- Indexes for table `courseenrolled`
 --
 ALTER TABLE `courseenrolled`
-  ADD PRIMARY KEY (`myID`);
+  ADD PRIMARY KEY (`courseenrolledID`);
 
 --
 -- Indexes for table `event`
 --
 ALTER TABLE `event`
-  ADD PRIMARY KEY (`event`),
+  ADD PRIMARY KEY (`eventID`),
   ADD UNIQUE KEY `event` (`event`);
 
 --
 -- Indexes for table `eventchoice`
 --
 ALTER TABLE `eventchoice`
-  ADD PRIMARY KEY (`eventChoiceID`);
+  ADD PRIMARY KEY (`eventchoiceID`);
 
 --
 -- Indexes for table `eventtype`
@@ -1053,7 +1167,7 @@ ALTER TABLE `eventtype`
 -- Indexes for table `eventyear`
 --
 ALTER TABLE `eventyear`
-  ADD UNIQUE KEY `yearID` (`eventID`);
+  ADD UNIQUE KEY `yearID` (`eventyearID`);
 
 --
 -- Indexes for table `officer`
@@ -1095,13 +1209,19 @@ ALTER TABLE `team`
 -- Indexes for table `timeblock`
 --
 ALTER TABLE `timeblock`
-  ADD PRIMARY KEY (`blockID`);
+  ADD PRIMARY KEY (`timeblockID`);
 
 --
 -- Indexes for table `tournament`
 --
 ALTER TABLE `tournament`
   ADD UNIQUE KEY `tournamentID` (`tournamentID`);
+
+--
+-- Indexes for table `tournamentevent`
+--
+ALTER TABLE `tournamentevent`
+  ADD PRIMARY KEY (`tournamenteventID`);
 
 --
 -- Indexes for table `tournamentinfo`
@@ -1123,97 +1243,109 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `award`
 --
 ALTER TABLE `award`
-  MODIFY `awardID` int NOT NULL AUTO_INCREMENT;
+  MODIFY `awardID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `coach`
 --
 ALTER TABLE `coach`
-  MODIFY `coachID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `coachID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-  MODIFY `courseID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `coursecompleted`
 --
 ALTER TABLE `coursecompleted`
-  MODIFY `myID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `coursecompletedID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- AUTO_INCREMENT for table `courseenrolled`
 --
 ALTER TABLE `courseenrolled`
-  MODIFY `myID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `courseenrolledID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+
+--
+-- AUTO_INCREMENT for table `event`
+--
+ALTER TABLE `event`
+  MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `eventchoice`
 --
 ALTER TABLE `eventchoice`
-  MODIFY `eventChoiceID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
+  MODIFY `eventchoiceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=271;
 
 --
 -- AUTO_INCREMENT for table `eventyear`
 --
 ALTER TABLE `eventyear`
-  MODIFY `eventID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `eventyearID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `officer`
 --
 ALTER TABLE `officer`
-  MODIFY `officerID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `officerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `rule`
 --
 ALTER TABLE `rule`
-  MODIFY `ruleID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ruleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `studentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `studentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `studentplacement`
 --
 ALTER TABLE `studentplacement`
-  MODIFY `studentPlacementID` int NOT NULL AUTO_INCREMENT;
+  MODIFY `studentPlacementID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `teamID` int NOT NULL AUTO_INCREMENT;
+  MODIFY `teamID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `timeblock`
 --
 ALTER TABLE `timeblock`
-  MODIFY `blockID` int NOT NULL AUTO_INCREMENT;
+  MODIFY `timeblockID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
-  MODIFY `tournamentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `tournamentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `tournamentevent`
+--
+ALTER TABLE `tournamentevent`
+  MODIFY `tournamenteventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `tournamentinfo`
 --
 ALTER TABLE `tournamentinfo`
-  MODIFY `tournamentInfoID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `tournamentInfoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
