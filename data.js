@@ -53,8 +53,8 @@ function loadpage(myUrl)
 
                case 'events': prepareEventsPage();
                break;
-
-							 case 'eventaddpop': prepareEventsAddPage();
+			   
+			   case 'eventaddpop': prepareEventsAddPage();
                break;
 
                case 'tournaments': prepareTournamentsPage();
