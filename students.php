@@ -16,10 +16,17 @@ if($result)
 }
 
 $addStudentText ="";
-if($_SESSION['userData']['privilege']>1)
+if(userHasPrivilege(2))
 {
 	$addStudentText .="<input class='button fa' type='button' onclick='javascript:studentEdit()' value='&#xf067; Add' />";
 }
+
+// output emails
+if(userHasPrivilege(2))
+{
+	$addStudentText .=" <input class='button fa' type='button' onclick='location.href=\"emails.php\"' value='&#xf01c; Get Emails' />";
+}
+
 ?>
 <div>
 		<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
