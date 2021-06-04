@@ -19,8 +19,8 @@ if(empty($row))
 }
 $teamName = $row['teamName'];
 
-$studentList="";
-$query = "SELECT * FROM `student` WHERE `active` = 1 ORDER BY `last` ASC, `first` ASC";
+$studentList="<div><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Student</label></div>";
+$query = "SELECT * FROM `student` ORDER BY `last` ASC, `first` ASC";
 $resultStudent = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($resultStudent){
 	while ($rowStudent = $resultStudent->fetch_assoc()):
@@ -29,7 +29,8 @@ if($resultStudent){
 		$resultTeammate= $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		//if there is a result then make box checked, if not do not check box.
 		$checked = mysqli_num_rows($resultTeammate)?" checked ":"";
-		$studentList .= "<div><input type='checkbox' onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked><label for='$checkbox'>".$rowStudent['last'].", " . $rowStudent['first'] ."</label></div>";
+		$hidden = $rowStudent['active']?"":"class='inactive' style='display: none;'";
+		$studentList .= "<div $hidden><input type='checkbox' onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked><label for='$checkbox'>".$rowStudent['last'].", " . $rowStudent['first'] ."</label></div>";
 	endwhile;
 }
 ?>
