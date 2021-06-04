@@ -701,6 +701,7 @@ function tournament(myID, type)
 			$.when( $(":submit") ).done(function( x ) {
 				addToSubmit(myID);
 			});
+			//if(type=="teamassign"){}
 			//$("#mainHeader").html(myName);
 		}
 		else
@@ -825,7 +826,6 @@ function rowRemove(myID,table)
  });
 }
 
-//function used to setup eventtime-available
 //This changes the tournamenttimeavailable and tournamenttimechosen
 function tournamentEventTimeSet(inputBtn)
 {
@@ -846,7 +846,7 @@ function tournamentEventTimeSet(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamentevent-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
+			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#"+splitName[0]+"-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
 		}
 		else {
 			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");
@@ -858,7 +858,7 @@ function tournamentEventTimeSet(inputBtn)
 	});
 }
 
-
+//Sets teammates for a team
 function tournamentTeammate(inputBtn)
 {
 	//alert(inputBtn.attr('name'));
@@ -879,6 +879,50 @@ function tournamentTeammate(inputBtn)
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
+		}
+		else {
+			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#note").html("<div class='modified' style='color:red'>Change Error:"+textStatus+"</div");
+	});
+}
+
+
+//sets  teammate in an event
+function tournamentEventTeammate(inputBtn)
+{
+	//alert(inputBtn.attr('name'));
+	//alert(inputBtn.is(":checked"));
+	var objectName = inputBtn.attr('name');
+	var splitName = objectName.split("-");
+	var checked = inputBtn.is(":checked")?1:0;
+	var place = $("#placement-"+splitName[1]+"--"+splitName[3]).val();
+
+	var request = $.ajax({
+		url: "tournamenteventteammateadjust.php",
+		cache: false,
+		method: "POST",
+		data: { tournamenteventID: splitName[1], studentID: splitName[2], teamID: splitName[3], checked: checked, place: place},
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		if(html=='1') 	 {
+			var modified = checked?"added":"removed";
+			if(splitName[2])
+			{
+				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +modified+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
+				//recalculate total Teammates
+				$("#eventtotal-"+splitName[1]).text($(".teammateEvent-"+splitName[1]+" :checkbox:checked").length);
+				$("#studenttotal-"+splitName[2]).text($(".teammateStudent-"+splitName[2]+" :checkbox:checked").length);
+			}
+			else {
+				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
+			}
+
 		}
 		else {
 			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");

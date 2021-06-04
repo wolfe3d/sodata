@@ -97,9 +97,14 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="<br>";
 		}
 		while($rowTeam = $resultTeams->fetch_assoc()):
-			$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
-			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; Assign Events' /></p>";
-
+			if(userHasPrivilege(3))
+			{
+				$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
+				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; Assign Events' /></p>";
+			}
+			else {
+				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; View Events' /></p>";
+			}
 		endwhile;
 	}
 	$output .="</div>";

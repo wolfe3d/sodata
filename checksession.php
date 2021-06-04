@@ -19,4 +19,8 @@ function userHasPrivilege($level)
 	}
 	return 1;
 }
+function userGetPrivilege()
+{
+	return $_SESSION['userData']['privilege'];
+}
 ?>

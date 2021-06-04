@@ -39,7 +39,7 @@ if($checked)
 	}
 }
 else {
-	$query = "DELETE FROM `$table` WHERE tournamenteventID = '$tournamenteventID' AND timeblockID = '$timeblockID';";
+	$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
 }
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)

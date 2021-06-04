@@ -23,7 +23,7 @@ if($checked){
 	$query = "INSERT INTO `$table` (`teamID`, `studentID`) VALUES ('$teamID', '$studentID');";
 }
 else {
-	$query = "DELETE FROM `$table` WHERE teamID = '$teamID' AND studentID = '$studentID';";
+	$query = "DELETE FROM `$table` WHERE `teamID` = '$teamID' AND `studentID` = '$studentID';";
 }
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)

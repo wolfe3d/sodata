@@ -10,7 +10,7 @@ if(empty($teamID))
 	exit("<div style='color:red'>TeamID is not set.</div>");
 }
 
-$query = "SELECT * FROM `team` WHERE `teamID` = $teamID";
+$query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $row = $result->fetch_assoc();
 if(empty($row))
