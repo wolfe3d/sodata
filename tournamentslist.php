@@ -44,9 +44,8 @@ if($result)
 			$output .="<div>Host: ".$row['host']."</div>";
 		}
 		//Address of the tournament
-		$output .="<div>Address: ".$row['address']."</div>";
+		$output .="<div>Address: <a href='https://www.google.com/maps/search/?api=1&query=".$row['address']."'>".$row['address']."</a></div>";
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
-		$output .="<div>Date Registration: ".$row['dateRegistration']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
 		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
@@ -61,37 +60,6 @@ if($result)
 		{
 			$output .="<div>Scilympiad Competition Website: <a href='".$row['websiteSciOly']."'>".$row['websiteSciOly']."</a></div>";
 		}
-
-		//Show Director information to coaches only
-		if(userHasPrivilege(3))
-		{
-			//Director Information
-			$output .="<br><h3>Director Information</h3>";
-			$director=$row['director']?$row['director']:($row['directorEmail']?$row['directorEmail']:"");
-			if($row['directorEmail'])
-			{
-				$director = "<a href='".$row['directorEmail']."'>$director</a>";
-			}
-			if($director)
-			{
-				$output .="<div>Director: $director</div>";
-			}
-			else if($row['directorEmail'])
-			{
-				$output .="<div>Host: ".$row['host']."</div>";
-			}
-			if($row['monthRegistration'])
-			{
-				$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
-				$monthName = $dateObj->format('F'); // March
-				$output .="<div>Normal Month Registration: ".$monthName."</div>";
-			}
-
-			$output .="<div>Host: ".$row['host']."</div>";
-		}
-
-		$output .= "Add Team Schedules Here";
-
 	endwhile;
 	$output .="</div>";
 }

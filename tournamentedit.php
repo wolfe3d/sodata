@@ -60,38 +60,75 @@ if(!$row)
 		<fieldset>
 			<legend>Edit Tournament</legend>
 			<p>
+				<label for="tournamentName">Name</label>
+				<input id="tournamentName" name="tournamentName" type="text" value="<?=$row['tournamentName']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="host">Host</label>
+				<input id="host" name="host" type="text" value="<?=$row['host']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="address">Address</label>
+				<input id="address" name="address" type="text" value="<?=$row['address']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
 				<label for="dateTournament">Competition Date</label>
-				<input id="dateTournament" name="dateTournament" type="dateTournament" value="<?=$row['dateTournament']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<input id="dateTournament" name="dateTournament" type="date" value="<?=$row['dateTournament']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
 				<label for="dateRegistration">Registration Date</label>
-				<input id="dateRegistration" name="dateRegistration" type="dateRegistration" value="<?=$row['dateRegistration']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<input id="dateRegistration" name="dateRegistration" type="date" value="<?=$row['dateRegistration']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
-				<input id="year" name="year" type="text" value="<?=$row['year']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<!--//TODO: Make this a selection -->
+				<input id="year" name="year" type="number" value="<?=$row['year']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
+				<!--//TODO: Make this a selection -->
 				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
 				<input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
 				<label for="numberTeams">Number of Teams Registered</label>
-				<input id="numberTeams" name="numberTeams" type="text" value="<?=$row['numberTeams']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<input id="numberTeams" name="numberTeams" type="number" value="<?=$row['numberTeams']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
 				<label for="weighting">Weighting</label>
-				<input id="weighting" name="weighting" type="text" value="<?=$row['weighting']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<input id="weighting" name="weighting" type="number" value="<?=$row['weighting']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
 			<p>
 				<label for="note">Note(s)</label>
 				<input id="note" name="note" type="text" value="<?=$row['note']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
 			</p>
-			<fieldset>
-				<legend>Tournament Information</legend>
-				<div id="name"></div>
-				<a id="name" href="javascript:studentEventAddChoice('<?=$tournamentID?>')" href="">Add Event</a>
-			</fieldset>
+			<p>
+				<label for="websiteHost">Host's Website</label>
+				<input id="websiteHost" name="websiteHost" type="text" value="<?=$row['websiteHost']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="websiteScilympiad">Host's Scilympiad Site</label>
+				<input id="websiteScilympiad" name="websiteScilympiad" type="text" value="<?=$row['websiteScilympiad']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="note">Note(s)</label>
+				<input id="note" name="note" type="text" value="<?=$row['note']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="director">Director(s)</label>
+				<input id="director" name="director" type="text" value="<?=$row['director']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="directorEmail">Director's Email</label>
+				<input id="directorEmail" name="directorEmail" type="text" value="<?=$row['directorEmail']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="directorPhone">Director's Phone</label>
+				<input id="directorPhone" name="directorPhone" type="text" value="<?=$row['addressBilling']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
+			<p>
+				<label for="addressBilling">Address Billing</label>
+				<input id="addressBilling" name="addressBilling" type="text" value="<?=$row['addressBilling']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+			</p>
 		</fieldset>
 		<?=$privilegeText ?>
 	</form>

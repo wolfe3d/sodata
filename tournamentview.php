@@ -52,14 +52,13 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="<div>Host: ".$row['host']."</div>";
 		}
 		//Address of the tournament
-		$output .="<div>Address: ".$row['address']."</div>";
+		$output .="<div>Address: <a href='https://www.google.com/maps/search/?api=1&query=".$row['address']."'>".$row['address']."</a></div>";
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
-		$output .="<div>Date Registration: ".$row['dateRegistration']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
 		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
 		{
-			$output .="<div>Type:".$row['type']."</div>";
+			$output .="<div>Type:".$row['type']."</div>";//TODO: Convert to tournament type to string
 		}
 		if($row['note'])
 		{
@@ -74,7 +73,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		if(userHasPrivilege(3))
 		{
 			//Director Information
-			$output .="<br><h3>Director Information</h3>";
+			$output .="<br><h3>Registration Information</h3>";
 			$director=$row['director']?$row['director']:($row['directorEmail']?$row['directorEmail']:"");
 			if($row['directorEmail'])
 			{
@@ -88,12 +87,24 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			{
 				$output .="<div>Host: ".$row['host']."</div>";
 			}
-			if($row['monthRegistration'])
+			if($row['directorPhone'])
+			{
+				$output .="<a href='tel:+".$row['directorPhone']."'>".$row['directorPhone']."</a>";
+			}
+			if($row['dateRegistration'])
+			{
+				$output .="<div>Date Registration: ".$row['dateRegistration']."</div>";
+			}
+			if($row['addressBilling'])
+			{
+				$output .="<div>Billing: ".$row['addressBilling']."</div>";
+			}
+		/*	if($row['monthRegistration'])
 			{
 				$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
 				$monthName = $dateObj->format('F'); // March
 				$output .="<div>Normal Month Registration: ".$monthName."</div>";
-			}
+			}*/
 			$output .="<br>";
 		}
 		while($rowTeam = $resultTeams->fetch_assoc()):
