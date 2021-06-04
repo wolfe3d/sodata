@@ -100,6 +100,7 @@ else {
 echo $output;
 ?>
 <br>
+<div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 <form id="addTo" method="post" action="tournamenteventadd.php">
 	<p>
 		<input class="button" type="button" onclick="window.history.back()" value="Return" />

@@ -36,7 +36,7 @@ if(mysqli_num_rows($result))
 			$output .="<h2>Schedule</h2>";
 		}
 	}
-		$output .=" <span id='tournamentTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
+		$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
@@ -121,7 +121,7 @@ if(mysqli_num_rows($result))
 						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
 						$timeblocks[$i]['events'][$n]['eventTotal'] +=$checked?1:0;
 						$studentTotal +=$checked?1:0;
-						if(userHasPrivilege(3)){			
+						if(userHasPrivilege(3)){
 							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked>";
 						}
 						else {

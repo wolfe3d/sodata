@@ -105,6 +105,8 @@ else {
 echo $output;
 ?>
 <br>
+<div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
+
 <h2>Add Other Events</h2>
 <form id="addTo" method="post" action="tournamenteventadd.php">
 	<p>

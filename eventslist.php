@@ -50,9 +50,9 @@ if($result)
 		$output .="";
 
 		//check for permissions to create edit an event btn
-		if($_SESSION['userData']['privilege']>2 )
+		if(userHasPrivilege(3) )
 		{
-			$output .="<a href='javascript:prepareEventsEditPage(\"".$row['eventID']. "\")'>Edit</a>";
+			$output .="<input class='button fa' type='button' onclick='window.location.hash=\"event-edit-".$row['eventID']."\"' value='&#xf108; Edit' />";
 		}
 
 

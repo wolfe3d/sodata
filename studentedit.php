@@ -8,7 +8,7 @@ require_once  ("functions.php");
 //text output
 $output = "";
 
-$studentID = intval($_REQUEST['studentID']);
+$studentID = intval($_REQUEST['myID']);
 if(empty($studentID))
 {
 	//no student id was sent, so initiate adding a student

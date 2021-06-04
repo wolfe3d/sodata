@@ -8,67 +8,15 @@ $().ready(function() {
 });
 function checkPage(){
 	var splitHash = location.hash.substr(1).split("-");
-	if(splitHash[1])
+	$("section:not(#banner)").hide();
+	if(splitHash[0])
 	{
-		//alert (splitHash[1]);
-		//ignore hashes with dashes that are used for edit and other single pages
-		//TODO: Maybe add special functions for some edit pages later.
-		if(splitHash[0]=="tournament")
-		{
-				tournament(splitHash[2], splitHash[1]);
-		}
+		loadpage(splitHash[0], splitHash[1], splitHash[2]);
+		$("#mainHeader").html(splitHash[0]);
 	}
 	else
 	{
-		$("section:not(#banner)").hide();
-		if(splitHash[0])
-		{
-			loadpage(splitHash[0]);
-			$("#mainHeader").html(splitHash[0]);
-		}
-		else
-		{
-			loadpage("user");
-			$( "#main" ).show( "slow", function() {	});
-		}
-	}
-}
-function loadpage(myUrl)
-{
-	//$( "#main" ).hide( "fast", function() {	});
-	if (myUrl)
-	{
-		var request = $.ajax({
-		 url: myUrl +".php",
-		 cache: false,
-		 method: "POST",
-		 dataType: "html"
-		});
-		request.done(function( html ) {
-		 //$("label[for='" + field + "']").append(html);
-		 $("#mainContainer").html(html);
-		 switch (myUrl) {
-               case 'students': prepareStudentsPage();
-               break;
-
-               case 'events': prepareEventsPage();
-               break;
-
-			   case 'eventaddpop': prepareEventsAddPage();
-               break;
-
-               case 'tournaments': prepareTournamentsPage();
-               break;
-
-               default:
-            }
-		 $( "#main").show( "slow", function() {
-			});
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-		 $("#mainContainer").html("Error");
-		});
+		loadpage("user");
 	}
 }
 
@@ -93,6 +41,70 @@ function getList(myPage, myData)
 	});
 }
 
+function loadpage(page, type, myID){
+	var typepage = "";
+	if(type)
+	{
+		typepage = type;
+	}
+	var request = $.ajax({
+	 url: page+typepage+".php",
+	 cache: false,
+	 method: "POST",
+	 data: {myID: myID},
+	 dataType: "html"
+	});
+
+	request.done(function( html ) {
+	 //$("label[for='" + field + "']").append(html);
+	 $(".modified").remove(); //removes any old update notices
+
+		if(html)
+		{
+			//window.location.hash = '#tournament-view-'+ myID;
+			$("#mainContainer").html(html);
+			$.when( $("#myTitle") ).done(function( x ) {
+				//changes title after page loads
+				$("#myTitle").hide();
+  			$("#mainHeader").html($("#myTitle").html());
+			});
+
+			switch (page) {
+					case 'students': prepareStudentsPage();
+					break;
+
+					case 'events':prepareEventsPage();
+					break;
+
+					case 'event':	prepareEventEditSubmit();
+					break;
+
+					 case 'eventaddpop': prepareEventsAddPage();
+					break;
+
+					case 'tournaments':
+						if(!typepage){
+							prepareTournamentsPage();
+						}
+						$.when( $(":submit") ).done(function( x ) {
+							addToSubmit(myID);
+						});
+					break;
+
+					default:
+			 }
+			$( "#main").show( "slow", function() {});
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").append("<div class='modified' style='color:red'>"+textStatus+"</div>");
+	});
+}
 
 function prepareStudentsPage()
 {
@@ -210,10 +222,6 @@ function studentEdit(myStudentID)
 	request.fail(function( jqXHR, textStatus ) {
 	 $("#mainContainer").html("Removal Error");
 	});
-}
-function loadEventsList()
-{
-	//maybe load events asynchronous
 }
 function studentEventAddChoice(studentID)
 {
@@ -432,28 +440,6 @@ function prepareEventsPage()
 	});
 }
 
-function prepareEventsEditPage(myEvent)
-{
-	$("#mainHeader").html("Edit an Event");
-	 window.location.hash = '#event-edit-'+ myEvent;
-	 var request = $.ajax({
-	 	 url: "eventeditpop.php",
-	 	 cache: false,
-	 	 method: "POST",
-	 	 data: {eventID:myEvent},
-	 	 dataType: "html"
-	 	});
-
-	 	request.done(function( html ) {
-	 		$("#mainContainer").html(html);
-				prepareEventEditSubmit();
-	 	});
-
-	 request.fail(function( jqXHR, textStatus ) {
-	  $("#mainContainer").html("Error loading events edit page.");
-	 });
-}
-
 function prepareEventEditSubmit()
 {
 	// validate event form on keyup and submit
@@ -470,7 +456,7 @@ function prepareEventEditSubmit()
 			event.preventDefault();
 
 			var request = $.ajax({
-			 url: "eventedit.php",
+			 url: "eventeditadjust.php",
 			 cache: false,
 			 method: "POST",
 			 data: $("#addTo").serialize(),
@@ -673,46 +659,6 @@ function prepareTournamentsPage()
 			{
 			    $('#tournamentYear').append($('<option />').val(i).html(i));
 			}
-}
-
-function tournament(myID, type)
-{
-	var request = $.ajax({
-	 url: "tournament"+type+".php",
-	 cache: false,
-	 method: "POST",
-	 data: {myID: myID},
-	 dataType: "html"
-	});
-
-	request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
-
-		if(html)
-		{
-			//window.location.hash = '#tournament-view-'+ myID;
-			$("#mainContainer").html(html);
-			$.when( $("#tournamentTitle") ).done(function( x ) {
-				//changes title after page loads
-				$("#tournamentTitle").hide();
-  			$("#mainHeader").html($("#tournamentTitle").html());
-			});
-			$.when( $(":submit") ).done(function( x ) {
-				addToSubmit(myID);
-			});
-			//if(type=="teamassign"){}
-			//$("#mainHeader").html(myName);
-		}
-		else
-		{
-			$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
-		}
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='modified' style='color:red'>"+textStatus+"</div>");
-	});
 }
 
 function tournamentEventsAddAll(myID, year)

@@ -2,33 +2,32 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(3);
+require_once  ("functions.php");
 
-$eventID = intval($_POST['eventID']);
-$eventName = $mysqlConn->real_escape_string($_POST['eventName']);
-$typeName = $mysqlConn->real_escape_string($_POST['typeName']);
-
-if(empty($eventName))
+$eventID = intval($_POST['myID']);
+$typeName = "";
+if(isset($eventID))
 {
-	//no event id was sent, so initiate adding an event
-	echo "No event name was sent.";
-	exit();
-}
-
-if(empty($eventID)){
-	$query = "INSERT INTO `event` (`event`, `type`) VALUES ( '$eventName', '$typeName');";
-}
-else {
-	//update the event
-	$query = "UPDATE `event` SET `event`.`event` = '$eventName', `event`.`type` = '$typeName' WHERE `event`.`eventID` = $eventID";
-}
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-if ($result)
-{
-	echo "1";
-}
-else
-{
-	echo $mysqlConn->error;
+	$query = "SELECT * FROM `event` WHERE `eventID` = $eventID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$row = $result->fetch_assoc();
+	$typeName = $row["type"];
 }
 ?>
+<form id="addTo" method="post" action="eventeditadjust.php">
+	<?php if($row){ ?>
+			<input id="eventID" name="eventID" type="hidden" value="<?=$row["eventID"]?>">
+	<?php } ?>
+	<p>
+		<label for="eventName">Event</label>
+		<input id="eventName" name="eventName" type="text" value="<?=$row["event"]?>">
+	</p>
+	<p>
+		<label for="typeName">Event Type</label>
+		<?=getEventTypes($mysqlConn,$typeName)?>
+	</p>
+	<p>
+		<input class="button" type="button" onclick="window.location='#events'" value="Cancel" />
+		<input class="submit" type="submit" value="Submit">
+	</p>
+</form>

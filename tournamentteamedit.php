@@ -34,6 +34,7 @@ if($resultStudent){
 	endwhile;
 }
 ?>
+<div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
 <div id="note"></div>
 <form id="tournamentTeamForm" method="post" action="fieldUpdate.php">
 	<p id="teamName">
