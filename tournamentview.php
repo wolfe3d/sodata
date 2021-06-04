@@ -7,7 +7,7 @@ userCheckPrivilege(1);
 $output = "";
 
 $tournamentID = intval($_REQUEST['myID']);
-$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentinfoID`= `tournamentinfo`.`tournamentinfoID` WHERE `tournament`.`tournamentID` = $tournamentID";
+$query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))
@@ -39,6 +39,8 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			}
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-times-".$row['tournamentID']."\"' value='&#xf017; Time Blocks' />";
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-events-".$row['tournamentID']."\"' value='&#xf0c3; Events' />";
+			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-eventtime-".$row['tournamentID']."\"' value='&#xf073;  Choose Times' />";
+
 			$output .="</div><br>";
 		}
 		if($row['websiteHost'])
@@ -95,8 +97,9 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="<br>";
 		}
 		while($rowTeam = $resultTeams->fetch_assoc()):
-			//TODO: Still need to implement edit team
-			$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$row['tournamentID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' /></p>";
+			$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
+			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; Assign Events' /></p>";
+
 		endwhile;
 	}
 	$output .="</div>";

@@ -23,7 +23,7 @@ userCheckPrivilege(1);
 		</fieldset>
 	</form>
 </div>
-<?php if($_SESSION['userData']['privilege']>2)
+<?php if(userHasPrivilege(3))
 		{ ?>
 	<input class="button fa" type="button" onclick="javascript:prepareTournamentAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="studentadd.php">

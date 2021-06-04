@@ -8,22 +8,22 @@ $output = "";
 $name = $mysqlConn->real_escape_string($_POST['tournamentName']);
 $year = intval($_POST['tournamentYear']);
 
-$query = "SELECT * from `tournament` INNER JOIN `tournamentinfo` ON `tournament`.`tournamentinfoID`= `tournamentinfo`.`tournamentinfoID` ";
+$query = "SELECT * from `tournament`  ";
 //check to see what is searched for
 if($name&&$year)
 {
-	$query .= " where `tournamentinfo`.`name` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
+	$query .= " where `tournament`.`tournamentName` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
 }
 else if($name)
 {
-	$query .= " where `tournamentinfo`.`name` LIKE '$name'";
+	$query .= " where `tournament`.`tournamentName` LIKE '$name'";
 }
 else if($year)
 {
 	$query .= " where `tournament`.`year` LIKE '$year' ";
 }
 
-$query .= " ORDER BY `tournamentinfo`.`name` ASC";
+$query .= " ORDER BY `tournament`.`tournamentName` ASC";
 $output .=userHasPrivilege(3)?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -31,7 +31,7 @@ if($result)
 {
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
-		$tournamentTitle = $row['name']." - ".$row['year'];
+		$tournamentTitle = $row['tournamentName']." - ".$row['year'];
 		$output .="<hr><h2>".$tournamentTitle."</h2>";
 		$output .="<input class='button fa' type='button' onclick='window.location.hash=\"tournament-view-".$row['tournamentID']."\"' value='&#xf108; View Details' />";
 

@@ -1,5 +1,5 @@
 <?php
-//get Event type options
+//get all students in a select
 function getAllStudents($db, $active)
 {
 	$myOutput = "";
@@ -32,6 +32,23 @@ function getEventTypes($db, $type)
 		while ($row = $result->fetch_assoc()):
 			$selected = $row['type']==$type ? " selected " : "";
 			$myOutput.="<option value = '".$row['type']."'$selected>".$row['type']."</option>";
+		endwhile;
+		$myOutput .="</select>";
+	}
+	return $myOutput;
+}
+//get Teams from previous tournaments
+function getTeamsPrevious($db)
+{
+	$myOutput = "";
+	$query = "SELECT * from `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	if($result)
+	{
+		$myOutput .="<select id='teamTournament' name='teamTournament' type='text'>";
+		while ($row = $result->fetch_assoc()):
+			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['tournamentName']." " . $row['teamName'] ."</option>";
 		endwhile;
 		$myOutput .="</select>";
 	}

@@ -17,39 +17,19 @@ $query = "SELECT * FROM `tournament` WHERE `tournamentID` = $tournamentID";
 $resultTournament = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $tournamentRow = $resultTournament->fetch_assoc();
 
-/*
-//Get tournament events
-$query = "SELECT * FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentID` = $tournamentID";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-if(mysqli_num_rows($result))
-{
-	$output .="<h2>Events</h2>";
-	$output .="<div>";
-	while ($row = $result->fetch_assoc()):
-		$output .= "<div id='tournamentevent-".$row['tournamenteventID']."'>" . $row["event"] . " <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>Remove</a></div>";
-	endwhile;
-	$output .="</div>";
-}
-else {
-	$output .="<div><input class='button fa' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")' value='&#xf0c3; Add all events from this year' /></div>";
-}
-*/
-
-
-
-//Get tournament times and selection
+//Get tournament times
 $query = "SELECT * FROM `timeblock` WHERE `tournamentID` = $tournamentID ORDER BY `timeStart`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if(mysqli_num_rows($result))
 {
-	$output .="<h2>Available Times</h2><div id='note'></div>";
+	$output .="<h2>Choose Times</h2><div id='note'></div><div>For all testing events, make sure to choose the same time block for all teams.  Build events can be at different times.</div>";
 	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
 	endwhile;
 
-//Run through times and figure out the number of different dates and print columns with colspan of times for that date
+	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
 	$output .="<tr><th rowspan='2' style='vertical-align:bottom;'>Events</th>";
 	$dateCheck = "";
 	$dateI = 0;
@@ -84,12 +64,27 @@ if(mysqli_num_rows($result))
 		while ($rowEvent = $resultEvent->fetch_assoc()):
 			$output .= "<tr><th><span id='tournamentevent-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>X</a></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
-					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."-".$timeblocks[$i]['timeblockID'];
+				//find available times
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
 					$resultEventTime = $mysqlConn->query($queryEventTime) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-//if there is a result then make box checked, if not do not check box.
-					$checked = mysqli_num_rows($resultEventTime)?" checked ":"";
-			    $output .= "<td style='background-color:".rainbow($i)."'><input type='checkbox' onchange='javascript:tournamentEventTimeSet($(this))' id='$checkbox' name='$checkbox' value='' $checked></td>";
+					$output .= "<td style='background-color:".rainbow($i)."'>";
+					if(mysqli_num_rows($resultEventTime)){
+						//find all teams
+						$queryTeam = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID";
+						$resultTeam = $mysqlConn->query($queryTeam) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+						if(mysqli_num_rows($resultTeam)){
+							while ($rowTeam = $resultTeam->fetch_assoc()):
+								//print a checkbox for each team
+								$checkbox = "tournamenttimechosen-".$rowEvent['tournamenteventID']."-".$timeblocks[$i]['timeblockID']."-".$rowTeam['teamID'];
+								$queryEventTimeChosen = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'] . " AND `teamID` = ".$rowTeam['teamID'];
+								$resultEventTimeChosen = $mysqlConn->query($queryEventTimeChosen) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+								//if there is a result then make box checked, if not do not check box.
+								$checked = mysqli_num_rows($resultEventTimeChosen)?" checked ":"";
+						    $output .= "<input type='checkbox' onchange='javascript:tournamentEventTimeSet($(this))' id='$checkbox' name='$checkbox' value='' $checked><label for='$checkbox'>".$rowTeam['teamName']."</label>";
+							endwhile;
+					}
+					$output .= "</td>";
+				}
 			}
 			$output .= "</tr>";
 		endwhile;
@@ -105,13 +100,8 @@ else {
 echo $output;
 ?>
 <br>
-<h2>Add Other Events</h2>
 <form id="addTo" method="post" action="tournamenteventadd.php">
 	<p>
-		<?php include("eventsselectb.php");?>
-	</p>
-	<p>
-		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />
-		<input class="submit" type="submit" value="Add">
+		<input class="button" type="button" onclick="window.history.back()" value="Return" />
 	</p>
 </form>

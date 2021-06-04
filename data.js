@@ -53,7 +53,7 @@ function loadpage(myUrl)
 
                case 'events': prepareEventsPage();
                break;
-			   
+
 			   case 'eventaddpop': prepareEventsAddPage();
                break;
 
@@ -780,7 +780,7 @@ function addToSubmit(myID)
 		}
 	});
 
-	$('input').each(function() {
+	$('#addTo :input').each(function() {
 					$(this).rules('add', {
 							required: true,
 					});
@@ -824,6 +824,72 @@ function rowRemove(myID,table)
 	 alert( "Request failed: " + textStatus );
  });
 }
+
+//function used to setup eventtime-available
+//This changes the tournamenttimeavailable and tournamenttimechosen
+function tournamentEventTimeSet(inputBtn)
+{
+	//alert(inputBtn.attr('name'));
+	//alert(inputBtn.is(":checked"));
+	var objectName = inputBtn.attr('name');
+	var splitName = objectName.split("-");
+	var checked = inputBtn.is(":checked")?1:0;
+
+	var request = $.ajax({
+		url: "tournamenteventtimeadjust.php",
+		cache: false,
+		method: "POST",
+		data: { table: splitName[0], tournamenteventID: splitName[1], timeblockID: splitName[2], teamID: splitName[3], checked: checked },
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		if(html=='1') 	 {
+			var modified = checked?"added":"removed";
+			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamentevent-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
+		}
+		else {
+			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#note").html("<div class='modified' style='color:red'>Change Error:"+textStatus+"</div");
+	});
+}
+
+
+function tournamentTeammate(inputBtn)
+{
+	//alert(inputBtn.attr('name'));
+	//alert(inputBtn.is(":checked"));
+	var objectName = inputBtn.attr('name');
+	var splitName = objectName.split("-");
+	var checked = inputBtn.is(":checked")?1:0;
+
+	var request = $.ajax({
+		url: "tournamentteammateadjust.php",
+		cache: false,
+		method: "POST",
+		data: { table: splitName[0], teamID: splitName[1], studentID: splitName[2], checked: checked },
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		if(html=='1') 	 {
+			var modified = checked?"added":"removed";
+			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
+		}
+		else {
+			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#note").html("<div class='modified' style='color:red'>Change Error:"+textStatus+"</div");
+	});
+}
+
 ///////////////////
 ///Officer and Event Leader functions
 //////////////////
