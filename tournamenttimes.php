@@ -20,7 +20,7 @@ if($tournamentID)
 	if(mysqli_num_rows($result))
 	{
 		$output .="<h2>Available Blocks</h2>";
-		$output .="<div>";
+		$output .="<div id='timeblocks'>";
 		$i=0;
 		while ($row = $result->fetch_assoc()):
 			$output .= "<div id='timeblock-".$row['timeblockID']."' style='background-color:".rainbow($i)."'>" . $row["timeStart"] . " - ". $row["timeEnd"] . " <a href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .",\"timeblock\")'>Remove</a></div>";

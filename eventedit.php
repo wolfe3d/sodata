@@ -4,6 +4,8 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(3);
 require_once  ("functions.php");
 
+//TODO: BUG FIX the submission
+
 $eventID = intval($_POST['myID']);
 $typeName = "";
 if(isset($eventID))
@@ -25,6 +27,26 @@ if(isset($eventID))
 	<p>
 		<label for="typeName">Event Type</label>
 		<?=getEventTypes($mysqlConn,$typeName)?>
+	</p>
+	<p>
+		<label for="calculatorType">Calculator</label>
+		<input id="calculatorType" name="calculatorType" type="number" value="<?=$row["calculatorType"]?>">
+	</p>
+	<p>
+		<label for="goggleType">Goggles</label>
+		<input id="goggleType" name="goggleType" type="number" value="<?=$row["goggleType"]?>">
+	</p>
+	<p>
+		<label for="numberStudents">Number of Partners</label>
+		<input id="numberStudents" name="numberStudents" type="number" value="<?=$row["numberStudents"]?>">
+	</p>
+	<p>
+		<label for="sciolyLink">Scioly Link</label>
+		<input id="sciolyLink" name="sciolyLink" type="text" value="<?=$row["sciolyLink"]?>">
+	</p>
+	<p>
+		<label for="description">Description</label>
+		<input id="description" name="description" type="text" value="<?=$row["description"]?>">
 	</p>
 	<p>
 		<input class="button" type="button" onclick="window.location='#events'" value="Cancel" />

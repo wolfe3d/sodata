@@ -20,8 +20,7 @@ if(empty($studentID))
 		$studentID =  $mysqlConn->insert_id;
 	}
 	else {
-		echo "Failed to add new student.";
-		exit();
+		exit("Failed to add new student.");
 	}
 }
 
@@ -168,7 +167,8 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 		</fieldset>
 		<?=$privilegeText ?>
 	</form>
-	<a href="#user">Back</a>
+	<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
+
 	<div id='eventAndPriority'>
 		<?php include("eventsselect.php")?>
 		<div id="priority">

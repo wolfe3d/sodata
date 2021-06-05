@@ -1,6 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once ("functions.php");
 userCheckPrivilege(1);
 
 /*check to see if id exists*/
@@ -54,11 +55,22 @@ if(userHasPrivilege(2))
 			</p>
 		</fieldset>
 	</form>
-	<form id="findByEvent">
+	<form id="findByEventPriority">
 		<fieldset>
 			<legend>Find Students by Event That They Signed Up For</legend>
 			<p>
-				<?php include("eventsselectb.php")?>
+				<?=getEventList($mysqlConn, 0,"Event Priority")?>
+			</p>
+			<p>
+				<input class="submit" type="submit" value="Find By Event">
+			</p>
+		</fieldset>
+	</form>
+	<form id="findByEventCompetition">
+		<fieldset>
+			<legend>Find Students by Event That They Have Competed In</legend>
+			<p>
+				<?=getEventList($mysqlConn, 1,"Events Competed")?>
 			</p>
 			<p>
 				<input class="submit" type="submit" value="Find By Event">

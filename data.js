@@ -73,19 +73,41 @@ function loadpage(page, type, myID){
 					case 'students': prepareStudentsPage();
 					break;
 
+					case 'student':
+						if(typepage=="edit"){
+							studentEditPrepare();
+						}
+					break;
+
 					case 'events':prepareEventsPage();
 					break;
 
 					case 'event':	prepareEventEditSubmit();
 					break;
 
-					 case 'eventaddpop': prepareEventsAddPage();
+					case 'eventaddpop': prepareEventsAddPage();
+					break;
+
+					case 'officer':
+						if(typepage=="year"){
+							$.when( $("#year") ).done(function( x ) {
+								$("#year").change(function(){
+		  						window.location.hash = '#officer-year-'+ $("#year option:selected").text();
+								});
+							});
+						}
+						else if(typepage=="add"){
+							addToSubmit();
+						}
 					break;
 
 					case 'tournaments':
 						if(!typepage){
 							prepareTournamentsPage();
 						}
+					break;
+
+					case 'tournament':
 						$.when( $(":submit") ).done(function( x ) {
 							addToSubmit(myID);
 						});
@@ -111,12 +133,12 @@ function prepareStudentsPage()
 	$("#addTo").hide();
 	$("#searchDiv").hide();
 	//Load Students
-	getList("studentslist.php",{active: +$("#active").is(':checked')});
+	getList("studentslist.php",{active:$("#active").is(':checked')?"1":"0"});
 		// validate signup form on keyup and submit
 
 	//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
 	$('#active').change(function() {
-			getList("studentslist.php", {active: +$("#active").is(':checked')});
+			getList("studentslist.php", {active:$("#active").is(':checked')?"1":"0"});
 	});
 	//when Find by Name is clicked, this initiates the search
 	$("#findStudent").on( "submit", function( event ) {
@@ -124,14 +146,18 @@ function prepareStudentsPage()
 		getList("studentslist.php", $( this ).serialize() );
 	});
 	//when Find by Event is clicked, this initiates the search
-	$("#findByEvent").on( "submit", function( event ) {
+	$("#findByEventPriority").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {eventsList: $("#eventsList").val(),active:1});
+		getList("studentslist.php", {eventPriority: $("#eventsList-0").val(),active:$("#active").is(':checked')?"1":"0"});
+	});
+	$("#findByEventCompetition").on( "submit", function( event ) {
+		event.preventDefault();
+		getList("studentslist.php", {eventCompetition: $("#eventsList-1").val(),active:$("#active").is(':checked')?"1":"0"});
 	});
 	//when Find by Course is clicked, this initiates the search
 	$("#findByCourse").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {courseList: $("#courseList").val(),active:1});
+		getList("studentslist.php", {courseList: $("#courseList").val(),active:$("#active").is(':checked')?"1":"0"});
 	});
 }
 
@@ -162,19 +188,8 @@ function studentRemove(myStudentID, studentName)
 ///////////////////
 ///Student Edit functions
 //////////////////
-function studentEdit(myStudentID)
+function studentEditPrepare()
 {
-	var request = $.ajax({
-	 url: "studentedit.php",
-	 cache: false,
-	 method: "POST",
-	 data: {studentID:myStudentID},
-	 dataType: "html"
-	});
-	request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 window.location.hash = '#student-edit-'+ myStudentID;
-	 $("#mainContainer").html(html);
 	 $("#eventAndPriority").hide();
 	 $("#courseListDiv").hide();
 	 $("#addTo").validate({
@@ -189,12 +204,19 @@ function studentEdit(myStudentID)
 			parent1Phone: 			{
 				phoneUS: true
 			},
+			parent2Phone: 			{
+				phoneUS: true
+			},
  			yearGraduating: "required",
  			email: {
  				required: true,
  				email: true
  			},
 			parent1Email: {
+				required: true,
+				email: true
+			},
+			parent2Email: {
 				required: true,
 				email: true
 			},
@@ -216,12 +238,6 @@ function studentEdit(myStudentID)
  							form.submit();
  					}
  	});
-
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-	 $("#mainContainer").html("Removal Error");
-	});
 }
 function studentEventAddChoice(studentID)
 {
@@ -256,7 +272,9 @@ function studentEventAdd(student, field, value)
 	 if (eventchoiceID>0)
 	 {
 		 //returns the current update
-		 $("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ $("#eventsList option:selected").text() + "-" + $("#priorityList option:selected").text() + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 var eventSplit = $("#eventsList option:selected").text().split(" ");
+		 var eventName = eventSplit[0]+"-"+$("#priorityList option:selected").text()+" "+eventSplit.slice(1).join(" ")
+		 $("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {
@@ -302,7 +320,11 @@ function studentCourseAdd(student, table)
 	 if (myCourseID>0)
 	 {
 		 //returns the current update
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span> <a href=\"javascript:courseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>  <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span></div>");
+		 if(table=="courseenrolled"){
+			 $("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>");
+		 }
+		 $("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span>");
 	 }
 	 else
 	 {
@@ -316,7 +338,7 @@ function studentCourseAdd(student, table)
 }
 
 
-function courseCompleted(value, courseName)
+function studentCourseCompleted(value, courseName)
 {
 	//todo
  // validate signup form on keyup and submit
@@ -343,7 +365,7 @@ function courseCompleted(value, courseName)
 	 else
 	 {
 		 var table = "courseenrolled";
-		 $("#"+ table).append("<span class='modified' style='color:red'>Error while attempting to move a course. Please, report details to site admin.</span>");
+		 $("#"+ table).append("<span class='modified' style='color:red'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
 	 }
  });
 
@@ -354,24 +376,28 @@ function courseCompleted(value, courseName)
 
 function fieldUpdate(myID,table,field,value)
 {
- // validate signup form on keyup and submit
- var request = $.ajax({
-	 url: "fieldupdate.php",
-	 cache: false,
-	 method: "POST",
-	 data: { myid: myID, mytable:table, myfield : field, myvalue : value },
-	 dataType: "text"
- });
+ // validate field before submitting
+ if($("#"+field).valid())
+ {
+	 //submit changes
+	 var request = $.ajax({
+		 url: "fieldupdate.php",
+		 cache: false,
+		 method: "POST",
+		 data: { myid: myID, mytable:table, myfield : field, myvalue : value },
+		 dataType: "text"
+	 });
 
- request.done(function( html ) {
-	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
-	 $("#"+field).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
- });
+	 request.done(function( html ) {
+		 //$("label[for='" + field + "']").append(html);
+		 $(".modified").remove(); //removes any old update notices
+		 $("#"+field).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
+	 });
 
- request.fail(function( jqXHR, textStatus ) {
-	 alert( "Request failed: " + textStatus );
- });
+	 request.fail(function( jqXHR, textStatus ) {
+		 alert( "Request failed: " + textStatus );
+	 });
+	}
 }
 function userPrivilege(myUser, field,value)
 {
@@ -697,7 +723,7 @@ function addToSubmit(myID)
 	$("#addTo").validate({
 		submitHandler: function(form) {
 			var formData = $("#addTo").serialize();
-			formData+='&tournamentID='+myID;
+			formData+='&myID='+myID;
 			event.preventDefault();
 			//alert($("#addTo").serialize());
 			var request = $.ajax({
@@ -713,7 +739,7 @@ function addToSubmit(myID)
 		 $(".modified").remove(); //removes any old update notices
 			if(html>0)
 			{
-				window.location.hash = '#tournament-view-'+myID;
+				history.back();
 			}
 			else
 			{
@@ -737,9 +763,16 @@ function addToSubmit(myID)
 
 function tournamentTimeblockRemove(myID)
 {
-	if(confirm("Are you sure you want to delete the time block" + myID +"?  This removes the time block permanently!!!"))
+	if(confirm("Are you sure you want to delete the time block " + myID +"?  This removes the time block permanently!!!"))
   {
 		rowRemove(myID,"timeblock");
+	}
+}
+function tournamentEventRemove(myID,myName)
+{
+	if(confirm("Are you sure you want to delete "+myName+" from this tournament " + myID +"?  This removes the event permanently!!!"))
+  {
+		rowRemove(myID,"tournamentevent");
 	}
 }
 function rowRemove(myID,table)
@@ -883,66 +916,10 @@ function tournamentEventTeammate(inputBtn)
 ///////////////////
 ///Officer and Event Leader functions
 //////////////////
-function prepareOfficerAdd(myYear)
+function officerRemove(myID, myName)
 {
-	 window.location.hash = '#officer-add';
-	 	$("#mainHeader").html("Add An Officer");
-		var request = $.ajax({
-			url: "officeraddpop.php",
-			cache: false,
-			method: "POST",
-			data: {year:myYear},
-			dataType: "html"
-		 });
-
-		 request.done(function( html ) {
-			 $("#mainContainer").html(html);
-				 prepareOfficerAddSubmit();
-		 });
-
-		request.fail(function( jqXHR, textStatus ) {
-		 $("#mainContainer").html("Error loading events edit page.");
-		});
- }
-
- function prepareOfficerAddSubmit()
- {
-	 // validate event form on keyup and submit
-		$("#addTo").validate({
-			rules: {
-				position: "required",
-			},
-			messages: {
-				eventName: "*Please enter the name of the leader's position.",
-			},
-			submitHandler: function(form) {
-				event.preventDefault();
-				//alert($("#addTo").serialize());
-				var request = $.ajax({
-				 url: "officeradd.php",
-				 cache: false,
-				 method: "POST",
-				 data: $("#addTo").serialize(),
-				 dataType: "text"
-				});
-
-				request.done(function( html ) {
-				 //$("label[for='" + field + "']").append(html);
-				 $(".modified").remove(); //removes any old update notices
-					if(html>0)
-					{
-						//add event to list
-						$("#addTo").append("<div class='modified' style='color:blue'>"+$("#student option:selected" ).text()+" added as "+ $("#position" ).val() +" for "+ $("#year option:selected" ).text()+"</div>");
-					}
-					else
-					{
-						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
-					}
-				});
-
-			request.fail(function( jqXHR, textStatus ) {
-			 $("#mainContainer").html("Add event to year error");
-			});
-			}
-		});
+	if(confirm("Are you sure you want to remove " + myName + "(" + myID +") from their officer position?"))
+  {
+		rowRemove(myID,"officer");
+	}
 }
