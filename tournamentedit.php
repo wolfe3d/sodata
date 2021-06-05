@@ -39,15 +39,6 @@ if(empty($result))
 
 //fill the row with the query data
 $row = $result->fetch_assoc();
-
-//Check permissions to make this user is either an admin or editing their own data
-/*if($_SESSION['userData']['privilege']<2 && $_SESSION['userData'][`id`]!=$row['userID'])
-{
-	echo "The current user does not have privilege for this change.";
-	exit;
-}*/
-userCheckPrivilege(2);
-
 //Check that tournament row exits from table
 if(!$row)
 {
@@ -56,6 +47,7 @@ if(!$row)
 }
 
 ?>
+<div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
 <form id="addTo" method="post" action="tournamentUpdate.php">
 		<fieldset>
 			<legend>Edit Tournament</legend>

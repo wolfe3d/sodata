@@ -25,6 +25,8 @@ if($tournamentID)
 		}
 }
 ?>
+<div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
+
 <form id="addTo" method="post" action="tournamentteaminsert.php">
 	<p id="teamName">
 		<label for="teamName">Team Name</label>

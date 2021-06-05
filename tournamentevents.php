@@ -26,7 +26,7 @@ if(mysqli_num_rows($result))
 	$output .="<h2>Events</h2>";
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
-		$output .= "<div id='tournamentevent-".$row['tournamenteventID']."'>" . $row["event"] . " <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>Remove</a></div>";
+		$output .= "<div id='tournamentevent-".$row['tournamenteventID']."'>" . $row["event"] . " <a href='javascript:tournamentEventRemove(". $row['tournamenteventID'] .")'>Remove</a></div>";
 	endwhile;
 	$output .="</div>";
 }
@@ -82,7 +82,7 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultEvent))
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr><th><span id='tournamentevent-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>X</a></th>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span>" . $rowEvent["event"] ."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",\"".$rowEvent["event"] ."\")'>X</a></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."-".$timeblocks[$i]['timeblockID'];
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
@@ -105,10 +105,12 @@ else {
 echo $output;
 ?>
 <br>
+<div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
+
 <h2>Add Other Events</h2>
-<form id="addTo" method="post" action="tournamenteventadd.php">
+<form id="addTo" method="post" action="tournamenteventsadd.php">
 	<p>
-		<?php include("eventsselectb.php");?>
+		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
 	<p>
 		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />

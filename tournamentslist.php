@@ -31,8 +31,8 @@ if($result)
 {
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
-		$tournamentTitle = $row['tournamentName']." - ".$row['year'];
-		$output .="<hr><h2>".$tournamentTitle."</h2>";
+		$myTitle = $row['tournamentName']." - ".$row['year'];
+		$output .="<hr><h2>".$myTitle."</h2>";
 		$output .="<input class='button fa' type='button' onclick='window.location.hash=\"tournament-view-".$row['tournamentID']."\"' value='&#xf108; View Details' />";
 
 		if($row['websiteHost'])

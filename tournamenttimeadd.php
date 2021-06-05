@@ -3,7 +3,7 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(3);
 
-$tournamentID = intval($_POST['tournamentID']);
+$tournamentID = intval($_POST['myID']);
 //$blockColor = substr($mysqlConn->real_escape_string($_POST['blockColor']),1);
 $timeStart = $mysqlConn->real_escape_string($_POST['timeStart']);
 $timeEnd = $mysqlConn->real_escape_string($_POST['timeEnd']);
@@ -31,7 +31,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 
 if ($result)
 {
-	echo "1";
+	echo "Time added successfully ";
 }
 else
 {

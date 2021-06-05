@@ -37,6 +37,26 @@ function getEventTypes($db, $type)
 	}
 	return $myOutput;
 }
+
+//get list of events
+function getEventList($db, $number,$label)
+{
+	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
+	$resultEventsList = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
+	$events .="<select id='eventsList-$number' name='eventsList'>";
+		if($resultEventsList)
+		{
+			while ($rowEvents = $resultEventsList->fetch_assoc()):
+				$event = htmlspecialchars($db->real_escape_string($rowEvents['event']));
+				$type = $db->real_escape_string($rowEvents['type']);
+				$events .= "<option value='".$rowEvents['eventID']."'>$event - $type</option>";
+			endwhile;
+		}
+		$events.="</select></div>";
+	return $events;
+}
+
 //get Teams from previous tournaments
 function getTeamsPrevious($db)
 {
@@ -136,7 +156,7 @@ function getCourses($db, $studentID, $tableName)
 		while ($row = $result->fetch_assoc()):
 			if($tableName == "courseenrolled")
 			{
-				$courseCompleted = "<a href=\"javascript:courseCompleted('" . $row[$tableID] . "','" . $row['course'] . "')\">Completed</a>";
+				$courseCompleted = "<a href=\"javascript:studentCourseCompleted('" . $row[$tableID] . "','" . $row['course'] . "')\">Completed</a>";
 			}
 			$myOutput .= "<div id='$tableName-" . $row[$tableID] . "'><span class='course'>" . $row['course'] . " - " . $row['level'] . " $courseCompleted  </span><a href=\"javascript:studentCourseRemove('" . $row[$tableID] . "','$tableName')\">Remove</a></div>";
 		endwhile;
@@ -153,19 +173,18 @@ function editPrivilege($privilege,$userID,$db)
 		$output .= "<fieldset><legend>Privilege</legend><p>";
 		//make an adjustable privilege container for website manager to give higher privileges
 		//show privilege
-		if(empty($row['userID']))
+		if(empty($userID))
 		{
 				$output .= "User has never logged in with registered account.";
 		}
 		else {
-
-			$query = "SELECT * FROM `user` WHERE `id`=".$row['userID'];// where `field` = $fieldId";
+			$query = "SELECT * FROM `user` WHERE `id`=".$userID;// where `field` = $fieldId";
 			$resultPrivilege = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$rowPriv = $resultPrivilege->fetch_assoc();
 			if ($rowPriv['privilege'])
 			{
 					$output .= "<label for='privilege'>Privilege</label>";
-					$output .= "<input id='privilege' name='privilege' type='text' value='".$rowPriv['privilege']."' onchange='userPrivilege(".$row['userID'].",this.id,this.value)'>";
+					$output .= "<input id='privilege' name='privilege' type='text' value='".$rowPriv['privilege']."' onchange='userPrivilege(".$userID.",this.id,this.value)'>";
 			}
 			else
 			{

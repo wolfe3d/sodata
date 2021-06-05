@@ -4,34 +4,26 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(4);
 require_once  ("functions.php");
 
-$year = intval($_POST['year']);
-$studentID = intval($_POST['student']);
-$position = $mysqlConn->real_escape_string($_POST['position']);
-if(empty($year)||empty($studentID)||empty($position))
+$year = intval($_POST['myID']);
+if(empty($year))
 {
-	echo "Missing a required field in order to add an officer";
-	exit();
-}
-
-//Check to see if officer is already added
-$query = "SELECT * FROM `officer` WHERE `year` = $year AND `studentID` = $studentID AND `position` LIKE '$position'";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-if ($row = $result->fetch_assoc())
-{
-	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	echo "Duplicate entry of $position";
-	exit();
-}
-
-//Insert event
-$query = "INSERT INTO `officer` (`studentID`, `year`, `position`) VALUES ($studentID, $year, '$position') ";
-if ($mysqlConn->query($query) === TRUE)
-{
-	echo $mysqlConn->insert_id;
-}
-else
-{
-	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	echo "Insert of $eventName failed.";
+	$year = getCurrentSOYear();
 }
 ?>
+<form id="addTo" method="post" action="officeraddadjust.php">
+	<p>
+		<label for="year">Year</label>
+		<?=getSOYears($year)?>
+	</p>
+	<p id="eventsP">
+		<label for="student">Student</label>
+		<?=getAllStudents($mysqlConn,1)?>
+	</p>
+	<p>
+		<label for="position">Assign Position</label>
+		<input id="position" name="position" type="text" value="position" onchange="officerAdd()">
+	</p>
+		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />
+		<input class="submit" type="submit" value="Add">
+	</div>
+</form>

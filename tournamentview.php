@@ -27,7 +27,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 	$output .="<div>";
  if($row)
  {
-	 $output .="<div id='tournamentTitle'>".$row['name']." - " . $row['year'] . "</div>";
+	 $output .="<div id='myTitle'>".$row['tournamentName']." - " . $row['year'] . "</div>";
 
 		if(userHasPrivilege(3))
 		{

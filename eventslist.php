@@ -50,9 +50,9 @@ if($result)
 		$output .="";
 
 		//check for permissions to create edit an event btn
-		if($_SESSION['userData']['privilege']>2 )
+		if(userHasPrivilege(3) )
 		{
-			$output .="<a href='javascript:prepareEventsEditPage(\"".$row['eventID']. "\")'>Edit</a>";
+			$output .="<input class='button fa' type='button' onclick='window.location.hash=\"event-edit-".$row['eventID']."\"' value='&#xf108; Edit' />";
 		}
 
 
@@ -74,6 +74,22 @@ if($result)
 
 		$output .="<div>Year: $grade ".$yearCollection."</div>";
     $output .="<div>Type: ".$row['type']."</div>";
+		if($row['calculatorType']){
+			$output .="<div>Calculator: ".$row['calculatorType']."</div>"; //TODO: Convert calculator integer to string
+		}
+		if($row['goggleType']){
+			$output .="<div>Goggles: ".$row['goggleType']."</div>"; //TODO: Convert calculator integer to string
+		}
+		if($row['numberStudents']){
+			$output .="<div>Number of partners: ".$row['numberStudents']."</div>"; //TODO: Convert calculator integer to string
+		}
+		if($row['sciolyLink']){
+			$output .="<div>Link: <a href='".$row['sciolyLink']."'>".$row['sciolyLink']."</a></div>"; //TODO: Convert calculator integer to string
+		}
+		if($row['description']){
+			$output .="<div>Description: ".$row['description']."</div>";
+		}
+
 
 	endwhile;
   $output .="</div>";

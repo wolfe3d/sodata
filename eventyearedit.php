@@ -35,7 +35,7 @@ endwhile;
 		<?=$events?>
 	</div>
 	<p>
-		<?php include("eventsselectb.php");?>
+		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
 	<p>
 		<input class="button fa" type="button" onclick="window.location='#events'" value="&#xf0a8; Return" />
