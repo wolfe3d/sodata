@@ -20,7 +20,7 @@ if($tournamentID)
 	if(mysqli_num_rows($result))
 	{
 		$output .="<h2>Available Blocks</h2>";
-		$output .="<div>";
+		$output .="<div id='timeblocks'>";
 		$i=0;
 		while ($row = $result->fetch_assoc()):
 			$output .= "<div id='timeblock-".$row['timeblockID']."' style='background-color:".rainbow($i)."'>" . $row["timeStart"] . " - ". $row["timeEnd"] . " <a href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .",\"timeblock\")'>Remove</a></div>";
@@ -32,7 +32,7 @@ if($tournamentID)
 	echo $output;
 }
 ?>
-
+<div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 <h2>Add Time Block</h2>
 <p>Make sure you use the time that you are competing, so this simplifies the user's plan.  If you are competing locally, then use the time as given.  If you are competing locally in EST in a remote competition that takes place in PST, then convert the times to EST. If you are traveling to competition in the PST, use the PST times given.</p>
 <form id="addTo" method="post" action="tournamenttimeadd.php">

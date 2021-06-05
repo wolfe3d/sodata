@@ -4,9 +4,12 @@ require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
 require_once  ("functions.php");
-//TODO: Add year choice to look at previous years
+
+$year = intval($_POST['myID']);
+if(!$year){
+	$year = getCurrentSOYear();
+}
 //Get current year
-$year = getCurrentSOYear();
 $yearBeg = $year-1;
 $query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
 //$output .=$query;
@@ -15,23 +18,24 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 if($result)
 {
 	$output .="<div>";
-	$output .='<input class="button fa" type="button" onclick="javascript:needtoadd()" value="&#xf002; Find" />';
-	if($_SESSION['userData']['privilege']>3 )
+	$output .= getSOYears($year);
+	if(userHasPrivilege(3))
 	{
-		$output .=' <input class="button fa" type="button" onclick="javascript:prepareOfficerAdd()" value="&#xf067; Add Officer" />';
+		$output .=" <br><input class='button fa' type='button' onclick='window.location.hash=\"officer-add-".$year."\"' value='&#xf067; Add Officer' />";
 	}
 	$output .='<br><br>';
 	$output .="<h2>Officers May $yearBeg - $year</h2>";
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='officer-".$row['officerID']."'>";
-		$output .="<hr><h3>".$row['first']." ".$row['last']."</h3>";
+		$officerName = $row['first']." ".$row['last'];
+		$output .="<hr><h3>$officerName</h3>";
 		if($row['position'])
 		{
 			$output .="<h4>".$row['position']."</h4>";
 		}
-		if($_SESSION['userData']['privilege']>3)
+		if(userHasPrivilege(4))
 		{
-			$output .="<div><a href='javascript:officerRemove(\"".$row['officerID']."\")'>Remove</a></div>";
+			$output .="<div><a href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")'>Remove</a></div>";
 		}
 		$grade = 9;
 		if (date("m")>5)
@@ -68,16 +72,17 @@ if($result)
 {
 	$output .="<hr><hr><div>";
 	$output .="<h2>Event Leaders May $yearBeg - $year</h2>";
+	if(userHasPrivilege(4))
+	{
+		$output .="<div style='color:blue'>Note to coach: Modify event leaders in events.</div>";
+	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyear']."'>";
-		$output .="<hr><h3>".$row['first']." ".$row['last']."</h3>";
+		$officerName = $row['first']." ".$row['last'];
+		$output .="<hr><h3>$officerName</h3>";
 		if($row['event'])
 		{
 			$output .="<h4>".$row['event']."</h4>";
-		}
-		if($_SESSION['userData']['privilege']>3)
-		{
-			$output .="<div><a href='javascript:officerRemove(\"".$row['officerID']."\")'>Remove</a></div>";
 		}
 		$grade = 9;
 		if (date("m")>5)

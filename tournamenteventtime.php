@@ -62,7 +62,7 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultEvent))
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr><th><span id='tournamentevent-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamenteventRemove(". $row['tournamenteventID'] .")'>X</a></th>";
+			$output .= "<tr><th><span id='tournamentevent-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				//find available times
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
@@ -100,6 +100,7 @@ else {
 echo $output;
 ?>
 <br>
+<div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 <form id="addTo" method="post" action="tournamenteventadd.php">
 	<p>
 		<input class="button" type="button" onclick="window.history.back()" value="Return" />
