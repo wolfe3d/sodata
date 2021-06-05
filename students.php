@@ -15,6 +15,7 @@ if($result)
 	endwhile;
 }
 
+// add student button ---> studentEdit() function
 $addStudentText ="";
 if(userHasPrivilege(2))
 {
