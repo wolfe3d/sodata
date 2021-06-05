@@ -14,16 +14,30 @@ if(empty($tournamentID))
 	//no tournament id was sent, so initiate adding a tournament
 	$defaultYear = date("Y")+4;
 	//TODO: ADD tournament if it does not exist
-	//$query = "INSERT INTO `tournament` (`tournamentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
-	//$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$query = "INSERT INTO `tournamentinfo` (`tournamentInfoID`, `name`, `host`, `address`, `addressBilling`, `websiteHost`, `websiteSciOly`, `monthRegistration`) VALUES (NULL, '$_REQUEST[name]', '$_REQUEST[host]', '$_REQUEST[addr]', '$_REQUEST[baddr]', '$_REQUEST[hsite]', '$_REQUEST[site]', '$_REQUEST[month]') ";
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if ($result === TRUE)
 	{
-		$tournamentID =  $mysqlConn->insert_id;
+		$tournamentInfoID = $mysqlConn->insert_id;
 	}
 	else {
 		echo "Failed to add new tournament.";
 		exit();
 	}
+
+	$query = "INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, `dateRegistration`, `year`, `type`, `numberTeams`, `weighting`, `note`) VALUES (NULL, '$tournamentInfoID', NULL, NULL, '$defaultYear', NULL, NULL, '100', 'default') ";
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if ($result === TRUE)
+	{
+		$tournamentID = $mysqlConn->insert_id;
+	}
+	else {
+		echo "Failed to add new tournament.";
+		exit();
+	}
+
+
+
 }
 
 //check to see if user has a valid tournamentID
