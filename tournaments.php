@@ -25,13 +25,10 @@ userCheckPrivilege(1);
 </div>
 <?php if(userHasPrivilege(3))
 		{ ?>
-	<input class="button fa" type="button" onclick="javascript:prepareTournamentAdd()" value="&#xf067; Add" />
+	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="tournamentadd.php">
 		<fieldset>
 			<legend>Add Tournament</legend>
-			<div>TODO: Change all Fields</div>
-			//TODO: select previous tournament or add tournament
-
 			<p>
 				<label for="tournamentName">Name</label>
 				<input id="tournamentName" name="tournamentName" type="text">
@@ -54,13 +51,23 @@ userCheckPrivilege(1);
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
-				<!--//TODO: Make this a selection -->
-				<input id="year" name="year" type="number">
+				<select name="year" id="year" type="number">
+					<option value=2021>2021</option>
+					<option value=2022>2022</option>
+					<option value=2023>2023</option>
+					<option value=2024>2024</option>
+				</select>
+				<!-- <input id="year" name="year" type="number"> -->
 			</p>
 			<p>
 				<!--//TODO: Make this a selection -->
 				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
-				<input id="type" name="type" type="text">
+				<select name="type" id="type" type="number">
+					<option value=1>Full</option>
+					<option value=2>Mini</option>
+					<option value=3>Hybrid</option>
+				</select>
+				<!-- <input id="type" name="type" type="text"> -->
 			</p>
 			<p>
 				<label for="numberTeams">Number of Teams Registered</label>
@@ -69,10 +76,6 @@ userCheckPrivilege(1);
 			<p>
 				<label for="weighting">Weighting</label>
 				<input id="weighting" name="weighting" type="number">
-			</p>
-			<p>
-				<label for="note">Note(s)</label>
-				<input id="note" name="note" type="text">
 			</p>
 			<p>
 				<label for="websiteHost">Host's Website</label>

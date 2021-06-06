@@ -670,7 +670,7 @@ function eventYearRemove(myID)
 
 function prepareTournamentsPage()
 {
-		// $("#addTo").hide();
+		$("#addTo").hide();
 		$("#searchDiv").hide();
 		//Load Students
 		getList("tournamentslist.php",{});
@@ -688,14 +688,18 @@ function prepareTournamentsPage()
 		}
 
 		$("#addTo").validate({
-			// rules: {
-			// 	eventName: "required",
-			// 	typeName: "required",
-			// },
-			// messages: {
-			// 	eventName: "*Please enter the name of the event.",
-			// 	typeName: "*Please enter the event type.",
-			// },
+			rules: {
+				tournamentName: "required",
+				host: "required",
+				dateTournament: "required",
+				dateRegistration: "required"
+			},
+			messages: {
+				tournamentName: "*Please enter the tournament name",
+				host: "*Please enter the tournament host",
+				dateTournament: "*Please enter the tournament date",
+				dateRegistration: "*Please enter the tournament registration date"
+			},
 			submitHandler: function(form) {
 				event.preventDefault();
 	
@@ -709,9 +713,10 @@ function prepareTournamentsPage()
 	
 				request.done(function( html ) {
 					//$("label[for='" + field + "']").append(html);
-					if(html=="1")
+					if(html!="Failed to add new tournament.")
 					{
-						window.location.hash = '#tournament-view-12';
+						console.log(html)
+						window.location.hash = '#tournament-view-'+html;
 					}
 					else
 					{
@@ -724,6 +729,11 @@ function prepareTournamentsPage()
 			});
 			}
 		});
+}
+
+function toggleAdd()
+{
+	$('#addTo').toggle();
 }
 
 function tournamentEventsAddAll(myID, year)
