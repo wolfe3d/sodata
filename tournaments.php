@@ -4,7 +4,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(1);
 ?>
 <div>
-	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" > <!-- toggles view of below div -->
 	<div id="searchDiv">
 	<form id="findTournament">
 		<fieldset>
@@ -26,18 +26,26 @@ userCheckPrivilege(1);
 <?php if(userHasPrivilege(3))
 		{ ?>
 	<input class="button fa" type="button" onclick="javascript:prepareTournamentAdd()" value="&#xf067; Add" />
-	<form id="addTo" method="post" action="studentadd.php">
+	<form id="addTo" method="post" action="tournamentadd.php">
 		<fieldset>
 			<legend>Add Tournament</legend>
 			<div>TODO: Change all Fields</div>
 			//TODO: select previous tournament or add tournament
 
 			<p>
-				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text">
+				<label for="tournamentName">Name</label>
+				<input id="tournamentName" name="tournamentName" type="text">
 			</p>
 			<p>
-				<label for="dateTournament">Tournament Date</label>
+				<label for="host">Host</label>
+				<input id="host" name="host" type="text">
+			</p>
+			<p>
+				<label for="address">Address</label>
+				<input id="address" name="address" type="text">
+			</p>
+			<p>
+				<label for="dateTournament">Competition Date</label>
 				<input id="dateTournament" name="dateTournament" type="date">
 			</p>
 			<p>
@@ -45,46 +53,55 @@ userCheckPrivilege(1);
 				<input id="dateRegistration" name="dateRegistration" type="date">
 			</p>
 			<p>
-				<label for="year">Tournament Rules Year</label>
-				<input id="year" name="year" type="text">
+				<label for="year">Competition Year (National Rules Year)</label>
+				<!--//TODO: Make this a selection -->
+				<input id="year" name="year" type="number">
 			</p>
 			<p>
-				<label for="type">Tournament Type</label>
-				<select id="type" name="text">
-					<?=$phoneTypes?>
-				</select>
+				<!--//TODO: Make this a selection -->
+				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
+				<input id="type" name="type" type="text">
 			</p>
 			<p>
 				<label for="numberTeams">Number of Teams Registered</label>
-				<input id="numberTeams" name="numberTeams" type="text">
+				<input id="numberTeams" name="numberTeams" type="number">
 			</p>
 			<p>
 				<label for="weighting">Weighting</label>
-				<input id="weighting" name="weighting" type="text">
+				<input id="weighting" name="weighting" type="number">
 			</p>
 			<p>
-				<label for="note">Other Notes</label>
+				<label for="note">Note(s)</label>
 				<input id="note" name="note" type="text">
 			</p>
-			<fieldset>
-				<legend>Parent 1</legend>
-				<p>
-					<label for="parent1First">First</label>
-					<input id="parent1First" name="parent1First" type="text">
-				</p>
-				<p>
-					<label for="parent1Last">Last</label>
-					<input id="parent1Last" name="parent1Last" type="text">
-				</p>
-				<p>
-					<label for="parent1Email">Email</label>
-					<input id="parent1Email" name="parent1Email" type="email">
-				</p>
-				<p>
-					<label for="parent1Phone">Phone</label>
-					<input id="parent1Phone" name="parent1Phone" type="tel">
-				</p>
-			</fieldset>
+			<p>
+				<label for="websiteHost">Host's Website</label>
+				<input id="websiteHost" name="websiteHost" type="text">
+			</p>
+			<p>
+				<label for="websiteScilympiad">Host's Scilympiad Site</label>
+				<input id="websiteScilympiad" name="websiteScilympiad" type="text">
+			</p>
+			<p>
+				<label for="note">Note(s)</label>
+				<input id="note" name="note" type="text">
+			</p>
+			<p>
+				<label for="director">Director(s)</label>
+				<input id="director" name="director" type="text">
+			</p>
+			<p>
+				<label for="directorEmail">Director's Email</label>
+				<input id="directorEmail" name="directorEmail" type="text">
+			</p>
+			<p>
+				<label for="directorPhone">Director's Phone</label>
+				<input id="directorPhone" name="directorPhone" type="text">
+			</p>
+			<p>
+				<label for="addressBilling">Address Billing</label>
+				<input id="addressBilling" name="addressBilling" type="text">
+			</p>
 			<p>
 				<input class="submit" type="submit" value="Submit">
 			</p>

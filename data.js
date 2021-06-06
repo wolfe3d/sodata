@@ -6,12 +6,13 @@ $().ready(function() {
 	});
 	setTimeout(function() { loadpage("user") }, 3500000); //TODO: Update this as long as user is active
 });
+
 function checkPage(){
 	var splitHash = location.hash.substr(1).split("-");
 	$("section:not(#banner)").hide();
 	if(splitHash[0])
 	{
-		loadpage(splitHash[0], splitHash[1], splitHash[2]);
+		loadpage(splitHash[0], splitHash[1], splitHash[2]); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
 		$("#mainHeader").html(splitHash[0]);
 	}
 	else
@@ -48,10 +49,10 @@ function loadpage(page, type, myID){
 		typepage = type;
 	}
 	var request = $.ajax({
-	 url: page+typepage+".php",
+	 url: page+typepage+".php", //only adds page type if it exists, ex. #tournament-edit-6 ---> tournamentedit.php
 	 cache: false,
 	 method: "POST",
-	 data: {myID: myID},
+	 data: {myID: myID}, //myID passed to page here
 	 dataType: "html"
 	});
 
@@ -422,7 +423,7 @@ function userPrivilege(myUser, field,value)
 }
 
 ///////////////////
-///Student Edit functions
+///Coach Edit
 //////////////////
 function coachEdit(myID)
 {
@@ -669,7 +670,7 @@ function eventYearRemove(myID)
 
 function prepareTournamentsPage()
 {
-		$("#addTo").hide();
+		// $("#addTo").hide();
 		$("#searchDiv").hide();
 		//Load Students
 		getList("tournamentslist.php",{});
@@ -680,11 +681,49 @@ function prepareTournamentsPage()
   		event.preventDefault();
   		getList("tournamentslist.php", $( this ).serialize() );
 		});
-			//Allow person to pick year
-			for (i = new Date().getFullYear()+1; i > 1973; i--)
-			{
-			    $('#tournamentYear').append($('<option />').val(i).html(i));
+		//Allow person to pick year
+		for (i = new Date().getFullYear()+1; i > 1973; i--)
+		{
+			$('#tournamentYear').append($('<option />').val(i).html(i));
+		}
+
+		$("#addTo").validate({
+			// rules: {
+			// 	eventName: "required",
+			// 	typeName: "required",
+			// },
+			// messages: {
+			// 	eventName: "*Please enter the name of the event.",
+			// 	typeName: "*Please enter the event type.",
+			// },
+			submitHandler: function(form) {
+				event.preventDefault();
+	
+				var request = $.ajax({
+					url: "tournamentadd.php",
+					cache: false,
+					method: "POST",
+					data: $("#addTo").serialize(),
+					dataType: "text"
+				});
+	
+				request.done(function( html ) {
+					//$("label[for='" + field + "']").append(html);
+					if(html=="1")
+					{
+						window.location.hash = '#tournament-view-12';
+					}
+					else
+					{
+						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
+					}
+				});
+	
+			request.fail(function( jqXHR, textStatus ) {
+				$("#mainContainer").html("Removal Error");
+			});
 			}
+		});
 }
 
 function tournamentEventsAddAll(myID, year)
