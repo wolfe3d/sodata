@@ -450,7 +450,7 @@ function coachEdit(myID)
 //////////////////
 function toggleSearch()
 {
-	$('#searchDiv').toggle();
+	$('#addTo').toggle();
 }
 
 function prepareEventsPage()
@@ -670,8 +670,9 @@ function eventYearRemove(myID)
 
 function prepareTournamentsPage()
 {
-		$("#addTo").hide();
+		
 		$("#searchDiv").hide();
+		$("#addDiv").hide();
 		//Load Students
 		getList("tournamentslist.php",{});
 			// validate signup form on keyup and submit

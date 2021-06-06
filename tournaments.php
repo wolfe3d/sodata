@@ -47,7 +47,7 @@ userCheckPrivilege(1);
 			</p>
 			<p>
 				<label for="dateRegistration">Registration Date</label>
-				<input id="dateRegistration" name="dateRegistration" type="date">
+				<input id="dateRegistration" name="dateRegistration" type="text">
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
@@ -110,6 +110,8 @@ userCheckPrivilege(1);
 			</p>
 		</fieldset>
 	</form>
+	</div>
+</div>
 <?php }?>
 <div id="list"></div>
 </div>
