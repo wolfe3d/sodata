@@ -47,7 +47,7 @@ userCheckPrivilege(1);
 			</p>
 			<p>
 				<label for="dateRegistration">Registration Date</label>
-				<input id="dateRegistration" name="dateRegistration" type="text">
+				<input id="dateRegistration" name="dateRegistration" type="date">
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>

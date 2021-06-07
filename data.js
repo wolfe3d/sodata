@@ -672,7 +672,7 @@ function prepareTournamentsPage()
 {
 		
 		$("#searchDiv").hide();
-		$("#addDiv").hide();
+		$("#addTo").hide();
 		//Load Students
 		getList("tournamentslist.php",{});
 			// validate signup form on keyup and submit

@@ -59,7 +59,17 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
 		{
-			$output .="<div>Type:".$row['type']."</div>";//TODO: Convert to tournament type to string
+			switch ($row['type']){
+			case 1: 
+				$output .="<div>Type: Full</div>";
+				break;
+			case 2: 
+				$output .="<div>Type: Mini</div>";
+				break;
+			case 3: 
+				$output .="<div>Type: Hybrid</div>";
+				break;
+			}
 		}
 		if($row['note'])
 		{

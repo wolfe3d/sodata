@@ -87,13 +87,22 @@ if(!$row)
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
-				<!--//TODO: Make this a selection -->
-				<input id="year" name="year" type="number" value="<?=$row['year']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<select name="year" id="year" type="number" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+					<option value=2021>2021</option>
+					<option value=2022>2022</option>
+					<option value=2023>2023</option>
+					<option value=2024>2024</option>
+				</select>
 			</p>
 			<p>
 				<!--//TODO: Make this a selection -->
 				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
-				<input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<!-- <input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)"> -->
+				<select name="type" id="type" type="number" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+					<option value=1>Full</option>
+					<option value=2>Mini</option>
+					<option value=3>Hybrid</option>
+				</select>
 			</p>
 			<p>
 				<label for="numberTeams">Number of Teams Registered</label>
