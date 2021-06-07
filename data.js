@@ -450,7 +450,7 @@ function coachEdit(myID)
 //////////////////
 function toggleSearch()
 {
-	$('#addTo').toggle();
+	$('#searchDiv').toggle();
 }
 
 function prepareEventsPage()
