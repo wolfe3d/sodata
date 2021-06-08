@@ -4,12 +4,15 @@
     userCheckPrivilege(1);
     require_once  ("functions.php");
 
-//TODO:  Chinmay, why is there a function getIfSet?  If the value is not set, it will return a null value. Unless, you plan to set default values here; however, most default values can be set in db...except see line 18.  Is this meant to make the db, notice the value as null?
+//TODO:  Chinmay, why is there a function getIfSet?  If the value is not set, it will return a null value by default in php. Unless, you plan to set default values here; however, most default values can be set in db...except see line 18.  Is the function meant to make the db notice the value as null?
     function getIfSet(&$value, $default = NULL)
     {
     	return isset($value) ? $value : $default;
     }
 
+		//TODO: Chinmay, always use Post unless it is necessary to pick up information from get and post.  Using request, allows users to send data via website links to the server.  Using post limits it form posts.
+		//TODO: Chinmay,  all strings must be escaped before entering into mysql database. Otherwise, it is super easy for MySQL injection to damage database.
+		//therefore, use "$value = $mysqlConn->real_escape_string($_POST['myvalue']);"
     $name =  $_REQUEST['tournamentName'];
     $host =  $_REQUEST['host'];
     $dateTournament =  $_REQUEST['dateTournament'];
