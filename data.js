@@ -692,7 +692,7 @@ function tournamentsPreparePage()
 		tournamentAddModify();
 }
 
-function 	tournamentAddModify()
+function tournamentAddModify()
 {
 	$("#addTo").validate({
 		rules: {
