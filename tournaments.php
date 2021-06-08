@@ -2,6 +2,7 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
+require_once ("functions.php");
 ?>
 <div>
 	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" > <!-- toggles view of below div -->
@@ -51,12 +52,7 @@ userCheckPrivilege(1);
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
-				<select name="year" id="year" type="number">
-					<option value=2021>2021</option>
-					<option value=2022>2022</option>
-					<option value=2023>2023</option>
-					<option value=2024>2024</option>
-				</select>
+				<?=getSOYears(getCurrentSOYear())?>
 				<!-- <input id="year" name="year" type="number"> -->
 			</p>
 			<p>

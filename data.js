@@ -98,19 +98,20 @@ function loadpage(page, type, myID){
 							});
 						}
 						else if(typepage=="add"){
+							addToSetGenericRules();
 							addToSubmit();
 						}
 					break;
 
 					case 'tournaments':
 						if(!typepage){
-							prepareTournamentsPage();
+							tournamentsPreparePage();
 						}
 					break;
 
 					case 'tournament':
 						$.when( $(":submit") ).done(function( x ) {
-							addToSubmit(myID);
+							tournamentAddModify();
 						});
 					break;
 
@@ -668,9 +669,9 @@ function eventYearRemove(myID)
 ///Tournament functions
 //////////////////
 
-function prepareTournamentsPage()
+function tournamentsPreparePage()
 {
-		
+
 		$("#searchDiv").hide();
 		$("#addTo").hide();
 		//Load Students
@@ -688,35 +689,45 @@ function prepareTournamentsPage()
 			$('#tournamentYear').append($('<option />').val(i).html(i));
 		}
 
-		$("#addTo").validate({
-			rules: {
-				tournamentName: "required",
-				host: "required",
-				dateTournament: "required",
-				dateRegistration: "required"
+		tournamentAddModify();
+}
+
+function 	tournamentAddModify()
+{
+	$("#addTo").validate({
+		rules: {
+			tournamentName: "required",
+			host: "required",
+			dateTournament: "required",
+			dateRegistration: "required",
+			directorPhone: 	{
+				phoneUS: true
 			},
-			messages: {
-				tournamentName: "*Please enter the tournament name",
-				host: "*Please enter the tournament host",
-				dateTournament: "*Please enter the tournament date",
-				dateRegistration: "*Please enter the tournament registration date"
+			directorEmail: {
+				email: true
 			},
-			submitHandler: function(form) {
+		},
+		messages: {
+			tournamentName: "*Please enter the tournament name",
+			host: "*Please enter the tournament host",
+			dateTournament: "*Please enter the tournament date",
+			dateRegistration: "*Please enter the tournament registration date"
+		},
+		submitHandler: function(form) {
 				event.preventDefault();
-	
+
 				var request = $.ajax({
-					url: "tournamentadd.php",
+					url: $("#addTo").attr('action'),
 					cache: false,
 					method: "POST",
 					data: $("#addTo").serialize(),
 					dataType: "text"
 				});
-	
+
 				request.done(function( html ) {
-					//$("label[for='" + field + "']").append(html);
-					if(html!="Failed to add new tournament.")
+					$(".modified").remove(); //removes any old update notices
+					if(html>0)
 					{
-						console.log(html)
 						window.location.hash = '#tournament-view-'+html;
 					}
 					else
@@ -724,12 +735,12 @@ function prepareTournamentsPage()
 						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
 					}
 				});
-	
+
 			request.fail(function( jqXHR, textStatus ) {
 				$("#mainContainer").html("Removal Error");
 			});
-			}
-		});
+		}
+	});
 }
 
 function toggleAdd()
@@ -802,13 +813,14 @@ function addToSubmit(myID)
 		});
 		}
 	});
-
+}
+function addToSetGenericRules()
+{
 	$('#addTo :input').each(function() {
 					$(this).rules('add', {
 							required: true,
 					});
-			});
-
+		});
 }
 
 function tournamentTimeblockRemove(myID)

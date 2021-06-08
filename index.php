@@ -108,7 +108,7 @@ if (isset($_SESSION['token'])) {
 		<!-- Banner -->
 			<section id="banner" style="padding-top:30px;padding-bottom:30px;">
 				<div class="inner">
-					<div><img style="vertical-align: top" height="300px" src="images/waltoncthulu1200white.png"></img></div>
+					<div><img style="vertical-align: top" height="256px" src="images/waltoncthulu1200white.png"></img></div>
 					<h2>Walton Science Olympiad</h2>
 					<p>Walton High School</p>
 				</div>

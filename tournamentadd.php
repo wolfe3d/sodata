@@ -4,17 +4,19 @@
     userCheckPrivilege(1);
     require_once  ("functions.php");
 
+//TODO:  Chinmay, why is there a function getIfSet?  If the value is not set, it will return a null value. Unless, you plan to set default values here; however, most default values can be set in db...except see line 18.  Is this meant to make the db, notice the value as null?
     function getIfSet(&$value, $default = NULL)
     {
-    return isset($value) ? $value : $default;
+    	return isset($value) ? $value : $default;
     }
 
     $name =  $_REQUEST['tournamentName'];
     $host =  $_REQUEST['host'];
     $dateTournament =  $_REQUEST['dateTournament'];
     $dateRegistration =  $_REQUEST['dateRegistration'];
-    
-    if($_REQUEST['year']){
+
+		//TODO: Chinmay, the lines below are where your function getIfSet could be used to produce the default value.  There is a function that gives the current year already made in functions.php.
+		    if($_REQUEST['year']){
         $year = intval($_REQUEST['year']);
     }
     else{
