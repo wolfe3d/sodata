@@ -31,6 +31,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 
 		if(userHasPrivilege(3))
 		{
+			//tournament edit button -> changes hash to tournament-edit-tournamentID
 			$output .="<div><input class='button fa' type='button' onclick='window.location.hash=\"tournament-edit-".$row['tournamentID']."\"' value='&#xf0ad; Edit Information' />";
 			//only show add teams button if there needs to be more teams added
 			if($amountOfCreatedTeams<$numberTeams)
@@ -58,7 +59,17 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
 		{
-			$output .="<div>Type:".$row['type']."</div>";//TODO: Convert to tournament type to string
+			switch ($row['type']){
+			case 1: 
+				$output .="<div>Type: Full</div>";
+				break;
+			case 2: 
+				$output .="<div>Type: Mini</div>";
+				break;
+			case 3: 
+				$output .="<div>Type: Hybrid</div>";
+				break;
+			}
 		}
 		if($row['note'])
 		{
