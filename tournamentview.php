@@ -53,10 +53,12 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="<div>Host: ".$row['host']."</div>";
 		}
 		//Address of the tournament
-		$output .="<div>Address: <a href='https://www.google.com/maps/search/?api=1&query=".$row['address']."'>".$row['address']."</a></div>";
+		if($row['address']){
+			$output .="<div>Address: <a href='https://www.google.com/maps/search/?api=1&query=".$row['address']."'>".$row['address']."</a></div>";
+		}
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
-		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
+		$output .="<div>Weighting/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
 		{
 			switch ($row['type']){
@@ -73,11 +75,11 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		}
 		if($row['note'])
 		{
-			$output .="<div>Note:".$row['note']."</div>";
+			$output .="<div>Note: ".$row['note']."</div>";
 		}
-		if($row['websiteSciOly'])
+		if($row['websiteScilympiad'])
 		{
-			$output .="<div>Scilympiad Competition Website: <a href='".$row['websiteSciOly']."'>".$row['websiteSciOly']."</a></div>";
+			$output .="<div>Scilympiad Competition Website: <a href='".$row['websiteScilympiad']."'>".$row['websiteScilympiad']."</a></div>";
 		}
 
 		//Show Director information to coaches only
@@ -110,12 +112,6 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			{
 				$output .="<div>Billing: ".$row['addressBilling']."</div>";
 			}
-		/*	if($row['monthRegistration'])
-			{
-				$dateObj   = DateTime::createFromFormat('!m', $row['monthRegistration']);
-				$monthName = $dateObj->format('F'); // March
-				$output .="<div>Normal Month Registration: ".$monthName."</div>";
-			}*/
 			$output .="<br>";
 		}
 		while($rowTeam = $resultTeams->fetch_assoc()):
