@@ -8,7 +8,7 @@ $output = "";
 $name = $mysqlConn->real_escape_string($_POST['tournamentName']);
 $year = intval($_POST['tournamentYear']);
 
-$query = "SELECT * from `tournament`  ";
+$query = "SELECT * from `tournament`";
 //check to see what is searched for
 if($name&&$year)
 {
@@ -50,7 +50,17 @@ if($result)
 		$output .="<div>Weighting/Diffuculty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
 		if($row['type'])
 		{
-			$output .="<div>Type:".$row['type']."</div>";
+			switch ($row['type']){
+			case 1: 
+				$output .="<div>Type: Full</div>";
+				break;
+			case 2: 
+				$output .="<div>Type: Mini</div>";
+				break;
+			case 3: 
+				$output .="<div>Type: Hybrid</div>";
+				break;
+			}
 		}
 		if($row['note'])
 		{

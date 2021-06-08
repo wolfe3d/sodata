@@ -14,16 +14,30 @@ if(empty($tournamentID))
 	//no tournament id was sent, so initiate adding a tournament
 	$defaultYear = date("Y")+4;
 	//TODO: ADD tournament if it does not exist
-	//$query = "INSERT INTO `tournament` (`tournamentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
-	//$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$query = "INSERT INTO `tournamentinfo` (`tournamentInfoID`, `name`, `host`, `address`, `addressBilling`, `websiteHost`, `websiteSciOly`, `monthRegistration`) VALUES (NULL, '$_REQUEST[name]', '$_REQUEST[host]', '$_REQUEST[addr]', '$_REQUEST[baddr]', '$_REQUEST[hsite]', '$_REQUEST[site]', '$_REQUEST[month]') ";
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if ($result === TRUE)
 	{
-		$tournamentID =  $mysqlConn->insert_id;
+		$tournamentInfoID = $mysqlConn->insert_id;
 	}
 	else {
 		echo "Failed to add new tournament.";
 		exit();
 	}
+
+	$query = "INSERT INTO `tournament` (`tournamentID`, `tournamentInfoID`, `dateTournament`, `dateRegistration`, `year`, `type`, `numberTeams`, `weighting`, `note`) VALUES (NULL, '$tournamentInfoID', NULL, NULL, '$defaultYear', NULL, NULL, '100', 'default') ";
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if ($result === TRUE)
+	{
+		$tournamentID = $mysqlConn->insert_id;
+	}
+	else {
+		echo "Failed to add new tournament.";
+		exit();
+	}
+
+
+
 }
 
 //check to see if user has a valid tournamentID
@@ -73,13 +87,22 @@ if(!$row)
 			</p>
 			<p>
 				<label for="year">Competition Year (National Rules Year)</label>
-				<!--//TODO: Make this a selection -->
-				<input id="year" name="year" type="number" value="<?=$row['year']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<select name="year" id="year" type="number" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+					<option value=2021>2021</option>
+					<option value=2022>2022</option>
+					<option value=2023>2023</option>
+					<option value=2024>2024</option>
+				</select>
 			</p>
 			<p>
 				<!--//TODO: Make this a selection -->
 				<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
-				<input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+				<!-- <input id="type" name="type" type="text" value="<?=$row['type']?>" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)"> -->
+				<select name="type" id="type" type="number" onchange="fieldUpdate(<?=$tournamentID?>,'tournament',this.id,this.value)">
+					<option value=1>Full</option>
+					<option value=2>Mini</option>
+					<option value=3>Hybrid</option>
+				</select>
 			</p>
 			<p>
 				<label for="numberTeams">Number of Teams Registered</label>
