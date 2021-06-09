@@ -111,7 +111,18 @@ function loadpage(page, type, myID){
 
 					case 'tournament':
 						$.when( $(":submit") ).done(function( x ) {
-							tournamentAddModify();
+							if(typepage=="edit"){
+								tournamentAddModify();
+							}
+							else if(typepage=="times"){
+								tournamentTimeAdd(myID);
+							}
+							else if(typepage=="events"){
+								tournamentEventAdd(myID);
+							}
+							else{
+								addToSubmit(myID);
+							}
 						});
 					break;
 
@@ -729,6 +740,100 @@ function tournamentAddModify()
 					if(html>0)
 					{
 						window.location.hash = '#tournament-view-'+html;
+					}
+					else
+					{
+						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
+					}
+				});
+
+			request.fail(function( jqXHR, textStatus ) {
+				$("#mainContainer").html("Removal Error");
+			});
+		}
+	});
+}
+
+//formats javascript time to have leading zeroes.  For instance 9:00AM is formatted as 09:00AM.
+function appendLeadingZeroes(n){
+  if(n <= 9){
+    return "0" + n;
+  }
+  return n
+}
+
+function tournamentTimeAdd(myID)
+{
+	$("#addTo").validate({
+		submitHandler: function(form) {
+			var formData = $("#addTo").serialize();
+			formData+='&myID='+myID;
+				event.preventDefault();
+
+				var request = $.ajax({
+					url: $("#addTo").attr('action'),
+					cache: false,
+					method: "POST",
+					data: formData,
+					dataType: "text"
+				});
+
+				request.done(function( html ) {
+					$(".modified").remove(); //removes any old update notices
+					if(html>0)
+					{
+						//convert time to standard format
+						let timeStart = new Date($("#timeStart").val());
+						let timeStartFormatted = timeStart.getFullYear() + "-" + appendLeadingZeroes(timeStart.getMonth() + 1) + "-" + appendLeadingZeroes(timeStart.getDate()) + " " + appendLeadingZeroes(timeStart.getHours()) + ":" + appendLeadingZeroes(timeStart.getMinutes()) + ":" + appendLeadingZeroes(timeStart.getSeconds());
+
+						let timeEnd = new Date($("#timeEnd").val());
+						let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
+
+						$("#timeblocks").append("<div id='timeblock-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+" <a href='javascript:tournamentTimeblockRemove("+html+")'>Remove</a></div>");
+					}
+					else
+					{
+						$("#addTo").append("<div class='modified' style='color:red'>"+html+"</div>");
+					}
+				});
+
+			request.fail(function( jqXHR, textStatus ) {
+				$("#mainContainer").html("Removal Error");
+			});
+		}
+	});
+	addToSetGenericRules();
+}
+
+function tournamentEventAdd(myID)
+{
+	$("#addTo").validate({
+		submitHandler: function(form) {
+			var formData = $("#addTo").serialize();
+			formData+='&myID='+myID;
+				event.preventDefault();
+
+				var request = $.ajax({
+					url: $("#addTo").attr('action'),
+					cache: false,
+					method: "POST",
+					data: formData,
+					dataType: "text"
+				});
+
+				request.done(function( html ) {
+					$(".modified").remove(); //removes any old update notices
+					if(html>0)
+					{
+						// get the last DIV which ID starts with ^= "klon"
+					  var $div = $('div[id^="tournamentevent-"]:last');
+					  // Clone it and assign the new ID (i.e: from tournamentevent")
+					  var $te = $div.clone().prop('id', 'tournamentevent-'+html );
+					  // Finally insert tournamentevent
+					  $div.after( $te );
+
+						//TODO: Insert added event here
+						//$("#timeblocks").append("<div id='timeblock-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+" <a href='javascript:tournamentTimeblockRemove("+html+")'>Remove</a></div>");
 					}
 					else
 					{

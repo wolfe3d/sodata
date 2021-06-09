@@ -164,6 +164,12 @@ function getCourses($db, $studentID, $tableName)
 	return $myOutput;
 }
 
+//get tournament
+function getTournamentDates()
+{
+
+}
+
 //print out privilege editing
 function editPrivilege($privilege,$userID,$db)
 {
@@ -223,7 +229,8 @@ function checkGoogle($gpUserProfile,$db)
 }
 
 //convert rgb color to hexadecimal
-function rgb($rgb) {
+//TODO: possible remove this function.  Currently, deactivated but check all pages to make sure no effect.
+/*function rgb($rgb) {
     $ret = '';
     foreach ($rgb as $x) {
         // Make sure the RGB values are 0-255...
@@ -232,10 +239,11 @@ function rgb($rgb) {
         $ret .= ($x < 16 ? '0'.dechex($x) : dechex($x));
     }
     return '#'.$ret;
-}
+}*/
 
 // Returns a color that is part of the rainbow -- not in order of ROYGBIV
 function rainbow($i) {
+		$opacity = 0.2;
     $rgb = array(255,255,0); //yellow
     // Go through the RGB values and adjust the values by $amount...
 		switch($i) {
@@ -275,7 +283,7 @@ function rainbow($i) {
 		  default:
 		    // code block
 		}
-    return rgb($rgb);
+    return "rgba(".implode($rgb,",").", $opacity);";
 }
 
 /**

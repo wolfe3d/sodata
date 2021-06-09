@@ -31,7 +31,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 
 if ($result)
 {
-	echo "Time added successfully ";
+	echo $mysqlConn->insert_id;
 }
 else
 {

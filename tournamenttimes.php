@@ -23,7 +23,7 @@ if($tournamentID)
 		$output .="<div id='timeblocks'>";
 		$i=0;
 		while ($row = $result->fetch_assoc()):
-			$output .= "<div id='timeblock-".$row['timeblockID']."' style='background-color:".rainbow($i)."'>" . $row["timeStart"] . " - ". $row["timeEnd"] . " <a href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .",\"timeblock\")'>Remove</a></div>";
+			$output .= "<div id='timeblock-".$row['timeblockID']."' style='background-color:".rainbow($i)."'>" . $row["timeStart"] . " - ". $row["timeEnd"] . " <a href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .")'>Remove</a></div>";
 			$i+=1;
 			if ($i>11) $i=0;
 		endwhile;

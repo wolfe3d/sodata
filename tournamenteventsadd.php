@@ -27,7 +27,7 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 
 if ($result)
 {
-	echo "<div style='color:blue'>Event Added</div>";
+	echo $mysqlConn->insert_id;
 }
 else
 {
