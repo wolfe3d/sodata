@@ -174,7 +174,7 @@ function prepareStudentsPage()
 	});
 }
 
-function studentRemove(myStudentID, studentName)
+function studentRemove(myID, studentName)
 {
  if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
  {
@@ -182,18 +182,24 @@ function studentRemove(myStudentID, studentName)
 		 url: "studentremove.php",
 		 cache: false,
 		 method: "POST",
-		 data: {studentID:myStudentID},
+		 data: {myID:myID},
 		 dataType: "html"
 		});
 		request.done(function( html ) {
-		 $(".modified").remove(); //remove any old modified notes
-		 $("#student-" + myStudentID).before("<div class='modified' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
-		 $("#student-" + myStudentID).remove(); //remove element
+			$(".modified").remove(); //remove any old modified notes
+			if(html=="1")
+			{
+			 $("#student-" + myID).before("<div class='modified' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
+			 $("#student-" + myID).remove(); //remove element
+		 }
+		 else {
+			 $("#student-" + myID).before("<div class='modified' style='color:red'>Removal Error:"+html+"</div");
+		 }
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".modified").remove();
-			$("#student-" + myStudentID).before("<div class='modified' style='color:red'>Removal Error:"+textStatus+"</div");
+			$("#student-" + myID).before("<div class='modified' style='color:red'>Removal Error:"+textStatus+"</div");
 		});
 	}
 }

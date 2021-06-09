@@ -13,6 +13,33 @@ if(!empty($_SESSION['userData'])){
   $output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
   //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
   //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
+
+//Student Reminders and Results
+	$query = "SELECT * FROM `student` WHERE `userID` = ".$_SESSION['userData']['id'];
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		$row = $result->fetch_assoc();
+		//TODO: Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
+		$output .= "<h2>Upcoming Tournaments</h2>";
+		$output .= "<p>Add upcoming tournament information</p>";
+		$output .= "<h2>Event Priority</h2>";
+		$output .= "<p>Add this year's event priority information</p>";
+		$output .= "<h2>Previous Results</h2>";
+		$output .= "<p>Add recent tournament information</p>";
+	}
+
+	//Coach Reminders and Results
+		$query = "SELECT * FROM `coach` WHERE `userID` = ".$_SESSION['userData']['id'];
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result->num_rows){
+			$row = $result->fetch_assoc();
+			//TODO: Show new tournaments signups with link
+			$output .= "<h2>Upcoming Tournaments</h2>";
+			$output .= "<p>Add upcoming tournament information</p>";
+			$output .= "<h2>Recent Tournaments</h2>";
+			$output .= "<p>Add recent tournament information</p>";
+		}
+
   $output .= '<p>Logout from <a href="logout.php">Google</a></p>';
   $output .= '</div>';
 }else{
