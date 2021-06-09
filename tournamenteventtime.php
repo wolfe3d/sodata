@@ -66,7 +66,7 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultEvent))
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr><th><span id='tournamentevent-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span></th>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				//find available times
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];

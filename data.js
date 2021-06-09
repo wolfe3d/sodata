@@ -831,8 +831,8 @@ function tournamentEventAdd(myID)
 					  var $te = $div.clone().prop('id', 'tournamentevent-'+html );
 					  // Finally insert tournamentevent
 					  $div.after( $te );
-
 						//TODO: Insert added event here
+
 						//$("#timeblocks").append("<div id='timeblock-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+" <a href='javascript:tournamentTimeblockRemove("+html+")'>Remove</a></div>");
 					}
 					else
@@ -992,7 +992,7 @@ function tournamentEventTimeSet(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#"+splitName[0]+"-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
+			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
 		}
 		else {
 			$("#note").html("<div class='modified' style='color:red'>Change Error:"+html+"</div");
