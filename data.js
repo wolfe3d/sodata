@@ -71,7 +71,7 @@ function loadpage(page, type, myID){
 			});
 
 			switch (page) {
-					case 'students': prepareStudentsPage();
+					case 'students': studentPreparePage();
 					break;
 
 					case 'student':
@@ -80,13 +80,13 @@ function loadpage(page, type, myID){
 						}
 					break;
 
-					case 'events':prepareEventsPage();
+					case 'events':eventsPreparePage();
 					break;
 
-					case 'event':	prepareEventEditSubmit();
+					case 'event':	eventPrepareEditSubmit();
 					break;
 
-					case 'eventaddpop': prepareEventsAddPage();
+					case 'eventaddpop': eventsPrepareAddPage();
 					break;
 
 					case 'officer':
@@ -141,7 +141,7 @@ function loadpage(page, type, myID){
 	});
 }
 
-function prepareStudentsPage()
+function studentPreparePage()
 {
 	$("#addTo").hide();
 	$("#searchDiv").hide();
@@ -471,7 +471,7 @@ function toggleSearch()
 	$('#searchDiv').toggle();
 }
 
-function prepareEventsPage()
+function eventsPreparePage()
 {
 	$("#searchDiv").hide();
 
@@ -485,7 +485,7 @@ function prepareEventsPage()
 	});
 }
 
-function prepareEventEditSubmit()
+function eventPrepareEditSubmit()
 {
 	// validate event form on keyup and submit
 	$("#addTo").validate({
@@ -526,7 +526,7 @@ function prepareEventEditSubmit()
 		}
 	});
 }
-function prepareEventsYearPage(myYear)
+function eventsPrepareYearPage(myYear)
 {
 	$("#mainHeader").html("Edit a Year's Events");
 
@@ -541,18 +541,18 @@ function prepareEventsYearPage(myYear)
 
 	 	request.done(function( html ) {
 	 		$("#mainContainer").html(html);
-			prepareEventsYearAdd();
+			eventsPrepareYearAdd();
 	 	});
 
 	 request.fail(function( jqXHR, textStatus ) {
 	  $("#mainContainer").html("Error loading event's year page.");
 	 });
 }
-function prepareEventsYearAdd()
+function eventsPrepareYearAdd()
 {
 	//change year to add to
 	$("#year").change(function(){
-			prepareEventsYearPage($( "#year" ).val());
+			eventsPrepareYearPage($( "#year" ).val());
 	});
 	$("#addLeader").hide();
 	$("#eventID").hide();
@@ -655,7 +655,7 @@ function eventYearLeaderPrepare(myID)
 
 				if(html>0)
 				{
-					prepareEventsYearPage($("#year").html());
+					eventsPrepareYearPage($("#year").html());
 					//add eventleader to list
 					//$("#eventyear-"+ $("#eventID").html() + " .eventleader").html(" - " + $('#student option:selected').text());
 					//store the student id
