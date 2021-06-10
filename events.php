@@ -44,8 +44,17 @@ if($result)
 		</fieldset>
 	</form>
 </div>
-<input class="button fa" type="button" onclick="javascript:prepareEventsEditPage()" value="&#xf067; Add" />
-<input class="button fa" type="button" onclick="javascript:prepareEventsYearPage()" value="&#xf133; Edit Year" />
+<?php if(userHasPrivilege(3)){ ?>
+	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
+	<form id="addTo" method="post" action="eventadd.php">
+		<fieldset>
+			<legend>Add Tournament</legend>
+			<?php 	require_once  ("eventform.php"); ?>
+			<input class="submit fa" type="submit" value="&#xf067; Add">
+		</fieldset>
+	</form>
+	<input class="button fa" type="button" onclick="javascript:eventyearPreparePage()" value="&#xf133; Edit Year" />
+<?php } ?>
 
 <div id="list"></div>
 </div>

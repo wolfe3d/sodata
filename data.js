@@ -83,7 +83,10 @@ function loadpage(page, type, myID){
 					case 'events':eventsPreparePage();
 					break;
 
-					case 'event':	eventPrepareEditSubmit();
+					case 'event':	eventEdit(myID);
+					break;
+
+					case 'eventyear':	eventyearPrepare(myID);
 					break;
 
 					case 'eventaddpop': eventsPrepareAddPage();
@@ -112,7 +115,7 @@ function loadpage(page, type, myID){
 					case 'tournament':
 						$.when( $(":submit") ).done(function( x ) {
 							if(typepage=="edit"){
-								tournamentAddModify();
+								tournamentEdit(myID);
 							}
 							else if(typepage=="times"){
 								tournamentTimeAdd(myID);
@@ -473,6 +476,7 @@ function toggleSearch()
 function eventsPreparePage()
 {
 	$("#searchDiv").hide();
+	$("#addTo").hide();
 
 	getList("eventslist.php",{});
 		// validate signup form on keyup and submit
@@ -482,14 +486,25 @@ function eventsPreparePage()
 		event.preventDefault();
 		getList("eventslist.php", $( this ).serialize() );
 	});
+
+	eventAddModify();
+}
+function eventEdit(myID)
+{
+	eventAddModify();
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'event',this.id,this.value);
+					});
+		});
 }
 
-function eventPrepareEditSubmit()
+function eventAddModify()
 {
 	// validate event form on keyup and submit
 	$("#addTo").validate({
 		rules: {
-			eventName: "required",
+			event: "required",
 			type: "required",
 			numberStudents: {
 				required:true,
@@ -507,7 +522,7 @@ function eventPrepareEditSubmit()
 			event.preventDefault();
 
 			var request = $.ajax({
-			 url: "eventeditadjust.php",
+			 url: $("#addTo").attr('action'),
 			 cache: false,
 			 method: "POST",
 			 data: $("#addTo").serialize(),
@@ -516,9 +531,9 @@ function eventPrepareEditSubmit()
 
 			request.done(function( html ) {
 			 //$("label[for='" + field + "']").append(html);
-				if(html=="1")
+				if(html>0)
 				{
-					window.location.hash = '#events';
+					window.location.hash = '#events--'+html;
 				}
 				else
 				{
@@ -532,33 +547,16 @@ function eventPrepareEditSubmit()
 		}
 	});
 }
-function eventsPrepareYearPage(myYear)
+function eventyearPreparePage(myYear)
 {
 	$("#mainHeader").html("Edit a Year's Events");
-
-	 window.location.hash = '#eventyear-edit-'+ myYear;
-	 var request = $.ajax({
-	 	 url: "eventyearaddpop.php",
-	 	 cache: false,
-	 	 method: "POST",
-	 	 data: {year:myYear},
-	 	 dataType: "html"
-	 	});
-
-	 	request.done(function( html ) {
-	 		$("#mainContainer").html(html);
-			eventsPrepareYearAdd();
-	 	});
-
-	 request.fail(function( jqXHR, textStatus ) {
-	  $("#mainContainer").html("Error loading event's year page.");
-	 });
+	window.location.hash = '#eventyear-edit-'+ myYear;
 }
-function eventsPrepareYearAdd()
+function eventyearPrepare(myID)
 {
 	//change year to add to
 	$("#year").change(function(){
-			eventsPrepareYearPage($( "#year" ).val());
+			eventyearPreparePage($( "#year" ).val());
 	});
 	$("#addLeader").hide();
 	$("#eventID").hide();
@@ -576,7 +574,7 @@ function eventsPrepareYearAdd()
 			event.preventDefault();
 			//alert($("#addTo").serialize());
 			var request = $.ajax({
-			 url: "eventyearadd.php",
+			 url: $("#addTo").attr('action'),
 			 cache: false,
 			 method: "POST",
 			 data: $("#addTo").serialize(),
@@ -694,7 +692,6 @@ function eventYearRemove(myID)
 
 function tournamentsPreparePage()
 {
-
 		$("#searchDiv").hide();
 		$("#addTo").hide();
 		//Load Students
@@ -713,6 +710,16 @@ function tournamentsPreparePage()
 		}
 
 		tournamentAddModify();
+}
+
+function tournamentEdit(myID)
+{
+	tournamentAddModify();
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'tournament',this.id,this.value);
+					});
+		});
 }
 
 function tournamentAddModify()

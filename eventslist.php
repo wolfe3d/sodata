@@ -30,8 +30,7 @@ if($year)
 		$query.=" where `event`.`eventID` IN ($eventIDs)";
 	}
 	else {
-		echo "There are no events in the year $year.";
-		return 0;
+		exit( "There are no events in the year $year.");
 	}
 }
 
@@ -54,7 +53,6 @@ if($result)
 		{
 			$output .="<input class='button fa' type='button' onclick='window.location.hash=\"event-edit-".$row['eventID']."\"' value='&#xf108; Edit' />";
 		}
-
 
 		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`eventID` = '".($row['eventID'])."' ORDER BY `eventyear`.`year` ASC";
 		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -90,7 +88,6 @@ if($result)
 		if($row['description']){
 			$output .="<div>Description: ".$row['description']."</div>";
 		}
-
 
 	endwhile;
   $output .="</div>";
