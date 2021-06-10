@@ -4,7 +4,7 @@ $().ready(function() {
 	$(window).on('hashchange', function() {
 				checkPage();
 	});
-	setTimeout(function() { loadpage("user") }, 3500000); //TODO: Update this as long as user is active
+	//setTimeout(function() { loadpage("user") }, 3500000); //I don't think this does anything see checksession.php for updating token
 });
 
 function checkPage(){
@@ -17,7 +17,7 @@ function checkPage(){
 	}
 	else
 	{
-		loadpage("user");
+		loadpage("home");
 	}
 }
 
@@ -359,13 +359,12 @@ function studentCourseAdd(student, table)
 
 function studentCourseCompleted(value, courseName)
 {
-	//todo
  // validate signup form on keyup and submit
  var request = $.ajax({
 	 url: "studentcoursecompleted.php",
 	 cache: false,
 	 method: "POST",
-	 data: { myID: value}, //TODO: must add priority
+	 data: { myID: value},
 	 dataType: "text"
  });
 
@@ -491,11 +490,18 @@ function eventPrepareEditSubmit()
 	$("#addTo").validate({
 		rules: {
 			eventName: "required",
-			typeName: "required",
+			type: "required",
+			numberStudents: {
+				required:true,
+				number: true
+			},
+			sciolyLink: {
+          url: true
+        }
 		},
 		messages: {
 			eventName: "*Please enter the name of the event.",
-			typeName: "*Please enter the event type.",
+			type: "*Please select the event type.",
 		},
 		submitHandler: function(form) {
 			event.preventDefault();
@@ -722,6 +728,12 @@ function tournamentAddModify()
 			},
 			directorEmail: {
 				email: true
+			},
+			websiteHost: {
+				url: true
+			},
+			websiteScilympiad: {
+				url: true
 			},
 		},
 		messages: {

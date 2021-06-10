@@ -10,6 +10,7 @@ function userCheckPrivilege($level)
 	{
 		die("<div style='color:red'>You must have the correct privilige to access this file. <a href='data.php'>Go home.</a></div>");
 	}
+	//TODO: figure out how to refresh Google token here https://stackoverflow.com/questions/9241213/how-to-refresh-token-with-google-api-client
 }
 function userHasPrivilege($level)
 {

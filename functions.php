@@ -20,7 +20,7 @@ function getAllStudents($db, $active)
 	return $myOutput;
 }
 //get Event type options
-function getEventTypes($db, $type)
+/*function getEventTypes($db, $type)
 {
 	$myOutput = "";
 	$query = "SELECT * from `eventtype`";
@@ -28,7 +28,7 @@ function getEventTypes($db, $type)
 
 	if($result)
 	{
-		$myOutput .="<select id='typeName' name='typeName' type='text'>";
+		$myOutput .="<select id='type' name='type' type='text'>";
 		while ($row = $result->fetch_assoc()):
 			$selected = $row['type']==$type ? " selected " : "";
 			$myOutput.="<option value = '".$row['type']."'$selected>".$row['type']."</option>";
@@ -36,6 +36,56 @@ function getEventTypes($db, $type)
 		$myOutput .="</select>";
 	}
 	return $myOutput;
+}*/
+//get Event type options
+function getEventString($type)
+{
+	if (!$type || $type == 0){
+    return "Core Knowledge (Test Only)";
+	}
+	elseif ($type == 1) {
+	    return "Build";
+	}
+	elseif ($type == 2) {
+			return "Laboratory or Hands On";
+	}
+	elseif ($type == 3) {
+	    return "Hybrid Build";
+	}
+	elseif ($type == 4) {
+	    return "Hybrid Lab";
+	}
+}
+
+//Return Calculator Type
+function getCalulatorString($type)
+{
+	if (!$type || $type == 0){
+    return "None";
+	}
+	elseif ($type == 1) {
+	    return "Graphing or any other type";
+	}
+	elseif ($type == 2) {
+	    return "4-Function Only";
+	}
+	elseif ($type == 3) {
+	    return "Scientific or 4-Function Only";
+	}
+}
+
+//return Goggle Type
+function getGoggleString($type)
+{
+	if (!$type || $type == 0){
+    return "None";
+	}
+	elseif ($type == 1) {
+	    return "Class B - Impact only, for Most Builds";
+	}
+	elseif ($type == 2) {
+	    return "Class C - Splash Resistant, for Most Labs";
+	}
 }
 
 //get list of events

@@ -73,12 +73,13 @@ if($result)
 
 
 		$output .="<div>Year: $grade ".$yearCollection."</div>";
-    $output .="<div>Type: ".$row['type']."</div>";
+		//TODO: change type to Integer
+    $output .="<div>Type: ".getEventString($row['type'])."</div>";
 		if($row['calculatorType']){
-			$output .="<div>Calculator: ".$row['calculatorType']."</div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Calculator: ".getCalulatorString($row['calculatorType'])."</div>"; //TODO: Convert calculator integer to string
 		}
 		if($row['goggleType']){
-			$output .="<div>Goggles: ".$row['goggleType']."</div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Goggles: ".getGoggleString($row['goggleType'])."</div>"; //TODO: Convert calculator integer to string
 		}
 		if($row['numberStudents']){
 			$output .="<div>Number of partners: ".$row['numberStudents']."</div>"; //TODO: Convert calculator integer to string

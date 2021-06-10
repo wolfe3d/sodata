@@ -102,7 +102,7 @@ userCheckPrivilege(1);
 
 				<nav id="nav">
 					<ul>
-						<li><a id="mainBtn" href="#user">Home</a></li>
+						<li><a id="mainBtn" href="#home">Home</a></li>
 						<li><a id="eventBtn" href="#events">Events</a></li>
 						<li><a id="tournamentBtn" href="#tournaments">Tournaments</a></li>
 						<li><a id="studentBtn" href="#students">Teammates</a></li>

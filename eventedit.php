@@ -21,35 +21,49 @@ if(isset($eventID))
 			<input id="eventID" name="eventID" type="hidden" value="<?=$row["eventID"]?>">
 	<?php } ?>
 	<p>
-		<label for="eventName">Event</label>
-		<input id="eventName" name="eventName" type="text" value="<?=$row["event"]?>">
+		<label for="event">Event</label>
+		<input id="event" name="event" type="text" value="<?=$row["event"]?>" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
 	</p>
 	<p>
-		<label for="typeName">Event Type</label>
-		<?=getEventTypes($mysqlConn,$typeName)?>
+		<label for="type">Event Type</label>
+		<select id="type" name="type" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
+			<option value="0" <?=$row["type"]==0||!$row["type"]?"selected":""?>><?=getEventString(0)?></option>
+			<option value="1" <?=$row["type"]==1?"selected":""?>><?=getEventString(1)?></option>
+			<option value="2" <?=$row["type"]==2?"selected":""?>><?=getEventString(2)?></option>
+			<option value="3" <?=$row["type"]==3?"selected":""?>><?=getEventString(3)?></option>
+			<option value="4" <?=$row["type"]==4?"selected":""?>><?=getEventString(4)?></option>
+		</select>
 	</p>
 	<p>
 		<label for="calculatorType">Calculator</label>
-		<input id="calculatorType" name="calculatorType" type="number" value="<?=$row["calculatorType"]?>">
+		<select id="calculatorType" name="calculatorType" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
+			<option value="0" <?=$row["calculatorType"]==0||!$row["calculatorType"]?"selected":""?>><?=getCalulatorString(0)?></option>
+			<option value="1" <?=$row["calculatorType"]==1?"selected":""?>><?=getCalulatorString(1)?></option>
+			<option value="2" <?=$row["calculatorType"]==2?"selected":""?>><?=getCalulatorString(2)?></option>
+			<option value="3" <?=$row["calculatorType"]==3?"selected":""?>><?=getCalulatorString(3)?></option>
+		</select>
+
 	</p>
 	<p>
 		<label for="goggleType">Goggles</label>
-		<input id="goggleType" name="goggleType" type="number" value="<?=$row["goggleType"]?>">
-	</p>
+		<select id="goggleType" name="goggleType" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
+			<option value="0" <?=$row["goggleType"]==0||!$row["goggleType"]?"selected":""?>><?=getGoggleString(0)?></option>
+			<option value="1" <?=$row["goggleType"]==1?"selected":""?>><?=getGoggleString(1)?></option>
+			<option value="2" <?=$row["goggleType"]==2?"selected":""?>><?=getGoggleString(2)?></option>
+		</select>
 	<p>
 		<label for="numberStudents">Number of Partners</label>
-		<input id="numberStudents" name="numberStudents" type="number" value="<?=$row["numberStudents"]?>">
+		<input id="numberStudents" name="numberStudents" type="number" value="<?=$row["numberStudents"]?>" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
 	</p>
 	<p>
 		<label for="sciolyLink">Scioly Link</label>
-		<input id="sciolyLink" name="sciolyLink" type="text" value="<?=$row["sciolyLink"]?>">
+		<input id="sciolyLink" name="sciolyLink" type="text" value="<?=$row["sciolyLink"]?>" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
 	</p>
 	<p>
 		<label for="description">Description</label>
-		<input id="description" name="description" type="text" value="<?=$row["description"]?>">
+		<input id="description" name="description" type="text" value="<?=$row["description"]?>" onchange="fieldUpdate(<?=$eventID?>,'event',this.id,this.value)">
 	</p>
 	<p>
-		<input class="button" type="button" onclick="window.location='#events'" value="Cancel" />
-		<input class="submit" type="submit" value="Submit">
+		<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
 	</p>
 </form>
