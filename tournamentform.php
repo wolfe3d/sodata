@@ -25,9 +25,7 @@
 	<?=getSOYears($row['year']?$row['year']:getCurrentSOYear())?>
 </p>
 <p>
-	<!--//TODO: Make this a selection -->
-	<label for="type">Type of Competition (Full, Mini, Hybrid, etc.)</label>
-	<!-- <input id="type" name="type" type="text" value="<?=$row['type']?>"> -->
+	<label for="type">Type of Competition</label>
 	<select name="type" id="type" type="number">
 		<option value=1>Full</option>
 		<option value=2>Mini</option>

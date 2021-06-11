@@ -71,19 +71,18 @@ if($result)
 
 
 		$output .="<div>Year: $grade ".$yearCollection."</div>";
-		//TODO: change type to Integer
     $output .="<div>Type: ".getEventString($row['type'])."</div>";
 		if($row['calculatorType']){
-			$output .="<div>Calculator: ".getCalulatorString($row['calculatorType'])."</div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Calculator: ".getCalulatorString($row['calculatorType'])."</div>";
 		}
 		if($row['goggleType']){
-			$output .="<div>Goggles: ".getGoggleString($row['goggleType'])."</div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Goggles: ".getGoggleString($row['goggleType'])."</div>";
 		}
 		if($row['numberStudents']){
-			$output .="<div>Number of partners: ".$row['numberStudents']."</div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Number of partners: ".$row['numberStudents']."</div>";
 		}
 		if($row['sciolyLink']){
-			$output .="<div>Link: <a href='".$row['sciolyLink']."'>".$row['sciolyLink']."</a></div>"; //TODO: Convert calculator integer to string
+			$output .="<div>Link: <a href='".$row['sciolyLink']."'>".$row['sciolyLink']."</a></div>";
 		}
 		if($row['description']){
 			$output .="<div>Description: ".$row['description']."</div>";

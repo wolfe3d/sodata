@@ -332,7 +332,7 @@ function studentCourseAdd(student, table)
 	 url: "studentcourseadd.php",
 	 cache: false,
 	 method: "POST",
-	 data: { studentID: student, tableName : table, courseID : $("#courseList").val() }, //TODO: must add priority
+	 data: { studentID: student, tableName : table, courseID : $("#courseList").val() },
 	 dataType: "text"
  });
 
@@ -587,7 +587,8 @@ function eventyearPrepare(myID)
 				if(html>0)
 				{
 					//add event to list
-					$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList option:selected" ).text()+" <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
+					//TODO: Add Edit event Leader and fix button
+					$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
 				}
 				else
 				{
@@ -921,7 +922,7 @@ function addToSubmit(myID)
 			 url: $("#addTo").attr('action'), //"tournamentteaminsert.php",
 			 cache: false,
 			 method: "POST",
-			 data:  formData, //TODO:add for teamID for edited ones
+			 data:  formData,
 			 dataType: "html"
 			});
 
@@ -960,7 +961,7 @@ function tournamentTimeblockRemove(myID)
 		rowRemove(myID,"timeblock");
 	}
 }
-function tournamentEventRemove(myID,myName)
+function tournamentRemove(myID,myName)
 {
 	if(confirm("Are you sure you want to delete "+myName+" from this tournament " + myID +"?  This removes the event permanently!!!"))
   {

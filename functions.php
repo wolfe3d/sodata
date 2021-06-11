@@ -99,7 +99,7 @@ function getEventList($db, $number,$label)
 		{
 			while ($rowEvents = $resultEventsList->fetch_assoc()):
 				$event = htmlspecialchars($db->real_escape_string($rowEvents['event']));
-				$type = $db->real_escape_string($rowEvents['type']);
+				$type = getEventString($rowEvents['type']);
 				$events .= "<option value='".$rowEvents['eventID']."'>$event - $type</option>";
 			endwhile;
 		}
