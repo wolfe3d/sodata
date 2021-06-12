@@ -12,7 +12,7 @@ if(isset($eventID))
 	$row = $result->fetch_assoc();
 	$typeName = $row["type"];
 	?>
-<form id="addTo" method="post" action="eventeditadjust.php">
+<form id="addTo" method="post" action="">
 	<fieldset>
 		<legend>Edit Event</legend>
 		<?php require_once  ("eventform.php"); ?>

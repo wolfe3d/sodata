@@ -23,7 +23,7 @@ while ($row = $result->fetch_assoc()):
 		$leaderStr ="Edit";
 		$leaderName = " - " . $row["last"] . ", " . $row["first"];
 	}
-	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'>".$row["event"]." - ". $row["type"] ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='javascript:eventYearLeader(\"".$row["eventyearID"]."\")'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove Event</a></div>";
+	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'>".$row["event"]." - ". $row["type"] ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='#eventyear-leader-".$row["eventyearID"]."'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove</a></div>";
 endwhile;
 ?>
 <form id="addTo" method="post" action="eventyearadd.php">

@@ -1,6 +1,6 @@
 <?php
 //get all students in a select
-function getAllStudents($db, $active)
+function getAllStudents($db, $active, $studentID)
 {
 	$myOutput = "";
 	$where = $active==1?"WHERE `student`.`active` = 1":"";
@@ -9,10 +9,10 @@ function getAllStudents($db, $active)
 
 	if($result)
 	{
-		$myOutput .="<select id='student' name='student' type='text'>";
+		$myOutput .="<select id='studentID' name='studentID' type='text'>";
 		$myOutput.="<option value = '0'>None</option>";
 		while ($row = $result->fetch_assoc()):
-			$selected = "";//$row['type']==$type ? " selected " : "";
+			$selected = $row['studentID']==$studentID ? " selected " : "";
 			$myOutput.="<option value = '".$row['studentID']."'$selected>".$row['last'].", ".$row['first']."</option>";
 		endwhile;
 		$myOutput .="</select>";

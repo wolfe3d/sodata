@@ -86,10 +86,13 @@ function loadpage(page, type, myID){
 					case 'event':	eventEdit(myID);
 					break;
 
-					case 'eventyear':	eventyearPrepare(myID);
-					break;
-
-					case 'eventaddpop': eventsPrepareAddPage();
+					case 'eventyear':
+						if(typepage=="edit"){
+							eventyearPrepare(myID);
+						}
+						else if (typepage=="leader"){
+							eventyearLeader(myID);
+						}
 					break;
 
 					case 'officer':
@@ -587,8 +590,7 @@ function eventyearPrepare(myID)
 				if(html>0)
 				{
 					//add event to list
-					//TODO: Add Edit event Leader and fix button
-					$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
+					$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a id='leaderlink-"+html+"' href='#eventyear-leader-"+html+"'>Add Leader</a> <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
 				}
 				else
 				{
@@ -603,82 +605,16 @@ function eventyearPrepare(myID)
 	});
 }
 
-function eventYearLeader(myID)
+function eventyearLeader(myID)
 {
-	$("#mainHeader").html("Edit an Event's Leader");
-  var eventName = $("#eventyear-"+myID + " .event").html();
-	var eventLeaderName = $( "#eventyear-"+myID + " .eventleader" ).data( "id" );
-	var year = $( "#year" ).val();
-	 window.location.hash = '#eventyear-edit-leader-'+ myID;
-			var request = $.ajax({
-			 url: "eventyearleaderaddpop.php",
-			 cache: false,
-			 method: "POST",
-			 data: {},
-			 dataType: "html"
-			});
-
-			request.done(function( html ) {
-			 //$("label[for='" + field + "']").append(html);
-			 $(".modified").remove(); //removes any old update notices
-
-				if(html)
-				{
-					$("#mainContainer").html(html);
-					$("#eventID").html(myID).hide();
-					$("#eventName").html(eventName);
-					$("#year").html(year);
-					$("#student").val(eventLeaderName);
-					eventYearLeaderPrepare(myID);
-				}
-				else
-				{
-					$("#mainContainer").append("<div class='modified' style='color:red'>"+html+"</div>");
-				}
-			});
-
-		request.fail(function( jqXHR, textStatus ) {
-		 $("#mainContainer").html("Add leader to your eventyear error");
+	addToSubmit(myID);
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'eventyear',this.id,this.value);
+					});
 		});
 }
-function eventYearLeaderPrepare(myID)
-{
-	$("#addLeader").one( "submit", function( event ) {
-		event.preventDefault();
 
-			var request = $.ajax({
-			 url: "eventyearleaderadd.php",
-			 cache: false,
-			 method: "POST",
-			 data: {eventyearID: myID, studentID: $("#student").val()},
-			 dataType: "html"
-			});
-
-			request.done(function( html ) {
-			 //$("label[for='" + field + "']").append(html);
-			 $(".modified").remove(); //removes any old update notices
-
-				if(html>0)
-				{
-					eventsPrepareYearPage($("#year").html());
-					//add eventleader to list
-					//$("#eventyear-"+ $("#eventID").html() + " .eventleader").html(" - " + $('#student option:selected').text());
-					//store the student id
-					//$( "#eventyear-"+ $("#eventID").html() + " .eventleader" ).data( "id", $("#student").val());
-					//change link to Edit Leader
-					//$("#leaderlink-"+$("#eventID").html()).html("Edit Leader");
-				}
-				else
-				{
-					$("#addLeader").append("<div class='modified' style='color:red'>"+html+"</div>");
-				}
-			});
-
-			request.fail(function( jqXHR, textStatus ) {
-		 		$("#addLeader").append("Add leader to your eventyear error");
-			});
-		});
-}
 function eventYearRemove(myID)
 {
 	if(confirm("Are you sure you want to delete the eventyear: " + $("#eventyear-"+myID+" .event").text() +"?  This removes the event permanently from this year!!!"))
