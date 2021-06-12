@@ -66,7 +66,7 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultEvent))
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span></th>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <span id='tournamenteventwarning-".$rowEvent['tournamenteventID']."' class='error'></span></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				//find available times
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
@@ -79,7 +79,7 @@ if(mysqli_num_rows($result))
 						if(mysqli_num_rows($resultTeam)){
 							while ($rowTeam = $resultTeam->fetch_assoc()):
 								//print a checkbox for each team
-								$checkbox = "tournamenttimechosen-".$rowEvent['tournamenteventID']."-".$timeblocks[$i]['timeblockID']."-".$rowTeam['teamID'];
+								$checkbox = "tournamenttimechosen-".$rowEvent['tournamenteventID']."-".$rowTeam['teamID']."-".$timeblocks[$i]['timeblockID'];
 								$queryEventTimeChosen = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'] . " AND `teamID` = ".$rowTeam['teamID'];
 								$resultEventTimeChosen = $mysqlConn->query($queryEventTimeChosen) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 								//if there is a result then make box checked, if not do not check box.
