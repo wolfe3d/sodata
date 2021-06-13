@@ -68,7 +68,7 @@ if(mysqli_num_rows($result))
 		while ($rowEvent = $resultEvent->fetch_assoc()):
 			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",\"".$rowEvent["event"] ."\")'>X</a></th>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
-					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."-".$timeblocks[$i]['timeblockID'];
+					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."--".$timeblocks[$i]['timeblockID'];
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
 					$resultEventTime = $mysqlConn->query($queryEventTime) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 					$checked = mysqli_num_rows($resultEventTime)?" checked ":"";

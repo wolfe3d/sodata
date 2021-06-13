@@ -126,8 +126,13 @@ function loadpage(page, type, myID){
 							else if(typepage=="events"){
 								tournamentEventAdd(myID);
 							}
+							else if(typepage=="eventtime"){
+								tournamentTimesCheckErrors(myID);
+							}
 							else{
 								addToSubmit(myID);
+								addToSetGenericRules();
+								//TODO: fix error on tournamentteamedit --does not save
 							}
 						});
 					break;
@@ -955,7 +960,7 @@ function tournamentEventTimeSet(inputBtn)
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
-			tournamentTimesCheckErrors();
+			tournamentTimesCheckErrors(splitName[1]);
 		}
 		else {
 			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
@@ -967,22 +972,50 @@ function tournamentEventTimeSet(inputBtn)
 	});
 }
 
-function tournamentTimesCheckErrors()
+function tournamentTimesCheckErrors(myID)
 {
-	//TODO: WORK on this function
-	//Make warning if there is more than one selected time for a team
-	/*if($('[id*="tournamenttimechosen-' +splitName[1] + '-' + splitName[2] + '"]:checked').length>1)
-	{
-		$("#tournamenteventwarning-"+splitName[1]).text("There is more than one time chosen for the same team.");
-	}
-	else {
-		$("#tournamenteventwarning-"+splitName[1]).text(""); //TODO BUG: This will clear error even if a different team was changed.
-	}*/
-	$( "tr[id*='tournamentevent-']" ).each(function( index ) {
-		//Go through each row and check the teams do not have more than one timeblock chosen per team
-//TODO: Store Team ids somewhere in php file as an array, so that they can be checked one by one here
-		console.log( index + ": " + $( this ).text() );
+	//myID = tournamentID
 
+	$.when( $("#teamIDs") ).done(function( x ) {
+		//Get Team data stored in php file as a JSON array, so that they can be checked one by one here
+		var teams = JSON.parse($("#teams").text());
+		//Go through each row and check the teams do not have more than one timeblock chosen per team
+		$( "tr[id*='tournamentevent-']" ).each(function( index ) {
+			var tournamenteventID = this.id.split("-")[1];
+			$("#tournamenteventwarning-"+tournamenteventID).text("");
+			for (let i = 0; i < teams.length; i++) {
+  			//console.log(teamIDs[i]);
+				if($('[id*="tournamenttimechosen-' + tournamenteventID + '-' + teams[i]['teamID'] + '"]:checked').length>1)
+				{
+					$("#tournamenteventwarning-"+ tournamenteventID).append("There is more than one time chosen for the same team("+teams[i]['teamName']+").");
+				}
+			}
+			//console.log( index + ": " + $( this ).text() );
+		});
+	});
+}
+
+function tournamentSetupErrors(myID)
+{
+	//TODO: make this check for events that are over assigned and students that are assigned for two events in the same time block
+	//myID = tournamentID
+
+	$.when( $("#teamIDs") ).done(function( x ) {
+		//Get Team data stored in php file as a JSON array, so that they can be checked one by one here
+		var teams = JSON.parse($("#teams").text());
+		//Go through each row and check the teams do not have more than one timeblock chosen per team
+		$( "tr[id*='tournamentevent-']" ).each(function( index ) {
+			var tournamenteventID = this.id.split("-")[1];
+			$("#tournamenteventwarning-"+tournamenteventID).text("");
+			for (let i = 0; i < teams.length; i++) {
+  			//console.log(teamIDs[i]);
+				if($('[id*="tournamenttimechosen-' + tournamenteventID + '-' + teams[i]['teamID'] + '"]:checked').length>1)
+				{
+					$("#tournamenteventwarning-"+ tournamenteventID).append("There is more than one time chosen for the same team("+teams[i]['teamName']+").");
+				}
+			}
+			//console.log( index + ": " + $( this ).text() );
+		});
 	});
 }
 
