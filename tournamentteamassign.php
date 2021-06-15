@@ -119,7 +119,7 @@ if(mysqli_num_rows($result))
 				{
 					for ($n = 0; $n < count($timeEvents); $n++) {
 						$checkbox = "teammateplace-".$timeEvents[$n]['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-						$checkboxEvent = "teammateEvent-".$timeEvents[$n]['tournamenteventID']." "."teammateStudent-".$rowStudent['studentID'];
+						$checkboxEvent = "timeblock-".$timeblocks[$i]['timeblockID']." "."teammateEvent-".$timeEvents[$n]['tournamenteventID']." "."teammateStudent-".$rowStudent['studentID'];
 
 						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
 						$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -155,7 +155,15 @@ if(mysqli_num_rows($result))
 		if($timeEvents)
 		{
 			for ($n = 0; $n < count($timeEvents); $n++) {
-				$output .= "<td id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']."</td>";
+				//the errorText could be removed and done in javascript at first as well as other calculations
+				$errorText = "";
+				if($timeEvents[$n]['eventTotal']>$timeEvents[$n]['numberStudents']){
+					$errorText = "<div class='modified' class='error'>Too MANY students!</div>";
+				}
+				else if($timeEvents[$n]['eventTotal']<$timeEvents[$n]['numberStudents']) {
+					$errorText = "<div class='modified' class='error'>Too FEW students!</div>";
+				}
+				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
 			}
 		}
 		else {
