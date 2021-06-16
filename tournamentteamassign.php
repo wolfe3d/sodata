@@ -119,16 +119,16 @@ if(mysqli_num_rows($result))
 				{
 					for ($n = 0; $n < count($timeEvents); $n++) {
 						$checkbox = "teammateplace-".$timeEvents[$n]['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-						$checkboxEvent = "timeblock-".$timeblocks[$i]['timeblockID']." "."teammateEvent-".$timeEvents[$n]['tournamenteventID']." "."teammateStudent-".$rowStudent['studentID'];
+						$checkboxEvent = "timeblock-".$timeblocks[$i]['timeblockID']." teammateEvent-".$timeEvents[$n]['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
 
 						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
 						$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-						$output .="<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."' class='$checkboxEvent'>";
+						$output .="<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblocks[$i]['timeblockID']."'>";
 						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
 						$timeblocks[$i]['events'][$n]['eventTotal'] +=$checked?1:0;
 						$studentTotal +=$checked?1:0;
 						if(userHasPrivilege(3)){
-							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked>";
+							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblocks[$i]['timeblockID']."' $checked>";
 						}
 						else {
 							$output .=$checked?"<div class='fa'>&#xf00c;</div>":"";
@@ -163,7 +163,7 @@ if(mysqli_num_rows($result))
 				else if($timeEvents[$n]['eventTotal']<$timeEvents[$n]['numberStudents']) {
 					$errorText = "<div class='modified' class='error'>Too FEW students!</div>";
 				}
-				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
+				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."-".$timeblocks[$i]['timeblockID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
 			}
 		}
 		else {
@@ -172,7 +172,7 @@ if(mysqli_num_rows($result))
 	}
 	$output .="</tr>";
 
-	//print the total signed up for each event
+	//print the place for each event
 	$output .="<tr><td>Place</td>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$timeEvents= $timeblocks[$i]['events'];

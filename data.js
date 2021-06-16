@@ -1077,9 +1077,9 @@ function tournamentEventTeammate(inputBtn)
 			{
 				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
 				//recalculate and check for errors
-				tournamentCalculateEvent(splitName[1]);
+				tournamentCalculateEvent(splitName[1], inputBtn.parent().data("timeblock"));
 				tournamentCalculateStudent(splitName[2]);
-				tournamentCalculateTimeblock(splitName[2]);
+				tournamentCalculateTimeblock(splitName[2], inputBtn.parent().data("timeblock"));
 			}
 			else {
 				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
@@ -1096,14 +1096,13 @@ function tournamentEventTeammate(inputBtn)
 	});
 }
 
-//Calculate the number of students in an event
-function tournamentCalculateEvent(tournamenteventID)
+//Calculate the number of students in an event during one time block
+function tournamentCalculateEvent(tournamenteventID, timeblockID)
 {
-	//WARNING BUG: If there is more than one event time for the same name event (however, there should not be more than one event at the same time), then this will show the total students of both times.
-	$("#eventtotal-"+tournamenteventID + " .modified").remove(); //remove old warning
-	var eventAssigned = $(".teammateEvent-"+tournamenteventID+" :checkbox:checked").length; //count number of students assigned
-	$("#eventtotal-"+tournamenteventID).text(eventAssigned); //print number of students assigned
-	var eventMax = $("#eventtotal-"+tournamenteventID).data( "eventmax" );//check number of students allowed in stored data
+	$("#eventtotal-"+tournamenteventID + "-"+timeblockID+" .modified").remove(); //remove old warning
+	var eventAssigned = $(".timeblock-"+timeblockID+".teammateEvent-"+tournamenteventID+" :checkbox:checked").length; //count number of students assigned
+	$("#eventtotal-"+tournamenteventID + "-" + timeblockID).text(eventAssigned); //print number of students assigned
+	var eventMax = $("#eventtotal-"+tournamenteventID+ "-" + timeblockID).data( "eventmax" );//check number of students allowed in stored data
 	//compare amount assigned to maximum students allowed
 	if(eventAssigned==eventMax){
 		return;
@@ -1115,7 +1114,7 @@ function tournamentCalculateEvent(tournamenteventID)
 		var errorText = "Too FEW students!";
 	}
 	//print errors
-	$("#eventtotal-"+tournamenteventID).append("<div class='modified' class='error'>"+errorText+"</div>");
+	$("#eventtotal-"+tournamenteventID+ "-" + timeblockID).append("<div class='modified' class='error'>"+errorText+"</div>");
 }
 
 //Calculate the number of events for a student
@@ -1124,13 +1123,17 @@ function tournamentCalculateStudent(studentID)
 	$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" input:checkbox:checked").length);
 }
 
-//TODO: WORK on this function
-
 //check to make sure student is not signed up for two events in the same time block
-function tournamentCalculateTimeblock(studentID, timeBlockID)
+//TODO: this should be done in php too or done on load.
+function tournamentCalculateTimeblock(studentID, timeblockID)
 {
-	//HOW do if find the timeBlockID?  Should I move data from class name (as shown in tournamentCalculateStudent) to data type (as used in tournamentCalculateEvent)?
-	//I could check all timeBlocks for this student, but that is somewhat redundant.
+	//Reminder: jquery selector (*may be omitted) =  $('*[data-timeblock="22"]')
+	$("#teammate-"+studentID+" .modified").remove(); //remove old warning
+	var studentAssigned = $(".timeblock-"+timeblockID+".teammateStudent-"+studentID+" :checkbox:checked").length; //count number of students assigned
+	if (studentAssigned >1){
+		//print errors
+		$("#teammate-"+studentID).append("<div class='modified' class='error'>More than one event in timeBlock: "+$("#timeblock-"+timeblockID).text()+"</div>");
+	}
 }
 
 
