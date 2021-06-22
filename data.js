@@ -1,3 +1,4 @@
+//TODO: Add blocker to keep users from clicking multiple times while an AJAX event is being completed.
 $().ready(function() {
 //wait for the page to load before the following is run
 	checkPage();
@@ -936,8 +937,7 @@ function rowRemove(myID,table)
 
  request.fail(function( jqXHR, textStatus ) {
 	 $(".modified").remove();
-	 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Removal Error:"+textStatus+"</div");
-	 alert( "Request failed: " + textStatus );
+	 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Request failedr:"+textStatus+"</div");
  });
 }
 

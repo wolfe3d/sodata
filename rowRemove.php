@@ -9,7 +9,7 @@ $output = "";
 $myID = intval($_POST['myid']);
 if(empty($myID))
 {
-	echo "No id given.";
+	echo "No ID given.";
 	exit;
 }
 
