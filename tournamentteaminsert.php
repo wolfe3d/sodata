@@ -3,7 +3,7 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(3);
 
-$tournamentID = intval($_POST['tournamentID']);
+$tournamentID = intval($_POST['myID']);
 $teamID = intval($_POST['teamID']);
 $teamName = $mysqlConn->real_escape_string($_POST['teamName']);
 if($tournamentID)

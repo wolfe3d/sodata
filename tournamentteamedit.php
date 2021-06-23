@@ -19,7 +19,7 @@ if(empty($row))
 }
 $teamName = $row['teamName'];
 
-$studentList="<div><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Student</label></div>";
+$studentList="<div><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Students</label></div>";
 $query = "SELECT * FROM `student` ORDER BY `last` ASC, `first` ASC";
 $resultStudent = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($resultStudent){
