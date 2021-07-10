@@ -519,7 +519,7 @@ function eventAddModify()
 				number: true
 			},
 			sciolyLink: {
-          url: true
+          	url: true
         }
 		},
 		messages: {
