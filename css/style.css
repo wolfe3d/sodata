@@ -160,6 +160,12 @@ pre code {
 
 .error {
   color: red;
+	text-shadow: 1px 1px #000000;
+}
+
+.warning {
+  color: orange;
+	text-shadow: 1px 1px #000000;
 }
 
 /* Section/Article */

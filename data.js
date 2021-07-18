@@ -1,3 +1,4 @@
+//TODO: Add blocker to keep users from clicking multiple times while an AJAX event is being completed.
 $().ready(function() {
 //wait for the page to load before the following is run
 	checkPage();
@@ -127,7 +128,7 @@ function loadpage(page, type, myID){
 								tournamentEventAdd(myID);
 							}
 							else if(typepage=="eventtime"){
-								tournamentTimesCheckErrors(myID);
+								tournamentTimesCheckErrors();
 							}
 							else{
 								addToSubmit(myID);
@@ -784,6 +785,8 @@ function appendLeadingZeroes(n){
   return n
 }
 
+
+
 function tournamentTimeAdd(myID)
 {
 	$("#addTo").validate({
@@ -848,12 +851,14 @@ function tournamentEventAdd(myID)
 					if(html>0)
 					{
 						// get the last DIV which ID starts with ^= "klon"
-					  var $div = $('div[id^="tournamentevent-"]:last');
+					  //var $div = $('tr[id^="tournamentevent-"]:last');
 					  // Clone it and assign the new ID (i.e: from tournamentevent")
-					  var $te = $div.clone().prop('id', 'tournamentevent-'+html );
+					  // $te = $div.clone().prop('id', 'tournamentevent-'+html );
 					  // Finally insert tournamentevent
-					  $div.after( $te );
-						//TODO: Insert added event here
+					  //$div.after( $te );
+
+						//TODO: implement adding a custom event with times completely
+						$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Press refresh to select times.</td></tr>");
 
 						//$("#timeblocks").append("<div id='timeblock-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+" <a href='javascript:tournamentTimeblockRemove("+html+")'>Remove</a></div>");
 					}
@@ -957,7 +962,7 @@ function tournamentTimeblockRemove(myID)
 		rowRemove(myID,"timeblock");
 	}
 }
-function tournamentRemove(myID,myName)
+function tournamentEventRemove(myID,myName)
 {
 	if(confirm("Are you sure you want to delete "+myName+" from this tournament " + myID +"?  This removes the event permanently!!!"))
   {
@@ -989,8 +994,7 @@ function rowRemove(myID,table)
 
  request.fail(function( jqXHR, textStatus ) {
 	 $(".modified").remove();
-	 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Removal Error:"+textStatus+"</div");
-	 alert( "Request failed: " + textStatus );
+	 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Request failedr:"+textStatus+"</div");
  });
 }
 
@@ -1002,6 +1006,12 @@ function tournamentEventTimeSet(inputBtn)
 	var objectName = inputBtn.attr('name');
 	var splitName = objectName.split("-");
 	var checked = inputBtn.is(":checked")?1:0;
+	$("#tournamenteventwarning-"+splitName[1]).text("");
+	var checkTime = tournamentTimesCheckError(splitName[1], splitName[2], $("label[for='"+inputBtn.attr('id')+"']").text());
+	if(checkTime){
+		inputBtn.prop("checked", false);
+		return 0;
+	}
 
 	var request = $.ajax({
 		url: "tournamenteventtimeadjust.php",
@@ -1015,7 +1025,7 @@ function tournamentEventTimeSet(inputBtn)
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
-			tournamentTimesCheckErrors(splitName[1]);
+
 		}
 		else {
 			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
@@ -1027,10 +1037,12 @@ function tournamentEventTimeSet(inputBtn)
 	});
 }
 
-function tournamentTimesCheckErrors(myID)
+//Check all timeblocks for duplicate selections
+//TODO: Warn if no time is chosen.
+function tournamentTimesCheckErrors()
 {
-	//myID = tournamentID
-
+	//myID = tournamenteventID
+	var error = 0;
 	$.when( $("#teamIDs") ).done(function( x ) {
 		//Get Team data stored in php file as a JSON array, so that they can be checked one by one here
 		var teams = JSON.parse($("#teams").text());
@@ -1040,38 +1052,31 @@ function tournamentTimesCheckErrors(myID)
 			$("#tournamenteventwarning-"+tournamenteventID).text("");
 			for (let i = 0; i < teams.length; i++) {
   			//console.log(teamIDs[i]);
-				if($('[id*="tournamenttimechosen-' + tournamenteventID + '-' + teams[i]['teamID'] + '"]:checked').length>1)
-				{
-					$("#tournamenteventwarning-"+ tournamenteventID).append("There is more than one time chosen for the same team("+teams[i]['teamName']+").");
-				}
+				var timeCheck = tournamentTimesCheckError(tournamenteventID, teams[i]['teamID'], teams[i]['teamName']);
+				error = timeCheck?1:error;
 			}
 			//console.log( index + ": " + $( this ).text() );
 		});
 	});
+	return error;
 }
 
-function tournamentSetupErrors(myID)
+//Check only the button that you checked for duplicate times
+function tournamentTimesCheckError(tournamenteventID, teamID, teamName)
 {
-	//TODO: make this check for events that are over assigned and students that are assigned for two events in the same time block
-	//myID = tournamentID
-
-	$.when( $("#teamIDs") ).done(function( x ) {
-		//Get Team data stored in php file as a JSON array, so that they can be checked one by one here
-		var teams = JSON.parse($("#teams").text());
-		//Go through each row and check the teams do not have more than one timeblock chosen per team
-		$( "tr[id*='tournamentevent-']" ).each(function( index ) {
-			var tournamenteventID = this.id.split("-")[1];
-			$("#tournamenteventwarning-"+tournamenteventID).text("");
-			for (let i = 0; i < teams.length; i++) {
-  			//console.log(teamIDs[i]);
-				if($('[id*="tournamenttimechosen-' + tournamenteventID + '-' + teams[i]['teamID'] + '"]:checked').length>1)
-				{
-					$("#tournamenteventwarning-"+ tournamenteventID).append("There is more than one time chosen for the same team("+teams[i]['teamName']+").");
-				}
-			}
-			//console.log( index + ": " + $( this ).text() );
-		});
-	});
+	var numTimes = $('[id*="tournamenttimechosen-' + tournamenteventID + '-' + teamID + '"]:checked').length;
+	if(numTimes>1)
+	{
+		$("#tournamenteventwarning-"+ tournamenteventID).append(" Only one time may be chosen for the same team ("+teamName+").");
+		return 1; //There is an error
+	}
+	else if(numTimes==0)
+	{
+		$("#tournamenteventwarning-"+ tournamenteventID).append(" Choose one time for team "+teamName+".");
+	}
+	else {
+		return 0;
+	}
 }
 
 //Sets teammates for a team
@@ -1117,6 +1122,9 @@ function tournamentEventTeammate(inputBtn)
 	var checked = inputBtn.is(":checked")?1:0;
 	var place = $("#placement-"+splitName[1]+"--"+splitName[3]).val();
 
+
+	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
+	//Do not allow 2 or more timeblocks for the same event!
 	var request = $.ajax({
 		url: "tournamenteventteammateadjust.php",
 		cache: false,
@@ -1127,13 +1135,14 @@ function tournamentEventTeammate(inputBtn)
 
 	request.done(function( html ) {
 		if(html=='1') 	 {
-			var modified = checked?"added":"removed";
+			var checkChanged = checked?"added":"removed";
 			if(splitName[2])
 			{
-				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +modified+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
-				//recalculate total Teammates
-				$("#eventtotal-"+splitName[1]).text($(".teammateEvent-"+splitName[1]+" :checkbox:checked").length);
-				$("#studenttotal-"+splitName[2]).text($(".teammateStudent-"+splitName[2]+" :checkbox:checked").length);
+				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
+				//recalculate and check for errors
+				tournamentCalculateEvent(splitName[1], inputBtn.parent().data("timeblock"));
+				tournamentCalculateStudent(splitName[2]);
+				tournamentCalculateTimeblock(splitName[2], inputBtn.parent().data("timeblock"));
 			}
 			else {
 				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
@@ -1141,14 +1150,56 @@ function tournamentEventTeammate(inputBtn)
 
 		}
 		else {
-			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='modified error'>Change Error:"+html+"</div");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='modified' class='error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='modified error'>Change Error:"+textStatus+"</div");
 	});
 }
+
+//Calculate the number of students in an event during one time block
+function tournamentCalculateEvent(tournamenteventID, timeblockID)
+{
+	$("#eventtotal-"+tournamenteventID + "-"+timeblockID+" .modified").remove(); //remove old warning
+	var eventAssigned = $(".timeblock-"+timeblockID+".teammateEvent-"+tournamenteventID+" :checkbox:checked").length; //count number of students assigned
+	$("#eventtotal-"+tournamenteventID + "-" + timeblockID).text(eventAssigned); //print number of students assigned
+	var eventMax = $("#eventtotal-"+tournamenteventID+ "-" + timeblockID).data( "eventmax" );//check number of students allowed in stored data
+	//compare amount assigned to maximum students allowed
+	if(eventAssigned==eventMax){
+		return;
+	}
+	else if(eventAssigned>eventMax){
+		var errorText = "Too MANY students!";
+		var errorClass ="error";
+	}
+	else if(eventAssigned<eventMax){
+		var errorText = "Too FEW students!";
+		var errorClass ="warning";
+	}
+	//print errors
+	$("#eventtotal-"+tournamenteventID+ "-" + timeblockID).append("<span class='modified "+errorClass+"'>"+errorText+"</span>");
+}
+
+//Calculate the number of events for a student
+function tournamentCalculateStudent(studentID)
+{
+	$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" input:checkbox:checked").length);
+}
+
+//check to make sure student is not signed up for two events in the same time block
+function tournamentCalculateTimeblock(studentID, timeblockID)
+{
+	//Reminder: jquery selector (*may be omitted) =  $('*[data-timeblock="22"]')
+	$("#teammate-"+studentID+" .modified").remove(); //remove old warning
+	var studentAssigned = $(".timeblock-"+timeblockID+".teammateStudent-"+studentID+" :checkbox:checked").length; //count number of students assigned
+	if (studentAssigned >1){
+		//print errors
+		$("#teammate-"+studentID).append("<span class='modified error'>More than one event in timeBlock: "+$("#timeblock-"+timeblockID).text()+"</span>");
+	}
+}
+
 
 ///////////////////
 ///Officer and Event Leader functions

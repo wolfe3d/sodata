@@ -36,11 +36,11 @@ if(mysqli_num_rows($result))
 			$output .="<h2>Schedule</h2>";
 		}
 	}
-		$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
+	$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
-		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID'];
+		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID";
 		$resultEvents = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$events = [];
 		while ($rowEvent = $resultEvents->fetch_assoc()):
@@ -112,23 +112,34 @@ if(mysqli_num_rows($result))
 		while ($rowStudent = $resultStudent->fetch_assoc()):
 			$studentTotal = 0;
 			$output .="<tr>";
-			$output .="<td id='teammate-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</td>";
+			//check to see if student is signed up for the timeblock
+			$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID'].
+			" GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
+			$resultStudentCheck = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$errorStudentCheck="";
+			if($resultStudentCheck){
+				while ($rowStudentCheck = $resultStudentCheck->fetch_assoc()):
+					$errorStudentCheck .= " <span class='modified error'>More than one event in timeBlock: ".$rowStudentCheck['timeStart']."-".$rowStudentCheck['timeEnd']."</span>";
+				endwhile;
+			}
+			//output student column
+			$output .="<td id='teammate-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."$errorStudentCheck</td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				$timeEvents= $timeblocks[$i]['events'];
 				if($timeEvents)
 				{
 					for ($n = 0; $n < count($timeEvents); $n++) {
 						$checkbox = "teammateplace-".$timeEvents[$n]['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-						$checkboxEvent = "teammateEvent-".$timeEvents[$n]['tournamenteventID']." "."teammateStudent-".$rowStudent['studentID'];
+						$checkboxEvent = "timeblock-".$timeblocks[$i]['timeblockID']." teammateEvent-".$timeEvents[$n]['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
 
 						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
 						$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-						$output .="<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."' class='$checkboxEvent'>";
+						$output .="<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblocks[$i]['timeblockID']."'>";
 						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
 						$timeblocks[$i]['events'][$n]['eventTotal'] +=$checked?1:0;
 						$studentTotal +=$checked?1:0;
 						if(userHasPrivilege(3)){
-							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked>";
+							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblocks[$i]['timeblockID']."' $checked>";
 						}
 						else {
 							$output .=$checked?"<div class='fa'>&#xf00c;</div>":"";
@@ -155,7 +166,15 @@ if(mysqli_num_rows($result))
 		if($timeEvents)
 		{
 			for ($n = 0; $n < count($timeEvents); $n++) {
-				$output .= "<td id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']."</td>";
+				//the errorText could be removed and done in javascript at first as well as other calculations
+				$errorText = "";
+				if($timeEvents[$n]['eventTotal']>$timeEvents[$n]['numberStudents']){
+					$errorText = "<div class='modified error'>Too MANY students!</div>";
+				}
+				else if($timeEvents[$n]['eventTotal']<$timeEvents[$n]['numberStudents']) {
+					$errorText = "<div class='modified warning'>Too FEW students!</div>";
+				}
+				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."-".$timeblocks[$i]['timeblockID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
 			}
 		}
 		else {
@@ -164,7 +183,7 @@ if(mysqli_num_rows($result))
 	}
 	$output .="</tr>";
 
-	//print the total signed up for each event
+	//print the place for each event
 	$output .="<tr><td>Place</td>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$timeEvents= $timeblocks[$i]['events'];

@@ -23,7 +23,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 if(mysqli_num_rows($result))
 {
 	$output .="<h2>Available Times</h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table><thead>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
@@ -59,7 +59,7 @@ if(mysqli_num_rows($result))
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
 	}
-	$output .="</tr>";
+	$output .="</tr></thead><tbody id='eventBody'>";
 
 	$queryEvent = "SELECT * FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentID` = $tournamentID ORDER BY `event`.`event` ASC";
 	$resultEvent = $mysqlConn->query($queryEvent) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -80,7 +80,7 @@ if(mysqli_num_rows($result))
 	else {
 		exit("<input class='button fa' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")' value='&#xf0c3; Add all events from this year' />");
 	}
-	$output .="</table></form>";
+	$output .="</tbody></table></form>";
 }
 else {
 	exit("<div>Set available time blocks first!</div>");
