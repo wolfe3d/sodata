@@ -48,7 +48,7 @@ if($result)
 	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="eventadd.php">
 		<fieldset>
-			<legend>Add Tournament</legend>
+			<legend>Add Event</legend>
 			<?php 	require_once  ("eventform.php"); ?>
 			<input class="submit fa" type="submit" value="&#xf067; Add">
 		</fieldset>
