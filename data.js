@@ -77,14 +77,14 @@ function loadpage(page, type, myID){
 
 					case 'student':
 						if(typepage=="edit"){
-							studentEditPrepare();
+							studentEdit(myID);
 						}
 					break;
 
 					case 'events':eventsPreparePage();
 					break;
 
-					case 'event':	eventEdit(myID);
+					case 'event': eventEdit(myID);
 					break;
 
 					case 'eventyear':
@@ -184,7 +184,62 @@ function studentPreparePage()
 		event.preventDefault();
 		getList("studentslist.php", {courseList: $("#courseList").val(),active:$("#active").is(':checked')?"1":"0"});
 	});
+	studentAddModify()
 }
+
+function studentAddModify()
+{
+	$("#addTo").validate({
+		rules: {
+			first: "required",
+			last: "required",
+			yearGraduating: "required",
+		},
+		messages: {
+			first: "*Please enter the student's name",
+			last: "*Please enter the student's name",
+			yearGraduating: "*Please enter the graduation year",
+		},
+		submitHandler: function(form) {
+				event.preventDefault();
+
+				var request = $.ajax({
+					url: $("#addTo").attr('action'),
+					cache: false,
+					method: "POST",
+					data: $("#addTo").serialize(),
+					dataType: "text"
+				});
+
+				request.done(function( html ) {
+					$(".modified").remove(); //removes any old update notices
+					if(html>0)
+					{
+						window.location.hash = '#students--'+html;
+					}
+					else
+					{
+						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+					}
+				});
+
+			request.fail(function( jqXHR, textStatus ) {
+				$("#mainContainer").html("Removal Error");
+			});
+		}
+	});
+}
+
+function studentEdit(myID)
+{
+	eventAddModify();
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'student',this.id,this.value);
+					});
+		});
+}
+
 
 function studentRemove(myID, studentName)
 {
@@ -520,7 +575,7 @@ function eventAddModify()
 				number: true
 			},
 			sciolyLink: {
-          url: true
+          	url: true
         }
 		},
 		messages: {

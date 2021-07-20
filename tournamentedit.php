@@ -36,12 +36,11 @@ if(!$row)
 
 ?>
 <div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
-<form id="addTo" method="post" action="tournamentUpdate.php">
-<fieldset>
-	<legend>Edit Tournament</legend>
-<?php require_once("tournamentform.php"); ?>
-			</fieldset>
-			</form>
+	<form id="addTo" method="post" action="tournamentUpdate.php">
+		<fieldset>
+			<legend>Edit Tournament</legend>
+			<?php require_once("tournamentform.php"); ?>
+		</fieldset>
+	</form>
 	<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-
-	</div>
+</div>
