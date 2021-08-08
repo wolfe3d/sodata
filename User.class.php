@@ -20,6 +20,7 @@ class User {
             $checkQuery = "SELECT * FROM `user` WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
             $checkResult = $this->db->query($checkQuery);
 echo "got me";
+print_r($data);
             // Add modified time to the data array
             if(!array_key_exists('modified',$data)){
                 $data['modified'] = date("Y-m-d H:i:s");
