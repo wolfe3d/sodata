@@ -82,6 +82,8 @@ print_r($data);
             // Get user data from the database
             $result = $this->db->query($checkQuery);
             $userData = $result->fetch_assoc();
+						echo "try";
+						print_r($userData);
         }
 
         // Return user data
