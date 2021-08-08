@@ -273,7 +273,6 @@ function checkGoogle($gpUserProfile,$db)
   // Insert or update user data to the database
   $gpUserData['oauth_provider'] = 'google';
   $userData = $user->checkUser($gpUserData);
-print_r($userData);
   // Storing user data in the session
   $_SESSION['userData'] = $userData;
 }
