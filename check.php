@@ -7,7 +7,6 @@ if ($mysqlConn->connect_errno) {
    die("Failed to connect with MySQL: " . $mysqlConn->connect_error);
 }
 else {
-	{
 		echo "okay";
 }
 ?>
