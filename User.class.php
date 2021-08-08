@@ -19,7 +19,7 @@ class User {
             // Check whether the user already exists in the database
             $checkQuery = "SELECT * FROM `user` WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
             $checkResult = $this->db->query($checkQuery);
-
+echo "got me";
             // Add modified time to the data array
             if(!array_key_exists('modified',$data)){
                 $data['modified'] = date("Y-m-d H:i:s");
