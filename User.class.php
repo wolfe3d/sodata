@@ -36,7 +36,7 @@ print_r($data);
                     $i++;
                 }
                 $whereSql = " WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
-
+echo "got me2";
                 // Update user data in the database
                 $query = "UPDATE `users` SET ".$colvalSet.$whereSql;
                 $update = $this->db->query($query);
@@ -80,6 +80,7 @@ print_r($data);
 						}
 
             // Get user data from the database
+						echo "\n $checkQuery";
             $result = $this->db->query($checkQuery);
             $userData = $result->fetch_assoc();
 						echo "try";
