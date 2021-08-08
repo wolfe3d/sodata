@@ -6,7 +6,7 @@ require_once  ("functions.php");
 //text output
 $output = "";
 
-$year = $_POST['year']:intval($_POST['year'], 0);
+$year = intval($_POST['year']);
 
 /*check to see if id exists*/
 $query = "SELECT * from `event`";// where `field` = $fieldId";
