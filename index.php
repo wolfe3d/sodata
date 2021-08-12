@@ -204,7 +204,7 @@ if (isset($_SESSION['token'])) {
 						<div class="row">
 							<div class="12u">
 								<h2>Login</h2>
-								<div id="loginPage">Login to database</div>
+								<div id="loginPage">Login to team website.  This has tournament and event information.</div>
 							</div>
 						</div>
 					</div>
