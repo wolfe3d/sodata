@@ -19,7 +19,6 @@ class User {
             // Check whether the user already exists in the database
             $checkQuery = "SELECT * FROM `user` WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
             $checkResult = $this->db->query($checkQuery);
-
             // Add modified time to the data array
             if(!array_key_exists('modified',$data)){
                 $data['modified'] = date("Y-m-d H:i:s");
@@ -35,7 +34,6 @@ class User {
                     $i++;
                 }
                 $whereSql = " WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
-
                 // Update user data in the database
                 $query = "UPDATE `users` SET ".$colvalSet.$whereSql;
                 $update = $this->db->query($query);

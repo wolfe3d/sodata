@@ -2,7 +2,7 @@
 require_once ("../connectsodb.php");
 require_once ("checksession.php");
 userCheckPrivilege(1);
-
+$output = "";
 if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
   $output .= '<div class="ac-data">';

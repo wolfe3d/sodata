@@ -6,16 +6,22 @@ require_once  ("functions.php");
 //text output
 $output = "";
 
-$year = intval($_POST['year']);
-
-/*check to see if id exists*/
 $query = "SELECT * from `event`";// where `field` = $fieldId";
+
+/*check to see if year exists*/
+if(isset($_POST["year"]))
+{
+	$year = intval($_POST['year']);
+}
+else {
+	$year = 0;
+}
 
 if($year)
 {
 	$yearQuery = "SELECT `eventID` FROM `eventyear` WHERE `year` = $year";
 	// echo $yearQuery;
-	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $yearQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	$eventIDs = "";
 	while ($row = $resultYear1->fetch_assoc()):
@@ -70,7 +76,7 @@ if($result)
 		endwhile;
 
 
-		$output .="<div>Year: $grade ".$yearCollection."</div>";
+		$output .="<div>Year: ".$yearCollection."</div>";
     $output .="<div>Type: ".getEventString($row['type'])."</div>";
 		if($row['calculatorType']){
 			$output .="<div>Calculator: ".getCalulatorString($row['calculatorType'])."</div>";

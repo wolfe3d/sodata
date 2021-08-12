@@ -5,8 +5,8 @@ userCheckPrivilege(1);
 //text output
 $output = "";
 
-$name = $mysqlConn->real_escape_string($_POST['tournamentName']);
-$year = intval($_POST['tournamentYear']);
+$name = isset($_POST['tournamentName'])?$mysqlConn->real_escape_string($_POST['tournamentName']):"";
+$year = isset($_POST['tournamentYear'])?intval($_POST['tournamentYear']):0;
 
 $query = "SELECT * from `tournament`";
 //check to see what is searched for
@@ -53,13 +53,13 @@ if($result)
 		if($row['type'])
 		{
 			switch ($row['type']){
-			case 1: 
+			case 1:
 				$output .="<div>Type: Full</div>";
 				break;
-			case 2: 
+			case 2:
 				$output .="<div>Type: Mini</div>";
 				break;
-			case 3: 
+			case 3:
 				$output .="<div>Type: Hybrid</div>";
 				break;
 			}
