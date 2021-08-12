@@ -5,15 +5,14 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(1);
 require_once  ("functions.php");
 
-$year = intval($_POST['myID']);
-if(!$year){
-	$year = getCurrentSOYear();
-}
+$year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
+
 //Get current year
 $yearBeg = $year-1;
 $query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$output = "";
 
 if($result)
 {
@@ -77,7 +76,7 @@ if($result)
 		$output .="<div style='color:blue'>Note to coach: Modify event leaders in events.</div>";
 	}
 	while ($row = $result->fetch_assoc()):
-		$output .="<div id='eventleader-".$row['eventyear']."'>";
+		$output .="<div id='eventleader-".$row['eventyearID']."'>";
 		$officerName = $row['first']." ".$row['last'];
 		$output .="<hr><h3>$officerName</h3>";
 		if($row['event'])

@@ -9,10 +9,10 @@ $output = "";
 
 $last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
 $first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
-$eventPriorityID = intval($_POST['eventPriority']);
-$eventCompetitionID = intval($_POST['eventCompetition']);
+$eventPriorityID = isset($_POST['eventPriority'])?intval($_POST['eventPriority']):0;
+$eventCompetitionID = isset($_POST['eventCompetition'])?intval($_POST['eventCompetition']):0;
 $courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
-$active = intval($_POST['active']);
+$active = isset($_POST['active'])?intval($_POST['active']):0;
 
 $activeQuery ="";
 if($active)
@@ -206,7 +206,7 @@ if($result)
 		{
 				$output .="<br><h3>Event Priority</h3>";
 				while ($rowEventsPriority = $resultEventsPriority->fetch_assoc()):
-					$output .= "<div id='eventPriority-" . $rowEventsPriority['eventChoiceID'] . "'>" . $rowEventsPriority['year'] . "-" . $rowEventsPriority['priority'] . " " . $rowEventsPriority['event'] . "</div>";
+					$output .= "<div id='eventPriority-" . $rowEventsPriority['eventchoiceID'] . "'>" . $rowEventsPriority['year'] . "-" . $rowEventsPriority['priority'] . " " . $rowEventsPriority['event'] . "</div>";
 				endwhile;
 		}
 
@@ -242,7 +242,7 @@ if($result)
 		{
 			$output .="<br><h3>Courses Completed - Level</h3>";
 			while ($rowCourse = $resultCourse->fetch_assoc()):
-				$output .= "<div id='courseCompleted-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+				$output .= "<div id='courseCompleted-" . $rowCourse['coursecompletedID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
 
@@ -253,7 +253,7 @@ if($result)
 		{
 			$output .="<br><h3>Courses Enrolled - Level</h3>";
 			while ($rowCourse = $resultCourse->fetch_assoc()):
-				$output .= "<div id='courseEnrolled-" . $rowCourse['myID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
+				$output .= "<div id='courseEnrolled-" . $rowCourse['courseenrolledID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
 			endwhile;
 		}
 

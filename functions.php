@@ -127,14 +127,15 @@ function getTeamsPrevious($db)
 //Get all Science Olympiad years from 1982 to current year+1
 function getSOYears($myYear)
 {
-	$myOutput .= "<select id='year' name='year'>";
+	$output = "";
+	$output .= "<select id='year' name='year'>";
 	$i = getCurrentSOYear() + 1;
 	for ($i ; $i >= 1982; $i--) {
 				$selected = $myYear==$i ? "selected" : "";
-				$myOutput .="<option value='$i' $selected>$i</option>";
+				$output .="<option value='$i' $selected>$i</option>";
 	}
-	$myOutput .="</select>";
-	return $myOutput;
+	$output .="</select>";
+	return $output;
 }
 //get Current Science Olympiad year
 function getCurrentSOYear()
@@ -273,7 +274,6 @@ function checkGoogle($gpUserProfile,$db)
   // Insert or update user data to the database
   $gpUserData['oauth_provider'] = 'google';
   $userData = $user->checkUser($gpUserData);
-
   // Storing user data in the session
   $_SESSION['userData'] = $userData;
 }
