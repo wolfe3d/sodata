@@ -42,7 +42,7 @@ if($result)
 		</fieldset>
 		<input class="submit fa" type="submit" value="&#xf067; Add" />
 	</form>
-	<input class='button fa' type='button' onclick='location.href="emails.php"' value='&#xf01c; Get Emails' />
+	<input class='button fa' type='button' onclick='location.href="studentemails.php"' value='&#xf01c; Get Emails' />
 	<?php }?>
 <br><br>
 	<form id="findStudent">

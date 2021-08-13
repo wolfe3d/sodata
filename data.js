@@ -77,7 +77,7 @@ function loadpage(page, type, myID){
 
 					case 'student':
 						if(typepage=="edit"){
-							studentEdit(myID);
+							studentEditPrepare(myID);
 						}
 					break;
 
@@ -227,16 +227,67 @@ function studentAddModify()
 				$("#mainContainer").html("Removal Error");
 			});
 		}
+		// $("#addTo").validate({
+		// 	rules: {
+		// 		first: "required",
+		// 		last: "required",
+		// 	   parent1First: "required",
+		// 	   parent1Last: "required",
+		// 		phone: 			{
+		// 			phoneUS: true
+		// 		},
+		// 	   parent1Phone: 			{
+		// 		   phoneUS: true
+		// 	   },
+		// 	   parent2Phone: 			{
+		// 		   phoneUS: true
+		// 	   },
+		// 		yearGraduating: "required",
+		// 		email: {
+		// 			required: true,
+		// 			email: true
+		// 		},
+		// 	   parent1Email: {
+		// 		   required: true,
+		// 		   email: true
+		// 	   },
+		// 	   parent2Email: {
+		// 		   required: true,
+		// 		   email: true
+		// 	   },
+		// 	},
+		// 	messages: {
+		// 		first: "*Please enter the student\'s first name",
+		// 		last: "*Please enter the student\'s last name",
+		// 		yearGraduating: {
+		// 			required: "*Enter the year the student is graduating",
+		// 		},
+		// 		email: {
+		// 			required: "*Enter the student\'s email.",
+		// 		},
+		// 		phone: {
+		// 			required: "*Enter the phone number in the correct format.",
+		// 		},
+		// 	},
+		// 	submitHandler: function(form) {
+		// 						form.submit();
+		// 				}
+		// });
 	});
 }
 
 function studentEdit(myID)
 {
-	eventAddModify();
+	studentAddModify();
 	$('#addTo :input,select').each(function() {
-					$(this).change(function(){
-							fieldUpdate(myID,'student',this.id,this.value);
-					});
+			$(this).change(function(){
+					if (this.id == '#active'){
+						alert("checkbox!");
+					}
+					else{
+						fieldUpdate(myID,'student',this.id,this.value);
+					}
+			});
 		});
 }
 
@@ -274,56 +325,21 @@ function studentRemove(myID, studentName)
 ///////////////////
 ///Student Edit functions
 //////////////////
-function studentEditPrepare()
+function studentEditPrepare(myID)
 {
 	 $("#eventAndPriority").hide();
 	 $("#courseListDiv").hide();
-	 $("#addTo").validate({
- 		rules: {
- 			first: "required",
- 			last: "required",
-			parent1First: "required",
-			parent1Last: "required",
- 			phone: 			{
- 				phoneUS: true
- 			},
-			parent1Phone: 			{
-				phoneUS: true
-			},
-			parent2Phone: 			{
-				phoneUS: true
-			},
- 			yearGraduating: "required",
- 			email: {
- 				required: true,
- 				email: true
- 			},
-			parent1Email: {
-				required: true,
-				email: true
-			},
-			parent2Email: {
-				required: true,
-				email: true
-			},
- 		},
- 		messages: {
- 			first: "*Please enter the student\'s first name",
- 			last: "*Please enter the student\'s last name",
- 			yearGraduating: {
- 				required: "*Enter the year the student is graduating",
- 			},
- 			email: {
- 				required: "*Enter the student\'s email.",
- 			},
- 			phone: {
- 				required: "*Enter the phone number in the correct format.",
- 			},
- 		},
- 		submitHandler: function(form) {
- 							form.submit();
- 					}
- 	});
+	 $('#addTo :input,select').each(function() {
+		$(this).change(function(){
+				if (this.id == 'active'){
+					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0)
+					
+				}
+				else{
+					fieldUpdate(myID,'student',this.id,this.value);
+				}
+		});
+	});
 }
 function studentEventAddChoice(studentID)
 {
