@@ -204,11 +204,12 @@ if(mysqli_num_rows($result))
 				}
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
 				$output .= "<td style='$border background-color:".rainbow($i)."'>";
+				$place = isset($rowPlace['place'])?$rowPlace['place']:"";
 				if(userHasPrivilege(3)){
-					$output .= "<input id='$placeName' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='".$rowPlace['place']."'/>";
+					$output .= "<input id='$placeName' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/>";
 				}
 				else {
-					$output .= isset($rowPlace['place'])?$rowPlace['place']:"";
+					$output .= $place;
 				}
 				$output .= "</td>";
 			}
