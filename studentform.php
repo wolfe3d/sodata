@@ -2,12 +2,12 @@
 require_once  ("functions.php");
  ?>
 
-<?php if($_SESSION['userData']['privilege']>2)
+<?php if($row)
 {?>
 <p>
     <input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 </p>
-			<?php 
+<?php 
 }?>
 
 <p>
@@ -41,24 +41,28 @@ require_once  ("functions.php");
     <label for="phone">Phone</label>
     <input id="phone" name="phone" type="tel" value="<?=$row['phone']?>">
 </p>
-<fieldset>
-    <legend>Events</legend>
-    <div id="events"><?=$eventsChoice?></div>
-    <div id="studentEventAddDiv"></div>
-    <a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
-</fieldset>
-<fieldset>
-    <legend>Courses Completed</legend>
-    <div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
-    <div id="addcoursecompletedDiv"></div>
-    <a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
-</fieldset>
-<fieldset>
-    <legend>Courses Enrolled (but not completed)</legend>
-    <div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
-    <div id="addcourseenrolledDiv"></div>
-    <a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
-</fieldset>
+<?php if($row)
+{?>
+    <fieldset>
+        <legend>Events</legend>
+        <div id="events"><?=$eventsChoice?></div>
+        <div id="studentEventAddDiv"></div>
+        <a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
+    </fieldset>
+    <fieldset>
+        <legend>Courses Completed</legend>
+        <div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
+        <div id="addcoursecompletedDiv"></div>
+        <a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
+    </fieldset>
+    <fieldset>
+        <legend>Courses Enrolled (but not completed)</legend>
+        <div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
+        <div id="addcourseenrolledDiv"></div>
+        <a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
+    </fieldset>
+<?php 
+}?>
 <fieldset>
     <legend>Parent 1</legend>
     <p>

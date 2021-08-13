@@ -9,20 +9,20 @@
 	$output = "";
 
 	$studentID = intval($_REQUEST['myID']);
-	if(empty($studentID))
-	{
-		//no student id was sent, so initiate adding a student
-		$defaultYear = date("Y")+4;
-		$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
-		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if ($result === TRUE)
-		{
-			$studentID =  $mysqlConn->insert_id;
-		}
-		else {
-			exit("Failed to add new student.");
-		}
-	}
+	// if(empty($studentID))
+	// {
+	// 	//no student id was sent, so initiate adding a student
+	// 	$defaultYear = date("Y")+4;
+	// 	$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+	// 	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	// 	if ($result === TRUE)
+	// 	{
+	// 		$studentID =  $mysqlConn->insert_id;
+	// 	}
+	// 	else {
+	// 		exit("Failed to add new student.");
+	// 	}
+	// }
 
 	//check to see if user has a valid studentID
 	$query = "SELECT * FROM `student` WHERE `student`.`studentID` = $studentID";
@@ -39,14 +39,9 @@
 	$row = $result->fetch_assoc();
 
 	//Check permissions to make this user is either an admin or editing their own data
-	/*if($_SESSION['userData']['privilege']<2 && $_SESSION['userData'][`id`]!=$row['userID'])
-	{
-		echo "The current user does not have privilege for this change.";
-		exit;
-	}*/
 	userCheckPrivilege(2);
 
-	//Check that student row exits from table
+	//Check that student row exists om table
 	if(!$row)
 	{
 		echo "No user found.";

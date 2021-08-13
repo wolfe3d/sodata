@@ -26,7 +26,7 @@ $parent2First = $mysqlConn->real_escape_string($_POST['parent2First']);
 $parent2Phone = $mysqlConn->real_escape_string($_POST['parent2Phone']);
 $parent2Email = $mysqlConn->real_escape_string($_POST['parent2Email']);
 
-$query = "INSERT INTO `student` (`first`,`last`,`active`,`yearGraduating`,`email`,`emailSchool`,`phoneType`,`phone`,`parent1Last`,`parent1First`,`parent1Phone`,`parent1Email`,`parent2Last`,`parent2First`,`parent2Phone`,`parent2Email`,`uniqueToken`) VALUES ('$first', '$last', '$active', '$yearGraduating', '$email', '$emailSchool', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Phone', '$parent1Email', '$parent2Last', '$parent2First', '$parent2Phone', '$parent2Email', 1)";
+$query = "INSERT INTO `student` (`first`,`last`,`yearGraduating`,`email`,`emailSchool`,`phoneType`,`phone`,`parent1Last`,`parent1First`,`parent1Phone`,`parent1Email`,`parent2Last`,`parent2First`,`parent2Phone`,`parent2Email`,`uniqueToken`) VALUES ('$first', '$last', '$yearGraduating', '$email', '$emailSchool', '$phoneType', '$phone', '$parent1Last', '$parent1First', '$parent1Phone', '$parent1Email', '$parent2Last', '$parent2First', '$parent2Phone', '$parent2Email', 1)";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {
