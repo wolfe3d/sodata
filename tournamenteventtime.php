@@ -48,6 +48,7 @@ if(mysqli_num_rows($result))
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		if($dateCheck==""){
 			$dateCheck=date("F j, Y",strtotime($timeblocks[$i]["timeStart"]));
+			$timeblocks[$i]['border']="";
 		}
 		else {
 			if($dateCheck!=date("F j, Y",strtotime($timeblocks[$i]["timeStart"]))){
@@ -59,6 +60,7 @@ if(mysqli_num_rows($result))
 			}
 			else {
 				$dateColSpan += 1;
+				$timeblocks[$i]['border'] = "";
 			}
 		}
 	}
@@ -68,7 +70,8 @@ if(mysqli_num_rows($result))
 //print the time for each event and date
 	$output .="<tr>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
-		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
+		$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' style='$border background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
 	}
 	$output .="</tr></thead><tbody id='eventBody'";
 
@@ -82,7 +85,8 @@ if(mysqli_num_rows($result))
 				//find available times  //TODO: Consider storing the query below in the timeblocks array above to reduce calls to database
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
 					$resultEventTime = $mysqlConn->query($queryEventTime) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-					$output .= "<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>";
+					$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+					$output .= "<td style='$border background-color:".rainbow($i)."'>";
 					if(mysqli_num_rows($resultEventTime)){
 						//run through all teams
 						for ($t = 0; $t < count($teams); $t++) {
