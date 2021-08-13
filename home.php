@@ -22,7 +22,8 @@ if(!empty($_SESSION['userData'])){
 		$row = $result->fetch_assoc();
 		//TODO: Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
 		$output .= "<h2>Upcoming Tournaments</h2>";
-		$output .= "<p>Add upcoming tournament information. Coming Soon..This website is a work in progress.  Currently, you can find all tournament information in the tournament tab above.</p>";
+		include("upcomingtournaments.php");
+		$output .= $tournaments;
 		$output .= "<h2>Event Priority</h2>";
 		$output .= "<p>Add this year's event priority information.  Coming Soon.  Currently, you can find the events you chose under the Teammates tab.</p>";
 		$output .= "<h2>Previous Results</h2>";
