@@ -7,6 +7,7 @@ require_once  ("functions.php");
 $output = "";
 
 $query = "SELECT * from `event`";// where `field` = $fieldId";
+$currentYear = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 
 /*check to see if year exists*/
 if(isset($_POST["year"]))
@@ -14,7 +15,7 @@ if(isset($_POST["year"]))
 	$year = intval($_POST['year']);
 }
 else {
-	$year = 0;
+	$year = $currentYear;
 }
 
 if($year)
