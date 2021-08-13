@@ -14,7 +14,6 @@ $gClient->addScope(['email', 'profile']);
 $authUrl = $gClient->createAuthUrl();
 $output = '<a href="'.filter_var($authUrl, FILTER_SANITIZE_URL).'"><img src="images/btn_google_signin_dark_normal_web.png" alt="Sign in with Google"/></a>';
 ?>
-<div class="container">
-    <!-- Display login button / Google profile information -->
-    <?php echo $output; ?>
-</div>
+<p>Login to team website using the google email that you registered with.  This has all the tournament, teammate and event information.</p>
+<!-- Display login button / Google profile information -->
+<p><?php echo $output; ?></p>

@@ -15,20 +15,6 @@ if($result)
 		$phoneTypes.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
 	endwhile;
 }
-
-// add student button ---> studentEdit() function
-// $addStudentText ="";
-// if(userHasPrivilege(2))
-// {
-// 	$addStudentText .="<input class='button fa' type='button' onclick='javascript:studentEdit()' value='&#xf067; Add' />";
-// }
-
-// // output emails
-// if(userHasPrivilege(2))
-// {
-// 	$addStudentText .=" <input class='button fa' type='button' onclick='location.href=\"emails.php\"' value='&#xf01c; Get Emails' />";
-// }
-
 ?>
 <div>
 	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
@@ -42,7 +28,8 @@ if($result)
 		</fieldset>
 		<input class="submit fa" type="submit" value="&#xf067; Add" />
 	</form>
-	<input class='button fa' type='button' onclick='location.href="emails.php"' value='&#xf01c; Get Emails' />
+	<!--Output student emails -->
+	<input class='button fa' type='button' onclick='location.href="studentemails.php"' value='&#xf01c; Get Emails' />
 	<?php }?>
 <br><br>
 	<form id="findStudent">
