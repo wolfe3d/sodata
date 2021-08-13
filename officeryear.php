@@ -21,6 +21,7 @@ if($result)
 	if(userHasPrivilege(3))
 	{
 		$output .=" <br><input class='button fa' type='button' onclick='window.location.hash=\"officer-add-".$year."\"' value='&#xf067; Add Officer' />";
+		$output .="<input class='button fa' type='button' onclick=location.href='officeremails.php' value='&#xf01c; Get Emails' />";
 	}
 	$output .='<br><br>';
 	$output .="<h2>Officers May $yearBeg - $year</h2>";
@@ -74,6 +75,10 @@ if($result)
 	if(userHasPrivilege(4))
 	{
 		$output .="<div style='color:blue'>Note to coach: Modify event leaders in events.</div>";
+	}
+	if(userHasPrivilege(3))
+	{
+		$output .="<input class='button fa' type='button' onclick=location.href='eventleaderemails.php' value='&#xf01c; Get Emails' />";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";
