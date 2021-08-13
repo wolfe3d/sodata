@@ -6,7 +6,8 @@ $output = "";
 if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
   $output .= '<div class="ac-data">';
-	$output .= '<p>You are logged in to Walton Science Olympiad Database!</p>';
+	$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
+	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
   $output .= '<img src="'.$_SESSION['userData']['picture'].'">';
   //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
   $output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
@@ -21,9 +22,9 @@ if(!empty($_SESSION['userData'])){
 		$row = $result->fetch_assoc();
 		//TODO: Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
 		$output .= "<h2>Upcoming Tournaments</h2>";
-		$output .= "<p>Add upcoming tournament information</p>";
+		$output .= "<p>Add upcoming tournament information. Coming Soon..This website is a work in progress.  Currently, you can find all tournament information in the tournament tab above.</p>";
 		$output .= "<h2>Event Priority</h2>";
-		$output .= "<p>Add this year's event priority information</p>";
+		$output .= "<p>Add this year's event priority information.  Coming Soon.  Currently, you can find the events you chose under the Teammates tab.</p>";
 		$output .= "<h2>Previous Results</h2>";
 		$output .= "<p>Add recent tournament information</p>";
 	}
@@ -35,7 +36,7 @@ if(!empty($_SESSION['userData'])){
 			$row = $result->fetch_assoc();
 			//TODO: Show new tournaments signups with link
 			$output .= "<h2>Upcoming Tournaments</h2>";
-			$output .= "<p>Add upcoming tournament information</p>";
+			$output .= "<p>Add upcoming tournament information. Coming Soon..This website is a work in progress.  Currently, you can find all tournament information in the tournament tab above.</p>";
 			$output .= "<h2>Recent Tournaments</h2>";
 			$output .= "<p>Add recent tournament information</p>";
 		}

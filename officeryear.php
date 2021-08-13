@@ -18,11 +18,15 @@ if($result)
 {
 	$output .="<div>";
 	$output .= getSOYears($year);
+	if(userHasPrivilege(2))
+	{
+		$output .="<br><input class='button fa' type='button' onclick=location.href='officeremails.php' value='&#xf01c; Get Emails' />";
+	}
 	if(userHasPrivilege(3))
 	{
-		$output .=" <br><input class='button fa' type='button' onclick='window.location.hash=\"officer-add-".$year."\"' value='&#xf067; Add Officer' />";
-		$output .="<input class='button fa' type='button' onclick=location.href='officeremails.php' value='&#xf01c; Get Emails' />";
+		$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"officer-add-".$year."\"' value='&#xf067; Add Officer' />";
 	}
+
 	$output .='<br><br>';
 	$output .="<h2>Officers May $yearBeg - $year</h2>";
 	while ($row = $result->fetch_assoc()):
@@ -72,11 +76,11 @@ if($result)
 {
 	$output .="<hr><hr><div>";
 	$output .="<h2>Event Leaders May $yearBeg - $year</h2>";
-	if(userHasPrivilege(4))
+	if(userHasPrivilege(3))
 	{
 		$output .="<div style='color:blue'>Note to coach: Modify event leaders in events.</div>";
 	}
-	if(userHasPrivilege(3))
+	if(userHasPrivilege(2))
 	{
 		$output .="<input class='button fa' type='button' onclick=location.href='eventleaderemails.php' value='&#xf01c; Get Emails' />";
 	}

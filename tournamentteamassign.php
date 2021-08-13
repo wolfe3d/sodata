@@ -197,18 +197,19 @@ if(mysqli_num_rows($result))
 				$placeName = "placement-".$timeEvents[$n]['tournamenteventID']."--".$teamID;//do not put studentID here the -- makes this null
 				$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `teamID` = $teamID";
 				$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-				$place="";
+				$rowPlace="";
 				if(mysqli_num_rows($resultTeammateplace))
 				{
 					$rowPlace = $resultTeammateplace->fetch_assoc();
 				}
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
 				$output .= "<td style='$border background-color:".rainbow($i)."'>";
+				$place = isset($rowPlace['place'])?$rowPlace['place']:"";
 				if(userHasPrivilege(3)){
-					$output .= "<input id='$placeName' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='".$rowPlace['place']."'/>";
+					$output .= "<input id='$placeName' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/>";
 				}
 				else {
-					$output .= $rowPlace['place'];
+					$output .= $place;
 				}
 				$output .= "</td>";
 			}

@@ -62,13 +62,13 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		if($row['type'])
 		{
 			switch ($row['type']){
-			case 1: 
+			case 1:
 				$output .="<div>Type: Full</div>";
 				break;
-			case 2: 
+			case 2:
 				$output .="<div>Type: Mini</div>";
 				break;
-			case 3: 
+			case 3:
 				$output .="<div>Type: Hybrid</div>";
 				break;
 			}
@@ -115,9 +115,10 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="<br>";
 		}
 		while($rowTeam = $resultTeams->fetch_assoc()):
+			$output .="<h2>Team".$rowTeam['teamName']."</h2>";
 			if(userHasPrivilege(3))
 			{
-				$output .="<h2>Team".$rowTeam['teamName']."</h2><p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
+				$output .="<p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
 				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; Assign Events' /></p>";
 			}
 			else {
