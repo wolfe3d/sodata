@@ -84,7 +84,12 @@ function loadpage(page, type, myID){
 					case 'events':eventsPreparePage();
 					break;
 
-					case 'event': eventEdit(myID);
+					case 'event': 
+						if(typepage=="emails"){
+						}
+						else{
+							eventEdit(myID);
+						}
 					break;
 
 					case 'eventyear':
