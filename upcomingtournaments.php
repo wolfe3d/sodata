@@ -12,7 +12,7 @@ $tournaments = '';
 while ($row = $result->fetch_assoc()):
     if($row['dateTournament'] > $date){
         $tournaments.="<div id=\"".$row['tournamentName']."\">";
-        $tournaments.="<h3><a href=\"#tournament-view-".$row['tournamentID']."\">".$row['tournamentName']."</a> - ".$row['teamName']." Team</h3>";
+        $tournaments.="<h3><a href=\"#tournament-view-".$row['tournamentID']."\">".$row['tournamentName']." - ".$row['teamName']." Team</a></h3>";
     }
 endwhile;
 ?>
