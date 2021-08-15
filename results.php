@@ -10,28 +10,26 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 $tournaments = '';
 
 while ($row = $result->fetch_assoc()):
-    if($row['dateTournament'] > $date){
+    if($row['dateTournament'] < $date){
         $tournaments.="<div id=\"".$row['tournamentName']."\">";
-        $tournaments.="<h3><a href=\"#tournament-view-".$row['tournamentID']."\">".$row['tournamentName']." - ".$row['teamName']." Team</a></h3>";
+        $tournaments.="<h3>".$row['tournamentName']."</h3>";
         $tournamentID = $row['tournamentID'];
         $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `userID` = $userID";
-        // $tournaments.=$tournamentQuery;
         $tournamentResult = $mysqlConn->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
         if($tournamentResult->num_rows > 0){
-            $tournaments.="Your events and partners:<br><ul>";
+            $tournaments.="Your results:<br><ul>";
             while ($row = $tournamentResult->fetch_assoc()):
                 $tournamenteventID = $row['tournamenteventID'];
                 $teamID = $row['teamID'];
                 $studentID = getStudentID($mysqlConn, $userID);
-                $tournaments.="<li>".$row['event'];
-                $partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamenteventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
-                $partnerResult = $mysqlConn->query($partnerQuery) or print("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-                if($partnerResult){
-                    $tournaments.="<ul>";
-                    while ($row = $partnerResult->fetch_assoc()):
-                        $tournaments.="<li>".$row['first']." ".$row['last']." ".$row['email']."</li>";
+                $tournaments.="<li>".$row['event'].": ";
+                $event = $row['event'];
+                $placeQuery = "SELECT `event`,`place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `userID` = $userID and `event` = '$event'";
+                $placeResult = $mysqlConn->query($placeQuery) or print("\n<br />Warning: query failed:$placeQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+                if($placeResult){
+                    while ($row = $placeResult->fetch_assoc()):
+                        $tournaments.=$row['place'];
                     endwhile;
-                    $tournaments.="</ul>";
                 }
                 $tournaments.="</li>";
             endwhile;

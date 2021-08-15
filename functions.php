@@ -19,6 +19,20 @@ function getAllStudents($db, $active, $studentID)
 	}
 	return $myOutput;
 }
+
+//get student ID of user
+function getStudentID($db, $userID)
+{
+	$query = "SELECT * from `student`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	while ($row = $result->fetch_assoc()):
+		if($row['userID'] == $userID)
+		{
+			return $row['studentID'];
+		}
+	endwhile;
+}
+
 //get Event type options
 /*function getEventTypes($db, $type)
 {
