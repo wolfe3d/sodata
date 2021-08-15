@@ -135,7 +135,7 @@ if($result)
 			$output .="<h3>$officerPos</h3>";
 		}
 
-		if(userHasPrivilege(2)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
+		if(userHasPrivilege(3)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
 		{
 			$output .="<div><a href='#student-edit-".$row['studentID']."'>Edit</a> ";
 		}
@@ -190,13 +190,16 @@ if($result)
 		{
 			$output .="<div>Previous Postions: $officerPosPrev</div>";
 		}
-		if($row['parent1Last'])
+		if(userHasPrivilege(3))
 		{
-			$output .="<br><h3>Parent(s)</h3>";
-			$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']."</div>";
-			if($row['parent2Last'])
+			if($row['parent1Last'])
 			{
-				$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
+				$output .="<br><h3>Parent(s)</h3>";
+				$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']."</div>";
+				if($row['parent2Last'])
+				{
+					$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
+				}
 			}
 		}
 		//find student's event priority

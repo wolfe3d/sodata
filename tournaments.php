@@ -24,7 +24,7 @@ require_once ("functions.php");
 		</fieldset>
 	</form>
 </div>
-<?php if(userHasPrivilege(3))
+<?php if(userHasPrivilege(4))
 		{ ?>
 	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="tournamentadd.php">

@@ -21,7 +21,7 @@ require_once ("functions.php");
 		 $_SESSION['token'] = $gClient->getAccessToken();
 		 header('Location: ' . filter_var(GOOGLE_REDIRECT_URL, FILTER_SANITIZE_URL));
 	 } catch (Exception $exception) {
-		 if(userHasPrivilege(3))
+		 if(userHasPrivilege(4))
 		 {
 		   echo "wolfe-catch enabled: (line 26 of data.php):";
 			 print_r($exception->getMessage());
@@ -43,7 +43,7 @@ try {
 	$gpUserProfile = $google_oauth->userinfo->get(); //this is the line causing the following date_get_last_errors
 	checkGoogle($gpUserProfile,$mysqlConn);
 } catch (Exception $exception) {
-	if(userHasPrivilege(3))
+	if(userHasPrivilege(4))
 		{
 			echo "wolfe-catch enabled (line 48 of data.php):";
 			print_r($exception->getMessage());

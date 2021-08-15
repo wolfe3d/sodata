@@ -18,7 +18,7 @@ if($result)
 ?>
 <div>
 	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
-	<?php if(userHasPrivilege(2))
+	<?php if(userHasPrivilege(3))
 	{ ?>
 	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
 	<form id="addTo" method="post" action="studentadd.php">
