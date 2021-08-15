@@ -1,5 +1,15 @@
 <?php
 //Check to make sure user is logged in and has privileges
+
+/*
+User privilege definitions
+1 = normal student competitor
+2 = event leaders
+3 = officer
+4 = website developer / db manager /  secretary / captain
+5 = coach
+All privileges include priviliges below them.
+*/
 function userCheckPrivilege($level)
 {
 	if(!$_SESSION['userData'] || empty($_SESSION['userData']['privilege']))
