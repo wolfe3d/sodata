@@ -35,7 +35,7 @@ if(!empty($_SESSION['userData'])){
 			$output.="<li>".$row['event']."</li>";
 		endwhile;
 		$output .= "</ol><h2>Previous Results</h2>";
-		include("results.php");
+		include("studentresults.php");
 		$output .= $tournaments;
 	}
 
