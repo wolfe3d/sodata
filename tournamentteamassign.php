@@ -116,7 +116,7 @@ if(mysqli_num_rows($result))
 			$output .="<tr>";
 			//check to see if student is signed up for the timeblock
 			$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID'].
-			" GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
+			 GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
 			$resultStudentCheck = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$errorStudentCheck="";
 			if($resultStudentCheck){
