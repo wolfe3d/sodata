@@ -60,6 +60,10 @@ if($result)
 		{
 			$output .="<input class='button fa' type='button' onclick='window.location.hash=\"event-edit-".$row['eventID']."\"' value='&#xf108; Edit' />";
 		}
+		if(userHasPrivilege(2))
+		{
+			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"event-emails-".$row['eventID']."\"' value='&#xf01c; Get emails' />";
+		}
 
 		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`eventID` = '".($row['eventID'])."' ORDER BY `eventyear`.`year` ASC";
 		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

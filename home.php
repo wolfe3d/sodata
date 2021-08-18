@@ -1,8 +1,11 @@
 <?php
 require_once ("../connectsodb.php");
 require_once ("checksession.php");
+require_once("functions.php");
 userCheckPrivilege(1);
 $output = "";
+$studentID = getStudentID($mysqlConn, $_SESSION['userData']['id']);
+$currentYear = getCurrentSOYear();
 if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
   $output .= '<div class="ac-data">';
@@ -24,10 +27,16 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<h2>Upcoming Tournaments</h2>";
 		include("upcomingtournaments.php");
 		$output .= $tournaments;
-		$output .= "<h2>Event Priority</h2>";
-		$output .= "<p>Add this year's event priority information.  Coming Soon.  Currently, you can find the events you chose under the Teammates tab.</p>";
-		$output .= "<h2>Previous Results</h2>";
-		$output .= "<p>Add recent tournament information</p>";
+		$output .= "<h2>Event Priority</h2><ol>";
+
+		$priorityQuery = "SELECT `priority`, `event` FROM `eventchoice` inner join `eventyear` on `eventchoice`.`eventyearID` = `eventyear`.`eventyearID` inner join `event` on `eventyear`.`eventID` = `event`.`eventID` where `eventchoice`.`studentID` = $studentID and `year` = $currentYear";
+		$result = $mysqlConn->query($priorityQuery) or error_log("\n<br />Warning: query failed:$priorityQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		while ($row = $result->fetch_assoc()):
+			$output.="<li>".$row['event']."</li>";
+		endwhile;
+		$output .= "</ol><h2>Previous Results</h2>";
+		include("studentresults.php");
+		$output .= $tournaments;
 	}
 
 	//Coach Reminders and Results
