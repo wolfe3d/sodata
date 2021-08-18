@@ -44,7 +44,7 @@ if($result)
 		$grade = 9;
 		if (date("m")>5)
 		{
-			$grade = 12-($row['yearGraduating']-date("Y")+1);
+			$grade = 12-($row['yearGraduating']-date("Y")-1);
 		}
 		else
 		{
