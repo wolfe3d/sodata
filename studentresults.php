@@ -4,8 +4,9 @@ require_once("checksession.php"); //Check to make sure user is logged in and has
 require_once("functions.php");
 
 $userID = $_SESSION['userData']['id'];
+$fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 $date = date('Y-m-d', time());
-$query = "SELECT * FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID and `dateTournament` < '$date'";
+$query = "SELECT * FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID and `dateTournament` < '$date' and `dateTournament` != '$fallRosterDate'";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $tournaments = '';
 
