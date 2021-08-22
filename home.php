@@ -25,15 +25,17 @@ if(!empty($_SESSION['userData'])){
   $output .= "<a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a><br>";
   $output .= "<a href='https://calendar.google.com/calendar/u/1?cid=d2FsdG9uc2NpZW5jZWNsdWJAZ21haWwuY29t'> Google Calendar </a></p>";
 
+//TODO: Fallrosterdate should be changed in the table to indicate that this is a roster instead of tournaments
+//TODO: Remove all warnings in tournamentview for a roster
 
 //Student Reminders and Results
-	$query = "SELECT * FROM `student` WHERE `userID` = ".$_SESSION['userData']['id'];
+	$query = "SELECT * FROM `student` WHERE `userID` = $studentID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
 		//TODO: Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
 		$output .= "<h2>Upcoming Tournaments</h2>";
-		include("upcomingtournaments.php");
+		include("touramentupcomping.php");
 		$output .= $tournaments;
 		$output .= "<h2>My Events</h2><h3> Fall Events: </h3>";
 		$fallEventsQuery = "SELECT `event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = 12 and `userID` = $userID";
