@@ -3,7 +3,7 @@ require_once("../connectsodb.php");
 require_once("checksession.php"); //Check to make sure user is logged in and has privileges
 require_once("functions.php");
 
-$userID = $_SESSION['userData']['id'];
+$userID = $_SESSION['userData']['userID'];
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 $date = date('Y-m-d', time());
 $query = "SELECT * FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID and `dateTournament` < '$date' and `dateTournament` != '$fallRosterDate'";

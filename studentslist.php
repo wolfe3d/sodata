@@ -149,7 +149,7 @@ if($result)
 					$output .= "User has never logged in with registered account.";
 			}
 			else {
-				$query = "SELECT * FROM `user` WHERE `id`=".$row['userID'];// where `field` = $fieldId";
+				$query = "SELECT * FROM `user` WHERE `userID`=".$row['userID'];// where `field` = $fieldId";
 				$output .= $query;
 				$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				$rowPriv = $resultPrivilege->fetch_assoc();

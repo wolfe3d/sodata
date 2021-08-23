@@ -4,7 +4,7 @@ require_once ("checksession.php");
 require_once("functions.php");
 userCheckPrivilege(1);
 $output = "";
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['id']);
+$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 $currentYear = getCurrentSOYear();
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 if(!empty($_SESSION['userData'])){
@@ -55,7 +55,7 @@ if(!empty($_SESSION['userData'])){
 	}
 
 	//Coach Reminders and Results
-		$query = "SELECT * FROM `coach` WHERE `userID` = ".$_SESSION['userData']['id'];
+		$query = "SELECT * FROM `coach` WHERE `userID` = ".$_SESSION['userData']['userID'];
 		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if($result->num_rows){
 			$row = $result->fetch_assoc();

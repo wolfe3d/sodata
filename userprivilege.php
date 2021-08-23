@@ -23,7 +23,7 @@ if(!userHasPrivilege($privilege))
 }
 
 //check to see that user exists
-$query = "SELECT `id` FROM `user` WHERE `user`.`id` = $userID";
+$query = "SELECT `userID` FROM `user` WHERE `user`.`userID` = $userID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if(!$result)
 {
@@ -37,7 +37,7 @@ if (empty($row))
 }
 
 //Make changes
-$query = "UPDATE `user` SET `privilege`='$privilege' WHERE `user`.`id` = $userID";
+$query = "UPDATE `user` SET `privilege`='$privilege' WHERE `user`.`userID` = $userID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if ($result === TRUE)

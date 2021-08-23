@@ -84,7 +84,7 @@ function loadpage(page, type, myID){
 					case 'events':eventsPreparePage();
 					break;
 
-					case 'event': 
+					case 'event':
 						if(typepage=="emails"){
 						}
 						else{
@@ -338,7 +338,9 @@ function studentEditPrepare(myID)
 		$(this).change(function(){
 				if (this.id == 'active'){
 					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0)
-					
+				}
+				else if(this.id == 'privilege'){ //user privilege is defined in the user table
+					fieldUpdate(myID, 'user', this.id, this.value);
 				}
 				else{
 					fieldUpdate(myID,'student',this.id,this.value);

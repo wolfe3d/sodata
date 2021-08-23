@@ -3,7 +3,7 @@ require_once("../connectsodb.php");
 require_once("checksession.php"); //Check to make sure user is logged in and has privileges
 require_once("functions.php");
 
-$userID = $_SESSION['userData']['id'];
+$userID = $_SESSION['userData']['userID'];
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 $date = date('Y-m-d', time());
 //fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)

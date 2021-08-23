@@ -219,6 +219,7 @@ function getCourses($db, $studentID, $tableName)
 	{
 		$myOutput .="<div>Course Name - Level</div>";
 		while ($row = $result->fetch_assoc()):
+			$courseCompleted = "";
 			if($tableName == "courseenrolled")
 			{
 				$courseCompleted = "<a href=\"javascript:studentCourseCompleted('" . $row[$tableID] . "','" . $row['course'] . "')\">Completed</a>";
@@ -249,7 +250,7 @@ function editPrivilege($privilege,$userID,$db)
 				$output .= "User has never logged in with registered account.";
 		}
 		else {
-			$query = "SELECT * FROM `user` WHERE `id`=".$userID;// where `field` = $fieldId";
+			$query = "SELECT * FROM `user` WHERE `userID`=".$userID;// where `field` = $fieldId";
 			$resultPrivilege = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$rowPriv = $resultPrivilege->fetch_assoc();
 			if ($rowPriv['privilege'])
