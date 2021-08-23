@@ -25,8 +25,12 @@ function getStudentID($db, $userID)
 {
 	$query = "SELECT * from `student` where `userID` = $userID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$row = $result->fetch_assoc();
-	return $row['studentID'];
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['studentID'];
+	}
+	return 0;
 }
 
 //get Event type options

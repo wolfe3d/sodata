@@ -29,23 +29,21 @@ if(!empty($_SESSION['userData'])){
 //TODO: Remove all warnings in tournamentview for a roster
 
 //Student Reminders and Results
-	$query = "SELECT * FROM `student` WHERE `userID` = $studentID";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result->num_rows){
-		$row = $result->fetch_assoc();
-		//TODO: Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
+	if($studentID!=0)
+	{
+		//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
 		$output .= "<h2>Upcoming Tournaments</h2>";
-		include("touramentupcomping.php");
+		include("tournamentupcoming.php");
 		$output .= $tournaments;
 		$output .= "<h2>My Events</h2><h3> Fall Events: </h3>";
-		$fallEventsQuery = "SELECT `event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = 12 and `userID` = $userID";
+		$fallEventsQuery = "SELECT `event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = 12 and `student`.`studentID` = $studentID";
 		$result = $mysqlConn->query($fallEventsQuery) or error_log("\n<br />Warning: query failed:$fallEventsQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$output .= "<ul>";
 		while ($row = $result->fetch_assoc()):
 			$output.="<li>".$row['event']."</li>";
 		endwhile;
 		$output .= "</ul><h3>Your Preferences</h3>";
-		$priorityQuery = "SELECT `priority`, `event` FROM `eventchoice` inner join `eventyear` on `eventchoice`.`eventyearID` = `eventyear`.`eventyearID` inner join `event` on `eventyear`.`eventID` = `event`.`eventID` where `eventchoice`.`studentID` = $studentID and `year` = $currentYear";
+		$priorityQuery = "SELECT `priority`, `event` FROM `eventchoice` INNER JOIN `eventyear` on `eventchoice`.`eventyearID` = `eventyear`.`eventyearID` inner join `event` on `eventyear`.`eventID` = `event`.`eventID` where `eventchoice`.`studentID` = $studentID and `year` = $currentYear";
 		$result = $mysqlConn->query($priorityQuery) or error_log("\n<br />Warning: query failed:$priorityQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$output.="<ol>";
 		while ($row = $result->fetch_assoc()):
