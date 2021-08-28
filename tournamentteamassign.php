@@ -96,7 +96,7 @@ if(mysqli_num_rows($result))
 		{
 			for ($n = 0; $n < count($timeEvents); $n++) {
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".$timeEvents[$n]['event']."</th>";
+				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".$timeEvents[$n]['event']."</th>";
 			}
 		}
 		else {
@@ -112,17 +112,18 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultStudent))
 	{
 		while ($rowStudent = $resultStudent->fetch_assoc()):
-			$studentTotal = 0;
+			//$studentTotal = 0;  //this is done in the javascript TODO: remove this line
 			$output .="<tr>";
-			//check to see if student is signed up for the timeblock
-			$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID']. " GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
+			/*/check to see if student is signed up for the timeblock
+			/$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID']. " GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
 			$resultStudentCheck = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$errorStudentCheck="";
 			if($resultStudentCheck){
 				while ($rowStudentCheck = $resultStudentCheck->fetch_assoc()):
 					$errorStudentCheck .= " <span class='modified error'>More than one event in timeBlock: ".$rowStudentCheck['timeStart']."-".$rowStudentCheck['timeEnd']."</span>";
 				endwhile;
-			}
+			}*/
+			$errorStudentCheck =""; //TODO: Remove this line and above commented lines if javascript errorcheck function works
 			//output student column
 			$output .="<td id='teammate-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."$errorStudentCheck</td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
@@ -139,7 +140,7 @@ if(mysqli_num_rows($result))
 						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblocks[$i]['timeblockID']."'>";
 						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
 						$timeblocks[$i]['events'][$n]['eventTotal'] +=$checked?1:0;
-						$studentTotal +=$checked?1:0;
+						//$studentTotal +=$checked?1:0;  //done in javascript
 						if(userHasPrivilege(3)){
 							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblocks[$i]['timeblockID']."' $checked>";
 						}
@@ -154,7 +155,8 @@ if(mysqli_num_rows($result))
 				}
 
 			}
-			$output .="<td id='studenttotal-".$rowStudent['studentID']."'>$studentTotal</td></tr>";
+			//$output .="<td id='studenttotal-".$rowStudent['studentID']."'>$studentTotal</td></tr>"; //TODO: not necessary
+			$output .="<td id='studenttotal-".$rowStudent['studentID']."'></td></tr>";
 		endwhile;
 	}
 	else {
@@ -170,6 +172,7 @@ if(mysqli_num_rows($result))
 			for ($n = 0; $n < count($timeEvents); $n++) {
 				//the errorText could be removed and done in javascript at first as well as other calculations
 				$errorText = "";
+				/*
 				if($timeEvents[$n]['eventTotal']>$timeEvents[$n]['numberStudents']){
 					$errorText = "<div class='modified error'>Too MANY students!</div>";
 				}
@@ -177,7 +180,8 @@ if(mysqli_num_rows($result))
 					$errorText = "<div class='modified warning'>Too FEW students!</div>";
 				}
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."-".$timeblocks[$i]['timeblockID']."' style='$border background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
+				*/
+				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
 			}
 		}
 		else {
@@ -205,7 +209,7 @@ if(mysqli_num_rows($result))
 				$output .= "<td style='$border background-color:".rainbow($i)."'>";
 				$place = isset($rowPlace['place'])?$rowPlace['place']:"";
 				if(userHasPrivilege(3)){
-					$output .= "<input id='$placeName' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/>";
+					$output .= "<input id='$placeName' style='width: 50px;' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/>";
 				}
 				else {
 					$output .= $place;

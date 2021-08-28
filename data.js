@@ -122,6 +122,9 @@ function loadpage(page, type, myID){
 					break;
 
 					case 'tournament':
+						if(typepage=="teamassign"){
+							tournamentAssignCheckErrors();
+						}
 						$.when( $(":submit") ).done(function( x ) {
 							if(typepage=="edit"){
 								tournamentEdit(myID);
@@ -1163,9 +1166,9 @@ function tournamentEventTeammate(inputBtn)
 			{
 				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
 				//recalculate and check for errors
-				tournamentCalculateEvent(splitName[1], inputBtn.parent().data("timeblock"));
+				tournamentCalculateEvent(splitName[1]);
 				tournamentCalculateStudent(splitName[2]);
-				tournamentCalculateTimeblock(splitName[2], inputBtn.parent().data("timeblock"));
+				tournamentCalculateTimeblock(splitName[2]);
 			}
 			else {
 				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
@@ -1183,46 +1186,102 @@ function tournamentEventTeammate(inputBtn)
 }
 
 //Calculate the number of students in an event during one time block
-function tournamentCalculateEvent(tournamenteventID, timeblockID)
+function tournamentCalculateEvent(tournamenteventID)
 {
-	$("#eventtotal-"+tournamenteventID + "-"+timeblockID+" .modified").remove(); //remove old warning
-	var eventAssigned = $(".timeblock-"+timeblockID+".teammateEvent-"+tournamenteventID+" :checkbox:checked").length; //count number of students assigned
-	$("#eventtotal-"+tournamenteventID + "-" + timeblockID).text(eventAssigned); //print number of students assigned
-	var eventMax = $("#eventtotal-"+tournamenteventID+ "-" + timeblockID).data( "eventmax" );//check number of students allowed in stored data
+	$("#eventtotal-"+tournamenteventID+" .modified").remove(); //remove old warning
+	var eventAssigned = 0; //count number of students assigned
+	if ($(".teammateEvent-"+tournamenteventID+" > input").length)
+	{
+		//Editors
+		var eventAssigned = $(".teammateEvent-"+tournamenteventID+" :checkbox:checked").length; //count number of students assigned to event
+	}
+	else {
+		//Student view without edit priviledge
+		var eventAssigned = $(".teammateEvent-"+tournamenteventID+" > div").length; //count number of students assigned to event
+	}
+	$("#eventtotal-"+tournamenteventID).text(eventAssigned); //print number of students assigned
+	var eventMax = $("#eventtotal-"+tournamenteventID).data( "eventmax" );//check number of students allowed in stored data
 	//compare amount assigned to maximum students allowed
 	if(eventAssigned==eventMax){
 		return;
 	}
 	else if(eventAssigned>eventMax){
-		var errorText = "Too MANY students!";
+		var errorText = "Too MANY!";
 		var errorClass ="error";
 	}
 	else if(eventAssigned<eventMax){
-		var errorText = "Too FEW students!";
+		var errorText = "Too FEW!";
 		var errorClass ="warning";
 	}
 	//print errors
-	$("#eventtotal-"+tournamenteventID+ "-" + timeblockID).append("<span class='modified "+errorClass+"'>"+errorText+"</span>");
+	$("#eventtotal-"+tournamenteventID).append("<div class='modified "+errorClass+"'>"+errorText+"</div>");
 }
 
 //Calculate the number of events for a student
 function tournamentCalculateStudent(studentID)
 {
-	$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" input:checkbox:checked").length);
-}
-
-//check to make sure student is not signed up for two events in the same time block
-function tournamentCalculateTimeblock(studentID, timeblockID)
-{
-	//Reminder: jquery selector (*may be omitted) =  $('*[data-timeblock="22"]')
-	$("#teammate-"+studentID+" .modified").remove(); //remove old warning
-	var studentAssigned = $(".timeblock-"+timeblockID+".teammateStudent-"+studentID+" :checkbox:checked").length; //count number of students assigned
-	if (studentAssigned >1){
-		//print errors
-		$("#teammate-"+studentID).append("<span class='modified error'>More than one event in timeBlock: "+$("#timeblock-"+timeblockID).text()+"</span>");
+	if ($(".teammateStudent-"+studentID+" > input").length)
+	{
+		//Editors
+		$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" input:checkbox:checked").length);
+	}
+	else {
+		//Student view without edit priviledge
+		$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" > div").length);
 	}
 }
 
+//check to make sure student is not signed up for two events in the same time block
+function tournamentCalculateTimeblock(studentID)
+{
+	//Reminder: jquery selector (*may be omitted) =  $('*[data-timeblock="22"]')
+	$("#teammate-"+studentID+" .modified").remove(); //remove old warning
+	//console.log("studentID-"+studentID);
+	$('[id^=timeblock-]').each(function (i,v)
+	{
+		//$('this').attr('id') contains the timeblockID
+		var timeblockID = $(v).attr('id'); //includes "timeblockID-#"
+		//console.log(timeblockID);
+		var studentAssigned =0;
+		if ($("."+$(v).attr('id')+".teammateStudent-"+studentID+" > input").length)
+		{
+			//Editors
+			studentAssigned = $("."+$(v).attr('id')+".teammateStudent-"+studentID+" :checkbox:checked").length; //count number of students assigned
+		}
+		else {
+			//Student view without edit priviledge
+			studentAssigned = $("."+$(v).attr('id')+".teammateStudent-"+studentID+" > div").length; //count number of students assigned		}
+		}
+		if (studentAssigned >1){
+			//print errors
+		$("#teammate-"+studentID).append("<span class='modified error'>***</span>");
+		$("#teammate-"+studentID+" .modified")	.hover(
+			  function() {
+			    $( this ).append( $( "<div class='error'> More than one event in timeBlock: "+$("#"+timeblockID).text()+"</div>" ) );
+			  }, function() {
+			    $( this ).find( "div" ).last().remove();
+			  }
+			);
+		}
+	});
+}
+
+//Check student count, overassigned students to a timeblock, and events over assigned
+function tournamentAssignCheckErrors()
+{
+	//console.log("tournamentAssignCheckErrors");
+	$('[id^=teammate-]').each(function (i,v)
+	{
+		var studentID = $(v).attr('id').split("-")[1]; //includes "timeblockID-#"
+		tournamentCalculateTimeblock(studentID);
+		tournamentCalculateStudent(studentID);
+	});
+	$('[id^=event-]').each(function (i,v)
+	{
+		var eventID = $(v).attr('id').split("-")[1]; //includes "timeblockID-#"
+		tournamentCalculateEvent(eventID);
+	});
+}
 
 ///////////////////
 ///Officer and Event Leader functions
