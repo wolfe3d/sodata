@@ -109,7 +109,8 @@ if(mysqli_num_rows($result))
 	//Get students
 	$query = "SELECT * FROM `teammate` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teamID` = $teamID ORDER BY `last` ASC, `first` ASC";
 	$resultStudent = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if(mysqli_num_rows($resultStudent))
+ 	$totalStudents = mysqli_num_rows($resultStudent);
+	if($totalStudents)
 	{
 		while ($rowStudent = $resultStudent->fetch_assoc()):
 			//$studentTotal = 0;  //this is done in the javascript TODO: remove this line
@@ -164,7 +165,7 @@ if(mysqli_num_rows($result))
 	}
 
 	//print the total signed up for each event
-	$output .="<tr><td>Total Teammates</td>";
+	$output .="<tr><td><strong>$totalStudents</strong> Total Teammates</td>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$timeEvents= $timeblocks[$i]['events'];
 		if($timeEvents)

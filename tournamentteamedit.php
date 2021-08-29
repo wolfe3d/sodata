@@ -3,7 +3,10 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(2);
 require_once  ("functions.php");
-
+//TODO: ADD Warnings and errorStudentCheck
+//TODO: count number of students
+//TODO: Warn if under 15 students
+//TODO: Error if over 15 students OR over 7 seniors
 $teamID= intval($_POST['myID']);
 if(empty($teamID))
 {
