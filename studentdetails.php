@@ -2,7 +2,7 @@
 require_once("../connectsodb.php");
 require_once("checksession.php"); //Check to make sure user is logged in and has privileges
 require_once("functions.php");
-userCheckPrivilege(3);
+userCheckPrivilege(1);
 
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
 $query = "SELECT * FROM `student` WHERE `studentID` = $studentID";
@@ -82,7 +82,7 @@ if(userHasPrivilege(3))
 			$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
 		}
 	}
-	
+
 	$output .=studentTournamentResults($mysqlConn, $row['studentID']);
 	$output .=studentEventPriority($mysqlConn, $row['studentID']);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
