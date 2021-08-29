@@ -72,7 +72,8 @@ function loadpage(page, type, myID){
 			});
 
 			switch (page) {
-					case 'students': studentPreparePage();
+					case 'students':
+						studentPreparePage();
 					break;
 
 					case 'student':
@@ -1282,6 +1283,9 @@ function tournamentAssignCheckErrors()
 		tournamentCalculateEvent(eventID);
 	});
 }
+
+//TODO: Make function similar above to check that only less than 7 seniors are on a teams
+
 
 ///////////////////
 ///Officer and Event Leader functions

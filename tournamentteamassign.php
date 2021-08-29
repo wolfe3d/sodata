@@ -125,7 +125,7 @@ if(mysqli_num_rows($result))
 			}*/
 			$errorStudentCheck =""; //TODO: Remove this line and above commented lines if javascript errorcheck function works
 			//output student column
-			$output .="<td id='teammate-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."$errorStudentCheck</td>";
+			$output .="<td id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>$errorStudentCheck</td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				$timeEvents= $timeblocks[$i]['events'];
 				if($timeEvents)

@@ -192,78 +192,11 @@ if($result)
 		}
 		if(userHasPrivilege(3))
 		{
-			if($row['parent1Last'])
-			{
-				$output .="<br><h3>Parent(s)</h3>";
-				$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']."</div>";
-				if($row['parent2Last'])
-				{
-					$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
-				}
-			}
-		}
-		//find student's event priority
-		$query = "SELECT * FROM `eventchoice` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `eventchoice`.`studentID`=".$row['studentID']." ORDER BY `eventyear`.`year` DESC, `eventchoice`.`priority` ASC";// where `field` = $fieldId";
-		$resultEventsPriority = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if (mysqli_num_rows($resultEventsPriority)>0)
-		{
-				$output .="<br><h3>Event Priority</h3>";
-				while ($rowEventsPriority = $resultEventsPriority->fetch_assoc()):
-					$output .= "<div id='eventPriority-" . $rowEventsPriority['eventchoiceID'] . "'>" . $rowEventsPriority['year'] . "-" . $rowEventsPriority['priority'] . " " . $rowEventsPriority['event'] . "</div>";
-				endwhile;
+			$output .= "<div><a href='#student-details-".$row['studentID']."'>Details</a></div>";
 		}
 
-		//find student's events that they competed in
-		$query = "SELECT * FROM `teammateplace` INNER JOIN `event` ON `teammateplace`.`tournamenteventID`=`event`.`eventID` WHERE `teammateplace`.`studentID`=".$row['studentID']." ORDER BY `event`.`event` ASC";// where `field` = $fieldId";
-		$resultEventsCompetition = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if (mysqli_num_rows($resultEventsCompetition)>0)
-		{
-				$output .="<br><h3>Events Competed</h3>";
-				while ($rowEventsCompetition = $resultEventsCompetition->fetch_assoc()):
-					//check partner
-					$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$rowEventsCompetition['tournamenteventID']." AND `teammateplace`.`teamID`=".$rowEventsCompetition['teamID']." AND NOT `teammateplace`.`studentID` = ".$rowEventsCompetition['studentID']." ORDER BY `student`.`last` ASC, `student`.`first` ASC";
-					$resultPartners = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-					$partners ="";
-					if ($resultPartners && mysqli_num_rows($resultPartners)>0)
-					{
-						while ($rowPartner = $resultPartners->fetch_assoc()):
-							$partners.=$partners?" AND ":"";
-							$partners.=$rowPartner['first']." ".$rowPartner['last'];
-						endwhile;
-						if(empty($partners)){
-							$partners="No partners";
-						}
-					}
-					$output .= "<div id='eventCompetition-" . $rowEventsCompetition['eventID'] . "'>" . $rowEventsCompetition['event'] . " place " . $rowEventsCompetition['place'] . " ($partners)</div>";
-				endwhile;
-		}
-
-		//find student's courses completed
-		$query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourse)>0)
-		{
-			$output .="<br><h3>Courses Completed - Level</h3>";
-			while ($rowCourse = $resultCourse->fetch_assoc()):
-				$output .= "<div id='courseCompleted-" . $rowCourse['coursecompletedID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
-			endwhile;
-		}
-
-		//find student's courses enrolled but not yet completed
-		$query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=".$row['studentID']." ORDER BY t2.`course` ASC";// where `field` = $fieldId";
-		$resultCourse = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if(mysqli_num_rows($resultCourse)>0)
-		{
-			$output .="<br><h3>Courses Enrolled - Level</h3>";
-			while ($rowCourse = $resultCourse->fetch_assoc()):
-				$output .= "<div id='courseEnrolled-" . $rowCourse['courseenrolledID'] . "'>" . $rowCourse['course'] . " - " . $rowCourse['level'] . "</div>";
-			endwhile;
-		}
-
-
-
-	$output .="</div>";
-endwhile; // end loop through student list
+		$output .="</div>";
+	endwhile; // end loop through student list
 	//complete enclosing div
 }
 echo $output;

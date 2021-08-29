@@ -42,16 +42,10 @@ if(!empty($_SESSION['userData'])){
 		while ($row = $result->fetch_assoc()):
 			$output.="<li>".$row['event']."</li>";
 		endwhile;
-		$output .= "</ul><h3>Your Preferences</h3>";
-		$priorityQuery = "SELECT `priority`, `event` FROM `eventchoice` INNER JOIN `eventyear` on `eventchoice`.`eventyearID` = `eventyear`.`eventyearID` inner join `event` on `eventyear`.`eventID` = `event`.`eventID` where `eventchoice`.`studentID` = $studentID and `year` = $currentYear";
-		$result = $mysqlConn->query($priorityQuery) or error_log("\n<br />Warning: query failed:$priorityQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$output.="<ol>";
-		while ($row = $result->fetch_assoc()):
-			$output.="<li>".$row['event']."</li>";
-		endwhile;
-		$output .= "</ol><h2>Previous Results</h2>";
-		include("studentresults.php");
-		$output .= $tournaments;
+		$output .= "</ul>";
+
+		$output .= studentEventPriority($mysqlConn, $studentID);
+		$output .= studentTournamentResults($mysqlConn, $studentID);
 	}
 
 	//Coach Reminders and Results

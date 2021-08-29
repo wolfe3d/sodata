@@ -33,6 +33,143 @@ function getStudentID($db, $userID)
 	return 0;
 }
 
+//get student ID of user
+function getStudentName($db, $studentID)
+{
+	$query = "SELECT * from `student` where `studentID` = $studentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['last'] . ", " . $row['first'];
+	}
+	return 0;
+}
+
+//get students previous results
+function studentTournamentResults($db, $studentID)
+{
+	$query = "SELECT * FROM `teammateplace` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `teammateplace`.`studentID` = $studentID AND `place` IS NOT NULL ORDER BY `dateTournament` DESC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output .="<br><h3>Results</h3>";
+		$lasttournament = "";
+		while ($row = $result->fetch_assoc()):
+			if ($lasttournament !=$row['tournamentID'])
+			{
+				if ($lasttournament !=0)
+				{
+					$output.="</ul></div>";
+				}
+				$output.="<div id=\"".$row['tournamentName']."\">";
+				$output.="<h3>".$row['tournamentName']."</h3><ul>";
+			}
+
+			//check partner(s)
+			$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$row['tournamenteventID']." AND `teammateplace`.`teamID`=".$row['teamID']." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
+			$resultPartners = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$partners ="";
+			if (mysqli_num_rows($resultPartners)>0)
+			{
+				while ($rowPartner = $resultPartners->fetch_assoc()):
+					$partners.=$partners?" and ":"";
+					$partners.=$rowPartner['first']." ".$rowPartner['last'];
+				endwhile;
+			}
+
+			//fill partners string
+			if($partners==""){
+				$partners="No partner!";
+			}
+			$partners="($partners)";
+
+			//show results
+		  $output.="<li>".$row['event'].": ". $row['place'] ." $partners</li>";
+			$lasttournament = $row['tournamentID'];
+		endwhile;
+		$output.="</ul></div>";
+	}
+	return $output;
+
+	//TODO: Add partner see below
+	/*
+	//find student's events that they competed in
+	$query = "SELECT * FROM `teammateplace` INNER JOIN `event` ON `teammateplace`.`tournamenteventID`=`event`.`eventID` WHERE `teammateplace`.`studentID`=".$row['studentID']." ORDER BY `event`.`event` ASC";// where `field` = $fieldId";
+	$resultEventsCompetition = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if (mysqli_num_rows($resultEventsCompetition)>0)
+	{
+			$output .="<br><h3>Events Competed</h3>";
+			while ($rowEventsCompetition = $resultEventsCompetition->fetch_assoc()):
+				//check partner
+				$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$rowEventsCompetition['tournamenteventID']." AND `teammateplace`.`teamID`=".$rowEventsCompetition['teamID']." AND NOT `teammateplace`.`studentID` = ".$rowEventsCompetition['studentID']." ORDER BY `student`.`last` ASC, `student`.`first` ASC";
+				$resultPartners = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+				$partners ="";
+				if ($resultPartners && mysqli_num_rows($resultPartners)>0)
+				{
+					while ($rowPartner = $resultPartners->fetch_assoc()):
+						$partners.=$partners?" AND ":"";
+						$partners.=$rowPartner['first']." ".$rowPartner['last'];
+					endwhile;
+					if(empty($partners)){
+						$partners="No partners";
+					}
+				}
+				$output .= "<div id='eventCompetition-" . $rowEventsCompetition['eventID'] . "'>" . $rowEventsCompetition['event'] . " place " . $rowEventsCompetition['place'] . " ($partners)</div>";
+			endwhile;
+	}
+	*/
+}
+
+//find student's courses completed
+function studentCourseCompleted($db, $studentID)
+{
+	$output = "";
+	$query = "SELECT * FROM `coursecompleted` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output .="<br><h3>Courses Completed - Level</h3>";
+		while ($row = $result->fetch_assoc()):
+			$output .= "<div id='courseCompleted-" . $row['coursecompletedID'] . "'>" . $row['course'] . " - " . $row['level'] . "</div>";
+		endwhile;
+	}
+	return $output;
+}
+
+
+//find student's courses enrolled but not yet completed
+function studentCourseEnrolled($db, $studentID)
+{
+	$output = "";
+	$query = "SELECT * FROM `courseenrolled` t1 INNER JOIN `course` t2 ON t1.`courseID`=t2.`courseID` WHERE `studentID`=$studentID ORDER BY t2.`course` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output .="<br><h3>Courses Enrolled - Level</h3>";
+		while ($row = $result->fetch_assoc()):
+			$output .= "<div id='courseEnrolled-" . $row['courseenrolledID'] . "'>" . $row['course'] . " - " . $row['level'] . "</div>";
+		endwhile;
+	}
+	return $output;
+}
+
+//find student's event priority
+function studentEventPriority($db, $studentID)
+{
+	$output = "";
+	$query = "SELECT * FROM `eventchoice` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `eventchoice`.`studentID`=$studentID ORDER BY `eventyear`.`year` DESC, `eventchoice`.`priority` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if ($result && mysqli_num_rows($result)>0)
+	{
+			$output .="<br><h3>Event Priority</h3>";
+			while ($row = $result->fetch_assoc()):
+				$output .= "<div id='eventPriority-" . $row['eventchoiceID'] . "'>" . $row['year'] . "-" . $row['priority'] . " " . $row['event'] . "</div>";
+			endwhile;
+	}
+	return $output;
+}
 //get Event type options
 /*function getEventTypes($db, $type)
 {
@@ -251,7 +388,7 @@ function editPrivilege($privilege,$userID,$db)
 		}
 		else {
 			$query = "SELECT * FROM `user` WHERE `userID`=".$userID;// where `field` = $fieldId";
-			$resultPrivilege = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$resultPrivilege = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$rowPriv = $resultPrivilege->fetch_assoc();
 			if ($rowPriv['privilege'])
 			{
@@ -380,6 +517,8 @@ function random_str(
     }
     return implode('', $pieces);
 }
+
+
 //usage
 /*
 $a = random_str(32);

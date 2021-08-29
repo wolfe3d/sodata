@@ -30,7 +30,7 @@ if($resultStudent){
 		//if there is a result then make box checked, if not do not check box.
 		$checked = mysqli_num_rows($resultTeammate)?" checked ":"";
 		$hidden = $rowStudent['active']?"":"class='inactive' style='display: none;'";
-		$studentList .= "<div $hidden><input type='checkbox' onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked><label for='$checkbox'>".$rowStudent['last'].", " . $rowStudent['first'] ."</label></div>";
+		$studentList .= "<div $hidden><input type='checkbox' onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked><label for='$checkbox'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ." - " . $rowStudent['yearGraduating'] ."</a></label></div>";
 	endwhile;
 }
 ?>
