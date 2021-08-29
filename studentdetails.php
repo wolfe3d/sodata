@@ -16,22 +16,31 @@ $output .="<h2>".$row['last'] . ", " . $row['first']."</h2>";
 $officerPos = getOfficerPosition($mysqlConn,$studentID);
 if($officerPos)
 {
-	$output .="<h3>$officerPos</h3>";
+	$output .="<h3>Officer: $officerPos</h3>";
+}
+$eventLeaderPos = getEventLeaderPosition($mysqlConn,$studentID);
+if($eventLeaderPos)
+{
+	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 }
 
 if(userHasPrivilege(3))
 {
 	$output .= "<div><a href='#student-edit-$studentID'>Edit</a> ";
+}
+if(userHasPrivilege(4))
+{
 	$output .= "<a href=\"javascript:studentRemove($studentID,'".$row['last'] . ", " . $row['first']."')\">Remove</a>";
 	$output .= "</div>";
-
+}
+if(userHasPrivilege(3))
+{
 	if(empty($row['userID']))
 	{
 			$output .= "User has never logged in with registered account.";
 	}
 	else {
 		$query = "SELECT * FROM `user` WHERE `userID`=".$row['userID'];// where `field` = $fieldId";
-		$output .= $query;
 		$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$rowPriv = $resultPrivilege->fetch_assoc();
 		if ($rowPriv['privilege'])
@@ -66,13 +75,21 @@ if($row['phone'])
 {
 	$output .="<div>Phone(".$row['phoneType']."): ".$row['phone']."</div>";
 }
+
+
 if(userHasPrivilege(3))
 {
-	$officerPosPrev = getPreviousOfficerPosition($mysqlConn,$studentID);
+	$officerPosPrev = getOfficerPositionPrevious($mysqlConn,$studentID);
 	if($officerPosPrev)
 	{
 		$output .="<div>Previous Positions: $officerPosPrev</div>";
 	}
+	$eventLeaderPosPrev = getEventLeaderPositionPrevious($mysqlConn,$studentID);
+	if($eventLeaderPosPrev)
+	{
+		$output .="<div>Previous Event(s) Lead: $eventLeaderPosPrev</div>";
+	}
+
 	if($row['parent1Last'])
 	{
 		$output .="<br><h3>Parent(s)</h3>";

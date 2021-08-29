@@ -132,7 +132,12 @@ if($result)
 		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
 		if($officerPos)
 		{
-			$output .="<h3>$officerPos</h3>";
+			$output .="<h3>Officer: $officerPos</h3>";
+		}
+		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID']);
+		if($eventLeaderPos)
+		{
+			$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 		}
 
 		if(userHasPrivilege(3)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
@@ -184,11 +189,6 @@ if($result)
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".$row['phoneType']."): ".$row['phone']."</div>";
-		}
-		$officerPosPrev = getPreviousOfficerPosition($mysqlConn,$row['studentID']);
-		if($officerPosPrev)
-		{
-			$output .="<div>Previous Postions: $officerPosPrev</div>";
 		}
 		if(userHasPrivilege(3))
 		{

@@ -102,15 +102,18 @@ function loadpage(page, type, myID){
 						}
 					break;
 
-					case 'officer':
+					case 'leaders':
 						if(typepage=="year"){
 							$.when( $("#year") ).done(function( x ) {
 								$("#year").change(function(){
-		  						window.location.hash = '#officer-year-'+ $("#year option:selected").text();
+		  						window.location.hash = '#leaders-year-'+ $("#year option:selected").text();
 								});
 							});
 						}
-						else if(typepage=="add"){
+					break;
+
+					case 'officer':
+						if(typepage=="add"){
 							addToSetGenericRules();
 							addToSubmit();
 						}

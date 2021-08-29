@@ -92,34 +92,6 @@ function studentTournamentResults($db, $studentID)
 		$output.="</ul></div>";
 	}
 	return $output;
-
-	//TODO: Add partner see below
-	/*
-	//find student's events that they competed in
-	$query = "SELECT * FROM `teammateplace` INNER JOIN `event` ON `teammateplace`.`tournamenteventID`=`event`.`eventID` WHERE `teammateplace`.`studentID`=".$row['studentID']." ORDER BY `event`.`event` ASC";// where `field` = $fieldId";
-	$resultEventsCompetition = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if (mysqli_num_rows($resultEventsCompetition)>0)
-	{
-			$output .="<br><h3>Events Competed</h3>";
-			while ($rowEventsCompetition = $resultEventsCompetition->fetch_assoc()):
-				//check partner
-				$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$rowEventsCompetition['tournamenteventID']." AND `teammateplace`.`teamID`=".$rowEventsCompetition['teamID']." AND NOT `teammateplace`.`studentID` = ".$rowEventsCompetition['studentID']." ORDER BY `student`.`last` ASC, `student`.`first` ASC";
-				$resultPartners = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-				$partners ="";
-				if ($resultPartners && mysqli_num_rows($resultPartners)>0)
-				{
-					while ($rowPartner = $resultPartners->fetch_assoc()):
-						$partners.=$partners?" AND ":"";
-						$partners.=$rowPartner['first']." ".$rowPartner['last'];
-					endwhile;
-					if(empty($partners)){
-						$partners="No partners";
-					}
-				}
-				$output .= "<div id='eventCompetition-" . $rowEventsCompetition['eventID'] . "'>" . $rowEventsCompetition['event'] . " place " . $rowEventsCompetition['place'] . " ($partners)</div>";
-			endwhile;
-	}
-	*/
 }
 
 //find student's courses completed
@@ -312,21 +284,53 @@ function getOfficerPosition($db,$studentID)
 }
 
 //get Previous Officer Position List
-function getPreviousOfficerPosition($db,$studentID)
+function getOfficerPositionPrevious($db,$studentID)
 {
-	$myOutput = "";
+	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
 	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
 	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		while ($row = $result->fetch_assoc()):
-			$myOutput .= $myOutput ? ", ":"";
-			$myOutput .= $row['year']."-".$row['position'];
+			$output .= $output ? ", ":"";
+			$output .= $row['year']."-".$row['position'];
 		endwhile;
-		return $myOutput;
 	}
-	return "";
+	return $output;
+}
+//get Current Event Leader Position
+function getEventLeaderPosition($db,$studentID)
+{
+	$output = "";
+	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		while ($row = $result->fetch_assoc()):
+			$output .= $output ? ", ":"";
+			$output .= $row['event'];
+		endwhile;
+	}
+	return $output;
+}
+
+//get Current Event Leader Position
+function getEventLeaderPositionPrevious($db,$studentID)
+{
+	$output = "";
+	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		while ($row = $result->fetch_assoc()):
+			$output .= $output ? ", ":"";
+			$output .= $row['year']."-".$row['event'];
+		endwhile;
+	}
+	return $output;
 }
 
 //get phone types student's course enrolled/completed
