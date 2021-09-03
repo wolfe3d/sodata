@@ -31,6 +31,11 @@ if($result)
 	<!--Output student emails -->
 	<input class='button fa' type='button' onclick='location.href="studentemails.php"' value='&#xf01c; Get Emails' />
 	<?php }?>
+	<?php if(userHasPrivilege(4))
+	{ ?>
+	<!--Output parent emails -->
+	<input class='button fa' type='button' onclick='location.href="parentemails.php"' value='&#xf01c; Get Parents' />
+	<?php }?>
 <br><br>
 	<form id="findStudent">
 		<div>
