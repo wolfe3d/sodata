@@ -53,6 +53,10 @@ if(userHasPrivilege(3))
 		}
 	}
 }
+if(userHasPrivilege(4))
+{
+	$output .= "<div>School ID: ".$row['schoolID']."</div>";
+}
 $grade = 9;
 if (date("m")>5)
 {

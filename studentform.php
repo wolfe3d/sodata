@@ -7,7 +7,7 @@ require_once  ("functions.php");
 <p>
     <input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 </p>
-<?php 
+<?php
 }?>
 
 <p>
@@ -21,6 +21,10 @@ require_once  ("functions.php");
 <p>
     <label for="yearGraduating">Year Graduating</label>
     <input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>">
+</p>
+<p>
+    <label for="schoolID">School ID</label>
+    <input id="schoolID" name="schoolID" type="text" value="<?=$row['schoolID']?>">
 </p>
 <p>
 <!--Changing Google Email may break functions TODO: Think about changing this ability-->
@@ -61,7 +65,7 @@ require_once  ("functions.php");
         <div id="addcourseenrolledDiv"></div>
         <a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
     </fieldset>
-<?php 
+<?php
 }?>
 <fieldset>
     <legend>Parent 1</legend>

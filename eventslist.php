@@ -74,7 +74,7 @@ if($result)
 			if($rowYear['year']==$selectYear && $rowYear['studentID'])
 			{
 				//print Event Leader
-				$output .="<div>Event Leader: ".$rowYear['first']." ".$rowYear['last']."</div>";
+				$output .="<div>Event Leader: <a href='#student-details-". $rowYear['studentID'] ."'>".$rowYear['first']." ".$rowYear['last']."</a></div>";
 			}
 			$yearCollection .= $yearCollection!=""?", ":"";
 			$yearCollection .= $rowYear['year'];
