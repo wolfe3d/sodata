@@ -40,7 +40,7 @@ if(mysqli_num_rows($result))
 	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
-		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID";
+		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID ORDER BY `event`.`event`";
 		$resultEvents = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$events = [];
 		while ($rowEvent = $resultEvents->fetch_assoc()):
@@ -100,7 +100,8 @@ if(mysqli_num_rows($result))
 			}
 		}
 		else {
-			$output .= "<th style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'></th>";
+			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
 		}
 
 	}
@@ -152,7 +153,8 @@ if(mysqli_num_rows($result))
 					}
 				}
 				else {
-					$output .= "<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'></th>";
+					$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+					$output .= "<td style='$border background-color:".rainbow($i)."'></th>";
 				}
 
 			}
@@ -186,7 +188,8 @@ if(mysqli_num_rows($result))
 			}
 		}
 		else {
-			$output .= "<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'></td>";
+			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 		}
 	}
 	$output .="</tr>";
@@ -219,7 +222,8 @@ if(mysqli_num_rows($result))
 			}
 		}
 		else {
-			$output .= "<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'></td>";
+			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 		}
 	}
 	$output .="</tr>";
