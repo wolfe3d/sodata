@@ -148,24 +148,7 @@ function studentEventPriority($db, $studentID)
 	}
 	return $output;
 }
-//get Event type options
-/*function getEventTypes($db, $type)
-{
-	$myOutput = "";
-	$query = "SELECT * from `eventtype`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-	if($result)
-	{
-		$myOutput .="<select id='type' name='type' type='text'>";
-		while ($row = $result->fetch_assoc()):
-			$selected = $row['type']==$type ? " selected " : "";
-			$myOutput.="<option value = '".$row['type']."'$selected>".$row['type']."</option>";
-		endwhile;
-		$myOutput .="</select>";
-	}
-	return $myOutput;
-}*/
 //get Event type options
 function getEventString($type)
 {
@@ -352,6 +335,19 @@ function getEventLeaderPositionPrevious($db,$studentID)
 		endwhile;
 	}
 	return $output;
+}
+
+//get student's grade from the their graduation years
+function getStudentGrade($yearGraduating, $monthGraduating=5)
+{
+	if (date("m")>$monthGraduating)
+	{
+		return 12-($yearGraduating-date("Y")-1);
+	}
+	else
+	{
+		return 12-($yearGraduating-date("Y"));
+	}
 }
 
 //for option htmls

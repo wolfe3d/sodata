@@ -57,16 +57,7 @@ if(userHasPrivilege(4))
 {
 	$output .= "<div>School ID: ".$row['schoolID']."</div>";
 }
-$grade = 9;
-if (date("m")>5)
-{
-	$grade = 12-($row['yearGraduating']-date("Y")-1);
-}
-else
-{
-	$grade = 12-($row['yearGraduating']-date("Y"));
-}
-$output .="<div>Grade: $grade (".$row['yearGraduating'].")</div>";
+$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 if($row['email'])
 {
 	$output .="<div>Google Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";

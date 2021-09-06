@@ -129,6 +129,9 @@ function loadpage(page, type, myID){
 						if(typepage=="teamassign"){
 							tournamentAssignCheckErrors();
 						}
+						else if(typepage=="teamedit"){
+							tournamentTeamEditCheckErrors();
+						}
 						$.when( $(":submit") ).done(function( x ) {
 							if(typepage=="edit"){
 								tournamentEdit(myID);
@@ -145,7 +148,6 @@ function loadpage(page, type, myID){
 							else{
 								addToSubmit(myID);
 								addToSetGenericRules();
-								//TODO: fix error on tournamentteamedit --does not save
 							}
 						});
 					break;
@@ -1122,6 +1124,8 @@ function tournamentTeammate(inputBtn)
 	});
 
 	request.done(function( html ) {
+		//TODO: make sure students aren't assigned already before removing from team list (...teamedit.php) and they are not assigned to another team
+
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
@@ -1129,13 +1133,47 @@ function tournamentTeammate(inputBtn)
 		else {
 			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
 		}
+		tournamentTeamEditCheckErrors();
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
 		$("#note").html("<div class='modified' class='error'>Change Error:"+textStatus+"</div");
 	});
 }
+//Check student count and senior count
+function tournamentTeamEditCheckErrors()
+{
+	//console.log("tournamentTeamEditCheckErrors");
+	var countSenior = 0;
+	//find total students - check to make sure it is less than 15
+	var countStudent = $('input:checkbox:checked').length;
+	//find total seniors
+	$('input:checkbox:checked').each(function (i,v)
+	{
+		var studentGrade = $(v).data( "studentgrade" );//check number of students allowed in stored data
+		if(studentGrade>11)
+		{
+			countSenior +=1;
+		}
+	});
+	//console.log("countSenior="+countSenior);
+	//console.log("countStudent="+countStudent);
+	var error = "";
+	if (countSenior >7)
+	{
+		error += "Too many seniors on the team!";
+	}
+	if (countStudent >15)
+	{
+		error += " More than 15 students assigned on the team!";
+	}
+	else if (countStudent <15)
+	{
+		error += " <span class'warning'>Less than 15 students on the team!</span>";
+	}
+	$("#note").html("<span class='modified' class='error'>"+error+"</span");
 
+}
 
 //sets  teammate in an event
 function tournamentEventTeammate(inputBtn)
@@ -1281,9 +1319,6 @@ function tournamentAssignCheckErrors()
 		tournamentCalculateEvent(eventID);
 	});
 }
-
-//TODO: Make function similar above to check that only less than 7 seniors are on a teams
-
 
 ///////////////////
 ///Officer and Event Leader functions
