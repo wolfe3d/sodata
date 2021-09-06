@@ -4,19 +4,13 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(1);
 require_once  ("functions.php");
 
-    function getIfSet(&$value, $default = NULL)
-{
-	return isset($value) ? $value : $default;
-}
-
-$active = intval($_POST['active']);
 $first = $mysqlConn->real_escape_string($_POST['first']);
 $last = $mysqlConn->real_escape_string($_POST['last']);
 $yearGraduating = intval($_POST['yearGraduating']);
-$schoolID = intval($_POST['schoolID']);
-$googleEmail = $mysqlConn->real_escape_string($_POST['email']);
-$schoolEmail = $mysqlConn->real_escape_string($_POST['emailSchool']);
-$phoneType = $mysqlConn->real_escape_string($_POST['phoneType']);
+$schoolID = $mysqlConn->real_escape_string($_POST['schoolID']);
+$email = $mysqlConn->real_escape_string($_POST['email']);
+$emailSchool = $mysqlConn->real_escape_string($_POST['emailSchool']);
+$phoneType = intval(getIfSet($_POST['phoneType'],1));
 $phone = $mysqlConn->real_escape_string($_POST['phone']);
 $parent1Last = $mysqlConn->real_escape_string($_POST['parent1Last']);
 $parent1First = $mysqlConn->real_escape_string($_POST['parent1First']);

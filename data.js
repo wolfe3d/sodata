@@ -201,93 +201,85 @@ function studentPreparePage()
 
 function studentAddModify()
 {
-	$("#addTo").validate({
-		rules: {
-			first: "required",
-			last: "required",
-			yearGraduating: "required",
-		},
-		messages: {
-			first: "*Please enter the student's name",
-			last: "*Please enter the student's name",
-			yearGraduating: "*Please enter the graduation year",
-		},
-		submitHandler: function(form) {
-				event.preventDefault();
+		$("#addTo").validate({
+			rules: {
+				first: "required",
+				last: "required",
+			   parent1First: "required",
+			   parent1Last: "required",
+				yearGraduating: 			{
+					number: true
+				},
+				phone: 			{
+					phoneUS: true
+				},
+			   parent1Phone: 			{
+				   phoneUS: true
+			   },
+			   parent2Phone: 			{
+				   phoneUS: true
+			   },
+				email: {
+					required: true,
+					email: true
+				},
+				emailSchool: {
+					required: true,
+					email: true
+				},
+			   parent1Email: {
+				   required: true,
+				   email: true
+			   },
+			   parent2Email: {
+				   email: true
+			   },
+			},
+			messages: {
+				first: "*Please enter the student\'s first name",
+				last: "*Please enter the student\'s last name",
+				yearGraduating: {
+					required: "*Enter the year the student is graduating",
+				},
+				email: {
+					required: "*Enter the student\'s email.",
+				},
+				phone: {
+					required: "*Enter the phone number in the correct format.",
+				},
+			},
+			submitHandler: function(form) {
+					event.preventDefault();
 
-				var request = $.ajax({
-					url: $("#addTo").attr('action'),
-					cache: false,
-					method: "POST",
-					data: $("#addTo").serialize(),
-					dataType: "text"
+					var request = $.ajax({
+						url: $("#addTo").attr('action'),
+						cache: false,
+						method: "POST",
+						data: $("#addTo").serialize(),
+						dataType: "text"
+					});
+
+					request.done(function( html ) {
+						$(".modified").remove(); //removes any old update notices
+						if(html>0)
+						{
+							window.location.hash = '#student-edit-'+html;
+						}
+						else
+						{
+							$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+						}
+					});
+
+				request.fail(function( jqXHR, textStatus ) {
+					$("#mainContainer").html("Student Adding Error");
 				});
-
-				request.done(function( html ) {
-					$(".modified").remove(); //removes any old update notices
-					if(html>0)
-					{
-						window.location.hash = '#students--'+html;
-					}
-					else
-					{
-						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
-					}
-				});
-
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Removal Error");
-			});
-		}
-		// $("#addTo").validate({
-		// 	rules: {
-		// 		first: "required",
-		// 		last: "required",
-		// 	   parent1First: "required",
-		// 	   parent1Last: "required",
-		// 		phone: 			{
-		// 			phoneUS: true
-		// 		},
-		// 	   parent1Phone: 			{
-		// 		   phoneUS: true
-		// 	   },
-		// 	   parent2Phone: 			{
-		// 		   phoneUS: true
-		// 	   },
-		// 		yearGraduating: "required",
-		// 		email: {
-		// 			required: true,
-		// 			email: true
-		// 		},
-		// 	   parent1Email: {
-		// 		   required: true,
-		// 		   email: true
-		// 	   },
-		// 	   parent2Email: {
-		// 		   required: true,
-		// 		   email: true
-		// 	   },
-		// 	},
-		// 	messages: {
-		// 		first: "*Please enter the student\'s first name",
-		// 		last: "*Please enter the student\'s last name",
-		// 		yearGraduating: {
-		// 			required: "*Enter the year the student is graduating",
-		// 		},
-		// 		email: {
-		// 			required: "*Enter the student\'s email.",
-		// 		},
-		// 		phone: {
-		// 			required: "*Enter the phone number in the correct format.",
-		// 		},
-		// 	},
-		// 	submitHandler: function(form) {
-		// 						form.submit();
-		// 				}
-		// });
-	});
+		}});
 }
 
+//turned off
+//TODO: Remove if no errors 09/05/2021
+/*
 function studentEdit(myID)
 {
 	studentAddModify();
@@ -302,7 +294,7 @@ function studentEdit(myID)
 			});
 		});
 }
-
+*/
 
 function studentRemove(myID, studentName)
 {
@@ -348,6 +340,9 @@ function studentEditPrepare(myID)
 				}
 				else if(this.id == 'privilege'){ //user privilege is defined in the user table
 					fieldUpdate(myID, 'user', this.id, this.value);
+				}
+				else if(this.id == 'courseList'){ //user privilege is defined in the user table
+					//do nothing wait for add button
 				}
 				else{
 					fieldUpdate(myID,'student',this.id,this.value);

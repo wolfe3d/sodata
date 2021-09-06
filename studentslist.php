@@ -188,7 +188,7 @@ if($result)
 		}
 		if($row['phone'])
 		{
-			$output .="<div>Phone(".$row['phoneType']."): ".$row['phone']."</div>";
+			$output .="<div>Phone(".getPhoneString($row['phoneType'])."): ".$row['phone']."</div>";
 		}
 		if(userHasPrivilege(3))
 		{

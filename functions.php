@@ -46,6 +46,12 @@ function getStudentName($db, $studentID)
 	return 0;
 }
 
+//check Post variables and others if set.
+function getIfSet($value, $default = NULL)
+{
+	return isset($value) ? $value : $default;
+}
+
 //get students previous results
 function studentTournamentResults($db, $studentID)
 {
@@ -211,6 +217,21 @@ function getGoggleString($type)
 	}
 }
 
+//return Phone Type
+function getPhoneString($type)
+{
+	switch (getIfSet($type, 0)) {
+	  case 1:
+	    return "home";
+	    break;
+	  case 2:
+	    return "parent cell";
+	    break;
+	  default:
+	    return "cell";
+	}
+}
+
 //get list of events
 function getEventList($db, $number,$label)
 {
@@ -333,20 +354,16 @@ function getEventLeaderPositionPrevious($db,$studentID)
 	return $output;
 }
 
-//get phone types student's course enrolled/completed
-function getPhoneTypes($db)
+//for option htmls
+function getSelected($value, $selection)
 {
-	$myOutput = "";
-	$query = "SELECT * from `phonetype`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
+	if($value==getIfSet($selection, 0))
 	{
-		while ($row = $result->fetch_assoc()):
-			//echo $row['phoneType'];
-			$myOutput.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
-		endwhile;
+		return "selected";
 	}
-	return $myOutput;
+	else {
+		return "";
+	}
 }
 
 //find student's course enrolled/completed

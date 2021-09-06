@@ -1,14 +1,20 @@
 <?php
 require_once  ("functions.php");
- ?>
+$editing = true;
+if(!isset($row))
+{
+		$editing = false;
+		$row = NULL;
+}
 
-<?php if($row)
-{?>
+if ($editing)
+{
+	?>
 <p>
     <input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 </p>
 <?php
-}?>
+} ?>
 
 <p>
     <label for="first">Firstname</label>
@@ -37,15 +43,17 @@ require_once  ("functions.php");
 </p>
 <p>
     <label for="phoneType">Phone Type</label>
-    <select id="phoneType" name="text" value="<?=$row['phoneType']?>">
-        <?=getPhoneTypes($mysqlConn)?>
+    <select id="phoneType" name="phoneType" value="<?=$row['phoneType']?>">
+			<option value='0' <?=getSelected(0,$row['phoneType'])?>><?=getPhoneString(0)?></option>
+			<option value='1' <?=getSelected(1,$row['phoneType'])?>><?=getPhoneString(1)?></option>
+			<option value='2' <?=getSelected(2,$row['phoneType'])?>><?=getPhoneString(2)?></option>
     </select>
 </p>
 <p>
     <label for="phone">Phone</label>
     <input id="phone" name="phone" type="tel" value="<?=$row['phone']?>">
 </p>
-<?php if($row)
+<?php if($editing)
 {?>
     <fieldset>
         <legend>Events</legend>
