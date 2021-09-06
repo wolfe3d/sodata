@@ -144,7 +144,7 @@ if($result)
 		{
 			$output .="<div><a href='#student-edit-".$row['studentID']."'>Edit</a> ";
 		}
-		$output .= userHasPrivilege(3)?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
+		$output .= userHasPrivilege(5)?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
 		$output .= "</div>";
 		//show privilege
 		if(userHasPrivilege(3))
