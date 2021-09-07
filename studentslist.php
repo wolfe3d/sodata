@@ -144,7 +144,7 @@ if($result)
 		{
 			$output .="<div><a href='#student-edit-".$row['studentID']."'>Edit</a> ";
 		}
-		$output .= userHasPrivilege(3)?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
+		$output .= userHasPrivilege(5)?"<a href=\"javascript:studentRemove(" . $row['studentID'] . ",'" . $row['first']." ".$row['last'] . "')\">Remove</a>":"";
 		$output .= "</div>";
 		//show privilege
 		if(userHasPrivilege(3))
@@ -168,16 +168,7 @@ if($result)
 				}
 			}
 		}
-		$grade = 9;
-		if (date("m")>5)
-		{
-			$grade = 12-($row['yearGraduating']-date("Y")-1);
-		}
-		else
-		{
-			$grade = 12-($row['yearGraduating']-date("Y"));
-		}
-		$output .="<div>Grade: $grade (".$row['yearGraduating'].")</div>";
+		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
 			$output .="<div>Google Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
@@ -188,7 +179,7 @@ if($result)
 		}
 		if($row['phone'])
 		{
-			$output .="<div>Phone(".$row['phoneType']."): ".$row['phone']."</div>";
+			$output .="<div>Phone(".getPhoneString($row['phoneType'])."): ".$row['phone']."</div>";
 		}
 		if(userHasPrivilege(3))
 		{

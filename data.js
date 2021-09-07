@@ -129,6 +129,9 @@ function loadpage(page, type, myID){
 						if(typepage=="teamassign"){
 							tournamentAssignCheckErrors();
 						}
+						else if(typepage=="teamedit"){
+							tournamentTeamEditCheckErrors();
+						}
 						$.when( $(":submit") ).done(function( x ) {
 							if(typepage=="edit"){
 								tournamentEdit(myID);
@@ -145,7 +148,6 @@ function loadpage(page, type, myID){
 							else{
 								addToSubmit(myID);
 								addToSetGenericRules();
-								//TODO: fix error on tournamentteamedit --does not save
 							}
 						});
 					break;
@@ -201,93 +203,85 @@ function studentPreparePage()
 
 function studentAddModify()
 {
-	$("#addTo").validate({
-		rules: {
-			first: "required",
-			last: "required",
-			yearGraduating: "required",
-		},
-		messages: {
-			first: "*Please enter the student's name",
-			last: "*Please enter the student's name",
-			yearGraduating: "*Please enter the graduation year",
-		},
-		submitHandler: function(form) {
-				event.preventDefault();
+		$("#addTo").validate({
+			rules: {
+				first: "required",
+				last: "required",
+			   parent1First: "required",
+			   parent1Last: "required",
+				yearGraduating: 			{
+					number: true
+				},
+				phone: 			{
+					phoneUS: true
+				},
+			   parent1Phone: 			{
+				   phoneUS: true
+			   },
+			   parent2Phone: 			{
+				   phoneUS: true
+			   },
+				email: {
+					required: true,
+					email: true
+				},
+				emailSchool: {
+					required: true,
+					email: true
+				},
+			   parent1Email: {
+				   required: true,
+				   email: true
+			   },
+			   parent2Email: {
+				   email: true
+			   },
+			},
+			messages: {
+				first: "*Please enter the student\'s first name",
+				last: "*Please enter the student\'s last name",
+				yearGraduating: {
+					required: "*Enter the year the student is graduating",
+				},
+				email: {
+					required: "*Enter the student\'s email.",
+				},
+				phone: {
+					required: "*Enter the phone number in the correct format.",
+				},
+			},
+			submitHandler: function(form) {
+					event.preventDefault();
 
-				var request = $.ajax({
-					url: $("#addTo").attr('action'),
-					cache: false,
-					method: "POST",
-					data: $("#addTo").serialize(),
-					dataType: "text"
+					var request = $.ajax({
+						url: $("#addTo").attr('action'),
+						cache: false,
+						method: "POST",
+						data: $("#addTo").serialize(),
+						dataType: "text"
+					});
+
+					request.done(function( html ) {
+						$(".modified").remove(); //removes any old update notices
+						if(html>0)
+						{
+							window.location.hash = '#student-edit-'+html;
+						}
+						else
+						{
+							$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+						}
+					});
+
+				request.fail(function( jqXHR, textStatus ) {
+					$("#mainContainer").html("Student Adding Error");
 				});
-
-				request.done(function( html ) {
-					$(".modified").remove(); //removes any old update notices
-					if(html>0)
-					{
-						window.location.hash = '#students--'+html;
-					}
-					else
-					{
-						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
-					}
-				});
-
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Removal Error");
-			});
-		}
-		// $("#addTo").validate({
-		// 	rules: {
-		// 		first: "required",
-		// 		last: "required",
-		// 	   parent1First: "required",
-		// 	   parent1Last: "required",
-		// 		phone: 			{
-		// 			phoneUS: true
-		// 		},
-		// 	   parent1Phone: 			{
-		// 		   phoneUS: true
-		// 	   },
-		// 	   parent2Phone: 			{
-		// 		   phoneUS: true
-		// 	   },
-		// 		yearGraduating: "required",
-		// 		email: {
-		// 			required: true,
-		// 			email: true
-		// 		},
-		// 	   parent1Email: {
-		// 		   required: true,
-		// 		   email: true
-		// 	   },
-		// 	   parent2Email: {
-		// 		   required: true,
-		// 		   email: true
-		// 	   },
-		// 	},
-		// 	messages: {
-		// 		first: "*Please enter the student\'s first name",
-		// 		last: "*Please enter the student\'s last name",
-		// 		yearGraduating: {
-		// 			required: "*Enter the year the student is graduating",
-		// 		},
-		// 		email: {
-		// 			required: "*Enter the student\'s email.",
-		// 		},
-		// 		phone: {
-		// 			required: "*Enter the phone number in the correct format.",
-		// 		},
-		// 	},
-		// 	submitHandler: function(form) {
-		// 						form.submit();
-		// 				}
-		// });
-	});
+		}});
 }
 
+//turned off
+//TODO: Remove if no errors 09/05/2021
+/*
 function studentEdit(myID)
 {
 	studentAddModify();
@@ -302,7 +296,7 @@ function studentEdit(myID)
 			});
 		});
 }
-
+*/
 
 function studentRemove(myID, studentName)
 {
@@ -348,6 +342,9 @@ function studentEditPrepare(myID)
 				}
 				else if(this.id == 'privilege'){ //user privilege is defined in the user table
 					fieldUpdate(myID, 'user', this.id, this.value);
+				}
+				else if(this.id == 'courseList'){ //user privilege is defined in the user table
+					//do nothing wait for add button
 				}
 				else{
 					fieldUpdate(myID,'student',this.id,this.value);
@@ -1127,6 +1124,8 @@ function tournamentTeammate(inputBtn)
 	});
 
 	request.done(function( html ) {
+		//TODO: make sure students aren't assigned already before removing from team list (...teamedit.php) and they are not assigned to another team
+
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
@@ -1134,13 +1133,47 @@ function tournamentTeammate(inputBtn)
 		else {
 			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
 		}
+		tournamentTeamEditCheckErrors();
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
 		$("#note").html("<div class='modified' class='error'>Change Error:"+textStatus+"</div");
 	});
 }
+//Check student count and senior count
+function tournamentTeamEditCheckErrors()
+{
+	//console.log("tournamentTeamEditCheckErrors");
+	var countSenior = 0;
+	//find total students - check to make sure it is less than 15
+	var countStudent = $('input:checkbox:checked').length;
+	//find total seniors
+	$('input:checkbox:checked').each(function (i,v)
+	{
+		var studentGrade = $(v).data( "studentgrade" );//check number of students allowed in stored data
+		if(studentGrade>11)
+		{
+			countSenior +=1;
+		}
+	});
+	//console.log("countSenior="+countSenior);
+	//console.log("countStudent="+countStudent);
+	var error = "";
+	if (countSenior >7)
+	{
+		error += "Too many seniors on the team!";
+	}
+	if (countStudent >15)
+	{
+		error += " More than 15 students assigned on the team!";
+	}
+	else if (countStudent <15)
+	{
+		error += " <span class'warning'>Less than 15 students on the team!</span>";
+	}
+	$("#note").html("<span class='modified' class='error'>"+error+"</span");
 
+}
 
 //sets  teammate in an event
 function tournamentEventTeammate(inputBtn)
@@ -1286,9 +1319,6 @@ function tournamentAssignCheckErrors()
 		tournamentCalculateEvent(eventID);
 	});
 }
-
-//TODO: Make function similar above to check that only less than 7 seniors are on a teams
-
 
 ///////////////////
 ///Officer and Event Leader functions

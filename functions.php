@@ -46,6 +46,12 @@ function getStudentName($db, $studentID)
 	return 0;
 }
 
+//check Post variables and others if set.
+function getIfSet($value, $default = NULL)
+{
+	return isset($value) ? $value : $default;
+}
+
 //get students previous results
 function studentTournamentResults($db, $studentID)
 {
@@ -142,24 +148,7 @@ function studentEventPriority($db, $studentID)
 	}
 	return $output;
 }
-//get Event type options
-/*function getEventTypes($db, $type)
-{
-	$myOutput = "";
-	$query = "SELECT * from `eventtype`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-	if($result)
-	{
-		$myOutput .="<select id='type' name='type' type='text'>";
-		while ($row = $result->fetch_assoc()):
-			$selected = $row['type']==$type ? " selected " : "";
-			$myOutput.="<option value = '".$row['type']."'$selected>".$row['type']."</option>";
-		endwhile;
-		$myOutput .="</select>";
-	}
-	return $myOutput;
-}*/
 //get Event type options
 function getEventString($type)
 {
@@ -208,6 +197,21 @@ function getGoggleString($type)
 	}
 	elseif ($type == 2) {
 	    return "Class C - Splash Resistant, for Most Labs";
+	}
+}
+
+//return Phone Type
+function getPhoneString($type)
+{
+	switch (getIfSet($type, 0)) {
+	  case 1:
+	    return "home";
+	    break;
+	  case 2:
+	    return "parent cell";
+	    break;
+	  default:
+	    return "cell";
 	}
 }
 
@@ -333,20 +337,29 @@ function getEventLeaderPositionPrevious($db,$studentID)
 	return $output;
 }
 
-//get phone types student's course enrolled/completed
-function getPhoneTypes($db)
+//get student's grade from the their graduation years
+function getStudentGrade($yearGraduating, $monthGraduating=5)
 {
-	$myOutput = "";
-	$query = "SELECT * from `phonetype`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
+	if (date("m")>$monthGraduating)
 	{
-		while ($row = $result->fetch_assoc()):
-			//echo $row['phoneType'];
-			$myOutput.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
-		endwhile;
+		return 12-($yearGraduating-date("Y")-1);
 	}
-	return $myOutput;
+	else
+	{
+		return 12-($yearGraduating-date("Y"));
+	}
+}
+
+//for option htmls
+function getSelected($value, $selection)
+{
+	if($value==getIfSet($selection, 0))
+	{
+		return "selected";
+	}
+	else {
+		return "";
+	}
 }
 
 //find student's course enrolled/completed
