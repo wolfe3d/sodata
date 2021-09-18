@@ -35,6 +35,7 @@ if($result)
 	{ ?>
 	<!--Output parent emails -->
 	<input class='button fa' type='button' onclick='location.href="parentemails.php"' value='&#xf01c; Get Parents' />
+	<input class='button fa' type='button' onclick='location.href="studentfile.php"' value='&#xf01c; Students File' />
 	<?php }?>
 <br><br>
 	<form id="findStudent">

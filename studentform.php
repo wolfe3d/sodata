@@ -25,6 +25,12 @@ if ($editing)
     <input id="last" name="last" type="text" value="<?=$row['last']?>">
 </p>
 <p>
+	<input id="paidDues" name="paidDues" type="checkbox" <?=$row['paidDues']==1?"checked":""?>><label for="paidDues">Dues Paid</label>
+
+    <label for="paidDuesDate">Dues Paid on Date</label>
+    <input id="paidDuesDate" name="paidDuesDate" type="date" value="<?=$row['paidDuesDate']?>">
+</p>
+<p>
     <label for="yearGraduating">Year Graduating</label>
     <input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>">
 </p>
