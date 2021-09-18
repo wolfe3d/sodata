@@ -322,7 +322,7 @@ input[type="radio"] {
   display: block;
   float: left;
   margin-right: -2em;
-  opacity: 0;
+  opacity: 0; //Wolfe uncommented to get rid of double box in checkbox
   width: 1em;
   z-index: -1;
 }
