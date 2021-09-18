@@ -322,7 +322,7 @@ input[type="radio"] {
   display: block;
   float: left;
   margin-right: -2em;
-  opacity: 0; //Wolfe uncommented to get rid of double box in checkbox
+  /*opacity: 0;*/ //Wolfe uncommented to get rid of double box in checkbox; however, this causes boxes without labels to disappear - Perhaps use blank label for checkboxes
   width: 1em;
   z-index: -1;
 }
