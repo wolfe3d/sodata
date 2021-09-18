@@ -21,10 +21,10 @@ if(!empty($_SESSION['userData'])){
   //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
 
   $output .= "<h2> Quick Links </h2><p>";
-  $output .= "<a href='https://drive.google.com/file/d/1IVpuWgh7QzGWutuDaifFNB21zdZWWyYz/view?usp=sharing'> 2022 Draft Rules </a><br>";
+  $output .= "<a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a><br>";
   $output .= "<a href='https://docs.google.com/spreadsheets/d/1FY63NJP8GkNXh3gFZy93TNCWz6FdWF_fBpNuHQ4YCYg/edit?usp=sharing'> 2022 Fall Semester Teams </a><br>";
   $output .= "<a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a><br>";
-  $output .= "<a href='https://calendar.google.com/calendar/u/1?cid=d2FsdG9uc2NpZW5jZWNsdWJAZ21haWwuY29t'> Google Calendar </a></p>";
+  $output .= "<a href='https://calendar.google.com/calendar/embed?src=waltonscienceclub%40gmail.com&ctz=America%2FNew_York'> Google Calendar </a></p>";
 
 //TODO: Fallrosterdate should be changed in the table to indicate that this is a roster instead of tournaments
 //TODO: Remove all warnings in tournamentview for a roster
