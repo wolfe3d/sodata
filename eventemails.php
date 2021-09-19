@@ -6,7 +6,7 @@ require_once  ("functions.php");
 userCheckPrivilege(2);
 
 $event = intval($_POST['myID']);
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['id']);
+$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 //semester teams tournament hardcoded, change later
 $emails = "";
 $fallRosterDate = strval(getCurrentSOYear()-1)."-07-31";
