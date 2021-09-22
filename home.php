@@ -36,15 +36,8 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<h2>Upcoming Tournaments</h2>";
 		include("tournamentupcoming.php");
 		$output .= $tournaments;
-		$output .= "<h2>My Events</h2><h3> Fall Events: </h3>";
-		$fallEventsQuery = "SELECT `event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = 12 and `student`.`studentID` = $studentID";
-		$result = $mysqlConn->query($fallEventsQuery) or error_log("\n<br />Warning: query failed:$fallEventsQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$output .= "<ul>";
-		while ($row = $result->fetch_assoc()):
-			$output.="<li>".$row['event']."</li>";
-		endwhile;
-		$output .= "</ul>";
-
+		$output .= "<h2>My Events</h2><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
+		$output .= getStudentEvents($mysqlConn, 12, $studentID);
 		$output .= studentEventPriority($mysqlConn, $studentID);
 		$output .= studentTournamentResults($mysqlConn, $studentID);
 	}

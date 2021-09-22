@@ -149,6 +149,28 @@ function studentEventPriority($db, $studentID)
 	return $output;
 }
 
+//get student events from a specific tournament
+function getStudentEvents($db, $tournamentID, $studentID)
+{
+	$eventQuery = "SELECT `event`,`event`.`eventID` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output .= "<ul>";
+	while ($row = $result->fetch_assoc()):
+		$output.="<li>".$row['event']."</li>";
+	endwhile;
+	$output .= "</ul>";
+	return $output;
+}
+
+//get student events from a specific tournament
+function getStudentTeam($db, $tournamentID, $studentID)
+{
+	$eventQuery = "SELECT DISTINCT `teamName` FROM `teammateplace` inner join `student` on `teammateplace`.`studentID` = student.studentID inner join team on teammateplace.teamID = team.teamID where tournamentID = $tournamentID and student.studentID = $studentID";
+	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$row = $result->fetch_assoc();
+	return $row['teamName'];
+}
+
 //get Event type options
 function getEventString($type)
 {
