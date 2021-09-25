@@ -11,7 +11,7 @@ if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
   $output .= '<div class="ac-data">';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
-	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQBp-90QI1zuFDF7zy7oI76ytDFJ2r_-w8oIz7R-w7BLCrZuci-93x1QEnRpwvJPjM8U3-Z9RC4gMTv/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
+	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQBp-90QI1zuFDF7zy7oI76ytDFJ2r_-w8oIz7R-w7BLCrZuci-93x1QEnRpwvJPjM8U3-Z9RC4gMTv/embed?start=true&loop=true&delayms=5000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
 	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
   $output .= '<img src="'.$_SESSION['userData']['picture'].'">';
   //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
