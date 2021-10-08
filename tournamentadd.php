@@ -4,11 +4,6 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(1);
 require_once  ("functions.php");
 
-    function getIfSet(&$value, $default = NULL)
-{
-	return isset($value) ? $value : $default;
-}
-
 $name = $mysqlConn->real_escape_string($_POST['tournamentName']);
 $host = $mysqlConn->real_escape_string($_POST['host']);
 $dateTournament = $mysqlConn->real_escape_string($_POST['dateTournament']);
