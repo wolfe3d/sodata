@@ -97,6 +97,8 @@ if(userHasPrivilege(3))
 
 	$output .=studentTournamentResults($mysqlConn, $row['studentID']);
 	$output .=studentEventPriority($mysqlConn, $row['studentID']);
+	$output .= "<br><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
+	$output .= getStudentEvents($mysqlConn, 12, $studentID);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
 	$output .=studentCourseEnrolled($mysqlConn, $row['studentID']);
 }

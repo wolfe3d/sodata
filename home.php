@@ -11,7 +11,7 @@ if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
   $output .= '<div class="ac-data">';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
-	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQBp-90QI1zuFDF7zy7oI76ytDFJ2r_-w8oIz7R-w7BLCrZuci-93x1QEnRpwvJPjM8U3-Z9RC4gMTv/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
+	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQBp-90QI1zuFDF7zy7oI76ytDFJ2r_-w8oIz7R-w7BLCrZuci-93x1QEnRpwvJPjM8U3-Z9RC4gMTv/embed?start=true&loop=true&delayms=5000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
 	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
   $output .= '<img src="'.$_SESSION['userData']['picture'].'">';
   //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
@@ -22,7 +22,7 @@ if(!empty($_SESSION['userData'])){
 
   $output .= "<h2> Quick Links </h2><p>";
   $output .= "<a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a><br>";
-  $output .= "<a href='https://docs.google.com/spreadsheets/d/1FY63NJP8GkNXh3gFZy93TNCWz6FdWF_fBpNuHQ4YCYg/edit?usp=sharing'> 2022 Fall Semester Teams </a><br>";
+  $output .= "<a href='data.php#tournament-view-12'> 2022 Fall Semester Teams </a><br>";
   $output .= "<a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a><br>";
   $output .= "<a href='https://calendar.google.com/calendar/embed?src=waltonscienceclub%40gmail.com&ctz=America%2FNew_York'> Google Calendar </a></p>";
 
@@ -36,15 +36,8 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<h2>Upcoming Tournaments</h2>";
 		include("tournamentupcoming.php");
 		$output .= $tournaments;
-		$output .= "<h2>My Events</h2><h3> Fall Events: </h3>";
-		$fallEventsQuery = "SELECT `event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = 12 and `student`.`studentID` = $studentID";
-		$result = $mysqlConn->query($fallEventsQuery) or error_log("\n<br />Warning: query failed:$fallEventsQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$output .= "<ul>";
-		while ($row = $result->fetch_assoc()):
-			$output.="<li>".$row['event']."</li>";
-		endwhile;
-		$output .= "</ul>";
-
+		$output .= "<h2>My Events</h2><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
+		$output .= getStudentEvents($mysqlConn, 12, $studentID);
 		$output .= studentEventPriority($mysqlConn, $studentID);
 		$output .= studentTournamentResults($mysqlConn, $studentID);
 	}
