@@ -37,7 +37,7 @@ if(!empty($_SESSION['userData'])){
 		include("tournamentupcoming.php");
 		$output .= $tournaments;
 		$output .= "<h2>My Events</h2><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID, false)."): </h3>";
-		$output .= studentEvents($mysqlConn, 12, $studentID);
+		$output .= studentEvents($mysqlConn, 12, $studentID, false);
 		$output .= studentEventPriority($mysqlConn, $studentID);
 		$output .= studentTournamentResults($mysqlConn, $studentID, true);
 	}
