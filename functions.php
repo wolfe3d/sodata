@@ -85,7 +85,7 @@ function studentTournamentResults($db, $studentID)
 function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 {
 	//check partner(s)
-	$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamentEventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
+	$query = "SELECT `first`,`last` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamentEventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="";
 	$partnerNum = mysqli_num_rows($result);
