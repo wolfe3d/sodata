@@ -152,11 +152,18 @@ function studentEventPriority($db, $studentID)
 //get student events from a specific tournament
 function getStudentEvents($db, $tournamentID, $studentID)
 {
-	$eventQuery = "SELECT `event`,`event`.`eventID` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+	$eventQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
 	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output .= "<ul>";
 	while ($row = $result->fetch_assoc()):
-		$output.="<li>".$row['event']."</li>";
+		$output.="<li>".$row['event'];
+		$partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` on student.studentID = teammateplace.studentID where tournamenteventID = ".$row['tournamenteventID']." and teamID = ".$row['teamID']." and student.studentID != ".$studentID;
+		$partnerResult = $db->query($partnerQuery) or error_log("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$output.=" (";
+		while ($row = $partnerResult->fetch_assoc()):
+			$output.=$row['first']." ".$row['last'].", ";
+		endwhile;
+		$output = substr_replace($output, ")</li>", -2);
 	endwhile;
 	$output .= "</ul>";
 	return $output;
