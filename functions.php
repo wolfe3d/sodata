@@ -73,26 +73,8 @@ function studentTournamentResults($db, $studentID)
 				$output.="<h3>".$row['tournamentName']."</h3><ul>";
 			}
 
-			//check partner(s)
-			$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$row['tournamenteventID']." AND `teammateplace`.`teamID`=".$row['teamID']." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
-			$resultPartners = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-			$partners ="";
-			if (mysqli_num_rows($resultPartners)>0)
-			{
-				while ($rowPartner = $resultPartners->fetch_assoc()):
-					$partners.=$partners?" and ":"";
-					$partners.=$rowPartner['first']." ".$rowPartner['last'];
-				endwhile;
-			}
-
-			//fill partners string
-			if($partners==""){
-				$partners="No partner!";
-			}
-			$partners="($partners)";
-
 			//show results
-		  $output.="<li>".$row['event'].": ". $row['place'] ." $partners</li>";
+		  	$output.="<li>".$row['event'].": ". $row['place']." ".getEventPartners($db, $row['tournamenteventID'],$row['teamID'],$studentID)." </li>";
 			$lasttournament = $row['tournamentID'];
 		endwhile;
 		$output.="</ul></div>";
@@ -156,10 +138,30 @@ function getStudentEvents($db, $tournamentID, $studentID)
 	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output .= "<ul>";
 	while ($row = $result->fetch_assoc()):
-		$output.="<li>".$row['event']."</li>";
+		$output.="<li>".$row['event']." ".getEventPartners($db, $row['tournamenteventID'],$row['teamID'],$studentID)."</li>";
 	endwhile;
-	$output .= "</ul>";
+	$output.="</ul>";
 	return $output;
+}
+
+function getEventPartners($db, $tournamenteventID, $teamID, $studentID)
+{
+	$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamenteventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
+	$resultPartners = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$partners ="";
+	if (mysqli_num_rows($resultPartners)>0)
+	{
+		while ($rowPartner = $resultPartners->fetch_assoc()):
+			$partners.=$partners?" and ":"";
+			$partners.=$rowPartner['first']." ".$rowPartner['last'];
+		endwhile;
+	}
+
+	//fill partners string
+	if($partners==""){
+		$partners="No partner!";
+	}
+	return "($partners)";
 }
 
 //get student events from a specific tournament
