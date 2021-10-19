@@ -36,10 +36,10 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<h2>Upcoming Tournaments</h2>";
 		include("tournamentupcoming.php");
 		$output .= $tournaments;
-		$output .= "<h2>My Events</h2><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
-		$output .= getStudentEvents($mysqlConn, 12, $studentID);
+		$output .= "<h2>My Events</h2><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID, false)."): </h3>";
+		$output .= studentEvents($mysqlConn, 12, $studentID);
 		$output .= studentEventPriority($mysqlConn, $studentID);
-		$output .= studentTournamentResults($mysqlConn, $studentID);
+		$output .= studentTournamentResults($mysqlConn, $studentID, true);
 	}
 
 	//Coach Reminders and Results

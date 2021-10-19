@@ -94,11 +94,10 @@ if(userHasPrivilege(3))
 			$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
 		}
 	}
-
-	$output .=studentTournamentResults($mysqlConn, $row['studentID']);
+	$output .="<br><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
+	$output .=studentEvents($mysqlConn, 12, $studentID, false);
+	$output .=studentTournamentResults($mysqlConn, $row['studentID'], true);
 	$output .=studentEventPriority($mysqlConn, $row['studentID']);
-	$output .= "<br><h3> Fall Events (Team ".getStudentTeam($mysqlConn, 12, $studentID)."): </h3>";
-	$output .= getStudentEvents($mysqlConn, 12, $studentID);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
 	$output .=studentCourseEnrolled($mysqlConn, $row['studentID']);
 }

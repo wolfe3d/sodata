@@ -52,10 +52,10 @@ function getIfSet($value, $default = NULL)
 	return isset($value) ? $value : $default;
 }
 
-//get students previous results
+//get students previous results, use this also to just get Event list for a Team assignment
 function studentTournamentResults($db, $studentID)
 {
-	$query = "SELECT * FROM `teammateplace` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `teammateplace`.`studentID` = $studentID AND `place` IS NOT NULL ORDER BY `dateTournament` DESC";
+	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` WHERE `teammateplace`.`studentID` = $studentID AND `place` IS NOT NULL ORDER BY `dateTournament` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = "";
 	if($result && mysqli_num_rows($result)>0)
@@ -72,27 +72,8 @@ function studentTournamentResults($db, $studentID)
 				$output.="<div id=\"".$row['tournamentName']."\">";
 				$output.="<h3>".$row['tournamentName']."</h3><ul>";
 			}
-
-			//check partner(s)
-			$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$row['tournamenteventID']." AND `teammateplace`.`teamID`=".$row['teamID']." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
-			$resultPartners = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-			$partners ="";
-			if (mysqli_num_rows($resultPartners)>0)
-			{
-				while ($rowPartner = $resultPartners->fetch_assoc()):
-					$partners.=$partners?" and ":"";
-					$partners.=$rowPartner['first']." ".$rowPartner['last'];
-				endwhile;
-			}
-
-			//fill partners string
-			if($partners==""){
-				$partners="No partner!";
-			}
-			$partners="($partners)";
-
 			//show results
-		  $output.="<li>".$row['event'].": ". $row['place'] ." $partners</li>";
+			$output.=	studentEvents($db, $row['tournamentID'], $studentID, true);
 			$lasttournament = $row['tournamentID'];
 		endwhile;
 		$output.="</ul></div>";
@@ -100,7 +81,30 @@ function studentTournamentResults($db, $studentID)
 	return $output;
 }
 
-//find student's courses completed
+//find partners for an event in a tournament
+function studentPartners($db,$tournamentEventID, $teamID, $studentID)
+{
+	//check partner(s)
+	$query = "SELECT * FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamentEventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output ="";
+	$partnerNum = mysqli_num_rows($result);
+	if ($partnerNum>0)
+	{
+		while ($row = $result->fetch_assoc()):
+			if($output) $output.=$partnerNum>1 ? ", ":" and "; //adds comma if more than two partners or and to add last partner
+			$output.=$row['first']." ".$row['last'];
+			$partnerNum -=1;  //reduces partners left to add
+		endwhile;
+	}
+	else
+	{
+		$output="No partner!";
+	}
+	return $output;
+}
+
+//find student courses completed
 function studentCourseCompleted($db, $studentID)
 {
 	$output = "";
@@ -150,21 +154,23 @@ function studentEventPriority($db, $studentID)
 }
 
 //get student events from a specific tournament
-function getStudentEvents($db, $tournamentID, $studentID)
+function studentEvents($db, $tournamentID, $studentID, $showPlace)
 {
-	$eventQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
-	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output .= "<ul>";
-	while ($row = $result->fetch_assoc()):
-		$output.="<li>".$row['event'];
-		$partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` on student.studentID = teammateplace.studentID where tournamenteventID = ".$row['tournamenteventID']." and teamID = ".$row['teamID']." and student.studentID != ".$studentID;
-		$partnerResult = $db->query($partnerQuery) or error_log("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$output.=" (";
-		while ($row = $partnerResult->fetch_assoc()):
-			$output.=$row['first']." ".$row['last'].", ";
+	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "<ul>";
+	if ($result && mysqli_num_rows($result)>0)
+	{
+		while ($row = $result->fetch_assoc()):
+				//show results
+			$output.="<li>".$row['event'];
+			if($showPlace)
+			{
+				$output.=": ". $row['place'];
+			}
+			$output.=" (".studentPartners($db, $row['tournamenteventID'], $row['teamID'], $studentID).")</li>";
 		endwhile;
-		$output = substr_replace($output, ")</li>", -2);
-	endwhile;
+	}
 	$output .= "</ul>";
 	return $output;
 }
