@@ -184,6 +184,26 @@ function getStudentTeam($db, $tournamentID, $studentID)
 	return $row['teamName'];
 }
 
+function getTeamEmails($db, $teamID)
+{
+	$query = "SELECT DISTINCt `first`, `last`, `email`, `emailSchool` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` where `teamID` = $teamID and `active` = 1";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$emails = "";
+	while ($row = $result->fetch_assoc()):
+		if($row['email']){
+			$emails.=$row['first'] . " " . $row['last']." &lt;";
+			$emails.=$row['email'] . "&gt;; ";
+		}
+	
+		if($row['emailSchool']){
+			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+		}
+		$emails.="<br>";
+	
+	endwhile;
+	return $emails;
+}
+
 //get Event type options
 function getEventString($type)
 {
