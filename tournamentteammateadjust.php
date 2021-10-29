@@ -2,6 +2,7 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(3);
+$jsOutput = "";
 
 $table = $mysqlConn->real_escape_string($_POST['table']);
 if(empty($table))
@@ -30,14 +31,20 @@ if($checked){
 else {
 	//TODO: Make sure student is not already assigned events.  If they are give warning, do not remove student.
 	//If student is assigned, check box should be rechecked in data.js tournamentTeammate function and error should be given
-
+	$query = "SELECT * FROM `teammateplace` where teamID = $teamID and studentID = $studentID";
 	//Insert student into team table
-	$query = "DELETE FROM `$table` WHERE `teamID` = '$teamID' AND `studentID` = '$studentID';";
+	$eventResult = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(!($eventResult && mysqli_num_rows($eventResult)>0)){
+		$query = "DELETE FROM `$table` WHERE `teamID` = '$teamID' AND `studentID` = '$studentID';";
+	}else{
+		$jsOutput.="0";
+	}
 }
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {
-	echo "1";
+	$jsOutput.="1";
+	echo $jsOutput;
 }
 else
 {
