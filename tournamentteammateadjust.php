@@ -21,16 +21,18 @@ if(empty($studentID))
 }
 $checked = intval($_POST['checked']);
 if($checked){
-	//TODO: Make sure student is not assigned to a tournament in which they are already assigned to a different team
-	//If student is assigned to another team, check box should be unchecked in data.js tournamentTeammate function and error should be given
-
-
+	$query = "SELECT * FROM `teammateplace` inner join `tournamentevent` on `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` where `tournamentID` = (SELECT `tournamentID` from `team` where `team`.teamID = $teamID) and `teamID` != $teamID and `studentID` = $studentID";
 	//Insert student into team table
-	$query = "INSERT INTO `$table` (`teamID`, `studentID`) VALUES ('$teamID', '$studentID');";
+	$eventResult = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(!($eventResult && mysqli_num_rows($eventResult)>0)){
+		$query = "INSERT INTO `$table` (`teamID`, `studentID`) VALUES ('$teamID', '$studentID');";
+	}else{
+		$jsOutput.="1";
+	}
+
+
 }
 else {
-	//TODO: Make sure student is not already assigned events.  If they are give warning, do not remove student.
-	//If student is assigned, check box should be rechecked in data.js tournamentTeammate function and error should be given
 	$query = "SELECT * FROM `teammateplace` where teamID = $teamID and studentID = $studentID";
 	//Insert student into team table
 	$eventResult = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
