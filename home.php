@@ -17,6 +17,7 @@ if(!empty($_SESSION['userData'])){
   //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
   $output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
   $output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
+	$output .= "<p><a href='https://scilympiad.com/'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</p>";
   //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
   //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
 

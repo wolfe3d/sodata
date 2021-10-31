@@ -47,6 +47,10 @@ if (userHasPrivilege(4))
     <input id="schoolID" name="schoolID" type="text" value="<?=$row['schoolID']?>">
 </p>
 <p>
+    <label for="schoolID"><a href="https://scilympiad.com/">Scilympiad</a> ID</label>
+    <input id="scilympiadID" name="scilympiadID" type="text" value="<?=$row['scilympiadID']?>">
+</p>
+<p>
 <!--Changing Google Email may break functions TODO: Think about changing this ability-->
     <label for="email">Google Email</label>
     <input id="email" name="email" type="email" value="<?=$row['email']?>">

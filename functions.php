@@ -104,6 +104,19 @@ function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 	return $output;
 }
 
+//find Scilympiad ID
+function studentScilympiadID($db, $studentID)
+{
+	$query = "SELECT `scilympiadID` FROM `student` WHERE `student`.`studentID`=$studentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output ="";
+	if ($row = $result->fetch_assoc())
+	{
+			$output=$row['scilympiadID']?$row['scilympiadID']:"Not set";
+	}
+	return $output;
+}
+
 //find student courses completed
 function studentCourseCompleted($db, $studentID)
 {

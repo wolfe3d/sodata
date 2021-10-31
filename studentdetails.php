@@ -23,7 +23,10 @@ if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 }
-
+if(userHasPrivilege(4))
+{
+	$output .= "<div><a href='#changeuser'>Imitate User (ToBe added)</a></div>";
+}
 if(userHasPrivilege(3))
 {
 	$output .= "<div><a href='#student-edit-$studentID'>Edit</a> ";
@@ -56,6 +59,7 @@ if(userHasPrivilege(3))
 if(userHasPrivilege(4))
 {
 	$output .= "<div>School ID: ".$row['schoolID']."</div>";
+	$output .= "<div>Scilympiad ID: ".$row['scilympiadID']."</div>";
 }
 $output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 if($row['email'])
