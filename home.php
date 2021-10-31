@@ -17,8 +17,7 @@ if(!empty($_SESSION['userData'])){
   //$output .= '<p><b>Google ID:</b> '.$userData['oauth_uid'].'</p>';
   $output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
   $output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
-	$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</p>";
-  //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
+	  //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
   //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
 
   $output .= "<h2> Quick Links </h2><p>";
@@ -34,6 +33,8 @@ if(!empty($_SESSION['userData'])){
 	if($studentID!=0)
 	{
 		//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
+		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</p>";
+
 		$output .= "<h2>Upcoming Tournaments</h2>";
 		include("tournamentupcoming.php");
 		$output .= $tournaments;
