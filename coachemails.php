@@ -6,10 +6,10 @@ require_once  ("functions.php");
 userCheckPrivilege(3);
 
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
-$query = "SELECT * FROM `coach`";
+$coachQuery = "SELECT * FROM `coach`";
 $emails = "";
 
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($coachQuery) or print("\n<br />Warning: query failed:$coachQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 while ($row = $result->fetch_assoc()):
     if($row['emailSchool']){
         $emails.=$row['first'] . " " . $row['last'] . " <";

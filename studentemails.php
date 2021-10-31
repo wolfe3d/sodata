@@ -2,12 +2,14 @@
 header("Content-Type: text/plain");
 require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("functions.php");
 userCheckPrivilege(3);
 
-$query = "SELECT * FROM `student` WHERE `active` = 1";
+$studentQuery = "SELECT * FROM `student` WHERE `active` = 1";
 $emails = "";
 
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+require_once  ("coachemails.php");
+$result = $mysqlConn->query($studentQuery) or print("\n<br />Warning: query failed:$studentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 while ($row = $result->fetch_assoc()):
     if($row['email']){
         $emails.=$row['first'] . " " . $row['last'] . " <";
@@ -20,7 +22,5 @@ while ($row = $result->fetch_assoc()):
     }
 
 endwhile;
-
 echo $emails;
-require_once  ("coachemails.php");
 ?>
