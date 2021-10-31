@@ -120,7 +120,7 @@ if($courseID)
 	}
 }
 
-$query .= " ORDER BY `student`.`last` ASC";
+$query .= " ORDER BY `student`.`last`, `student`.`first`";
 $output .= userHasPrivilege(3)?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
