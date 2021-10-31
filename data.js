@@ -1151,6 +1151,14 @@ function tournamentTeammate(inputBtn)
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
 		}
+		else if(html=='01'){
+			alert("Remove failed: student still has events.");
+			inputBtn.prop('checked', true);
+		}
+		else if(html=='11'){
+			alert("Add failed: student is on a different team.")
+			inputBtn.prop('checked', false);
+		}
 		else {
 			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
 		}
