@@ -606,4 +606,10 @@ function get_uniqueToken($db, $tableName)
     return $uniqueToken;
 	}
 }
+
+//Remove text with parenthesis.  This is used to remove names in parenthesis for alphabetizing in tournaments.
+function removeParenthesisText($string)
+{
+	return preg_replace("/\([^)]+\)/","",$string);
+}
 ?>

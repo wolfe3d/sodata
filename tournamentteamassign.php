@@ -37,7 +37,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable'>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID ORDER BY `event`.`event`";
@@ -52,7 +52,7 @@ if(mysqli_num_rows($result))
 	endwhile;
 
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<tr><th rowspan='3' style='vertical-align:bottom;'>Students</th>";
+	$output .="<thead><tr><th rowspan='3' style='vertical-align:bottom;'><p>Students</p><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)''>First</a></th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -105,7 +105,7 @@ if(mysqli_num_rows($result))
 		}
 
 	}
-	$output .="<td id='studenttotal-empty'></td></tr>";
+	$output .="<td id='studenttotal-empty'></td></tr></thead><tbody>";
 
 	//Get students
 	$query = "SELECT * FROM `teammate` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teamID` = $teamID ORDER BY `last` ASC, `first` ASC";
@@ -115,7 +115,7 @@ if(mysqli_num_rows($result))
 	{
 		while ($rowStudent = $resultStudent->fetch_assoc()):
 			//$studentTotal = 0;  //this is done in the javascript TODO: remove this line
-			$output .="<tr>";
+			$output .="<tr studentLast=".removeParenthesisText($rowStudent['last'])."  studentFirst=".removeParenthesisText($rowStudent['first']).">";
 			/*/check to see if student is signed up for the timeblock
 			/$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID']. " GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
 			$resultStudentCheck = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -167,7 +167,7 @@ if(mysqli_num_rows($result))
 	}
 
 	//print the total signed up for each event
-	$output .="<tr><td><strong>$totalStudents</strong> Total Teammates</td>";
+	$output .="</tbody><tfoot><tr><td><strong>$totalStudents</strong> Total Teammates</td>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$timeEvents= $timeblocks[$i]['events'];
 		if($timeEvents)
@@ -228,7 +228,7 @@ if(mysqli_num_rows($result))
 	}
 	$output .="</tr>";
 
-	$output .="</table></form>";
+	$output .="</tfoot></table></form>";
 }
 else {
 	exit("<div>Set available time blocks first!</div>");

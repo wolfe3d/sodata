@@ -740,6 +740,24 @@ function tournamentsPreparePage()
 		tournamentAddModify();
 }
 
+
+function tournamentSort(byAttr)
+{
+	var $table=$('#tournamentTable');
+
+	var rows = $table.find('tbody>tr').get();
+	rows.sort(function(a, b) {
+		var keyA = $(a).attr(byAttr);
+		var keyB = $(b).attr(byAttr);
+		if (keyA > keyB) return 1;
+		if (keyA < keyB) return -1;
+		return 0;
+	});
+	$.each(rows, function(index, row) {
+		$table.children('tbody').append(row);
+	});
+}
+
 function tournamentEdit(myID)
 {
 	tournamentAddModify();
