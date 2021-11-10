@@ -81,6 +81,44 @@ function studentTournamentResults($db, $studentID)
 	return $output;
 }
 
+function studentTournamentSchedule($db, $tournamentID, $studentID)
+{
+	$schedule="";
+    $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    if($tournamentResult->num_rows > 0){
+        $schedule.="Your events and partners:<br>";
+        $schedule.="<table><tr><th>Time (All times ET)</th><th>Event</th><th>Partners</th></tr>";
+        while ($row = $tournamentResult->fetch_assoc()):
+            $tournamenteventID = $row['tournamenteventID'];
+            $teamID = $row['teamID'];
+            $schedule.="<tr><td>";
+            $timeQuery = "SELECT * from `tournamenttimechosen` inner join `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID` where `tournamenteventID` = $tournamenteventID and `teamID` = $teamID";
+            $timeResult = $db->query($timeQuery) or print("\n<br />Warning: query failed:$timeQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+            if($timeResult){
+                while ($timeRow = $timeResult->fetch_assoc()):
+                    $schedule.=date("H:i",strtotime($timeRow['timeStart']))." - ".date("H:i",strtotime($timeRow['timeEnd']));
+                endwhile;
+            }
+            $schedule.="</td><td>".$row['event']."</td><td>";
+            $partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamenteventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
+            $partnerResult = $db->query($partnerQuery) or print("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+            if($partnerResult){
+                while ($row = $partnerResult->fetch_assoc()):
+                    $schedule.=$row['first']." ".$row['last']." ".$row['email']."<br>";
+                endwhile;
+                $schedule.="</td>";
+            }
+            $schedule.="</tr>";
+        endwhile;
+        $schedule.="</table>";
+    }
+	else{
+		return -1;
+	}
+	return $schedule;
+}
+
 //find partners for an event in a tournament
 function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 {
@@ -175,7 +213,7 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 	return $output;
 }
 
-//get student events from a specific tournament
+//get student team name from a spceific tournament
 function getStudentTeam($db, $tournamentID, $studentID)
 {
 	$eventQuery = "SELECT DISTINCT `teamName` FROM `teammateplace` inner join `student` on `teammateplace`.`studentID` = student.studentID inner join team on teammateplace.teamID = team.teamID where tournamentID = $tournamentID and student.studentID = $studentID";
