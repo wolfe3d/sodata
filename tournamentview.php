@@ -117,6 +117,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			}
 			$output .="<br>";
 		}
+		$schedule ="";
 		while($rowTeam = $resultTeams->fetch_assoc()):
 			$output .="<h2>Team ".$rowTeam['teamName']."</h2>";
 			if(userHasPrivilege(3))

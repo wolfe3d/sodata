@@ -142,6 +142,9 @@ function loadpage(page, type, myID){
 							else if(typepage=="events"){
 								tournamentEventAdd(myID);
 							}
+							if(typepage=="eventnote"){
+								tournamentEventNote(myID);
+							}
 							else if(typepage=="eventtime"){
 								tournamentTimesCheckErrors();
 							}
@@ -740,6 +743,24 @@ function tournamentsPreparePage()
 		tournamentAddModify();
 }
 
+
+function tournamentSort(byAttr)
+{
+	var $table=$('#tournamentTable');
+
+	var rows = $table.find('tbody>tr').get();
+	rows.sort(function(a, b) {
+		var keyA = $(a).attr(byAttr);
+		var keyB = $(b).attr(byAttr);
+		if (keyA > keyB) return 1;
+		if (keyA < keyB) return -1;
+		return 0;
+	});
+	$.each(rows, function(index, row) {
+		$table.children('tbody').append(row);
+	});
+}
+
 function tournamentEdit(myID)
 {
 	tournamentAddModify();
@@ -903,6 +924,15 @@ function tournamentEventAdd(myID)
 			});
 		}
 	});
+}
+
+function tournamentEventNote(myID)
+{
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'tournamentevent',this.id,this.value);
+					});
+		});
 }
 
 function toggleAdd()

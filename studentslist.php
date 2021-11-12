@@ -120,7 +120,7 @@ if($courseID)
 	}
 }
 
-$query .= " ORDER BY `student`.`last` ASC";
+$query .= " ORDER BY `student`.`last`, `student`.`first`";
 $output .= userHasPrivilege(3)?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -155,7 +155,8 @@ if($result)
 			}
 			else {
 				$query = "SELECT * FROM `user` WHERE `userID`=".$row['userID'];// where `field` = $fieldId";
-				$output .= $query;
+				//$output .= $query;
+				//TODO: Add last logged in to db and print it here
 				$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				$rowPriv = $resultPrivilege->fetch_assoc();
 				if ($rowPriv['privilege'])
