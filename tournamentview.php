@@ -1,6 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once("functions.php");
 
 userCheckPrivilege(1);
 //text output
@@ -18,6 +19,8 @@ if(empty($result))
 
 $row = $result->fetch_assoc();
 $numberTeams = $row["numberTeams"];
+$userID = $_SESSION['userData']['userID'];
+$studentID = getStudentID($mysqlConn,$userID);
 
 //Get number of teams created
 $query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID";
@@ -126,8 +129,17 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; View Events' /></p>";
 			}
 		endwhile;
+		$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
+		if($schedule != -1){
+			$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
+			$output.=$schedule;
+		}
+		else{
+			$output .= "You have not been assigned to events at this tournament.<br><br>";
+		}
 	}
 	$output .="</div>";
+
 	$output .= "<input class='button fa' type='button' onclick=\"window.location='#tournaments'\" value='&#xf0a8; Return' />";
 echo $output;
 ?>
