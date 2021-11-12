@@ -142,6 +142,9 @@ function loadpage(page, type, myID){
 							else if(typepage=="events"){
 								tournamentEventAdd(myID);
 							}
+							if(typepage=="eventnote"){
+								tournamentEventNote(myID);
+							}
 							else if(typepage=="eventtime"){
 								tournamentTimesCheckErrors();
 							}
@@ -921,6 +924,15 @@ function tournamentEventAdd(myID)
 			});
 		}
 	});
+}
+
+function tournamentEventNote(myID)
+{
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'tournamentevent',this.id,this.value);
+					});
+		});
 }
 
 function toggleAdd()

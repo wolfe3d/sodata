@@ -52,6 +52,26 @@ function getIfSet($value, $default = NULL)
 	return isset($value) ? $value : $default;
 }
 
+//post note and link to edit a tournament's event's note
+function eventNote($id, $note, $editable = 0)
+{
+	$myOutput = "";
+	$maxLength = 10;
+	$noteShort = substr($note, 0, $maxLength);
+	if($editable)
+	{
+		$href = "href='#tournament-eventnote-$id'";
+		$myOutput .="<br>";
+		$myOutput .= $noteShort ? "<a $href>$noteShort</a>" : "<a $href>Add</a>";
+	}
+	else
+	{
+		$href = "href='#tournament-eventnoteview-$id'";
+		$myOutput .= $noteShort ? "<a $href>$noteShort</a>" : "";
+	}
+	return $myOutput;
+}
+
 //get students previous results, use this also to just get Event list for a Team assignment
 function studentTournamentResults($db, $studentID)
 {
@@ -85,8 +105,8 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
 {
 	$schedule="";
     $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
-	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-    if($tournamentResult->num_rows > 0){
+	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    if($tournamentResult && $tournamentResult->num_rows > 0){
         $schedule.="Your events and partners:<br>";
         $schedule.="<table><tr><th>Time (All times ET)</th><th>Event</th><th>Partners</th></tr>";
         while ($row = $tournamentResult->fetch_assoc()):
@@ -245,12 +265,12 @@ function getTeamEmails($db, $teamID)
 			$emails.=$row['first'] . " " . $row['last']." &lt;";
 			$emails.=$row['email'] . "&gt;; ";
 		}
-	
+
 		if($row['emailSchool']){
 			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
 		}
 		$emails.="<br>";
-	
+
 	endwhile;
 	return $emails;
 }
@@ -571,6 +591,8 @@ function rainbow($i) {
 		$opacity = 0.2;
     $rgb = array(255,255,0); //yellow
     // Go through the RGB values and adjust the values by $amount...
+		$i = $i - floor($i/11)*11;  //11 is the highest color, so after 11 the number returns to 0
+
 		switch($i) {
 			case 1:
 				$rgb = array(255,128,0); //orange

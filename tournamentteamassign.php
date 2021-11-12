@@ -52,7 +52,7 @@ if(mysqli_num_rows($result))
 	endwhile;
 
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<thead><tr><th rowspan='3' style='vertical-align:bottom;'><p>Students</p><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)''>First</a></th>";
+	$output .="<thead><tr><th rowspan='4' style='vertical-align:bottom;'><p>Students</p><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)''>First</a></th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -77,7 +77,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .= "<th colspan='$dateColSpan' style='text-align:center;'>" . $dateCheck . "</th>";
-	$output .="<th rowspan='2' style='vertical-align:bottom;'>Total Events</th></tr>";
+	$output .="<th rowspan='3' style='vertical-align:bottom;'>Total Events</th></tr>";
 
 //print the time for each event and date
 	$output .="<tr>";
@@ -102,6 +102,25 @@ if(mysqli_num_rows($result))
 		else {
 			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
 			$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
+		}
+
+	}
+	$output .="<td id='studenttotal-empty'></td></tr>";
+
+	//print the event note under each event
+	$output .="<tr>";
+	for ($i = 0; $i < count($timeblocks); $i++) {
+		$timeEvents= $timeblocks[$i]['events'];
+		if($timeEvents)
+		{
+			for ($n = 0; $n < count($timeEvents); $n++) {
+				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+				$output .= "<td id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvents[$n]['tournamenteventID'],$timeEvents[$n]['note'],(userHasPrivilege(3)))."</td>";
+			}
+		}
+		else {
+			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 		}
 
 	}
