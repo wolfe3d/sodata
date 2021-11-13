@@ -105,11 +105,11 @@ function studentTournamentResults($db, $studentID)
 function studentTournamentSchedule($db, $tournamentID, $studentID)
 {
 	$schedule="";
-    $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+    $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
 	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     if($tournamentResult && $tournamentResult->num_rows > 0){
         $schedule.="Your events and partners:<br>";
-        $schedule.="<table><tr><th>Time (All times ET)</th><th>Event</th><th>Partners</th></tr>";
+        $schedule.="<table><tr><th>Time (All times ET)</th><th>Note</th><th>Event</th><th>Partners</th></tr>";
         while ($row = $tournamentResult->fetch_assoc()):
             $tournamenteventID = $row['tournamenteventID'];
             $teamID = $row['teamID'];
@@ -121,7 +121,8 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
                     $schedule.=date("H:i",strtotime($timeRow['timeStart']))." - ".date("H:i",strtotime($timeRow['timeEnd']));
                 endwhile;
             }
-            $schedule.="</td><td>".$row['event']."</td><td>";
+            $schedule.="</td><td>".$row['note']."</td>";
+			$schedule.="<td>".$row['event']."</td><td>";
             $partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamenteventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
             $partnerResult = $db->query($partnerQuery) or print("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
             if($partnerResult){
