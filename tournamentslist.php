@@ -2,11 +2,12 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
+require_once ("functions.php");
 //text output
 $output = "";
 
 $name = isset($_POST['tournamentName'])?$mysqlConn->real_escape_string($_POST['tournamentName']):"";
-$year = isset($_POST['tournamentYear'])?intval($_POST['tournamentYear']):0;
+$year = isset($_POST['tournamentYear'])?intval($_POST['tournamentYear']):getCurrentSOYear();
 
 $query = "SELECT * from `tournament`";
 //check to see what is searched for
