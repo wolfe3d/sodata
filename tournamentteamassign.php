@@ -37,7 +37,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable'>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable' class='tournament'>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID ORDER BY `event`.`event`";
@@ -52,7 +52,7 @@ if(mysqli_num_rows($result))
 	endwhile;
 
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<thead><tr><th rowspan='4' style='vertical-align:bottom;'><p>Students</p><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)''>First</a></th>";
+	$output .="<thead><tr><th rowspan='3' style='vertical-align:bottom;'><div>Students</div></th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -96,7 +96,7 @@ if(mysqli_num_rows($result))
 		{
 			for ($n = 0; $n < count($timeEvents); $n++) {
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".$timeEvents[$n]['event']."</th>";
+				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvents[$n]['event']."</span></th>";
 			}
 		}
 		else {
@@ -109,18 +109,21 @@ if(mysqli_num_rows($result))
 
 	//print the event note under each event
 	$output .="<tr>";
+	//put sorting for last and first name in this row
+	$output .="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
+
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$timeEvents= $timeblocks[$i]['events'];
 		if($timeEvents)
 		{
 			for ($n = 0; $n < count($timeEvents); $n++) {
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<td id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvents[$n]['tournamenteventID'],$timeEvents[$n]['note'],(userHasPrivilege(3)))."</td>";
+				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvents[$n]['tournamenteventID'],$timeEvents[$n]['note'],(userHasPrivilege(3)))."</th>";
 			}
 		}
 		else {
 			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
+			$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
 		}
 
 	}
@@ -146,7 +149,7 @@ if(mysqli_num_rows($result))
 			}*/
 			$errorStudentCheck =""; //TODO: Remove this line and above commented lines if javascript errorcheck function works
 			//output student column
-			$output .="<td id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>$errorStudentCheck</td>";
+			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>$errorStudentCheck</td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				$timeEvents= $timeblocks[$i]['events'];
 				if($timeEvents)
