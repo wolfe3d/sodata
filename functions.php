@@ -58,6 +58,7 @@ function eventNote($id, $note, $editable = 0)
 	$myOutput = "";
 	$maxLength = 10;
 	$noteShort = substr($note, 0, $maxLength);
+	$noteShort .= strlen($note)>10 ? "...":"";
 	if($editable)
 	{
 		$href = "href='#tournament-eventnote-$id'";
