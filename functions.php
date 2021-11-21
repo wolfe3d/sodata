@@ -105,7 +105,7 @@ function studentTournamentResults($db, $studentID)
 function studentTournamentSchedule($db, $tournamentID, $studentID)
 {
 	$schedule="";
-    $tournamentQuery = "SELECT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
+    $tournamentQuery = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID and `student`.`studentID` = $studentID order by `timeStart`";
 	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     if($tournamentResult && $tournamentResult->num_rows > 0){
         $schedule.="Your events and partners:<br>";
@@ -114,12 +114,8 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
             $tournamenteventID = $row['tournamenteventID'];
             $teamID = $row['teamID'];
             $schedule.="<tr><td>";
-            $timeQuery = "SELECT * from `tournamenttimechosen` inner join `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID` where `tournamenteventID` = $tournamenteventID and `teamID` = $teamID";
-            $timeResult = $db->query($timeQuery) or print("\n<br />Warning: query failed:$timeQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-            if($timeResult){
-                while ($timeRow = $timeResult->fetch_assoc()):
-                    $schedule.=date("H:i",strtotime($timeRow['timeStart']))." - ".date("H:i",strtotime($timeRow['timeEnd']));
-                endwhile;
+            if($row['timeStart']){
+				$schedule.=date("H:i",strtotime($row['timeStart']))." - ".date("H:i",strtotime($row['timeEnd']));
             }
             $schedule.="</td><td>".$row['note']."</td>";
 			$schedule.="<td>".$row['event']."</td><td>";
@@ -257,21 +253,42 @@ function getStudentTeam($db, $tournamentID, $studentID)
 	return $row['teamName'];
 }
 
-function getTeamEmails($db, $teamID)
+function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 {
-	$query = "SELECT DISTINCt `first`, `last`, `email`, `emailSchool` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` where `teamID` = $teamID and `active` = 1";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1";
+	if($teamID){
+		$query.=" and `team`.`teamID` = $teamID";
+	}
+	if($tournamentID){
+		$query.=" and `tournamentID` = $tournamentID";
+	}
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
 	while ($row = $result->fetch_assoc()):
-		if($row['email']){
-			$emails.=$row['first'] . " " . $row['last']." &lt;";
-			$emails.=$row['email'] . "&gt;; ";
+		if(!$parents){
+			if($row['email']){
+				$emails.=$row['first'] . " " . $row['last']." &lt;";
+				$emails.=$row['email'] . "&gt;; ";
+			}
+	
+			if($row['emailSchool']){
+				$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+			}
+			$emails.="<br>";
 		}
-
-		if($row['emailSchool']){
-			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+		else
+		{
+			if($row['parent1Email']){
+				$emails.=$row['parent1First'] . " " . $row['parent1Last']." &lt;";
+				$emails.=$row['parent1Email'] . "&gt;; ";
+			}
+			if($row['parent2Email']){
+				$emails.=$row['parent2First'] . " " . $row['parent2Last']." &lt;";
+				$emails.=$row['parent2Email'] . "&gt;; ";
+			}
+			$emails.="<br>";
 		}
-		$emails.="<br>";
+		
 
 	endwhile;
 	return $emails;
