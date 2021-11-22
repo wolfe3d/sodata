@@ -4,7 +4,7 @@ require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 require_once  ("functions.php");
 userCheckPrivilege(3);
-$teamID = intval($_POST['myID']);
+$tournamentID = intval($_POST['myID']);
 
-echo getTeamEmails($mysqlConn, $teamID);
+echo getTeamEmails($mysqlConn, NULL, $tournamentID)."<br><input class='button fa' type='button' onclick=\"window.location='#tournament-view-".$tournamentID."'\" value='&#xf0a8; Return' />";
 ?>
