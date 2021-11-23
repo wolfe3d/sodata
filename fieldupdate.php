@@ -11,6 +11,12 @@ $table = $mysqlConn->real_escape_string($_POST['mytable']);
 $field = $mysqlConn->real_escape_string($_POST['myfield']);
 $value = $mysqlConn->real_escape_string($_POST['myvalue']);
 
+//special cases for times
+if($field=="timeStart" || $field=="timeEnd")
+{
+	$value = date('Y-m-d H:i:s',strtotime($value));
+}
+
 //check to see if user has a valid ID
 $query = "SELECT `".$table."ID` FROM `$table` WHERE `$table`.`".$table."ID` = $myID";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

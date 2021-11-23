@@ -84,7 +84,7 @@ if(mysqli_num_rows($result))
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$eventNumber = count($timeblocks[$i]['events'])>0?count($timeblocks[$i]['events']):1;
 		$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' colspan='$eventNumber' style='".$border."background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
+		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' colspan='$eventNumber' style='".$border."background-color:".rainbow($i)."'>" . timeblockEdit($timeblocks[$i]['timeblockID'],date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"])),(userHasPrivilege(3)))  . "</th>";
 	}
 	$output .="</tr>";
 

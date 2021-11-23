@@ -145,6 +145,9 @@ function loadpage(page, type, myID){
 							if(typepage=="eventnote"){
 								tournamentEventNote(myID);
 							}
+							if(typepage=="eventtimechange"){
+								tournamentEventTimeChange(myID);
+							}
 							else if(typepage=="eventtime"){
 								tournamentTimesCheckErrors();
 							}
@@ -865,7 +868,7 @@ function tournamentTimeAdd(myID)
 						let timeEnd = new Date($("#timeEnd").val());
 						let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
 
-						$("#timeblocks").append("<div id='timeblock-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+" <a href='javascript:tournamentTimeblockRemove("+html+")'>Remove</a></div>");
+						$("#timeblocks").append("<div id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></div>");
 					}
 					else
 					{
@@ -931,6 +934,15 @@ function tournamentEventNote(myID)
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
 							fieldUpdate(myID,'tournamentevent',this.id,this.value);
+					});
+		});
+}
+
+function tournamentEventTimeChange(myID)
+{
+	$('#addTo :input,select').each(function() {
+					$(this).change(function(){
+							fieldUpdate(myID,'timeblock',this.id,this.value);
 					});
 		});
 }

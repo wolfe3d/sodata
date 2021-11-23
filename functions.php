@@ -55,20 +55,26 @@ function getIfSet($value, $default = NULL)
 //post note and link to edit a tournament's event's note
 function eventNote($id, $note, $editable = 0)
 {
-	$myOutput = "";
+	$myOutput = "<br>";
 	$maxLength = 10;
 	$noteShort = substr($note, 0, $maxLength);
 	$noteShort .= strlen($note)>10 ? "...":"";
-	if($editable)
-	{
-		$href = "href='#tournament-eventnote-$id'";
-		$myOutput .="<br>";
-		$myOutput .= $noteShort ? "<a $href>$noteShort</a>" : "<a $href>Add</a>";
+	$href = "href='#tournament-eventnote-$id'";
+	$noteAlt = "";
+	if($editable){
+		$noteAlt = "<a $href>Add</a>";
 	}
-	else
-	{
-		$href = "href='#tournament-eventnoteview-$id'";
-		$myOutput .= $noteShort ? "<a $href>$noteShort</a>" : "";
+	$myOutput .= $noteShort ? "<a $href>$noteShort</a>" : $noteAlt;
+	return $myOutput;
+}
+
+//edit time block in the teamassign page
+function timeblockEdit($id, $time, $editable = 0)
+{
+	$myOutput = "$time";
+	if($editable){
+		$href = "href='#tournament-eventtimechange-$id'";
+		$myOutput = "<a $href>$time</a>";
 	}
 	return $myOutput;
 }
@@ -270,7 +276,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 				$emails.=$row['first'] . " " . $row['last']." &lt;";
 				$emails.=$row['email'] . "&gt;; ";
 			}
-	
+
 			if($row['emailSchool']){
 				$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
 			}
@@ -288,7 +294,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 			}
 			$emails.="<br>";
 		}
-		
+
 
 	endwhile;
 	return $emails;

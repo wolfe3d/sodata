@@ -13,12 +13,6 @@ if(empty($tournamentID))
 	exit();
 }
 
-/*if(empty($blockColor))
-{
-	echo "<div style='color:red'>No block color was sent.</div>";
-	exit();
-}*/
-
 if(empty($timeStart)||empty($timeEnd)){
 	echo "<div style='color:red'>No start or end time was set.</div>";
 	exit();
