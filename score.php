@@ -154,7 +154,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 	//list all the tournament names in the header
 	foreach ($tournaments as $tournament)
 	{
-		$output .= "<th rowspan='1' id='tournament-".$tournament['tournamentID']."'>".$tournament['tournamentName']."</th>";
+		$output .= "<th rowspan='1' id='tournament-".$tournament['tournamentID']."'><a href='#tournament-score-".$tournament['tournamentID']."'>".$tournament['tournamentName']."</a></th>";
 	}
 	//$output .="<th rowspan='2'># Events</th>";
 	//$output .="<th rowspan='2'>Avg Place</th>";
