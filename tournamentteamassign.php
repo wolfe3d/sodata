@@ -57,19 +57,19 @@ if(mysqli_num_rows($result))
 	$dateCheck = "";
 	$dateColSpan = 0;
 	$dateCount = 0;
-	for ($i = 0; $i < count($timeblocks); $i++) {
-		$eventNumber = count($timeblocks[$i]['events'])>0?count($timeblocks[$i]['events']):1;
+	foreach ($timeblocks as $timeblock) {
+		$eventNumber = count($timeblock['events'])>0?count($timeblock['events']):1;
 		if($dateCheck==""){
-			$dateCheck=date("F j, Y",strtotime($timeblocks[$i]["timeStart"]));
+			$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
 			$dateColSpan = $eventNumber;
 		}
 		else {
-			if($dateCheck!=date("F j, Y",strtotime($timeblocks[$i]["timeStart"]))){
+			if($dateCheck!=date("F j, Y",strtotime($timeblock["timeStart"]))){
 				$output .= "<th colspan='$dateColSpan' style='border-right:2px solid black;text-align:center;'>" . $dateCheck . "</th>";
-				$dateCheck=date("F j, Y",strtotime($timeblocks[$i]["timeStart"]));
+				$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
 				$dateColSpan = 1;
 				$dateCount +=1;
-				$timeblocks[$i]['border'] = "border-left:2px solid black; "; //adds border at beginning of new date
+				$timeblock['border'] = "border-left:2px solid black; "; //adds border at beginning of new date
 			}
 			else {
 				$dateColSpan += $eventNumber;
@@ -90,17 +90,17 @@ if(mysqli_num_rows($result))
 
 	//print the event under each time
 	$output .="<tr>";
-	for ($i = 0; $i < count($timeblocks); $i++) {
-		$timeEvents= $timeblocks[$i]['events'];
+	foreach ($timeblocks as $i=>$timeblock) {
+		$timeEvents= $timeblock['events'];
 		if($timeEvents)
 		{
-			for ($n = 0; $n < count($timeEvents); $n++) {
-				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvents[$n]['event']."</span></th>";
+			foreach ($timeEvents as $timeEvent) {
+				$border = isset($timeblock['border'])?$timeblock['border']:"";
+				$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvent['event']."</span></th>";
 			}
 		}
 		else {
-			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$border = isset($timeblock['border'])?$timeblock['border']:"";
 			$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
 		}
 
@@ -112,17 +112,17 @@ if(mysqli_num_rows($result))
 	//put sorting for last and first name in this row
 	$output .="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
 
-	for ($i = 0; $i < count($timeblocks); $i++) {
-		$timeEvents= $timeblocks[$i]['events'];
+	foreach ($timeblocks as $i=>$timeblock) {
+		$timeEvents= $timeblock['events'];
 		if($timeEvents)
 		{
-			for ($n = 0; $n < count($timeEvents); $n++) {
-				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				$output .= "<th id='event-".$timeEvents[$n]['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvents[$n]['tournamenteventID'],$timeEvents[$n]['note'],(userHasPrivilege(3)))."</th>";
+			foreach ($timeEvents as $timeEvent) {
+				$border = isset($timeblock['border'])?$timeblock['border']:"";
+				$output .= "<th id='event-".$timeEvent['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],(userHasPrivilege(3)))."</th>";
 			}
 		}
 		else {
-			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$border = isset($timeblock['border'])?$timeblock['border']:"";
 			$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
 		}
 
@@ -150,23 +150,23 @@ if(mysqli_num_rows($result))
 			$errorStudentCheck =""; //TODO: Remove this line and above commented lines if javascript errorcheck function works
 			//output student column
 			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>$errorStudentCheck</td>";
-			for ($i = 0; $i < count($timeblocks); $i++) {
-				$timeEvents= $timeblocks[$i]['events'];
+			foreach ($timeblocks as $i=>$timeblock) {
+				$timeEvents= $timeblock['events'];
 				if($timeEvents)
 				{
-					for ($n = 0; $n < count($timeEvents); $n++) {
-						$checkbox = "teammateplace-".$timeEvents[$n]['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-						$checkboxEvent = "timeblock-".$timeblocks[$i]['timeblockID']." teammateEvent-".$timeEvents[$n]['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
+					foreach ($timeEvents as $timeEvent) {
+						$checkbox = "teammateplace-".$timeEvent['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
+						$checkboxEvent = "timeblock-".$timeblock['timeblockID']." teammateEvent-".$timeEvent['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
 
-						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
+						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvent['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
 						$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-						$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblocks[$i]['timeblockID']."'>";
+						$border = isset($timeblock['border'])?$timeblock['border']:"";
+						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblock['timeblockID']."'>";
 						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
-						$timeblocks[$i]['events'][$n]['eventTotal'] +=$checked?1:0;
+						$timeEvent['eventTotal'] +=$checked?1:0;
 						//$studentTotal +=$checked?1:0;  //done in javascript
 						if(userHasPrivilege(3)){
-							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblocks[$i]['timeblockID']."' $checked>";
+							$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 						}
 						else {
 							$output .=$checked?"<div class='fa'>&#xf00c;</div>":"";
@@ -175,7 +175,7 @@ if(mysqli_num_rows($result))
 					}
 				}
 				else {
-					$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+					$border = isset($timeblock['border'])?$timeblock['border']:"";
 					$output .= "<td style='$border background-color:".rainbow($i)."'></th>";
 				}
 
@@ -190,11 +190,11 @@ if(mysqli_num_rows($result))
 
 	//print the total signed up for each event
 	$output .="</tbody><tfoot><tr><td><strong>$totalStudents</strong> Total Teammates</td>";
-	for ($i = 0; $i < count($timeblocks); $i++) {
-		$timeEvents= $timeblocks[$i]['events'];
+	foreach ($timeblocks as $i=>$timeblock) {
+		$timeEvents= $timeblock['events'];
 		if($timeEvents)
 		{
-			for ($n = 0; $n < count($timeEvents); $n++) {
+			foreach ($timeEvents as $timeEvent) {
 				//the errorText could be removed and done in javascript at first as well as other calculations
 				$errorText = "";
 				/*
@@ -206,11 +206,11 @@ if(mysqli_num_rows($result))
 				}
 				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
 				*/
-				$output .= "<td data-eventmax='".$timeEvents[$n]['numberStudents']."' id='eventtotal-".$timeEvents[$n]['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvents[$n]['eventTotal']." $errorText</td>";
+				$output .= "<td data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvent['eventTotal']." $errorText</td>";
 			}
 		}
 		else {
-			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$border = isset($timeblock['border'])?$timeblock['border']:"";
 			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 		}
 	}
@@ -218,24 +218,24 @@ if(mysqli_num_rows($result))
 
 	//print the place for each event
 	$output .="<tr><td>Place</td>";
-	for ($i = 0; $i < count($timeblocks); $i++) {
-		$timeEvents= $timeblocks[$i]['events'];
+	foreach ($timeblocks as $i=>$timeblock) {
+		$timeEvents= $timeblock['events'];
 		if($timeEvents)
 		{
-			for ($n = 0; $n < count($timeEvents); $n++) {
-				$placeName = "placement-".$timeEvents[$n]['tournamenteventID']."--".$teamID;//do not put studentID here the -- makes this null
-				$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvents[$n]['tournamenteventID']." AND `teamID` = $teamID";
+			foreach ($timeEvents as $timeEvent) {
+				$placeName = "placement-".$timeEvent['tournamenteventID']."--".$teamID;//do not put studentID here the -- makes this null
+				$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvent['tournamenteventID']." AND `teamID` = $teamID";
 				$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				$rowPlace="";
 				if(mysqli_num_rows($resultTeammateplace))
 				{
 					$rowPlace = $resultTeammateplace->fetch_assoc();
 				}
-				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+				$border = isset($timeblock['border'])?$timeblock['border']:"";
 				$output .= "<td style='$border background-color:".rainbow($i)."'>";
 				$place = isset($rowPlace['place'])?$rowPlace['place']:"";
 				if(userHasPrivilege(3)){
-					$output .= "<input id='$placeName' style='width: 50px;' name='$placeName' type='number' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/>";
+					$output .= "<div><input id='$placeName' name='$placeName' type='number' min='1' max='999' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/></div>";
 				}
 				else {
 					$output .= $place;
@@ -244,7 +244,7 @@ if(mysqli_num_rows($result))
 			}
 		}
 		else {
-			$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			$border = isset($timeblock['border'])?$timeblock['border']:"";
 			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 		}
 	}

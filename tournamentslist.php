@@ -50,7 +50,7 @@ if($result)
 		}
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
-		$output .="<div>Weighting/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
+		$output .="<div>Weight/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weight']."</div>";
 		if($row['type'])
 		{
 			switch ($row['type']){

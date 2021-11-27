@@ -20,7 +20,7 @@ if($tournamentID)
 		if($amountOfCreatedTeams>=$numberTeams)
 		{
 			echo "<div style='color:red'>The maximum number of teams has been created.</div>";
-			echo "<div><input class='button' type='button' onclick='window.history.back()' value='Return' /></div>";
+			echo "<div><input class='button' type='button' onclick='window.history.back()' value='&#xf0a8; Return' /></div>";
 			exit();
 		}
 }

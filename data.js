@@ -82,6 +82,12 @@ function loadpage(page, type, myID){
 						}
 					break;
 
+					case 'score':
+						if(typepage=="edit"){
+							scoreCalculate(myID);
+						}
+					break;
+
 					case 'events':eventsPreparePage();
 					break;
 
@@ -149,7 +155,10 @@ function loadpage(page, type, myID){
 								tournamentEventTimeChange(myID);
 							}
 							else if(typepage=="eventtime"){
-								tournamentTimesCheckErrors();
+								tournamentTimesCheckErrors(myID);
+							}
+							else if(typepage=="score"){
+								tournamentScore();
 							}
 							else{
 								addToSubmit(myID);
@@ -285,25 +294,6 @@ function studentAddModify()
 		}});
 }
 
-//turned off
-//TODO: Remove if no errors 09/05/2021
-/*
-function studentEdit(myID)
-{
-	studentAddModify();
-	$('#addTo :input,select').each(function() {
-			$(this).change(function(){
-					if (this.id == '#active'){
-						alert("checkbox!");
-					}
-					else{
-						fieldUpdate(myID,'student',this.id,this.value);
-					}
-			});
-		});
-}
-*/
-
 function studentRemove(myID, studentName)
 {
  if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
@@ -344,19 +334,19 @@ function studentEditPrepare(myID)
 	 $('#addTo :input,select').each(function() {
 		$(this).change(function(){
 				if (this.id == 'active'){
-					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0)
+					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
 				}
 				else if (this.id == 'paidDues'){
-					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0)
+					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
 				}
 				else if(this.id == 'privilege'){ //user privilege is defined in the user table
-					fieldUpdate(myID, 'user', this.id, this.value);
+					fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id);
 				}
 				else if(this.id == 'courseList'){ //user privilege is defined in the user table
 					//do nothing wait for add button
 				}
 				else{
-					fieldUpdate(myID,'student',this.id,this.value);
+					fieldUpdate(myID,'student',this.id,this.value,this.id,this.id);
 				}
 		});
 	});
@@ -495,10 +485,10 @@ function studentCourseCompleted(value, courseName)
  });
 }
 
-function fieldUpdate(myID,table,field,value)
+function fieldUpdate(myID,table,field,value,domID,messageID)
 {
  // validate field before submitting
- if($("#"+field).valid())
+ if($("#"+domID).valid())
  {
 	 //submit changes
 	 var request = $.ajax({
@@ -512,7 +502,7 @@ function fieldUpdate(myID,table,field,value)
 	 request.done(function( html ) {
 		 //$("label[for='" + field + "']").append(html);
 		 $(".modified").remove(); //removes any old update notices
-		 $("#"+field).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
+		 $("#"+messageID).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
 	 });
 
 	 request.fail(function( jqXHR, textStatus ) {
@@ -520,6 +510,7 @@ function fieldUpdate(myID,table,field,value)
 	 });
 	}
 }
+
 function userPrivilege(myUser, field,value)
 {
 	//alert(JSON.stringify(myData) );
@@ -594,7 +585,7 @@ function eventEdit(myID)
 	eventAddModify();
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
-							fieldUpdate(myID,'event',this.id,this.value);
+							fieldUpdate(myID,'event',this.id,this.value,this.id,this.id);
 					});
 		});
 }
@@ -707,7 +698,7 @@ function eventyearLeader(myID)
 	addToSubmit(myID);
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
-							fieldUpdate(myID,'eventyear',this.id,this.value);
+							fieldUpdate(myID,'eventyear',this.id,this.value,this.id,this.id);
 					});
 		});
 }
@@ -747,16 +738,22 @@ function tournamentsPreparePage()
 }
 
 
-function tournamentSort(byAttr)
+function tournamentSort(byAttr, isNumber=0)
 {
 	var $table=$('#tournamentTable');
-
 	var rows = $table.find('tbody>tr').get();
 	rows.sort(function(a, b) {
 		var keyA = $(a).attr(byAttr);
 		var keyB = $(b).attr(byAttr);
-		if (keyA > keyB) return 1;
-		if (keyA < keyB) return -1;
+		if(isNumber)
+		{
+			if (Number(keyA) > Number(keyB)) return 1;
+			if (Number(keyA) < Number(keyB)) return -1;
+		}
+		else {
+			if (keyA > keyB) return 1;
+			if (keyA < keyB) return -1;
+		}
 		return 0;
 	});
 	$.each(rows, function(index, row) {
@@ -769,7 +766,7 @@ function tournamentEdit(myID)
 	tournamentAddModify();
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
-							fieldUpdate(myID,'tournament',this.id,this.value);
+							fieldUpdate(myID,'tournament',this.id,this.value,this.id,this.id);
 					});
 		});
 }
@@ -933,16 +930,141 @@ function tournamentEventNote(myID)
 {
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
-							fieldUpdate(myID,'tournamentevent',this.id,this.value);
+							fieldUpdate(myID,'tournamentevent',this.id,this.value,this.id,this.id);
 					});
 		});
+}
+
+const format = (num, decimals) => num.toLocaleString('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function tournamentRankReset()
+{
+	var $table=$('#tournamentTable');
+	var rows = $table.find('tbody>tr').get();
+	rows.sort(function(a, b) {
+		var keyA = Number($(a).attr('score'));
+		var keyB = Number($(b).attr('score'));
+		if (keyA > keyB) return 1;
+		if (keyA < keyB) return -1;
+		return 0;
+	});
+	$.each(rows, function(index, row) {
+		$(row).attr('rank',index+1);
+		var splitStudent = $(row).children('.student').attr('id').split("-");
+		$("#rank-"+splitStudent[1]).text(index+1);
+	});
+}
+
+function tournamentScoreCalculate(studentID)
+{
+	//calculate student with this event
+	var score = 0;
+	$(".student-"+studentID).each(function(){
+		if($(this).text()!="")
+		{
+			var splitStudentCalcID = this.id.split("-");
+			var place = $(this).text();
+			var eventWeight = $("#eventweight-"+splitStudentCalcID[2]).val();
+			score += eventWeight/place;
+		}
+	});
+	var tournamentWeight = $("#tournamentWeight").val();
+	score = score * tournamentWeight/100;
+	$("#score-"+studentID).text(format(score));
+	$("#teammate-"+studentID).parent().attr('score',format(score));
+}
+
+function tournamentScore()
+{
+	$('#addTo :input,select').each(function() {
+			$(this).change(function(){
+				$(this).addClass('changed');
+				var splitID = this.id.split("-");
+				if (this.id == "tournamentWeight")
+				{
+					//if tournament weight has changed, then all scores must be recalculated.
+					$('[id^=teammate-]').each(function (){
+						var splitStudentID = this.id.split("-");
+						tournamentScoreCalculate(splitStudentID[1]);
+					});
+				}
+				else
+				{
+					//if the event weight has changed, then only change scores for students affected.
+				 //find students with this eventTotal
+					$(".event-"+splitID[1]).each(function(){
+						if($(this).text()!="")
+						{
+							//console.log("got me"+ $(this).text());
+							var splitStudentID = this.id.split("-");
+							tournamentScoreCalculate(splitStudentID[1]);
+						}
+					});
+				}
+			tournamentRankReset();
+		});
+	});
+}
+
+//save scores to table, save weights that have been changed
+function tournamentScoresSave(tournamentID)
+{
+	//fieldUpdate(myID,table,field,value,domID)
+	//Update Weights
+	$(".changed").each(function(){
+		if (this.id == "tournamentWeight")
+		{
+			fieldUpdate(tournamentID,'tournament','weight',this.value,this.id,this.id);
+		}
+		else
+		{
+			var splitID = this.id.split("-");
+			fieldUpdate(splitID[1],'tournamentevent','weight',this.value,this.id,"tournamentWeight");
+		}
+		$(this).removeClass( "changed" )
+	});
+	var request = $.ajax({
+	 url: "tournamentscoresave.php",
+	 cache: false,
+	 method: "POST",
+	 data: {myID: tournamentID},
+	 dataType: "html"
+	});
+
+	request.done(function( html ) {
+	 //$("label[for='" + field + "']").append(html);
+	 $(".modified").remove(); //removes any old update notices
+
+		if(html=="1")
+		{
+			$("#mainContainer").append("<div class='modified'>Saved Scores</div>");
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='modified' class='error'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").append("<div class='modified' class='error'>"+textStatus+"</div>");
+	});
+}
+
+//calculate overall score
+function scoreCalculate(year)
+{
+	//placeholder
+	//TODO: use when sending different year
 }
 
 function tournamentEventTimeChange(myID)
 {
 	$('#addTo :input,select').each(function() {
 					$(this).change(function(){
-							fieldUpdate(myID,'timeblock',this.id,this.value);
+							fieldUpdate(myID,'timeblock',this.id,this.value,this.id,this.id);
 					});
 		});
 }

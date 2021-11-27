@@ -137,7 +137,7 @@ if (isset($_SESSION['token'])) {
 
 <div><a href="https://sites.google.com/site/dodgensciolyinvitationalreg/home">More Information Here</a></div>
 <div><a href="https://scilympiad.com/dodgen-walton">Our Scilympiad site</a></div>
-<div>Tournaments were held at Walton 2018, 2019, and 2020 (remote).</div>
+<div>Tournaments were held at Walton 2018, 2019, 2020 (remote), and 2021 (remote).</div>
 
 						</div>
 						<div class="6u">

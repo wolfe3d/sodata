@@ -167,6 +167,10 @@ pre code {
   color: orange;
 	text-shadow: 1px 1px #000000;
 }
+.changed {
+  border-color: orange;
+	border-width: medium;
+}
 
 /* Section/Article */
 
@@ -663,7 +667,7 @@ table.tournament th {
   color: #666f77;
   font-size: 1em;
   font-weight: 500;
-  padding: 0 0.75em 0.75em 0.75em;
+  padding: 0 0.2em 0.2em 0.2em;
 	vertical-align: bottom;
   text-align: center;
 }
@@ -694,6 +698,10 @@ table.tournament input[type="checkbox"]{
 	display: inline;
 	margin-right: 0;
 	float: none;
+}
+
+table.tournament tbody tr:hover{
+   background-color: rgba(255, 255, 0, 0.2);
 }
 
 @media print {

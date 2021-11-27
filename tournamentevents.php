@@ -57,7 +57,8 @@ if(mysqli_num_rows($result))
 //print the time for each event and date
 	$output .="<tr>";
 	for ($i = 0; $i < count($timeblocks); $i++) {
-		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
+		$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' style='$border background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"]))  . "</th>";
 	}
 	$output .="</tr></thead><tbody id='eventBody'>";
 
@@ -72,7 +73,8 @@ if(mysqli_num_rows($result))
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
 					$resultEventTime = $mysqlConn->query($queryEventTime) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 					$checked = mysqli_num_rows($resultEventTime)?" checked ":"";
-			    $output .= "<td style='".$timeblocks[$i]['border']."background-color:".rainbow($i)."'><input type='checkbox' onchange='javascript:tournamentEventTimeSet($(this))' id='$checkbox' name='$checkbox' value='' $checked></td>";
+					$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
+			    $output .= "<td style='$border background-color:".rainbow($i)."'><input type='checkbox' onchange='javascript:tournamentEventTimeSet($(this))' id='$checkbox' name='$checkbox' value='' $checked></td>";
 			}
 			$output .= "</tr>";
 		endwhile;

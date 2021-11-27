@@ -61,7 +61,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		}
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
 		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
-		$output .="<div>Weighting/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weighting']."</div>";
+		$output .="<div>Weight/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weight']."</div>";
 		if($row['type'])
 		{
 			switch ($row['type']){
@@ -123,6 +123,16 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-emails-".$tournamentID."\"' value='&#xf01c; Get all teams' /></p>";
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-parentemails-".$tournamentID."\"' value='&#xf01c; Get all parents' /></p>";
 		}
+
+		$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
+		if($schedule != -1){
+			$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
+			$output.=$schedule;
+		}
+		else{
+			$output .= "You have not been assigned to events at this tournament.<br><br>";
+		}
+
 		while($rowTeam = $resultTeams->fetch_assoc()):
 			$output .="<h2>Team ".$rowTeam['teamName']."</h2>";
 			if(userHasPrivilege(3))
@@ -135,14 +145,10 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; View Events' /></p>";
 			}
 		endwhile;
-		$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
-		if($schedule != -1){
-			$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
-			$output.=$schedule;
-		}
-		else{
-			$output .= "You have not been assigned to events at this tournament.<br><br>";
-		}
+
+		$output .="<h2>Tournament Results</h2>";
+		$output .="<p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-score-$tournamentID\"' value='&#xf080; View Scores' /></p>";
+
 	}
 	$output .="</div>";
 

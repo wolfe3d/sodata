@@ -37,8 +37,8 @@
 	<input id="numberTeams" name="numberTeams" type="number" value="<?=$row['numberTeams']?>">
 </p>
 <p>
-	<label for="weighting">Weighting</label>
-	<input id="weighting" name="weighting" type="number" value="<?=$row['weighting']?>">
+	<label for="weight">Weight</label>
+	<input id="weight" name="weight" type="number" min='0' max='100' value="<?=$row['weight']?>">
 </p>
 <p>
 	<label for="note">Note(s)</label>

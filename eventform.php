@@ -19,6 +19,10 @@ require_once  ("functions.php");
 		</select>
 	</p>
 	<p>
+		<label for="weightingDefault">Default Weight</label>
+		<input id="weightingDefault" name="weightingDefault" type="number" min='0' max='100' value="<?=$row["weightingDefault"]?>">
+	</p>
+	<p>
 		<label for="calculatorType">Calculator</label>
 		<select id="calculatorType" name="calculatorType">
 			<option value="0" <?=getSelected($row["calculatorType"],0)?>><?=getCalulatorString(0)?></option>
