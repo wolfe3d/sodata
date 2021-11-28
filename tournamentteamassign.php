@@ -77,7 +77,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .= "<th colspan='$dateColSpan' style='text-align:center;'>" . $dateCheck . "</th>";
-	$output .="<th rowspan='3' style='vertical-align:bottom;'>Total Events</th></tr>";
+	$output .="<th rowspan='4' style='vertical-align:bottom;'>Total Events</th></tr>";
 
 //print the time for each event and date
 	$output .="<tr>";

@@ -31,7 +31,7 @@ function getPlacements($db,$tournamentID)
 function getStudents($db,$tournamentID)
 {
 	$output = [];
-	$query = "SELECT DISTINCT `student`.`last`, `student`.`first`, `student`.`studentID` FROM `student` INNER JOIN `teammateplace` ON `teammateplace`.`studentID`=`student`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` WHERE `team`.`tournamentID` = $tournamentID ORDER BY `student`.`last`, `student`.`first`";
+	$query = "SELECT DISTINCT `student`.`studentID`,`student`.`yearGraduating`,`student`.`last`, `student`.`first`  FROM `student` INNER JOIN `teammateplace` ON `teammateplace`.`studentID`=`student`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` WHERE `team`.`tournamentID` = $tournamentID ORDER BY `student`.`last`, `student`.`first`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):

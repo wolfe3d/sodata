@@ -741,10 +741,21 @@ function tournamentsPreparePage()
 function tournamentSort(byAttr, isNumber=0)
 {
 	var $table=$('#tournamentTable');
+	var sortBy = $table.attr('sortby');
 	var rows = $table.find('tbody>tr').get();
 	rows.sort(function(a, b) {
-		var keyA = $(a).attr(byAttr);
-		var keyB = $(b).attr(byAttr);
+		if(sortBy == byAttr)
+		{
+			//switch the ordering to descending
+			var keyB = $(a).attr(byAttr);
+			var keyA = $(b).attr(byAttr);
+		}
+		else {
+			//normal ordering (ascending)
+			var keyA = $(a).attr(byAttr);
+			var keyB = $(b).attr(byAttr);
+		}
+
 		if(isNumber)
 		{
 			if (Number(keyA) > Number(keyB)) return 1;
@@ -759,6 +770,15 @@ function tournamentSort(byAttr, isNumber=0)
 	$.each(rows, function(index, row) {
 		$table.children('tbody').append(row);
 	});
+	//set the table attribute
+	if(sortBy == byAttr)
+	{
+		$table.attr('sortby',byAttr+"d"); //names the sorting as descending
+	}
+	else
+	{
+		$table.attr('sortby',byAttr);//names the sort (ascending)
+	}
 }
 
 function tournamentEdit(myID)
@@ -943,16 +963,11 @@ const format = (num, decimals) => num.toLocaleString('en-US', {
 function tournamentRankReset()
 {
 	var $table=$('#tournamentTable');
+	$table.attr('sortby',"score"); //setting this attribute, makes the table sort descending
+	tournamentSort('score', 1);
 	var rows = $table.find('tbody>tr').get();
-	rows.sort(function(a, b) {
-		var keyA = Number($(a).attr('score'));
-		var keyB = Number($(b).attr('score'));
-		if (keyA > keyB) return 1;
-		if (keyA < keyB) return -1;
-		return 0;
-	});
 	$.each(rows, function(index, row) {
-		$(row).attr('rank',index+1);
+		$(row).attr('rank',index+1);  //change rank
 		var splitStudent = $(row).children('.student').attr('id').split("-");
 		$("#rank-"+splitStudent[1]).text(index+1);
 	});
@@ -1282,6 +1297,8 @@ function tournamentTeammate(inputBtn)
 	var splitName = objectName.split("-");
 	var checked = inputBtn.is(":checked")?1:0;
 
+	//check number of students assigned that are in 12 grade and total number of students, warn user but do not prevent.
+
 	var request = $.ajax({
 		url: "tournamentteammateadjust.php",
 		cache: false,
@@ -1301,7 +1318,7 @@ function tournamentTeammate(inputBtn)
 			alert("Remove failed: student still has events.");
 			inputBtn.prop('checked', true);
 		}
-		else if(html=='11'){
+		else if(html=='2'){
 			alert("Add failed: student is on a different team.")
 			inputBtn.prop('checked', false);
 		}
@@ -1331,23 +1348,33 @@ function tournamentTeamEditCheckErrors()
 			countSenior +=1;
 		}
 	});
-	//console.log("countSenior="+countSenior);
-	//console.log("countStudent="+countStudent);
 	var error = "";
 	if (countSenior >7)
 	{
-		error += "Too many seniors on the team!";
+		error += "<span class='error'>Too many seniors on the team!</span>";
+		$('#seniors').html("<span class='error'>"+countSenior+"</span>");
 	}
+	else
+	{
+		$('#seniors').text(countSenior);
+	}
+
 	if (countStudent >15)
 	{
-		error += " More than 15 students assigned on the team!";
+		error += " <span class='error'> More than 15 students assigned on the team!</span>";
+		$('#students').html("<span class='error'>"+countStudent+"</span>");
 	}
 	else if (countStudent <15)
 	{
-		error += " <span class'warning'>Less than 15 students on the team!</span>";
+		error += " <span class='warning'>Less than 15 students on the team!</span>";
+		$('#students').html("<span class='warning'>"+countStudent+"</span>");
 	}
-	$("#note").html("<span class='modified' class='error'>"+error+"</span");
+	else
+	{
+		$('#students').text(countStudent);
+	}
 
+	$("#note").html("<span class='modified'>"+error+"</span");
 }
 
 //sets  teammate in an event
