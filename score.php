@@ -27,7 +27,7 @@ function getAllStudentsParticipated($db, $year)
 {
 //TODO Highlight inactive students `student`.`active`=1
 $students=[];
-$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first`, `student`.`active` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=$year";
+$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=$year AND `student`.`active`=1";
 $result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($result->num_rows){
 	while ($row = $result->fetch_assoc()):
