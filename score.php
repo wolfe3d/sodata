@@ -25,7 +25,7 @@ $output .="<p class='warning'>This page is a beta version and calculations are l
 
 function getAllStudentsParticipated($db, $year)
 {
-//TODO Highlight inactive students `student`.`active`=1
+//Inactive students are not shown.  Students who are marked active, but students who have not competed are shown.
 $students=[];
 $query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=$year AND `student`.`active`=1";
 $result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

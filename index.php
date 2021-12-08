@@ -4,7 +4,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 
 if (isset($_SESSION['token'])) {
 	try {
-		header("Location:data.php#user");
+		header("Location:data.php#home");
 	} catch (Exception $exception) {
 			print_r($exception->getMessage());
 	}
