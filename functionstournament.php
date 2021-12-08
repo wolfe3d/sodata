@@ -124,7 +124,7 @@ function calculateScores(&$students, $tournamentPlacements, $events, $tournament
 				{
 					//score student
 
-					$totalScore += $event['weight']/$value['place'];
+					$totalScore += $event['weight']/($value['place'])**0.5;
 
 				}
 			}

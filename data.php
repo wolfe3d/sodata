@@ -13,6 +13,7 @@ require_once ("functions.php");
  $gClient->setClientSecret(GOOGLE_CLIENT_SECRET);
  $gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
  $gClient->addScope(['email', 'profile']);
+
  //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
 
  if (isset($_GET['code'])) {
@@ -38,10 +39,10 @@ try {
 		//echo "token set:".print_r($_SESSION['token']);
 	 $gClient->setAccessToken($_SESSION['token']);
 	}
-
 	$google_oauth =new Google_Service_Oauth2($gClient);
 	$gpUserProfile = $google_oauth->userinfo->get(); //this is the line causing the following date_get_last_errors
 	checkGoogle($gpUserProfile,$mysqlConn);
+
 } catch (Exception $exception) {
 	if(userHasPrivilege(4))
 		{

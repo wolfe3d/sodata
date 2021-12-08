@@ -983,7 +983,7 @@ function tournamentScoreCalculate(studentID)
 			var splitStudentCalcID = this.id.split("-");
 			var place = $(this).text();
 			var eventWeight = $("#eventweight-"+splitStudentCalcID[2]).val();
-			score += eventWeight/place;
+			score += eventWeight/(place)^.5;
 		}
 	});
 	var tournamentWeight = $("#tournamentWeight").val();
