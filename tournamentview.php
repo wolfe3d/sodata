@@ -23,7 +23,7 @@ $userID = $_SESSION['userData']['userID'];
 $studentID = getStudentID($mysqlConn,$userID);
 
 //Get number of teams created
-$query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID";
+$query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID ORDER BY `teamName`";
 $resultTeams = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $amountOfCreatedTeams = $resultTeams->num_rows;
 
