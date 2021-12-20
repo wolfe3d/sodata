@@ -52,7 +52,7 @@ if(mysqli_num_rows($result))
 	endwhile;
 
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<thead><tr><th rowspan='3' style='vertical-align:bottom;'><div>Students</div></th>";
+	$output .="<thead><tr><th rowspan='3' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='4' style='vertical-align:bottom;'>Grade</th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -133,23 +133,18 @@ if(mysqli_num_rows($result))
 	$query = "SELECT * FROM `teammate` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teamID` = $teamID ORDER BY `last` ASC, `first` ASC";
 	$resultStudent = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
  	$totalStudents = mysqli_num_rows($resultStudent);
+	$totalSeniors = 0;
 	if($totalStudents)
 	{
 		while ($rowStudent = $resultStudent->fetch_assoc()):
 			//$studentTotal = 0;  //this is done in the javascript TODO: remove this line
 			$output .="<tr studentLast=".removeParenthesisText($rowStudent['last'])."  studentFirst=".removeParenthesisText($rowStudent['first']).">";
-			/*/check to see if student is signed up for the timeblock
-			/$query = "SELECT timeStart,timeEnd FROM teammateplace INNER JOIN tournamenttimechosen ON teammateplace.tournamenteventID=tournamenttimechosen.tournamenteventID INNER JOIN tournamentevent ON teammateplace.tournamenteventID=tournamentevent.tournamenteventID INNER JOIN timeblock ON timeblock.timeblockID=tournamenttimechosen.timeblockID WHERE teammateplace.studentID=".$rowStudent['studentID']." AND tournamentevent.tournamentID=".$rowTeam['tournamentID']. " GROUP BY tournamenttimechosen.timeblockID having count(*) > 1";
-			$resultStudentCheck = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-			$errorStudentCheck="";
-			if($resultStudentCheck){
-				while ($rowStudentCheck = $resultStudentCheck->fetch_assoc()):
-					$errorStudentCheck .= " <span class='modified error'>More than one event in timeBlock: ".$rowStudentCheck['timeStart']."-".$rowStudentCheck['timeEnd']."</span>";
-				endwhile;
-			}*/
-			$errorStudentCheck =""; //TODO: Remove this line and above commented lines if javascript errorcheck function works
+
+			//find student Grade
+			$studentGrade = getStudentGrade($rowStudent['yearGraduating']);
+			$totalSeniors += $studentGrade==12 ? 1:0;
 			//output student column
-			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>$errorStudentCheck</td>";
+			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a></td><td>$studentGrade</td>";
 			foreach ($timeblocks as $i=>$timeblock) {
 				$timeEvents= $timeblock['events'];
 				if($timeEvents)
@@ -180,7 +175,6 @@ if(mysqli_num_rows($result))
 				}
 
 			}
-			//$output .="<td id='studenttotal-".$rowStudent['studentID']."'>$studentTotal</td></tr>"; //TODO: not necessary
 			$output .="<td id='studenttotal-".$rowStudent['studentID']."'></td></tr>";
 		endwhile;
 	}
@@ -189,24 +183,14 @@ if(mysqli_num_rows($result))
 	}
 
 	//print the total signed up for each event
-	$output .="</tbody><tfoot><tr><td><strong>$totalStudents</strong> Total Teammates</td>";
+	$errorSeniors = $totalSeniors > 7 ? "<span class='error'>Too many</span>":"";
+	$output .="</tbody><tfoot><tr><td><strong>$totalStudents</strong> Total Teammates</td><td><strong>$totalSeniors</strong> Seniors $errorSeniors</td>";
 	foreach ($timeblocks as $i=>$timeblock) {
 		$timeEvents= $timeblock['events'];
 		if($timeEvents)
 		{
 			foreach ($timeEvents as $timeEvent) {
-				//the errorText could be removed and done in javascript at first as well as other calculations
-				$errorText = "";
-				/*
-				if($timeEvents[$n]['eventTotal']>$timeEvents[$n]['numberStudents']){
-					$errorText = "<div class='modified error'>Too MANY students!</div>";
-				}
-				else if($timeEvents[$n]['eventTotal']<$timeEvents[$n]['numberStudents']) {
-					$errorText = "<div class='modified warning'>Too FEW students!</div>";
-				}
-				$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-				*/
-				$output .= "<td data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvent['eventTotal']." $errorText</td>";
+				$output .= "<td data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvent['eventTotal']." </td>";
 			}
 		}
 		else {
@@ -217,7 +201,7 @@ if(mysqli_num_rows($result))
 	$output .="</tr>";
 
 	//print the place for each event
-	$output .="<tr><td>Place</td>";
+	$output .="<tr><td colspan='2'>Place</td>";
 	foreach ($timeblocks as $i=>$timeblock) {
 		$timeEvents= $timeblock['events'];
 		if($timeEvents)
