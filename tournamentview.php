@@ -123,14 +123,16 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-emails-".$tournamentID."\"' value='&#xf01c; Get all teams' /></p>";
 			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-parentemails-".$tournamentID."\"' value='&#xf01c; Get all parents' /></p>";
 		}
-
-		$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
-		if($schedule != -1){
-			$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
-			$output.=$schedule;
-		}
-		else{
-			$output .= "You have not been assigned to events at this tournament.<br><br>";
+		if($studentID)
+		{
+			$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
+			if($schedule != -1){
+				$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
+				$output.=$schedule;
+			}
+			else{
+				$output .= "You have not been assigned to events at this tournament.<br><br>";
+			}
 		}
 
 		while($rowTeam = $resultTeams->fetch_assoc()):
