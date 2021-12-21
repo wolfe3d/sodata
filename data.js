@@ -1308,13 +1308,11 @@ function tournamentTeammate(inputBtn)
 	});
 
 	request.done(function( html ) {
-		//TODO: make sure students aren't assigned already before removing from team list (...teamedit.php) and they are not assigned to another team
-
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
 		}
-		else if(html=='01'){
+		else if(html=='3'){
 			alert("Remove failed: student still has events.");
 			inputBtn.prop('checked', true);
 		}
