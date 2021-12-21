@@ -4,6 +4,7 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 userCheckPrivilege(3);
 
 $tournamentID = intval($_POST['myID']);
+$alphabet = range('A', 'Z');
 if($tournamentID)
 {
 		//Check for the number of teams created
@@ -23,6 +24,9 @@ if($tournamentID)
 			echo "<div><input class='button' type='button' onclick='window.history.back()' value='&#xf0a8; Return' /></div>";
 			exit();
 		}
+		else {
+			$teamName = null;
+		}
 }
 ?>
 <div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
@@ -30,7 +34,7 @@ if($tournamentID)
 <form id="addTo" method="post" action="tournamentteaminsert.php">
 	<p id="teamName">
 		<label for="teamName">Team Name</label>
-		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>">
+		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:$alphabet[$amountOfCreatedTeams]?>">
 	</p>
 	<p>
 		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />

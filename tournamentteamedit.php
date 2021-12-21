@@ -45,7 +45,7 @@ if(empty($row))
 }
 $teamName = $row['teamName'];
 $tournamentID = $row['tournamentID'];
-$studentList="<div class='scioly'><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Students</label></div>";
+$studentList="<div class='scioly'><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Students</label></div><br>";
 $query = "SELECT * FROM `student` ORDER BY `last` ASC, `first` ASC";
 $resultStudent = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($resultStudent){
@@ -74,14 +74,19 @@ if($resultStudent){
 <div id='myTitle'><?=$row['tournamentName']?> - <?=$row['year']?></div>
 <div id="note"></div>
 <form id="tournamentTeamForm" method="post" action="fieldUpdate.php">
-	<p id="teamName">
+	<p id="teamNamep">
 		<label for="teamName">Team Name</label>
-		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamName',$(this).val())">
+		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamName',$(this).val(),'teamName','teamName')">
 	</p>
-	<p id="tournamentTeam">
+	<!---
+	//TODO: ADD Javascript and php backend for the function below
+	<p id="tournamentTeamp">
 		<label for="tournamentTeam">Select Students from a Previous Tournament (TODO: Function not added yet)</label>
-		<?=getTeamsPrevious($mysqlConn)?>
+		<?=getTeamsPrevious($mysqlConn, $row['tournamentID'])?>
+		<br>
+		<input class="button" type="button" onclick="" value="Select" />
 	</p>
+-->
 	<p>
 		<?=$studentList?>
 	</p>

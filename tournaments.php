@@ -3,6 +3,7 @@ require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
 require_once ("functions.php");
+$row = null;
 ?>
 <div>
 	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" > <!-- toggles view of below div -->

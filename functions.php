@@ -386,17 +386,17 @@ function getEventList($db, $number,$label)
 }
 
 //get Teams from previous tournaments
-function getTeamsPrevious($db)
+function getTeamsPrevious($db, $tournamentID)
 {
 	$myOutput = "";
-	$query = "SELECT * from `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID`";
+	$query = "SELECT * from `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `team`.`tournamentID`!= $tournamentID ORDER BY `dateTournament` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($result)
 	{
 		$myOutput .="<select id='teamTournament' name='teamTournament' type='text'>";
 		while ($row = $result->fetch_assoc()):
-			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['tournamentName']." " . $row['teamName'] ."</option>";
+			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['year']." ".$row['tournamentName']." " . $row['teamName'] ."</option>";
 		endwhile;
 		$myOutput .="</select>";
 	}
