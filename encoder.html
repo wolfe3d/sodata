@@ -214,21 +214,21 @@ function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
 <div><label for="wheelFrequency">Number of Encodings</label> <input id="wheelFrequency" name="numberWheelFrequencyGray" value="40" onkeyup="makeEncoder();"></input></div>
 <div><label for="wheelDiameter">Diameter</label> <input id="wheelDiameter" name="wheelDiameter" value="500" onkeyup="makeEncoder();"></input></div>
 <fieldset>
-<input type="radio" id="standard" name="encoderType" value="standard" checked>
+	<legend>Choose the type of encoder</legend>
+<input type="radio" id="standard" name="encoderType" value="standard" checked onchange="makeEncoder();">
 <label for="standard">Standard Encoder</label><br>
-<input type="radio" id="threetone" name="encoderType" value="threetone">
+<input type="radio" id="threetone" name="encoderType" value="threetone" onchange="makeEncoder();">
 <label for="threetone">3 Tone Encoder</label><br>
-<input type="radio" id="fourtone" name="encoderType" value="fourtone">
+<input type="radio" id="fourtone" name="encoderType" value="fourtone" onchange="makeEncoder();">
 <label for="fourtone">4 Tone Encoder</label><br>
-<input type="radio" id="grayscale" name="encoderType" value="grayscale">
+<input type="radio" id="grayscale" name="encoderType" value="grayscale" onchange="makeEncoder();">
 <label for="grayscale">Grayscale Encoder</label><br>
-<input type="radio" id="colorscale" name="encoderType" value="colorscale">
+<input type="radio" id="colorscale" name="encoderType" value="colorscale" onchange="makeEncoder();">
 <label for="colorscale">Color Encoder</label><br>
-<input type="radio" id="rgbtone" name="encoderType" value="rgbtone">
+<input type="radio" id="rgbtone" name="encoderType" value="rgbtone" onchange="makeEncoder();">
 <label for="rgbtone">RGB Encoder</label><br>
 </fieldset>
-<div><input type="checkbox" id="human" name="human"><label for="human">Make Human Readable</label></div>
-<div><button type="button" onclick="makeEncoder();">Build Encoder</button></div>
+<div><input type="checkbox" id="human" name="human" onchange="makeEncoder();"><label for="human">Make Human Readable</label></div>
 <canvas id="encoderCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
 <script>makeEncoder();</script>
