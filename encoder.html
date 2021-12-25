@@ -3,6 +3,13 @@
 <head>
 <title>Multi Tone or Grayscale Encoders</title>
 <script>
+
+//wolfescience copyright 2014-2022
+//do not distribute
+function getlength(number) {
+	var myInt = parseInt(number);
+  return myInt.toString().length;
+}
 function setupCanvas(dia)
 {
 	var c = document.getElementById("encoderCanvas");
@@ -57,19 +64,21 @@ function makeEncoder()
 	var hole = document.querySelector('input[id="hole"]').checked;
 	//get if human readable type
 	var human = document.querySelector('input[id="human"]').checked;
+	//get if human readable type
+	var reverse = document.querySelector('input[id="reverse"]').checked;
 	switch(encoderType)
 	{
-			case "standard": standardEncoder(0,anglediv,dia,hole,1,human);break;
-			case "threetone": standardEncoder(0,anglediv,dia,hole,2,human);break;
-			case "fourtone": standardEncoder(0,anglediv,dia,hole,3,human);break;
-			case "grayscale": standardEncoder(0,anglediv,dia,hole,anglediv,human);break;
-			case "colorscale": colorEncoder(0,anglediv,dia,hole,anglediv,human,0);break;
-			case "rgbtone": colorEncoder(0,anglediv,dia,hole,3,human,1);break;
-			case "default": standardEncoder(0,anglediv,dia,hole,1,human,1);
+			case "standard": standardEncoder(0,anglediv,dia,reverse,hole,1,human);break;
+			case "threetone": standardEncoder(0,anglediv,dia,reverse,hole,2,human);break;
+			case "fourtone": standardEncoder(0,anglediv,dia,reverse,hole,3,human);break;
+			case "grayscale": standardEncoder(0,anglediv,dia,reverse,hole,anglediv,human);break;
+			case "colorscale": colorEncoder(0,anglediv,dia,reverse,hole,anglediv,human,0);break;
+			case "rgbtone": colorEncoder(0,anglediv,dia,reverse,hole,3,human,1);break;
+			case "default": standardEncoder(0,anglediv,dia,reverse,hole,1,human,1);
 	}
 }
-
-function standardEncoder(demo,anglediv,dia,hole,colors,human)
+//all black and gray scale encoders
+function standardEncoder(demo,anglediv,dia,reverse,hole,colors,human)
 {
 	var ctx ;
 	if(demo)
@@ -87,7 +96,6 @@ function standardEncoder(demo,anglediv,dia,hole,colors,human)
 	var colorIncrement = Math.floor(255/colors);
 	var n = 0;
 	var t = 1;
-
 	//these two lines are for human readable encoders
 	var fontsize = angleIncrement*200*dia/500;
 	ctx.font = fontsize +'px serif'; //set text style
@@ -95,8 +103,8 @@ function standardEncoder(demo,anglediv,dia,hole,colors,human)
 	{
 		t=0.5;
 	}
-
-	while (anglediv > 0)
+	var anglecount = 0;
+	while (anglecount < anglediv)
 	{
 		ctx.beginPath();
 		ctx.moveTo(0,0);
@@ -106,19 +114,16 @@ function standardEncoder(demo,anglediv,dia,hole,colors,human)
 
 		if(human)
 		{
-			if(0 != anglediv)
-			{
 				//make black line
 				ctx.beginPath();
 				ctx.moveTo(0, 0);
 				ctx.lineTo((dia/2)-10, 0);
 				ctx.stroke();
-				ctx.strokeText(anglediv-1, (dia/2)-fontsize*2, -2);
-			}
+				ctx.strokeText(reverse?anglecount:anglediv-anglecount-1, (dia/2)-fontsize*(getlength(anglediv-1)), -2); //takes the length number of digits of angle div.  This assumes100 the width is the same as the size of the font.
 		}
 
 		ctx.rotate(angleIncrement);
-		anglediv -=1;
+		anglecount +=1;
 		//sets color
 		color -= colorIncrement;
 		n+=1;
@@ -131,7 +136,8 @@ function standardEncoder(demo,anglediv,dia,hole,colors,human)
 	holeInMiddle(hole, ctx, dia/8);
 }
 
-function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
+//all color encoders.  This code could be joined up with the standardencoder code, but I kept it separate for readability/modifications in the future.
+function colorEncoder(demo,anglediv,dia,reverse,hole,colors,human,rgb)
 {
 	var ctx ;
 	if(demo)
@@ -160,7 +166,8 @@ function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
 		t=0.5;
 	}
 
-	while (anglediv > 0)
+	var anglecount = 0;
+	while (anglecount < anglediv)
 	{
 		ctx.beginPath();
 		ctx.moveTo(0,0);
@@ -171,19 +178,16 @@ function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
 
 		if(human)
 		{
-			if(0 != anglediv)
-			{
 				//make black line
 				ctx.beginPath();
 				ctx.moveTo(0, 0);
 				ctx.lineTo((dia/2)-10, 0);
 				ctx.stroke();
-				ctx.strokeText(anglediv-1, (dia/2)-fontsize*2, -2);
-			}
+				ctx.strokeText(reverse?anglecount:anglediv-anglecount-1, (dia/2)-fontsize*2, -2);
 		}
 
 		ctx.rotate(angleIncrement);
-		anglediv -=1;
+		anglecount +=1;
 		//sets color
 		hue -= colorIncrement;
 		n+=1;
@@ -209,8 +213,6 @@ function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
 <body>
 <h1>Encoders</h1>
 <p>Make your own custom encoder.  See below for examples of the different types.</p>
-<div><input type="checkbox" id="hole" name="hole" checked>
-<label for="hole">Include a hole in the middle</label></div>
 <div><label for="wheelFrequency">Number of Encodings</label> <input id="wheelFrequency" name="numberWheelFrequencyGray" value="40" onkeyup="makeEncoder();"></input></div>
 <div><label for="wheelDiameter">Diameter</label> <input id="wheelDiameter" name="wheelDiameter" value="500" onkeyup="makeEncoder();"></input></div>
 <fieldset>
@@ -229,6 +231,8 @@ function colorEncoder(demo,anglediv,dia,hole,colors,human,rgb)
 <label for="rgbtone">RGB Encoder</label><br>
 </fieldset>
 <div><input type="checkbox" id="human" name="human" onchange="makeEncoder();"><label for="human">Make Human Readable</label></div>
+<div><input type="checkbox" id="reverse" name="reverse" onchange="makeEncoder();"><label for="reverse">Reverse numbering direction</label></div>
+<div><input type="checkbox" id="hole" name="hole" onchange="makeEncoder();" checked><label for="hole">Include a hole in the middle</label></div>
 <canvas id="encoderCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
 <script>makeEncoder();</script>
@@ -239,7 +243,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <br />
 <canvas id="standardCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>standardEncoder("standardCanvas",40,500,0,1,0);</script>
+<script>standardEncoder("standardCanvas",40,500,0,0,1,0);</script>
 
 <br/>
 <h2>3 tone Encoder</h2>
@@ -247,47 +251,47 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 The vehicle could be moving either forward or backward. A number divisible by three must be used to give a regular pattern. The following example has 36 divisions.</p>
 <canvas id="threeToneCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>standardEncoder("threeToneCanvas",36,500,0,2,0);</script>
+<script>standardEncoder("threeToneCanvas",36,500,0,0,2,0);</script>
 <br />
 
 <h2>4 tone Encoder</h2>
 <p>Maybe, more shades could benefit different applications.  A number divisible by four must be used to give a regular pattern. The following example has 20 divisions.</p>
 <canvas id="fourToneCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>standardEncoder("fourToneCanvas",20,500,0,3,0);</script>
+<script>standardEncoder("fourToneCanvas",20,500,0,0,3,0);</script>
 
 <h2>Multitone or Grayscale Encoder</h2>
 <p>This encoder pattern could be used to tell exactly where in each revolution a wheel has been turned.
 This assumes the printing is consistent. The following example has 18 divisions.</p>
 <canvas id="grayscaleCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>standardEncoder("grayscaleCanvas",18,500,0,18,0);</script>
+<script>standardEncoder("grayscaleCanvas",18,500,0,0,18,0);</script>
 <br />
 
 <h2>Human Readable Encoder - Grayscale</h2>
 <p>This is a modified 4 color grayscale encoder pattern for a person to count with. A number divisible by 4 must be given to give a nice pattern.</p>
 <canvas id="numberWheelCanvasGray" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>standardEncoder("numberWheelCanvasGray",18,500,0,18,1);</script>
+<script>standardEncoder("numberWheelCanvasGray",18,500,0,0,18,1);</script>
 
 <br />
 <h2>Color Wheel</h2>
 <p>At this point, I was just having fun making a color wheel.  I do not see this being used as a wheel encoder.</p>
 <canvas id="colorWheelCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>colorEncoder("colorWheelCanvas",18,500,0,18,0);</script>
+<script>colorEncoder("colorWheelCanvas",18,500,0,0,18,0);</script>
 
 
 <h2>Human Readable Encoder - Color</h2>
 <p>This is a encoder pattern for a person to count with.</p>
 <canvas id="numberWheelCanvas" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>colorEncoder("numberWheelCanvas",18,500,0,18,1,0);</script>
+<script>colorEncoder("numberWheelCanvas",18,500,0,0,18,1,0);</script>
 
 <h2>Human Readable Encoder - RGB</h2>
-<p>This is a modified 4 color encoder pattern for a person to count with. A number divisible by 4 must be given to give a nice pattern.</p>
+<p>This is a modified 4 color encoder pattern for a person to count with. A number divisible by 4 must be given to give a nice pattern. This has a reversed numbering direction.</p>
 <canvas id="numberWheelCanvasRGB" width="500" height="500" style="">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<script>colorEncoder("numberWheelCanvasRGB",18,500,0,3,1,1);</script>
+<script>colorEncoder("numberWheelCanvasRGB",18,500,1,0,3,1,1);</script>
 </body>
 </html>
