@@ -12,23 +12,43 @@ if(empty($teamID))
 	exit();
 }
 
+
+
 //find students and order by best score for event (not average best score)
 function makeStudentArrayTopScore($db, $teamID)
 {
 	$rows = [];
-	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
+	$query = "SELECT `teammate`.`studentID`,`eventID`, `last`,`first`,`yearGraduating`,`score` FROM `teammate`
+	INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID`
+	INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID`
+	INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+	WHERE `teammate`.`teamID` = $teamID
+	ORDER BY `teammateplace`.`score` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
 	endwhile;
 	return $rows;
 }
-//TODO: find students and order by average placement
+
+//find students and order by average placement
 function makeStudentArrayAvgPlace($db, $teamID)
 {
 	$rows = [];
-	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$query = "SELECT DISTINCT x.`studentID`,`eventID`, `last`,`first`,`yearGraduating`,myaverage FROM `teammateplace` x
+JOIN (SELECT `studentID`, `eventID`, AVG(`place`) myaverage FROM `teammateplace`
+INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` GROUP BY `studentID`,`eventID`) y
+	ON x.`studentID`=y.`studentID`
+INNER JOIN `teammate` ON x.`studentID`=`teammate`.`studentID`
+INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+WHERE
+`teammate`.`teamID` = $teamID
+AND
+  myaverage IS NOT NULL
+  AND
+  `score` IS NOT NULL
+ORDER BY myaverage  ASC";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
 	endwhile;
@@ -38,7 +58,19 @@ function makeStudentArrayAvgPlace($db, $teamID)
 function makeStudentArrayAvgScore($db, $teamID)
 {
 	$rows = [];
-	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
+	$query = "SELECT DISTINCT x.`studentID`,`eventID`, `last`,`first`,`yearGraduating`,myaverage FROM `teammateplace` x
+	JOIN (SELECT `studentID`, `eventID`, AVG(`score`) myaverage FROM `teammateplace`
+	INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` GROUP BY `studentID`,`eventID`) y
+	ON x.`studentID`=y.`studentID`
+	INNER JOIN `teammate` ON x.`studentID`=`teammate`.`studentID`
+	INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+	WHERE
+	`teammate`.`teamID` = $teamID
+	AND
+	myaverage IS NOT NULL
+	AND
+	`score` IS NOT NULL
+	ORDER BY myaverage  ASC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
@@ -46,11 +78,20 @@ function makeStudentArrayAvgScore($db, $teamID)
 	return $rows;
 }
 
+//Make Timeblock array.  Order by number of slots(events) in the timeblock.  Fewest slots is assigned first.
+//TODO: Figure out what priority builds will have especially if available throughout the day as last option
 function makeTimeArray($db, $tournamentID)
 {
 	//find all available tournament times
 	$rows = [];
-	$query = "SELECT * FROM `tournamenttimeavailable` INNER JOIN `timeblock` ON `tournamenttimeavailable`.`timeblockID`=`timeblock`.`timeblockID` INNER JOIN `tournamentevent`  ON `tournamenttimeavailable`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblock`.`tournamentID` = $tournamentID ORDER BY `timeStart`";
+	$query =
+"SELECT x.*, `timeblock`.`timeStart`,`timeblock`.`timeEnd`, `event`.`eventID`,`event`.`event`, `event`.`numberStudents` FROM `tournamenttimeavailable` x
+  JOIN (SELECT `timeblockID`, COUNT(*) total FROM `tournamenttimeavailable` GROUP BY `timeblockID`) y
+    ON y.`timeblockID` = x.`timeblockID`
+INNER JOIN `timeblock` ON x.`timeblockID`=`timeblock`.`timeblockID`
+INNER JOIN `tournamentevent`  ON x.`tournamenteventID`=`tournamentevent`.`tournamenteventID`
+INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID`
+WHERE `timeblock`.`tournamentID` = $tournamentID ORDER BY total ASC, `timeStart` ASC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
@@ -216,7 +257,6 @@ function tempResultSeniorTotal($db,$tableName)
 	return $result->num_rows;
 }
 //Calculate students in times and then fill in table to be read
-//Think about:  Maybe put builds available throughout the day as last option
 function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
 {
 	tempStudentInitialize($db, $studentTableName);
@@ -435,6 +475,8 @@ $events = getEventsTable($mysqlConn);
 echo "<span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 echo "<form id='changeme' method='post' action='tournamentChangeMe.php'>";
 
+echo "<p>teamID=$teamID</p>";
+
 echo "<h2>Students Assigned by Average Placement:TODO</h2>";
 $studentsAvgPlace = makeStudentArrayAvgPlace($mysqlConn, $teamID);
 //print_r ($studentsTop);
@@ -443,7 +485,7 @@ printTable($mysqlConn, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_result
 
 echo "<h2>Students Assigned by Average Score:TODO</h2>";
 //TODO:
-$studentsAvgScore = makeStudentArrayTopScore($mysqlConn, $teamID);
+$studentsAvgScore = makeStudentArrayAvgScore($mysqlConn, $teamID);
 //print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
