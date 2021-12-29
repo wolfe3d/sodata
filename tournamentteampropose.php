@@ -477,20 +477,20 @@ echo "<form id='changeme' method='post' action='tournamentChangeMe.php'>";
 
 echo "<p>teamID=$teamID</p>";
 
-echo "<h2>Students Assigned by Average Placement:TODO</h2>";
+echo "<h2>Students Assigned by Average Placement</h2>";
+//TODO:Check on why some students are not being assigned when there is a clear empty space
 $studentsAvgPlace = makeStudentArrayAvgPlace($mysqlConn, $teamID);
 //print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsAvgPlace, $timeblocks, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
 printTable($mysqlConn, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
 
-echo "<h2>Students Assigned by Average Score:TODO</h2>";
-//TODO:
+echo "<h2>Students Assigned by Average Score</h2>";
 $studentsAvgScore = makeStudentArrayAvgScore($mysqlConn, $teamID);
 //print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 
-echo "<h2>Students Assigned by Maximum Score (Done)</h2>";
+echo "<h2>Students Assigned by Maximum Score</h2>";
 $studentsTop = makeStudentArrayTopScore($mysqlConn, $teamID);
 //print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsTop, $timeblocks, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
