@@ -171,7 +171,7 @@ if(mysqli_num_rows($result))
 				}
 				else {
 					$border = isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<td style='$border background-color:".rainbow($i)."'></th>";
+					$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
 				}
 
 			}

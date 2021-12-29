@@ -12,9 +12,31 @@ if(empty($teamID))
 	exit();
 }
 
+//find students and order by best score for event (not average best score)
 function makeStudentArrayTopScore($db, $teamID)
 {
-	//find students and order by best score for event (not average best score)
+	$rows = [];
+	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	while($row = $result->fetch_assoc()):
+		array_push($rows, $row);
+	endwhile;
+	return $rows;
+}
+//TODO: find students and order by average placement
+function makeStudentArrayAvgPlace($db, $teamID)
+{
+	$rows = [];
+	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	while($row = $result->fetch_assoc()):
+		array_push($rows, $row);
+	endwhile;
+	return $rows;
+}
+//TODO: find students and order by average score
+function makeStudentArrayAvgScore($db, $teamID)
+{
 	$rows = [];
 	$query = "SELECT * FROM `teammate` INNER JOIN `teammateplace` ON `teammate`.`studentID`=`teammateplace`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teammate`.`teamID` = $teamID ORDER BY `teammateplace`.`score` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -81,7 +103,6 @@ function tempTimeblockInitialize($db,$tableName)
       `timeblockID` int NOT NULL,
       `timeStart` datetime,
       `timeEnd` datetime,
-      `eventNumber` int(11),
       PRIMARY KEY(`timeblockID`)
     )";
 	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -95,14 +116,10 @@ function tempTimeblockAdd($db,$tableName,$timeblockID, $timeStart, $timeEnd)
 	if(!$result->num_rows)
 	{
 		$query = "INSERT INTO `$tableName` (
-				`timeblockID`,`timeStart`,`timeEnd`,`eventNumber`)
-				VALUES ('$timeblockID', '$timeStart', '$timeEnd', '1')";
+				`timeblockID`,`timeStart`,`timeEnd`)
+				VALUES ('$timeblockID', '$timeStart', '$timeEnd')";
 		//echo $query . "<br>";
 		$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	}
-	else {
-		$query = "UPDATE `$tableName` SET `eventNumber` = `eventNumber`+1 WHERE `timeblockID` = $timeblockID";
-		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	}
 }
 function tempResultInitialize($db,$tableName)
@@ -149,6 +166,55 @@ function tempResultTimeBlock($db,$tableName,$eventID)
 	$row = $result->fetch_assoc();
 	return $row['timeblockID'];
 }
+//count distinct timeblocks that are in the results
+function tempResultCountTimeBlock($db,$tableName,$timeblockID)
+{
+	$query = "SELECT DISTINCT `eventID` FROM `$tableName` WHERE `timeblockID` = $timeblockID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Count number of events that a student is assigned to
+function tempResultStudentEvents($db,$tableName,$studentID)
+{
+	$query = "SELECT * FROM `$tableName` WHERE `studentID` = $studentID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Count number of students in an event
+function tempResultEventTotal($db,$tableName,$eventID)
+{
+	$query = "SELECT * FROM `$tableName` WHERE `eventID` = $eventID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Check to see if student has already been assigned to this event
+function tempResultStudentAssignedToEvent($db,$tableName,$eventID,$studentID)
+{
+	$query = "SELECT * FROM `$tableName` WHERE `eventID` = $eventID AND `studentID` = $studentID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Check to see if student has already been assigned to this event
+function tempResultStudentAssignedToTimeblock($db,$tableName,$timeblockID,$studentID)
+{
+	$query = "SELECT * FROM `$tableName` WHERE `timeblockID` = $timeblockID AND `studentID` = $studentID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Count the number of students already assigned
+function tempResultStudentTotal($db,$tableName)
+{
+	$query = "SELECT DISTINCT `studentID` FROM `$tableName`";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
+//Count the number of seniors already assigned
+function tempResultSeniorTotal($db,$tableName)
+{
+	$query = "SELECT DISTINCT `student`.`studentID` FROM `$tableName` INNER JOIN `student` ON `$tableName`.`studentID`=`student`.`studentID` WHERE `yearGraduating`<=".getCurrentSOYear();
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
+}
 //Calculate students in times and then fill in table to be read
 //Think about:  Maybe put builds available throughout the day as last option
 function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
@@ -156,80 +222,40 @@ function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName,
 	tempStudentInitialize($db, $studentTableName);
 	tempTimeblockInitialize($db, $timeblockTableName);
 	tempResultInitialize($db, $resultsTableName);
-	//$results = []; //a list of all of the events with the students assigned
 	foreach ($teammates as $teammate)
 	{
-		//get event row if it was already made
-		/*$eventAdd = 0;
-		foreach ($results as $row)
+		//Check to see that there is no more than 15 students assigned and 7 seniors OR that this student has already been assigned
+		if((tempResultStudentTotal($db,$resultsTableName) <= 15 && tempResultSeniorTotal($db,$resultsTableName) <= 7) || tempResultStudentTotal($db,$resultsTableName,$teammate['studentID']))
 		{
-			if($row['eventID']==$teammate['eventID'])
-			{
-				$eventAdd = $row;
-				break;
-			}
-		}/*/
-		//check to see if this event has already been assigned maximum students
-		/*$alreadyMax = 0;
-		if($eventAdd)
-		{
-			if($eventAdd['numberStudents']==count($eventAdd['students']))
-			{
-				$alreadyMax =1;
-			}
-		}*/
 		$countAssigned = tempResultCountAssigned($db,$resultsTableName,$teammate['eventID']);
-		if($countAssigned<getEventMaximumPerson($db, $teammate['eventID']))
+		//check to see if this person has already been assigned to this event
+		if(!tempResultStudentAssignedToEvent($db,$resultsTableName,$teammate['eventID'],$teammate['studentID']))
 		{
-			/*if($eventAdd)
+			if($countAssigned<getEventMaximumPerson($db, $teammate['eventID']))
 			{
-				//this line could have score or place added, but this may differ depending on teammate array
-				$studentAssigned = ['studentID'=>$teammate['studentID']];
-				tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'], $teammate['yearGraduating']);
-				array_push($eventAdd['students'], $studentAssigned);
-				//the following for each does not seem like the best way to do this, but I needed a way to overwrite the result row
-				foreach ($results as &$row)
-				{
-					if($row['eventID']==$teammate['eventID'])
-					{
-						$row = $eventAdd;
-						break;
-					}
-				}
-			}
-			else
-			{*/
 				//find available timeblock and then add to output
 				foreach ($timeblocks as $timeblock)
 				{
 					if($teammate['eventID']==$timeblock['eventID'])
 					{
-						//check to see if this event has already been assigned a timeBlock
-						if(!$countAssigned)
+						//Check to see if student is already assigned to this timeblock
+						if(!tempResultStudentAssignedToTimeblock($db,$resultsTableName,$timeblock['timeblockID'],$teammate['studentID']))
 						{
-						//$studentAssigned = ['studentID'=>$teammate['studentID']];
-						tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'],  $teammate['yearGraduating']);
-						//$eventAdd = ['timeblockID'=>$timeblock['timeblockID'], 'tournamenteventID'=>$timeblock['tournamenteventID'], 'eventID'=>$timeblock['eventID'], 'event'=>$timeblock['event'],'numberStudents'=>$timeblock['numberStudents'], 'students'=>[]];
-						//array_push($eventAdd['students'], $studentAssigned);
-						//array_push($results, $eventAdd);
-						tempResultAdd($db,$resultsTableName,$timeblock['tournamenteventID'], $timeblock['timeblockID'], $timeblock['eventID'],$teammate['studentID']);
-						tempTimeblockAdd($db,$timeblockTableName,$timeblock['timeblockID'], $timeblock['timeStart'], $timeblock['timeEnd']);
-						break;
-						}
-						else {
-							//if this event has already been assigned, check that this is the timeblock that was time that was time that was chosen
-							if(tempResultTimeBlock($db,$tableName,$eventID)==$timeblock['eventID'])
+							//check to see if this event has already been assigned a timeBlock, if it has been assigned is it this timeblock
+							if(!$countAssigned || tempResultTimeBlock($db,$resultsTableName,$timeblock['eventID'])==$timeblock['timeblockID'])
 							{
 								tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'],  $teammate['yearGraduating']);
 								tempResultAdd($db,$resultsTableName,$timeblock['tournamenteventID'], $timeblock['timeblockID'], $timeblock['eventID'],$teammate['studentID']);
 								tempTimeblockAdd($db,$timeblockTableName,$timeblock['timeblockID'], $timeblock['timeStart'], $timeblock['timeEnd']);
+								break;
 							}
 						}
 					}
 				}
-			//}
+			}
 		}
 	}
+}
 	return "";
 }
 
@@ -239,7 +265,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	$output = "";
 
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
+	$output .="<table id='tournamentTable$resultsTableName' class='tournament'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -250,6 +276,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	if($resultTimeblock->num_rows)
 	{
 		while ($timeblock = $resultTimeblock->fetch_assoc()):
+			$timeblock['eventNumber'] = tempResultCountTimeBlock($db,$resultsTableName,$timeblock['timeblockID']);
 			array_push($timeblocks, $timeblock);
 		if($dateCheck==""){
 			$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
@@ -270,7 +297,8 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	endwhile;
 	}
 	$output .= "<th colspan='$dateColSpan' style='text-align:center;'>" . $dateCheck . "</th>";
-	$output .="<th rowspan='3' style='vertical-align:bottom;'>Total Events</th></tr>";
+	$border = "border-left:2px solid black; ";
+	$output .="<th rowspan='3' style='$border vertical-align:bottom;'>Total Events</th></tr>";
 
 //print the time for each event and date
 	$output .="<tr>";
@@ -279,7 +307,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	foreach ($timeblocks as $i=>$timeblock)
 	{
 			$eventNumber = $timeblock['eventNumber'];
-			$output .= "<th id='timeblock-".$timeblock['timeblockID']."' colspan='$eventNumber' style='".$border." background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblock["timeStart"])) ." - " . date("g:i A",strtotime($timeblock["timeEnd"])) . "</th>";
+			$output .= "<th id='timeblock-".$timeblock['timeblockID']."' colspan='$eventNumber' style='".$border." background-color:".rainbow($i)."'>" . date("g:i A",strtotime($timeblock["timeStart"])) ." - " . date("g:i A",strtotime($timeblock["timeEnd"])) ."</th>";
 	}
 	$output .="</tr>";
 
@@ -288,28 +316,26 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	//put sorting for last and first name in this row
 	$output .="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
 
-	//Get students
+	//Get events
 	foreach ($timeblocks as $i=>$timeblock)
 	{
 		$timeEvents= $timeblock['eventNumber'];
-		foreach ($schedule as $timeEvent)
-		{
-			if($timeblock['timeblockID']==$timeEvent['timeblockID'])
-			{
-				if($timeEvents > 1)
+		$queryEvents = "SELECT DISTINCT `event`.`eventID`, `event`, `tournamenteventID` FROM `$resultsTableName` INNER JOIN `event` ON `$resultsTableName`.`eventID`=`event`.`eventID` WHERE `timeblockID`= ".$timeblock['timeblockID']." ORDER BY `event` ASC";
+		$resultEvents = $db->query($queryEvents) or error_log("\n<br />Warning: query failed:$queryEvents. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		while ($row = $resultEvents->fetch_assoc()):
+				if($timeEvents == $timeblock['eventNumber'])
 				{
-					$border = "border-left:2px solid black; ";//isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvent['event']."</span></th>";
+					$border = "border-left:2px solid black; ";
 				}
 				else
 				{
-					$border = "border-left:2px solid black; ";
-					$output .= "<th style='$border background-color:".rainbow($i)."'></th>";
+					$border = "";
 				}
+				$output .= "<th id='event-".$row['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$row['event']."</span></th>";
 				$timeEvents -=1;
-			}
-		}
+		endwhile;
 	}
+
 	$output .="<td id='studenttotal-empty'></td></tr></thead><tbody>";
 
 	//Get students
@@ -329,29 +355,39 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 			//output student column
 			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a></td><td>$studentGrade</td>";
 			foreach ($timeblocks as $i=>$timeblock) {
-				/*$timeEvents= $timeblock['events'];
-				if($timeEvents)
-				{
-					foreach ($timeEvents as $timeEvent) {
-						$checkbox = "teammateplace-".$timeEvent['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-						$checkboxEvent = "timeblock-".$timeblock['timeblockID']." teammateEvent-".$timeEvent['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
+				$timeEvents = $timeblock['eventNumber'];
+				$queryEvents = "SELECT DISTINCT `event`.`eventID`, `event`, `tournamenteventID` FROM `$resultsTableName` INNER JOIN `event` ON `$resultsTableName`.`eventID`=`event`.`eventID` WHERE `timeblockID`= ".$timeblock['timeblockID']." ORDER BY `event` ASC";
+				$resultEvents = $db->query($queryEvents) or error_log("\n<br />Warning: query failed:$queryEvents. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+				while ($rowEvent = $resultEvents->fetch_assoc()):
+					$queryResultTable = "SELECT * FROM `$resultsTableName` WHERE `eventID`= ".$rowEvent['eventID']." AND `studentID`=".$rowStudent['studentID'];
+					$result= $db->query($queryResultTable) or error_log("\n<br />Warning: query failed:$queryResultTable. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+					//put a border around each color
+					if($timeEvents == $timeblock['eventNumber'])
+					{
+						$border = "border-left:2px solid black; ";
+					}
+					else
+					{
+						$border = "";
+					}
+					$timeEvents -=1;
 
-						$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvent['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
-						$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-						$border = isset($timeblock['border'])?$timeblock['border']:"";
-						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblock['timeblockID']."'>";
-						$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
-						$timeEvent['eventTotal'] +=$checked?1:0;
-						$output .=$checked?"<div class='fa'>&#xf00c;</div>":"";
+					if($result->num_rows)
+					{
+						$row = $result->fetch_assoc();
+						$checkbox = "teammateplace-".$row['tournamenteventID']."-".$row['studentID'];
+						$checkboxEvent = "timeblock-".$row['timeblockID']." teammateEvent-".$row['tournamenteventID']." teammateStudent-".$row['studentID'];
+						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$row['timeblockID']."'>";
+						$output .="<div class='fa'>&#xf00c;</div>";
 						$output .="</td>";
 					}
-				}
 				else {
-					$border = isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<td style='$border background-color:".rainbow($i)."'></th>";
-				}*/
+					$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
+				}
+			endwhile;
 			}
-			$output .="<td id='studenttotal-".$rowStudent['studentID']."'></td></tr>";
+			$border = "border-left:2px solid black; ";
+			$output .="<td style='$border' id='studenttotal-".$rowStudent['studentID']."'>".tempResultStudentEvents($db,$resultsTableName,$rowStudent['studentID'])."</td></tr>";
 	endwhile;
 	}
 	else {
@@ -360,19 +396,27 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	//print the total signed up for each event
 	$errorSeniors = $totalSeniors > 7 ? "<span class='error'>Too many</span>":"";
 	$output .="</tbody><tfoot><tr><td><strong>$totalStudents</strong> Total Teammates</td><td><strong>$totalSeniors</strong> Seniors $errorSeniors</td>";
-	/*foreach ($timeblocks as $i=>$timeblock) {
-		$timeEvents= $timeblock['events'];
-		if($timeEvents)
-		{
-			foreach ($timeEvents as $timeEvent) {
-				$output .= "<td data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvent['eventTotal']." </td>";
+	foreach ($timeblocks as $i=>$timeblock) {
+		$timeEvents = $timeblock['eventNumber'];
+		$queryEvents = "SELECT DISTINCT `event`.`eventID`, `event`, `tournamenteventID`,`numberStudents` FROM `$resultsTableName` INNER JOIN `event` ON `$resultsTableName`.`eventID`=`event`.`eventID` WHERE `timeblockID`= ".$timeblock['timeblockID']." ORDER BY `event` ASC";
+		$resultEvents = $db->query($queryEvents) or error_log("\n<br />Warning: query failed:$queryEvents. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		while ($rowEvent = $resultEvents->fetch_assoc()):
+			//put a border around each color
+			if($timeEvents == $timeblock['eventNumber'])
+			{
+				$border = "border-left:2px solid black; ";
 			}
-		}
-		else {
-			$border = isset($timeblock['border'])?$timeblock['border']:"";
-			$output .= "<td style='$border background-color:".rainbow($i)."'></td>";
-		}
-	}*/
+			else
+			{
+				$border = "";
+			}
+			$timeEvents -=1;
+			$countEvent = tempResultEventTotal($db,$resultsTableName,$rowEvent['eventID']);
+			$class = $rowEvent['numberStudents']>$countEvent?"warning":"";
+			$warningText = $rowEvent['numberStudents']>$countEvent?"***Too Few":"";
+			$output .= "<td data-eventmax='".$rowEvent['numberStudents']."' class='$class' id='eventtotal-".$rowEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>$countEvent $warningText</td>";
+		endwhile;
+	}
 	$output .="</tr>";
 
 	$output .="</tfoot></table></form>";
@@ -384,32 +428,33 @@ $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $rowTeam = $resultTeam->fetch_assoc();
 
-//Remove commented lines below if unneeded
-//Get tournament times
-/*
-$query = "SELECT * FROM `timeblock` WHERE `tournamentID` = ".$rowTeam['tournamentID']." ORDER BY `timeStart`";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-*/
-echo "tournamentID:" . $rowTeam['tournamentID'] ."<br><br>StudentArray<br>";
-$studentsTop = makeStudentArrayTopScore($mysqlConn, $teamID);
-//print_r ($studentsTop);
-echo "<br><br>Timeblocks<br>";
-$timeblocks = makeTimeArray($mysqlConn, $rowTeam['tournamentID']);
-//print_r ($timeblocks);
-//echo "<br><br>Events Table<br>";
-$events = getEventsTable($mysqlConn);
-print_r ($events);
-echo "<br><br>Calculated Student Times<br>";
 
-calculateStudentsTimes($mysqlConn,$studentsTop, $timeblocks, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
-//print_r ($possible);
-echo "<br><br>Students Assigned<br>";
-//print_r ($students);
+$timeblocks = makeTimeArray($mysqlConn, $rowTeam['tournamentID']);
+$events = getEventsTable($mysqlConn);
 
 echo "<span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
-echo "<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable' class='tournament'>";
+echo "<form id='changeme' method='post' action='tournamentChangeMe.php'>";
 
+echo "<h2>Students Assigned by Average Placement:TODO</h2>";
+$studentsAvgPlace = makeStudentArrayAvgPlace($mysqlConn, $teamID);
+//print_r ($studentsTop);
+calculateStudentsTimes($mysqlConn,$studentsAvgPlace, $timeblocks, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
+printTable($mysqlConn, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
+
+echo "<h2>Students Assigned by Average Score:TODO</h2>";
+//TODO:
+$studentsAvgScore = makeStudentArrayTopScore($mysqlConn, $teamID);
+//print_r ($studentsTop);
+calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
+printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
+
+echo "<h2>Students Assigned by Maximum Score (Done)</h2>";
+$studentsTop = makeStudentArrayTopScore($mysqlConn, $teamID);
+//print_r ($studentsTop);
+calculateStudentsTimes($mysqlConn,$studentsTop, $timeblocks, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
 printTable($mysqlConn, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
+
+
 ?>
 <br>
 <form id="addTo" method="post" action="tournamenteventadd.php">
