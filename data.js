@@ -973,23 +973,40 @@ function tournamentRankReset()
 	});
 }
 
+function calculateScore(eventPlace, eventWeight, tournamentWeight)
+{
+	//formula for scoring here
+	if (eventPlace)
+	{
+		return eventWeight/((eventPlace)^0.5)*(tournamentWeight/100);
+	}
+	return 0;
+}
+
 function tournamentScoreCalculate(studentID)
 {
 	//calculate student with this event
-	var score = 0;
+	var tournamentWeight = $("#tournamentWeight").val();
+	var scoreTotal = 0;
 	$(".student-"+studentID).each(function(){
+		var score = 0;
 		if($(this).text()!="")
 		{
 			var splitStudentCalcID = this.id.split("-");
-			var place = $(this).text();
+			var place = $(this).attr('placement');
 			var eventWeight = $("#eventweight-"+splitStudentCalcID[2]).val();
-			score += eventWeight/((place)^.5);
+			score = calculateScore(place, eventWeight, tournamentWeight);
+			if (place)
+			{
+				$(this).text(place + "("+format(score)+")");
+			}
+			scoreTotal += score;
 		}
 	});
-	var tournamentWeight = $("#tournamentWeight").val();
-	score = score * tournamentWeight/100;
-	$("#score-"+studentID).text(format(score));
-	$("#teammate-"+studentID).parent().attr('score',format(score));
+
+	//score = score * tournamentWeight/100;
+	$("#score-"+studentID).text(format(scoreTotal));
+	$("#teammate-"+studentID).parent().attr('score',format(scoreTotal));
 }
 
 function tournamentScore()

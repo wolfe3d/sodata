@@ -1,4 +1,10 @@
 <?php
+function calculateScore($eventPlace, $eventWeight, $tournamentWeight)
+{
+	//formula for scoring here
+	return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100);
+}
+
 //finds if placements have been added, so that a score may be calculated
 function checkPlacements($db,$tournamentID)
 {
@@ -107,14 +113,16 @@ function calculateScores(&$students, $tournamentPlacements, $events, $tournament
 		//calculate total events and average place
 		$countEvents = 0;
 		$totalPlace = 0;
-		$totalScore = 0;
+		$student['score'] = 0;
 		$teamName = "";
+		$student['events'] = [];
 		foreach ($studentPlacements as $value) {
 			$totalPlace += $value['place'];
 			$teamName = $value['teamName'];
 			$countEvents += 1;
+			$score = 0;
 			//add event to student array with placement
-			$student[$value['tournamenteventID']]=$value['place'];
+			//$student[$value['tournamenteventID']]=$value['place'];
 
 			//get weighting of event
 			//$eventKey = array_search($value['tournamenteventID'], array_column($events, 'tournamenteventID'));
@@ -123,9 +131,12 @@ function calculateScores(&$students, $tournamentPlacements, $events, $tournament
 				if($event['tournamenteventID'] == $value['tournamenteventID'])
 				{
 					//score student
-
-					$totalScore += $event['weight']/(($value['place'])**0.5);
-
+					//$value['score']=$event['weight']/(($value['place'])**0.5)*($tournamentWeight/100)
+					$score=calculateScore($value['place'], $event['weight'], $tournamentWeight);
+					$studentEvent = ['tournamenteventID'=>$value['tournamenteventID'],'place'=>$value['place'],'score'=>$score];
+					array_push($student['events'], $studentEvent );
+					$student['score'] += $score; //total score
+					break;
 				}
 			}
 		}
@@ -135,12 +146,10 @@ function calculateScores(&$students, $tournamentPlacements, $events, $tournament
 		if($countEvents)
 		{
 			$student['avgPlace']= $totalPlace/$countEvents;
-			$student['score']= $totalScore*($tournamentWeight/100); //do not use number format here because the compareScores function will not be able to compare with commas.
 		}
 		else
 		{
 			$student['avgPlace']= "";
-			$student['score']= 0;
 		}
 	}
 }

@@ -4,6 +4,18 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 require_once("functions.php");
 
 userCheckPrivilege(1);
+
+
+function assignmentMade($db, $teamID)
+{
+	$query = "SELECT * from `teammateplace` WHERE `teammateplace`.`teamID` = $teamID";
+	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(empty($result))
+	{
+		return 0;
+	}
+	return $result->num_rows;
+}
 //text output
 $output = "";
 
@@ -140,6 +152,10 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			if(userHasPrivilege(3))
 			{
 				$output .="<p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
+				if(!assignmentMade($mysqlConn, $rowTeam['teamID']))
+				{
+						$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teampropose-".$rowTeam['teamID']."\"' value='&#xf06d; Propose Assignments' />";
+				}
 				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamassign-".$rowTeam['teamID']."\"' value='&#xf06d; Assign Events' />";
 				$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"team-emails-".$rowTeam['teamID']."\"' value='&#xf01c; Get team emails' /></p>";
 			}

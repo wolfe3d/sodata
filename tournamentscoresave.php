@@ -5,8 +5,9 @@ userCheckPrivilege(4);
 require_once  ("functions.php");
 require_once  ("functionstournament.php");
 
-function changeScore($db, $studentID, $tournamentID, $score, $averagePlace, $eventsNumber, $rank)
+function changeTournamentScore($db, $studentID, $tournamentID, $score, $averagePlace, $eventsNumber, $rank)
 {
+	//change score table that holds each tournament score
 	$query = "SELECT * FROM `score` WHERE `score`.`tournamentID` = $tournamentID AND `score`.`studentID` = $studentID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
@@ -19,6 +20,19 @@ function changeScore($db, $studentID, $tournamentID, $score, $averagePlace, $eve
 	if ($db->query($query) === FALSE)
 	{
 		error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	}
+}
+function changeEventScore($db, $student)
+{
+	foreach ($student['events'] as $studentEvent)
+	{
+		//change teammateplace table with updated scores.
+		$query = "UPDATE `teammateplace` SET `score` = ".$studentEvent['score']." WHERE `tournamenteventID` = ".$studentEvent['tournamenteventID']." AND `studentID` = ".$student['studentID'];
+		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if ($db->query($query) === FALSE)
+		{
+			error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		}
 	}
 }
 
@@ -45,7 +59,8 @@ else
 
 	foreach ($students as $student)
 	{
-	  changeScore($mysqlConn, $student['studentID'], $tournamentID, $student['score'], $student['avgPlace'], $student['count'], $student['rank']);
+	  changeTournamentScore($mysqlConn, $student['studentID'], $tournamentID, $student['score'], $student['avgPlace'], $student['count'], $student['rank']);
+		changeEventScore($mysqlConn, $student);
 	}
 
 	echo "1";

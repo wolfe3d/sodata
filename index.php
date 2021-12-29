@@ -9,6 +9,7 @@ if (isset($_SESSION['token'])) {
 			print_r($exception->getMessage());
 	}
 }
+
 ?>
 <!DOCTYPE HTML>
 <html>

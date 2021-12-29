@@ -7,7 +7,7 @@ unset($_SESSION['token']);
 unset($_SESSION['userData']);
 
 // Reset OAuth access token
-if($gClient) $gClient->revokeToken();
+if(isset($gClient)) $gClient->revokeToken();
 
 // Destroy entire session data
 session_destroy();

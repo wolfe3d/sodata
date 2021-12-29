@@ -12,19 +12,19 @@ All privileges include priviliges below them.
 */
 function userCheckPrivilege($level)
 {
-	if(!$_SESSION['userData'] || empty($_SESSION['userData']['privilege']))
+	if(!isset($_SESSION['userData']) || empty($_SESSION['userData']['privilege']))
 	{
 		die("<div style='color:red'>You must be logged in to access this page. <a href='index.php'>Go home.</a></div>");
 	}
 	if($_SESSION['userData']['privilege']<$level)
 	{
-		die("<div style='color:red'>You must have the correct privilige to access this file. <a href='data.php'>Go home.</a></div>");
+		die("<div style='color:red'>You must have the correct privilige to access this file. <a href='index.php'>Go home.</a></div>");
 	}
 	//TODO: figure out how to refresh Google token here https://stackoverflow.com/questions/9241213/how-to-refresh-token-with-google-api-client
 }
 function userHasPrivilege($level)
 {
-	if(!$_SESSION['userData']||$_SESSION['userData']['privilege']<$level)
+	if(!isset($_SESSION['userData'])||$_SESSION['userData']['privilege']<$level)
 	{
 		return 0;
 	}

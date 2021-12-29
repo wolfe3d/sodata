@@ -598,64 +598,17 @@ function checkGoogle($gpUserProfile,$db)
   $_SESSION['userData'] = $userData;
 }
 
-//convert rgb color to hexadecimal
-//TODO: possible remove this function.  Currently, deactivated but check all pages to make sure no effect.
-/*function rgb($rgb) {
-    $ret = '';
-    foreach ($rgb as $x) {
-        // Make sure the RGB values are 0-255...
-        $x = max(0, min(255, $x));
-        // create a 2 digit hex value for this color component...
-        $ret .= ($x < 16 ? '0'.dechex($x) : dechex($x));
-    }
-    return '#'.$ret;
-}*/
-
-// Returns a color that is part of the rainbow -- not in order of ROYGBIV
+//a much shorter function than previously
+//this generates a color in an order for using as a rainbow styling
 function rainbow($i) {
-		$opacity = 0.2;
-    $rgb = array(255,255,0); //yellow
-    // Go through the RGB values and adjust the values by $amount...
-		$i = $i - floor($i/11)*11;  //11 is the highest color, so after 11 the number returns to 0
-
-		switch($i) {
-			case 1:
-				$rgb = array(255,128,0); //orange
-				break;
-			case 2:
-				$rgb = array(255,0,0); //red
-				break;
-			case 3:
-				$rgb = array(255,0,128); //Rose
-				break;
-			case 4:
-				$rgb = array(255,0,255); //Magenta
-				break;
-			case 5:
-				$rgb = array(128,0,255); //violet
-				break;
-			case 6:
-				$rgb = array(0,0,255); //blue
-				break;
-			case 7:
-				$rgb = array(0,128,255); //Azure
-				break;
-			case 8:
-				$rgb = array(0,255,255); //cyan
-				break;
-			case 9:
-				$rgb = array(0,255,128); //Spring Green
-				break;
-			case 10:
-				$rgb = array(0,255,0); //Green
-				break;
-			case 11:
-				$rgb = array(128,255,0); //Chartreuse
-				break;
-		  default:
-		    // code block
-		}
-    return "rgba(".implode($rgb,",").", $opacity);";
+	//var colorIncrement = Math.floor(360/colors);
+	$light = "50%"; //lightnes of HSL
+	$sat = "100%";
+	$t=0.3;
+  //hue of color
+	$n = $i*42;  //pick a number that does not divide evenly into 360, so that the colors don't repeat.
+	$hue = $n-floor($n/360)*360; //360 is the highest color, so after 360 the number returns to around zero
+  return 'hsla('. $hue .','. $sat .','. $light .','.$t.')';
 }
 
 /**

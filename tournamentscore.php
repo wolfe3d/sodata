@@ -5,7 +5,7 @@ userCheckPrivilege(1);
 require_once  ("functions.php");
 require_once  ("functionstournament.php");
 //calculation of score
-// SUM(eventweighting/eventplacement) * tournamentWeight
+// SUM(eventweighting/eventplacement^3) * tournamentWeight
 //With this method number of events is weighted.
 
 $output = "";
@@ -95,20 +95,28 @@ else
 	{
 		$grade = getStudentGrade($student['yearGraduating']);
 		$averagePlace = $student['avgPlace']?number_format($student['avgPlace'],2):"";
-		$score = $student['score']?number_format($student['score'],2):0;
-		$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' average='$averagePlace' score='$score' rank='".$student['rank']."'>";
+		$totalScore = $student['score']?number_format($student['score'],2):0;
+		$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' average='$averagePlace' score='$totalScore' rank='".$student['rank']."'>";
 		$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last'].", " . $student['first'] ."(".$student['teamName'] .")</a></td>";
 		$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
 		foreach ($events as $event)
 		{
 			$placement = "";
-			if (array_key_exists($event['tournamenteventID'], $student))
+			$score = "";
+			$scoreprint ="";
+			foreach ($student['events'] as $studentEvent)
 			{
-				$placement = $student[$event['tournamenteventID']];
+				if ($studentEvent['tournamenteventID']==$event['tournamenteventID'])
+				{
+					$placement = $studentEvent['place'];
+					$score = $studentEvent['score'];
+					$scoreprint = $score ? "(".number_format($score,2).")":"";
+					break;
+				}
 			}
-			$output .= "<td id='studentplace-".$student['studentID']."-".$event['tournamenteventID']."' class='event-".$event['tournamenteventID']." student-".$student['studentID']."'>$placement</td>";
+			$output .= "<td id='studentplace-".$student['studentID']."-".$event['tournamenteventID']."' class='event-".$event['tournamenteventID']." student-".$student['studentID']."' placement='$placement'>$placement $scoreprint</td>";
 		}
-		$output .= "<td>".$student['count']."</td><td>".$averagePlace."</td><td id='score-".$student['studentID']."'>".$score."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
+		$output .= "<td>".$student['count']."</td><td>".$averagePlace."</td><td id='score-".$student['studentID']."'>".$totalScore."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 	}
 	$output .= "</tbody><table>";
 

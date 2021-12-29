@@ -127,7 +127,7 @@ if(mysqli_num_rows($result))
 		}
 
 	}
-	$output .="<td id='studenttotal-empty'></td></tr></thead><tbody>";
+	$output .="</tr></thead><tbody>";
 
 	//Get students
 	$query = "SELECT * FROM `teammate` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teamID` = $teamID ORDER BY `last` ASC, `first` ASC";
