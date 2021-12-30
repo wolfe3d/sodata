@@ -499,6 +499,6 @@ printTable($mysqlConn, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results
 <br>
 <form id="addTo" method="post" action="tournamenteventadd.php">
 	<p>
-		<input class="button" type="button" onclick="window.history.back()" value="Return" />
+				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
 	</p>
 </form>

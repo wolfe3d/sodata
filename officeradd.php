@@ -24,6 +24,6 @@ if(empty($year))
 		<input id="position" name="position" type="text" value="position" onchange="officerAdd()">
 	</p>
 		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />
-		<input class="submit" type="submit" value="Add">
+		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</div>
 </form>

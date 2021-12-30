@@ -100,7 +100,7 @@ echo $output;
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
 	<p>
-		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />
-		<input class="submit" type="submit" value="Add">
+		<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
+		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</p>
 </form>
