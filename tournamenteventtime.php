@@ -34,7 +34,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 if(mysqli_num_rows($result))
 {
 	$output .="<h2>Choose Times</h2><div id='note'></div><div>For all testing events, make sure to choose the same time block for all teams.  Build events can be at different times.</div>";
-	$output .="<form id='timeForm' method='post' action='tournamentChangeMe.php'><table><thead>";
+	$output .="<form id='timeForm' method='post' action='tournamentChangeMe.php'><table class='tournament'><thead>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
@@ -80,7 +80,7 @@ if(mysqli_num_rows($result))
 	if(mysqli_num_rows($resultEvent))
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <span id='tournamenteventwarning-".$rowEvent['tournamenteventID']."' class='error'></span></th>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><td><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <span id='tournamenteventwarning-".$rowEvent['tournamenteventID']."' class='error'></span></td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 				//find available times  //TODO: Consider storing the query below in the timeblocks array above to reduce calls to database
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
