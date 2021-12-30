@@ -47,7 +47,7 @@ else
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";
 	$output .="<form id='addTo' method='post' action='fieldupdate.php'><table id='tournamentTable' class='tournament'>";
-	if(userHasPrivilege(3))
+	if(userHasPrivilege(4))
 	{
 		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";
 		$output .="  <input id='tournamentWeight' type='number' min='0' max='999' value='".$tournamentWeight."' style='display: inline-block'/></div>";

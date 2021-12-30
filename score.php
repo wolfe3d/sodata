@@ -1,7 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(1);
+userCheckPrivilege(4);
 require_once  ("functions.php");
 require_once  ("functionstournament.php");
 
