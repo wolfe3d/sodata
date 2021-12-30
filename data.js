@@ -884,8 +884,12 @@ function tournamentTimeAdd(myID)
 
 						let timeEnd = new Date($("#timeEnd").val());
 						let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
-
-						$("#timeblocks").append("<div id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></div>");
+						//clear empty timeblock output
+						if($("#timeblocks").html()=="None Added")
+						{
+							$("#timeblocks").empty();
+						}
+						$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
 					}
 					else
 					{

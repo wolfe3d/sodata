@@ -14,21 +14,24 @@ if($tournamentID)
 	$tournamentRow = $result->fetch_assoc();
 
 	//Get number of teams created
+	$output ="<h2>Available Blocks</h2>";
+	$output .="<ol id='timeblocks'>";
 	$query = "SELECT * FROM `timeblock` WHERE `tournamentID` = $tournamentID ORDER BY `timeStart`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
 	if(mysqli_num_rows($result))
 	{
-		$output .="<h2>Available Blocks</h2>";
-		$output .="<ol id='timeblocks'>";
 		$i=0;
 		while ($row = $result->fetch_assoc()):
 			$output .= "<li id='timeblock-".$row['timeblockID']."'>" . timeblockEdit($row['timeblockID'],date("Y:m:d G:i",strtotime($row["timeStart"])) ." - " . date("Y:m:d G:i",strtotime($row["timeEnd"])),(userHasPrivilege(3))) . " <a class='fa' href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .")'>&#xf00d; Remove</a>  </li>";
 			$i+=1;
 			if ($i>11) $i=0;
 		endwhile;
-		$output .="</ol><br>";
 	}
+	else
+	{
+		$output .="None Added";
+	}
+	$output .="</ol><br>";
 	echo $output;
 }
 ?>
