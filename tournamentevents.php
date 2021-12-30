@@ -23,7 +23,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 if(mysqli_num_rows($result))
 {
 	$output .="<h2>Available Times</h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table><thead>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table class='tournament'><thead>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
@@ -64,10 +64,11 @@ if(mysqli_num_rows($result))
 
 	$queryEvent = "SELECT * FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentID` = $tournamentID ORDER BY `event`.`event` ASC";
 	$resultEvent = $mysqlConn->query($queryEvent) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if(mysqli_num_rows($resultEvent))
+	$totalEvents = mysqli_num_rows($resultEvent);
+	if($totalEvents)
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><th><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",\"".$rowEvent["event"] ."\")'>X</a></th>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><td><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",\"".$rowEvent["event"] ."\")'>X</a></td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."--".$timeblocks[$i]['timeblockID'];
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
@@ -82,6 +83,7 @@ if(mysqli_num_rows($result))
 	else {
 		exit("<input class='button fa' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")' value='&#xf0c3; Add all events from this year' />");
 	}
+	$output .="<tr><td>Total Events=$totalEvents</td></tr>";
 	$output .="</tbody></table></form>";
 }
 else {

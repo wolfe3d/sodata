@@ -79,7 +79,7 @@ function makeStudentArrayAvgScore($db, $teamID)
 }
 
 //Make Timeblock array.  Order by number of slots(events) in the timeblock.  Fewest slots is assigned first.
-//TODO: Figure out what priority builds will have especially if available throughout the day as last option
+//TODO: Figure out what priority builds will have especially if available throughout the day as last option.  This needs to change in student priority.
 function makeTimeArray($db, $tournamentID)
 {
 	//find all available tournament times
@@ -462,7 +462,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	$output .="</tfoot></table></form>";
 	echo $output;
 }
-//TODO: Check to see if another team for this tournament has been assigned.
+//TODO: Check to see if another team for this tournament has been assigned.  If so, you must change timeblock calls from tournamenttimeavailable to tournamenttimechosen except for builds (makes it a bit difficult)
 //Get team and tournament row information
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -486,13 +486,11 @@ printTable($mysqlConn, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_result
 
 echo "<h2>Students Assigned by Average Score</h2>";
 $studentsAvgScore = makeStudentArrayAvgScore($mysqlConn, $teamID);
-//print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 
 echo "<h2>Students Assigned by Maximum Score</h2>";
 $studentsTop = makeStudentArrayTopScore($mysqlConn, $teamID);
-//print_r ($studentsTop);
 calculateStudentsTimes($mysqlConn,$studentsTop, $timeblocks, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
 printTable($mysqlConn, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results');
 
