@@ -36,7 +36,7 @@ function makeStudentArrayTopScore($db, $teamID)
 function makeStudentArrayAvgPlace($db, $teamID)
 {
 	$rows = [];
-	$query = "SELECT DISTINCT x.`studentID`,`eventID`, `last`,`first`,`yearGraduating`, note FROM `teammateplace` x
+	$query = "SELECT DISTINCT x.`studentID`,`eventID`, `last`,`first`,`yearGraduating`, `score`,  note FROM `teammateplace` x
 JOIN (SELECT `studentID`, `eventID`, AVG(`place`) as note FROM `teammateplace`
 INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` GROUP BY `studentID`,`eventID`) y
 	ON x.`studentID`=y.`studentID`
@@ -180,10 +180,16 @@ function tempResultInitialize($db,$tableName)
 }
 function tempResultAdd($db,$tableName,$tournamenteventID, $timeblockID, $eventID, $studentID, $note)
 {
-	echo "note:$note";
 	$query = "INSERT INTO `$tableName` (
 				`tournamenteventID`,`timeblockID`,`eventID`,`studentID`,`note`)
 				VALUES ('$tournamenteventID', '$timeblockID', '$eventID', '$studentID', '$note')";
+		//echo $query . "<br>";
+		$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+}
+function tempResultModifyTimeblock($db,$tableName,$tournamenteventID, $timeblockID, $eventID, $studentID)
+{
+	$query = "UPDATE `$tableName` SET `timeblockID`=$timeblockID, `tournamenteventID`=$tournamenteventID
+			WHERE `eventID`=$eventID AND `studentID`=$studentID";
 		//echo $query . "<br>";
 		$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 }
@@ -209,6 +215,13 @@ function tempResultTimeBlock($db,$tableName,$eventID)
 	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$row = $result->fetch_assoc();
 	return $row['timeblockID'];
+}
+//find timeblock that was already assigned to an event
+function tempResultTimeBlockIs($db,$tableName,$eventID,$timeblockID)
+{
+	$query = "SELECT * FROM `$tableName` WHERE `eventID` = $eventID AND `timeblockID`=$timeblockID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return $result->num_rows;
 }
 //count distinct timeblocks that are in the results
 function tempResultCountTimeBlock($db,$tableName,$timeblockID)
@@ -261,9 +274,185 @@ function tempSeniorTotal($db,$tableName)
 	$row=$result->fetch_assoc();
 	return $row['total'];
 }
+//find the name of the event
+function getEventName($db,$eventID)
+{
+	$query = "SELECT `event` FROM `event` WHERE `eventID`=$eventID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$row=$result->fetch_assoc();
+	return $row['event'];
+}
+//Check to see if student has already been assigned to this event
+function tempResultFindStudentAssignedToEvent($db,$tableName,$eventID)
+{
+	$query = "SELECT `$tableName`.`studentID`, `last`, `first` FROM `$tableName` INNER JOIN `student` ON `$tableName`.`studentID`=`student`.`studentID` WHERE `eventID` = $eventID";
+	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$rows=[];
+	if($result)
+	{
+	while($row = $result->fetch_assoc()):
+		array_push($rows, $row);
+	endwhile;
+	}
+	return $rows;
+}
+//reaassign student to different timeBlock
+function reassignStudent($db, $eventID, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
+{
+	//check all available $timeblocks for the $eventID
+	$eventTimeblocks =[];
+	foreach ($timeblocks as $timeblock)
+	{
+		if($eventID==$timeblock['eventID'])
+		{
+			array_push($eventTimeblocks, $timeblock);
+		}
+	}
+	//if there is only one $timeblock, do not change and return FALSE
+	if(count($timeblock) == 1)
+	{
+		echo " this event has only one timeslot";
+		return 0;
+	}
+
+	//find other students already assigned to this eventID
+	$teammates = tempResultFindStudentAssignedToEvent($db,$resultsTableName,$eventID);
+	foreach ($teammates as $n=>$teammate)
+	{
+	  echo " Attempting to reassign ".$teammate['first'];
+
+		//if there is another $timeblock, then attempt to reassign the $timeblock
+		$assignedTimeblock = tempResultTimeBlock($db,$resultsTableName,$timeblock['eventID']);
+
+		//find available timeblock and then add to output
+		$foundslot = 0;
+
+		//New set of timeblocks for everyone already assinged
+		$neweventTimeblocks = [];
+		foreach ($eventTimeblocks as $timeblock)
+		{
+			if($timeblock['timeblockID']!=$assignedTimeblock)
+			{
+				$foundslot = 1;
+				echo " Timeblock start:".$timeblock['timeStart'].".";
+				//if there is more than one teammate, make sure the second one is also assigned to the same timeblock
+					//Check to see if student is already assigned to this timeblock
+					if(!tempResultStudentAssignedToTimeblock($db,$resultsTableName,$timeblock['timeblockID'],$teammate['studentID']))
+					{
+						$narrowedTimeblocks = array_push($rows, $row);
+					}
+					else {
+						echo " Student already assigned to this timeblock (".$timeblock['timeblockID'].") Keep checking...";
+					}
+			}
+			else
+			{
+				echo " old timeblock...continue checking"; //will not ever be printed because the timeblocks that are available do not include this one
+			}
+		}
+		if(!$foundslot)
+		{
+				echo " <span class='warning'>No other free slots found for this student-failed</span><br>";
+				return 0;
+		}
+		$eventTimeblocks = $narrowedTimeblocks;
+	}
+	$assigned =0;
+	foreach ($teammates as $n=>$teammate)
+	{
+		foreach ($eventTimeblocks as $timeblock)
+		{
+			if(!$n || tempResultTimeBlockIs($db,$resultsTableName,$timeblock['eventID'],$timeblock['timeblockID']))
+			{
+				echo "-<span style='color:green'>added</span><br>";
+				//modify these functions
+				//tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'],  $teammate['yearGraduating']);
+				tempResultModifyTimeblock($db,$resultsTableName,$timeblock['tournamenteventID'], $timeblock['timeblockID'], $eventID, $teammate['studentID']);
+				tempTimeblockAdd($db,$timeblockTableName,$timeblock['timeblockID'], $timeblock['timeStart'], $timeblock['timeEnd']);
+				$assigned = 1;
+			}
+		}
+	}
+	if($assigned)
+	{
+		return 1;
+	}
+		return 0;
+}
+//assign student to timeBlock
+function assignStudent($db, $teammate, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
+{
+	echo " continuing to assign " . $teammate['first'];
+	//find available timeblock and then add to output
+	$assigned = 0;
+	$foundevent = 0;
+	$reassigned = 0;
+	//get number of students assigned to this event
+	$countAssigned = tempResultCountAssigned($db,$resultsTableName,$teammate['eventID']);
+	$availableTimeblocksForStudent = []; //keep track of available timeblocks for this teammate
+	$availableTimeblocksForStudentofEvent = []; //keep track of available timeblocks for this teammate
+	foreach ($timeblocks as $timeblock)
+	{
+		if(!tempResultStudentAssignedToTimeblock($db,$resultsTableName,$timeblock['timeblockID'],$teammate['studentID']))
+		{
+			array_push($availableTimeblocksForStudent, $timeblock);
+			if($teammate['eventID']==$timeblock['eventID'])
+			{
+				array_push($availableTimeblocksForStudentofEvent, $timeblock);
+				$foundevent = 1;
+				echo " Timeblock (".$timeblock['timeblockID'].") start:".$timeblock['timeStart'].".";
+				//Check to see if student is already assigned to this timeblock
+					//check to see if this event has already been assigned a timeBlock, if it has been assigned is it this timeblock
+					if(!$countAssigned || tempResultTimeBlockIs($db,$resultsTableName,$timeblock['eventID'],$timeblock['timeblockID']))
+					{
+						echo "-<span style='color:green'>added</span><br>";
+						tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'],  $teammate['yearGraduating']);
+						tempResultAdd($db,$resultsTableName,$timeblock['tournamenteventID'], $timeblock['timeblockID'], $timeblock['eventID'],$teammate['studentID'],$teammate['note']);
+						tempTimeblockAdd($db,$timeblockTableName,$timeblock['timeblockID'], $timeblock['timeStart'], $timeblock['timeEnd']);
+						$assigned = 1;
+						break;
+					}
+					else {
+						echo " This event is assigned to another timeblock. Keep checking...";
+					}
+				}
+			}
+		else
+		{
+			if($teammate['eventID']==$timeblock['eventID'])
+			{
+				$foundevent = 1;
+				echo " Student already assigned to this timeblock (".$timeblock['timeblockID'].") start:".$timeblock['timeStart'].". Keep checking...";
+			}
+			else {
+				//Another event in this timeblock
+			}
+		}
+	}
+	if(!$foundevent)
+	{
+			echo " <span class='error'>Event not running in this tournament-failed</span><br>";
+	}
+	else if(!$assigned)
+	{
+		echo " <span class='warning'>Could not find available match between timeblock and student-failed</span><br>";
+		//TODO: If student is not available for event in the current available timeblocks, try moving another event with multiple timeblocks...
+		//Go back and reassign partner to different timeslot if there is more than one time slot for the other event
+		if(!$reassigned && $availableTimeblocksForStudentofEvent) //!reassigned = only attempt one reassignment
+		{
+			//Reassigning should work for multiple teammates
+			$reassigned = reassignStudent($db, $teammate['eventID'], $availableTimeblocksForStudentofEvent, $studentTableName, $timeblockTableName, $resultsTableName);
+			if($reassigned)
+			{
+				assignStudent($db, $teammate, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName);
+			}
+		}
+	}
+}
 //Calculate students in times and then fill in table to be read
 function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
 {
+	echo "<input class='button fa' type='button' onclick='javascript:$(\"#$resultsTableName\").toggle();' value='&#xf0f9; Verbose' /><div id='$resultsTableName' style='display:none;'>";
 	tempStudentInitialize($db, $studentTableName);
 	tempTimeblockInitialize($db, $timeblockTableName);
 	tempResultInitialize($db, $resultsTableName);
@@ -274,44 +463,45 @@ function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName,
 		$totalSeniors = tempSeniorTotal($db,$studentTableName);
 		//Check to see that there is no more than 15 students assigned OR that this student has already been assigned
 		//And check to see that there are no more than 7 seniors assigned
-$isSenior = $teammate['yearGraduating']==getCurrentSOYear()?1:0;
-		echo $teammate['first'].",".$totalStudents.",".$studentAssigned.",".$totalSeniors.":".$isSenior;
+		$isSenior = $teammate['yearGraduating']==getCurrentSOYear()?1:0;
+		echo  $teammate['note']." " .$teammate['first'].",".$totalStudents.",".$studentAssigned.",".$totalSeniors.":".$isSenior;
 
 		if(($totalStudents < 15 && (!$isSenior || $totalSeniors < 7 )) || $studentAssigned)
 		{
-echo "...attempting";
+			echo "...attempting to add event: " . getEventName($db,$teammate['eventID']) . ".";
 			//get number of students assigned to this event
 			$countAssigned = tempResultCountAssigned($db,$resultsTableName,$teammate['eventID']);
-		//check to see if this person has already been assigned to this event
-		if(!tempResultStudentAssignedToEvent($db,$resultsTableName,$teammate['eventID'],$teammate['studentID']))
-		{
-			if($countAssigned<getEventMaximumPerson($db, $teammate['eventID']))
+
+			//check to see if this person has already been assigned to this event
+			if(!tempResultStudentAssignedToEvent($db,$resultsTableName,$teammate['eventID'],$teammate['studentID']))
 			{
-				//find available timeblock and then add to output
-				foreach ($timeblocks as $timeblock)
+				if($countAssigned<getEventMaximumPerson($db, $teammate['eventID']))
 				{
-					if($teammate['eventID']==$timeblock['eventID'])
-					{
-						//Check to see if student is already assigned to this timeblock
-						if(!tempResultStudentAssignedToTimeblock($db,$resultsTableName,$timeblock['timeblockID'],$teammate['studentID']))
-						{
-							//check to see if this event has already been assigned a timeBlock, if it has been assigned is it this timeblock
-							if(!$countAssigned || tempResultTimeBlock($db,$resultsTableName,$timeblock['eventID'])==$timeblock['timeblockID'])
-							{
-								echo "-added<br>";
-								tempStudentAdd($db, $studentTableName, $teammate['studentID'],$teammate['last'], $teammate['first'],  $teammate['yearGraduating']);
-								tempResultAdd($db,$resultsTableName,$timeblock['tournamenteventID'], $timeblock['timeblockID'], $timeblock['eventID'],$teammate['studentID'],$teammate['note']);
-								tempTimeblockAdd($db,$timeblockTableName,$timeblock['timeblockID'], $timeblock['timeStart'], $timeblock['timeEnd']);
-								break;
-							}
-						}
-					}
+					assignStudent($db, $teammate, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName);
+				}
+				else {
+					echo " <span class='error'>Event full ($countAssigned Students)-failed</span><br>";
 				}
 			}
-		}
-	}
+			else
+			{
+				echo " <span class='warning'>Student already assigned to this event!-failed</span><br>";
+			}
 
-}
+		}
+		else {
+			if($totalStudents == 15)
+			{
+				echo " <span class='error'>15 students already assigned to team!-failed</span><br>";
+			}
+			else if($totalSeniors == 7)
+			{
+				echo " <span class='error'>7 seniors already assigned to team!-failed</span><br>";
+			}
+		}
+//TODO: Add algorithm to add students to fill spots.
+	}
+	echo "</div>";
 	return "";
 }
 
@@ -319,7 +509,7 @@ echo "...attempting";
 function printTable($db, $studentTableName, $timeblockTableName, $resultsTableName)
 {
 	$output = "";
-
+	$notescore = 0;
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
 	$output .="<table id='tournamentTable$resultsTableName' class='tournament'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
 
@@ -437,6 +627,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 						$checkboxEvent = "timeblock-".$row['timeblockID']." teammateEvent-".$row['tournamenteventID']." teammateStudent-".$row['studentID'];
 						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$row['timeblockID']."'>";
 						$output .="<div class='fa'>&#xf00c; (".number_format($row['note'],1).")</div>";
+						$notescore +=$row['note'];
 						$output .="</td>";
 					}
 				else {
@@ -478,6 +669,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	$output .="</tr>";
 
 	$output .="</tfoot></table></form>";
+	$output .="<div>Score = ".number_format($notescore,2)."  (This can only be compared to the same type of table (not to different tables), i.e Average Score cannot be compared to Average Place.</div><br>";
 	echo $output;
 }
 //TODO: Check to see if another team for this tournament has been assigned.  If so, you must change timeblock calls from tournamenttimeavailable to tournamenttimechosen except for builds (makes it a bit difficult)
@@ -493,7 +685,12 @@ $events = getEventsTable($mysqlConn);
 echo "<span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 echo "<form id='changeme' method='post' action='tournamentChangeMe.php'>";
 
-echo "<p>teamID=$teamID</p>";
+echo "<p>teamID=$teamID; tournamentID: ".$rowTeam['tournamentID']."</p>";
+
+echo "<h2>Students Assigned by Average Score</h2>";
+$studentsAvgScore = makeStudentArrayAvgScore($mysqlConn, $teamID);
+calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
+printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 
 echo "<h2>Students Assigned by Average Placement</h2>";
 //TODO:Check on why some students are not being assigned when there is a clear empty space
@@ -502,10 +699,6 @@ $studentsAvgPlace = makeStudentArrayAvgPlace($mysqlConn, $teamID);
 calculateStudentsTimes($mysqlConn,$studentsAvgPlace, $timeblocks, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
 printTable($mysqlConn, 'temp_studentsAvgPlace', 'temp_timeblocks1', 'temp_results1');
 
-echo "<h2>Students Assigned by Average Score</h2>";
-$studentsAvgScore = makeStudentArrayAvgScore($mysqlConn, $teamID);
-calculateStudentsTimes($mysqlConn,$studentsAvgScore, $timeblocks, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
-printTable($mysqlConn, 'temp_studentsAvgScore', 'temp_timeblocks2', 'temp_results2');
 
 echo "<h2>Students Assigned by Maximum Score</h2>";
 $studentsTop = makeStudentArrayTopScore($mysqlConn, $teamID);
