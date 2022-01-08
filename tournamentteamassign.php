@@ -65,7 +65,6 @@ if(mysqli_num_rows($result))
 		}
 		else {
 			if($dateCheck!=date("F j, Y",strtotime($timeblock["timeStart"]))){
-				echo "f".$dateColSpan .".";
 				$output .= "<th colspan='$dateColSpan' style='border-right:2px solid black;text-align:center;'>" . $dateCheck . "</th>";
 				$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
 				$dateColSpan = $eventNumber;
@@ -74,7 +73,6 @@ if(mysqli_num_rows($result))
 			}
 			else {
 				$dateColSpan += $eventNumber;
-				echo "e".$dateColSpan;
 			}
 		}
 	}

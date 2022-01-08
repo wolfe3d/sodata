@@ -532,7 +532,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 			if($dateCheck!=date("F j, Y",strtotime($timeblock["timeStart"]))){
 				$output .= "<th colspan='$dateColSpan' style='border-right:2px solid black;text-align:center;'>" . $dateCheck . "</th>";
 				$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
-				$dateColSpan = 1;
+				$dateColSpan = $timeblock['eventNumber'];
 				$dateCount +=1;
 				$timeblock['border'] = "border-left:2px solid black; "; //adds border at beginning of new date
 			}
