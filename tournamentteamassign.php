@@ -59,22 +59,21 @@ if(mysqli_num_rows($result))
 	$dateCount = 0;
 	foreach ($timeblocks as $timeblock) {
 		$eventNumber = count($timeblock['events'])>0?count($timeblock['events']):1;
-		$dateColSpan += $eventNumber;
 		if($dateCheck==""){
 			$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
-			//$dateColSpan = $eventNumber;
+			$dateColSpan = $eventNumber;
 		}
 		else {
 			if($dateCheck!=date("F j, Y",strtotime($timeblock["timeStart"]))){
 				echo "f".$dateColSpan .".";
 				$output .= "<th colspan='$dateColSpan' style='border-right:2px solid black;text-align:center;'>" . $dateCheck . "</th>";
 				$dateCheck=date("F j, Y",strtotime($timeblock["timeStart"]));
-				$dateColSpan = 1;
+				$dateColSpan = $eventNumber;
 				$dateCount +=1;
 				$timeblock['border'] = "border-left:2px solid black; "; //adds border at beginning of new date
 			}
 			else {
-
+				$dateColSpan += $eventNumber;
 				echo "e".$dateColSpan;
 			}
 		}
