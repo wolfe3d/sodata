@@ -152,7 +152,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			if(userHasPrivilege(3))
 			{
 				$output .="<p><input class='button fa' type='button' onclick='window.location.hash=\"tournament-teamedit-".$rowTeam['teamID']."\"' value='&#xf0c0; Edit Team ".$rowTeam['teamName']."' />";
-				if(!assignmentMade($mysqlConn, $rowTeam['teamID']))
+				if(!assignmentMade($mysqlConn, $rowTeam['teamID'])||userHasPrivilege(4))
 				{
 						$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"tournament-teampropose-".$rowTeam['teamID']."\"' value='&#xf06d; Propose Assignments' />";
 				}
