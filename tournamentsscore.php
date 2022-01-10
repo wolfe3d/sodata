@@ -20,7 +20,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 
 $returnBtn = "<input class='button fa' type='button' onclick='window.history.back()' value='&#xf0a8; Return' />";
 
-$output .="<h2>Student Scores and Overall Placements</h2>";
+$output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='warning'>This page is a beta version and calculations are likely to change.</p>";
 
 function getAllStudentsParticipated($db, $year)
@@ -131,8 +131,6 @@ function calculateOverallScores($db, &$students, $tournaments)
 			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 		}
 }
-
-
 	$students = getAllStudentsParticipated($mysqlConn, $year);
 	//print_r ($tournamentPlacements);
 	$tournaments = getTournaments($mysqlConn, $year);

@@ -35,6 +35,8 @@ $row = null;
 		</fieldset>
 		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</form>
+	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'tournaments-score-<?=getCurrentSOYear();?>'" value="&#xf200; Analysis" />
+
 	</div>
 </div>
 <?php }?>

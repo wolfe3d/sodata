@@ -54,6 +54,7 @@ if($result)
 		</fieldset>
 	</form>
 	<input class="button fa" type="button" onclick="javascript:eventyearPreparePage()" value="&#xf133; Edit Year" />
+	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'events-analysis-<?=getCurrentSOYear();?>'" value="&#xf200; Analysis" />
 <?php } ?>
 
 <div id="list"></div>

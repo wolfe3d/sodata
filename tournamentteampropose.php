@@ -682,8 +682,7 @@ $rowTeam = $resultTeam->fetch_assoc();
 $timeblocks = makeTimeArray($mysqlConn, $rowTeam['tournamentID']);
 $events = getEventsTable($mysqlConn);
 
-echo "<span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
-echo "<form id='changeme' method='post' action='tournamentChangeMe.php'>";
+echo "<h2><span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 
 echo "<p>teamID=$teamID; tournamentID: ".$rowTeam['tournamentID']."</p>";
 
