@@ -93,6 +93,7 @@ function loadpage(page, type, myID){
 
 					case 'event':
 						if(typepage=="emails"){
+							//eventEmail(myID);
 						}
 						else{
 							eventEdit(myID);
@@ -580,6 +581,7 @@ function eventsPreparePage()
 
 	eventAddModify();
 }
+
 function eventEdit(myID)
 {
 	eventAddModify();

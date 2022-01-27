@@ -5,10 +5,12 @@ require_once  ("checksession.php"); //Check to make sure user is logged in and h
 require_once  ("functions.php");
 userCheckPrivilege(2);
 
+
+
 $event = intval($_POST['myID']);
 $studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 //semester teams tournament hardcoded, change later
-$emails = "<h2>".getEventName($mysqlConn,$event)."</h2>";
+$emails = "<h2>TODO: ANALYSIS".getEventName($mysqlConn,$event)."</h2>";
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 $emails.="<h3>Fall Roster</h3>";
 $query = "SELECT DISTINCT `first`, `last`, `email`, `emailSchool` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE eventID = $event and dateTournament = '$fallRosterDate' and `student`.`studentID` != $studentID and `student`.`active` = 1";

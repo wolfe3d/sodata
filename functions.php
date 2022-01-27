@@ -300,6 +300,18 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	return $emails;
 }
 
+//get Event name
+function getEventName($db, $event)
+{
+	$query = "SELECT DISTINCT `event` FROM `event` WHERE eventID = $event";
+	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows>0){
+	    $row = $result->fetch_assoc();
+			return $row['event'];
+	}
+	return 0;
+}
+
 //get Event type options
 function getEventString($type)
 {
