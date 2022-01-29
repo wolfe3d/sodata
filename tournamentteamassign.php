@@ -77,7 +77,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .= "<th colspan='$dateColSpan' style='text-align:center;'>" . $dateCheck . "</th>";
-	$output .="<th rowspan='4' style='vertical-align:bottom;'>Total Events</th></tr>";
+	$output .="<th rowspan='3' style='vertical-align:bottom;'>Total Events</th></tr>";
 
 //print the time for each event and date
 	$output .="<tr>";
@@ -90,6 +90,7 @@ if(mysqli_num_rows($result))
 
 	//print the event under each time
 	$output .="<tr>";
+	$totalEvents =0;
 	foreach ($timeblocks as $i=>$timeblock) {
 		$timeEvents= $timeblock['events'];
 		if($timeEvents)
@@ -97,6 +98,7 @@ if(mysqli_num_rows($result))
 			foreach ($timeEvents as $timeEvent) {
 				$border = isset($timeblock['border'])?$timeblock['border']:"";
 				$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvent['event']."</span></th>";
+				$totalEvents +=1;
 			}
 		}
 		else {
@@ -105,7 +107,7 @@ if(mysqli_num_rows($result))
 		}
 
 	}
-	$output .="<td id='studenttotal-empty'></td></tr>";
+	$output .="</tr>";
 
 	//print the event note under each event
 	$output .="<tr>";
@@ -118,7 +120,7 @@ if(mysqli_num_rows($result))
 		{
 			foreach ($timeEvents as $timeEvent) {
 				$border = isset($timeblock['border'])?$timeblock['border']:"";
-				$output .= "<th id='event-".$timeEvent['tournamenteventID']."' class='.rotate' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],(userHasPrivilege(3)))."</th>";
+				$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],(userHasPrivilege(3)))."</th>";
 			}
 		}
 		else {
@@ -127,7 +129,7 @@ if(mysqli_num_rows($result))
 		}
 
 	}
-	$output .="</tr></thead><tbody>";
+	$output .="<th>$totalEvents</th></tr></thead><tbody>";
 
 	//Get students
 	$query = "SELECT * FROM `teammate` INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID` WHERE `teamID` = $teamID ORDER BY `last` ASC, `first` ASC";

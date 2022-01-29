@@ -55,7 +55,7 @@ function getIfSet($value, $default = NULL)
 //post note and link to edit a tournament's event's note
 function eventNote($id, $note, $editable = 0)
 {
-	$myOutput = "<br>";
+	$myOutput = "";
 	$maxLength = 10;
 	$noteShort = substr($note, 0, $maxLength);
 	$noteShort .= strlen($note)>10 ? "...":"";
