@@ -274,14 +274,6 @@ function tempSeniorTotal($db,$tableName)
 	$row=$result->fetch_assoc();
 	return $row['total'];
 }
-//find the name of the event
-function getEventName($db,$eventID)
-{
-	$query = "SELECT `event` FROM `event` WHERE `eventID`=$eventID";
-	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$row=$result->fetch_assoc();
-	return $row['event'];
-}
 //Check to see if student has already been assigned to this event
 function tempResultFindStudentAssignedToEvent($db,$tableName,$eventID)
 {
