@@ -2,7 +2,13 @@
 function calculateScore($eventPlace, $eventWeight, $tournamentWeight)
 {
 	//formula for scoring here
-	return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100);
+	//return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100); old formula
+	$score = (100-(($eventPlace**2)/(($tournamentWeight/100)*50)))*($eventWeight/100);
+	if ($score <=1)
+	{
+		return 1;
+	}
+	return $score;
 }
 
 //finds if placements have been added, so that a score may be calculated

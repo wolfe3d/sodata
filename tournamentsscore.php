@@ -10,7 +10,6 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 //$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first` FROM `student` WHERE `student`.`active`";
 
 
-
 //get all students active for selected year
 //add students that are active and have not graduated, but do not show up on tournament
 //go through score table
@@ -92,6 +91,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 			$totalScore = 0;
 			$tournamentCount = 0;
 			$totalEvents = 0;
+			$totalPlace = 0;
 			$student['tournaments'] = [];
 			foreach ($tournaments as $tournament)
 			{
@@ -105,6 +105,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 						$scoreStudent = $score['score'];
 						$totalScore += $scoreStudent;
 						$tournamentCount += 1;
+						$totalPlace += $score['averagePlace'];
 						$numEvents = $score['eventsNumber'];
 						$totalEvents +=	$numEvents;
 					}
@@ -112,21 +113,28 @@ function calculateOverallScores($db, &$students, $tournaments)
 				array_push($student['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'score'=>$scoreStudent, 'eventsNumber'=>$numEvents]);
 			}
 			$student['count']=$tournamentCount;
-			if ($totalScore)
+			if ($totalPlace)
 			{
-				$student['average']=number_format($totalScore/$tournamentCount,2);
+				$student['averagePlace']=number_format($totalPlace/$tournamentCount,2,".","");
 			}
 			else {
-				$student['average']= 0;
+				$student['averagePlace']= 0;
+			}
+			if ($totalScore)
+			{
+				$student['averageScore']=number_format($totalScore/$tournamentCount,2,".","");
+			}
+			else {
+				$student['averageScore']= 0;
 			}
 			if ($totalEvents)
 			{
-				$student['averageEvents']=number_format($totalEvents/$tournamentCount,2);
+				$student['averageEvents']=number_format($totalEvents/$tournamentCount,2,".","");
 			}
 			else {
 				$student['averageEvents']= 0;
 			}
-			$student['score']= number_format($totalScore,2);
+			$student['score']= number_format($totalScore,2,".","");
 			$student['rank']= 0;
 			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 		}
@@ -158,7 +166,8 @@ function calculateOverallScores($db, &$students, $tournaments)
 	//$output .="<th rowspan='2'>Avg Place</th>";
 	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`count`, 1)'>Total Tournaments</a></th>";
 	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`averageEvents`, 1)'>Average Events</a></th>";
-	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`average`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`averagePlace`, 1)'>Average Place</a></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`averageScore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th>";
 	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`score`, 1)'>Total Score</a></div><div>(Higher is Better)</div></th>";
 	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`rank`, 1)'>Total Rank</a></div><div>(Lower is Better)</div></th>";
 
@@ -169,7 +178,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 	foreach ($students as $student)
 	{
 			$grade = getStudentGrade($student['yearGraduating']);
-			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' average='".$student['average']."' averageEvents='".$student['averageEvents']."' score='".$student['score']."' rank='".$student['rank']."'>";
+			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' averageEvents='".$student['averageEvents']."' score='".$student['score']."' rank='".$student['rank']."'>";
 			$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last']. ", " . $student['first'] . "</a></td>";
 			$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
 
@@ -180,7 +189,8 @@ function calculateOverallScores($db, &$students, $tournaments)
 			}
 			$output .= "<td id='count-".$student['studentID']."'>".$student['count']."</td>";
 			$output .= "<td id='averageEvents-".$student['studentID']."'>".$student['averageEvents']."</td>";
-			$output .= "<td id='average-".$student['studentID']."'>".$student['average']."</td>";
+			$output .= "<td id='averagePlace-".$student['studentID']."'>".$student['averagePlace']."</td>";
+			$output .= "<td id='averageScore-".$student['studentID']."'>".$student['averageScore']."</td>";
 			$output .= "<td id='totalscore-".$student['studentID']."'>".$student['score']."</td>";
 			$output .= "<td id='rank-".$student['studentID']."'>".$student['rank']."</td>";
 			$output .="</tr>";

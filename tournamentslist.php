@@ -24,7 +24,7 @@ else if($year)
 	$query .= " where `tournament`.`year` LIKE '$year' ";
 }
 
-$query .= " ORDER BY `tournament`.`tournamentName` ASC";
+$query .= " ORDER BY `tournament`.`dateTournament` DESC";
 $output .=userHasPrivilege(4)?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
