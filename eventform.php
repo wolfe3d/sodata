@@ -20,7 +20,7 @@ require_once  ("functions.php");
 	</p>
 	<p>
 		<label for="weightingDefault">Default Weight</label>
-		<input id="weightingDefault" name="weightingDefault" type="number" min='0' max='100' value="<?=$row["weightingDefault"]?>">
+		<input id="weightingDefault" name="weightingDefault" type="number" min='0' max='100' value="<?=isset($row["weightingDefault"])?$row["weightingDefault"]:100?>">
 	</p>
 	<p>
 		<label for="calculatorType">Calculator</label>
