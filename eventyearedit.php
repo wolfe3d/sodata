@@ -5,13 +5,8 @@ userCheckPrivilege(3);
 require_once  ("functions.php");
 
 
-$year = intval($_POST['year']);
-if(empty($year))
-{
-	$year = getCurrentSOYear();
-}
-
-$query .= "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` LEFT JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `event`.`event` ASC ";
+$year = isset($_REQUEST['myID']) ? $_REQUEST['myID'] : getCurrentSOYear();
+$query = "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` LEFT JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `event`.`event` ASC ";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $events = "";
