@@ -5,7 +5,7 @@ userCheckPrivilege(3);
 require_once  ("functions.php");
 
 
-$year = isset($_REQUEST['myID']) ? $_REQUEST['myID'] : getCurrentSOYear();
+$year = getIfSet($_REQUEST['myID'],getCurrentSOYear());
 $query = "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` LEFT JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `event`.`event` ASC ";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -18,7 +18,7 @@ while ($row = $result->fetch_assoc()):
 		$leaderStr ="Edit";
 		$leaderName = " - " . $row["last"] . ", " . $row["first"];
 	}
-	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'>".$row["event"]." - ". $row["type"] ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='#eventyear-leader-".$row["eventyearID"]."'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove</a></div>";
+	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='#eventyear-leader-".$row["eventyearID"]."'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove</a></div>";
 endwhile;
 ?>
 <form id="addTo" method="post" action="eventyearadd.php">

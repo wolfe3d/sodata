@@ -53,7 +53,7 @@ if($result)
 			<input class="submit fa" type="submit" value="&#xf067; Add">
 		</fieldset>
 	</form>
-	<input class="button fa" type="button" onclick="javascript:eventyearPreparePage()" value="&#xf133; Edit Year" />
+	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'eventyear-edit-<?=getCurrentSOYear();?>'" value="&#xf133; Edit Year" />
 	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'events-analysis-<?=getCurrentSOYear();?>'" value="&#xf200; Analysis" />
 <?php } ?>
 
