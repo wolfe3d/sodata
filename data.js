@@ -35,7 +35,7 @@ function getList(myPage, myData)
 	});
 	request.done(function( html ) {
 	 $("#list").html(html);
-	 $('body,html').animate({scrollTop: $("#list").offset().top + "px"}, "slow");//move to search results
+	 //$('body,html').animate({scrollTop: $("#list").offset().top + "px"}, "slow");//move to search results
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -170,7 +170,7 @@ function loadpage(page, type, myID){
 
 					default:
 			 }
-			$( "#main").show( "slow", function() {});
+			$( "#main").show("fast");
 		}
 		else
 		{

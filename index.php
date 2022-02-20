@@ -70,14 +70,12 @@ if (isset($_SESSION['token'])) {
 					loginout();
 				}
 				else {
-					$( "#"+myHash ).show( "slow", function() {
-								// Animation complete.
-					});
+					$( "#"+myHash ).show();
 				}
 			}
 			else
 			{
-				$( "#main" ).show( "slow", function() {	});
+				$( "#main" ).show("fast");
 			}
 		}
 	</script>
