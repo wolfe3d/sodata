@@ -15,7 +15,7 @@ if(isset($_POST["year"]))
 	$year = intval($_POST['year']);
 }
 else {
-	$year = $currentYear;
+	$year = "";
 }
 
 if($year)
