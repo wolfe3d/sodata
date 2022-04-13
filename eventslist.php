@@ -83,7 +83,7 @@ if($result)
 			$yearCollection .= $yearCollection!=""?", ":"";
 			$yearCollection .= $rowYear['year'];
 		endwhile;
-
+		$yearCollection = $yearCollection?$yearCollection:"Trial Event";
 
 		$output .="<div>Year: ".$yearCollection."</div>";
     $output .="<div>Type: ".getEventString($row['type'])."</div>";
