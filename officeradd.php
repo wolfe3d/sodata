@@ -17,7 +17,7 @@ if(empty($year))
 	</p>
 	<p id="eventsP">
 		<label for="student">Student</label>
-		<?=getAllStudents($mysqlConn,1)?>
+		<?=getAllStudents($mysqlConn,1, NULL)?>
 	</p>
 	<p>
 		<label for="position">Assign Position</label>

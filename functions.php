@@ -430,7 +430,7 @@ function getSOYears($myYear)
 //get Current Science Olympiad year
 function getCurrentSOYear()
 {
-	if (date("m")>4)
+	if (date("m")>6)
 	{
 		return date("Y")+1;
 	}
@@ -501,7 +501,7 @@ function getEventLeaderPositionPrevious($db,$studentID)
 }
 
 //get student's grade from the their graduation years
-function getStudentGrade($yearGraduating, $monthGraduating=5)
+function getStudentGrade($yearGraduating, $monthGraduating=6)
 {
 	if (date("m")>$monthGraduating)
 	{
@@ -614,7 +614,7 @@ function checkGoogle($gpUserProfile,$db)
 //this generates a color in an order for using as a rainbow styling
 function rainbow($i) {
 	//var colorIncrement = Math.floor(360/colors);
-	$light = "50%"; //lightnes of HSL
+	$light = "60%"; //lightnes of HSL
 	$sat = "100%";
 	$t=0.3;
   //hue of color

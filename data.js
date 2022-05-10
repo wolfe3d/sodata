@@ -121,7 +121,7 @@ function loadpage(page, type, myID){
 
 					case 'officer':
 						if(typepage=="add"){
-							addToSetGenericRules();
+							//addToSetGenericRules();
 							addToSubmit();
 						}
 					break;

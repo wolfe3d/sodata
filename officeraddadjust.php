@@ -5,7 +5,7 @@ userCheckPrivilege(4);
 require_once  ("functions.php");
 
 $year = intval($_POST['year']);
-$studentID = intval($_POST['student']);
+$studentID = intval($_POST['studentID']);
 $position = $mysqlConn->real_escape_string($_POST['position']);
 if(empty($year)||empty($studentID)||empty($position))
 {
