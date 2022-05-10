@@ -20,7 +20,7 @@ if($result)
 	$output .= getSOYears($year);
 	if(userHasPrivilege(3))
 	{
-		$output .="<br><input class='button fa' type='button' onclick=location.href='officeremails.php' value='&#xf01c; Get Emails' />";
+		$output .="<br><input class='button fa' type='button' onclick=location.href='#officer-emails-$year' value='&#xf01c; Get Emails' />";
 	}
 	if(userHasPrivilege(4))
 	{
@@ -82,7 +82,7 @@ if($result)
 	}
 	if(userHasPrivilege(2))
 	{
-		$output .="<input class='button fa' type='button' onclick=location.href='eventleaderemails.php' value='&#xf01c; Get Emails' />";
+		$output .="<input class='button fa' type='button' onclick=location.href='#eventleader-emails-$year' value='&#xf01c; Get Emails' />";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";

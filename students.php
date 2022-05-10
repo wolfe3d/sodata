@@ -29,12 +29,12 @@ if($result)
 		<input class="submit fa" type="submit" value="&#xf067; Add" />
 	</form>
 	<!--Output student emails -->
-	<input class='button fa' type='button' onclick='location.href="studentemails.php"' value='&#xf01c; Get Emails' />
+	<input class='button fa' type='button' onclick='location.href="#student-emails"' value='&#xf01c; Get Emails' />
 	<?php }?>
 	<?php if(userHasPrivilege(4))
 	{ ?>
 	<!--Output parent emails -->
-	<input class='button fa' type='button' onclick='location.href="parentemails.php"' value='&#xf01c; Get Parents' />
+	<input class='button fa' type='button' onclick='location.href="#parent-emails"' value='&#xf01c; Get Parents' />
 	<input class='button fa' type='button' onclick='location.href="studentfile.php"' value='&#xf01c; Students File' />
 	<?php }?>
 <br><br>

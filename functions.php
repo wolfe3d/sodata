@@ -259,6 +259,43 @@ function getStudentTeam($db, $tournamentID, $studentID)
 	return $row['teamName'];
 }
 
+//returns a bare list of names with multiple emails
+function getEmailList($result)
+{
+	$emails = "";
+	while ($row = $result->fetch_assoc()):
+			$emails.=$row['first'] . " " . $row['last'] . " ";
+			if(isset($row['email'])&&$row['email']){
+				$emails.= "&lt;" . $row['email'] . "&gt;; ";
+			}
+
+			if(isset($row['emailSchool'])&&$row['emailSchool']){
+				$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+			}
+			$emails.="<br>";
+	endwhile;
+	return $emails;
+}
+
+//returns a bare list of parent names with multiple emails
+function getEmailParentList($result)
+{
+	$emails = "";
+	while ($row = $result->fetch_assoc()):
+		if($row['parent1Email']){
+			$emails.=$row['parent1First'] . " " . $row['parent1Last']." ";
+			$emails.="&lt;" . $row['parent1Email'] . "&gt;; ";
+		}
+		if($row['parent2Email']){
+			$emails.=$row['parent2First'] . " " . $row['parent2Last']." ";
+			$emails.="&lt;" . $row['parent2Email'] . "&gt;; ";
+		}
+		$emails.="<br>";
+	endwhile;
+	return $emails;
+}
+
+//Get Team Emails either students or parents
 function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 {
 	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1";
@@ -268,37 +305,65 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	if($tournamentID){
 		$query.=" and `tournamentID` = $tournamentID";
 	}
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
-	while ($row = $result->fetch_assoc()):
 		if(!$parents){
-			if($row['email']){
-				$emails.=$row['first'] . " " . $row['last']." &lt;";
-				$emails.=$row['email'] . "&gt;; ";
-			}
-
-			if($row['emailSchool']){
-				$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
-			}
-			$emails.="<br>";
+			$emails = getEmailList($result);
 		}
 		else
 		{
-			if($row['parent1Email']){
-				$emails.=$row['parent1First'] . " " . $row['parent1Last']." &lt;";
-				$emails.=$row['parent1Email'] . "&gt;; ";
-			}
-			if($row['parent2Email']){
-				$emails.=$row['parent2First'] . " " . $row['parent2Last']." &lt;";
-				$emails.=$row['parent2Email'] . "&gt;; ";
-			}
-			$emails.="<br>";
+			$emails = getEmailParentList($result);
 		}
-
-
-	endwhile;
-	return $emails;
+	return $emails. getCoachesEmails($db, NULL);
 }
+
+
+//Return officer leader email list
+function getOfficerEmails($db, $year)
+{
+	$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
+
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	return getEmailList($result) . getCoachesEmails($db, $year);
+}
+
+//Return event leader email list
+function getLeaderEmails($db, $year)
+{
+	$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year`=$year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
+	return getEmailList($result) . getCoachesEmails($db, $year);
+}
+
+//Return Coaches leader email list
+function getCoachesEmails($db, $year)
+{
+	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
+	$query = "SELECT DISTINCT `first`, `last`, `emailSchool` FROM `coach`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return getEmailList($result);
+}
+
+//Return all active students or parents
+function getStudentEmails($db, $year, $parents=false)
+{
+	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `active`=1";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$emails = "";
+		if(!$parents){
+			$emails = getEmailList($result);
+		}
+		else
+		{
+			$emails = getEmailParentList($result);
+		}
+	return $emails. getCoachesEmails($db, NULL);
+}
+
 
 //find the name of the event
 function getEventName($db,$eventID)
