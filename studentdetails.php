@@ -59,6 +59,7 @@ if(userHasPrivilege(3))
 if(userHasPrivilege(4))
 {
 	$output .= "<div>School ID: ".$row['schoolID']."</div>";
+	$output .= "<div>Student\'s School ID: ".$row['studentschoolID']."</div>";
 	$output .= "<div>Scilympiad ID: ".$row['scilympiadID']."</div>";
 }
 $output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";

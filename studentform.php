@@ -1,4 +1,5 @@
 <?php
+//TODO: Add schoolID to input
 require_once  ("functions.php");
 userCheckPrivilege(2);
 $editing = true;
@@ -43,11 +44,11 @@ if (userHasPrivilege(4))
     <input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>">
 </p>
 <p>
-    <label for="schoolID">School ID</label>
-    <input id="schoolID" name="schoolID" type="text" value="<?=$row['schoolID']?>">
+    <label for="studentschoolID">Student's School ID</label>
+    <input id="studentschoolID" name="studentschoolID" type="text" value="<?=$row['studentschoolID']?>">
 </p>
 <p>
-    <label for="schoolID"><a href="https://scilympiad.com/">Scilympiad</a> ID</label>
+    <label for="scilympiadID"><a href="https://scilympiad.com/">Scilympiad</a> ID</label>
     <input id="scilympiadID" name="scilympiadID" type="text" value="<?=$row['scilympiadID']?>">
 </p>
 <p>
