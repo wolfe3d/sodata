@@ -110,20 +110,15 @@ function loadpage(page, type, myID){
 					break;
 
 					case 'leaders':
-						if(typepage=="year"){
 							$.when( $("#year") ).done(function( x ) {
 								$("#year").change(function(){
-		  						window.location.hash = '#leaders-year-'+ $("#year option:selected").text();
+		  						window.location.hash = '#leaders--'+ $("#year option:selected").text();
 								});
 							});
-						}
-					break;
-
-					case 'officer':
-						if(typepage=="add"){
-							//addToSetGenericRules();
-							addToSubmit();
-						}
+							if(typepage=="add"){
+								//addToSetGenericRules();
+								addToSubmit();
+							}
 					break;
 
 					case 'tournaments':

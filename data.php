@@ -107,8 +107,7 @@ userCheckPrivilege(1);
 						<li><a id="eventBtn" href="#events">Events</a></li>
 						<li><a id="tournamentBtn" href="#tournaments">Tournaments</a></li>
 						<li><a id="studentBtn" href="#students">Teammates</a></li>
-						<li><a id="officerBtn" href="#leaders-year">Officers & Event Leaders</a></li>
-						<li><a id="coachBtn" href="#coaches">Coaches</a></li>
+						<li><a id="leaderBtn" href="#leaders">Leaders</a></li>
 						<li><a id="loginBtn" href="logout.php">Logout</a></li>
 						<li style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="<?=$_SESSION['userData']['picture']?>" /></li>
 					</ul>

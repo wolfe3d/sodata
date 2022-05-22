@@ -4,23 +4,52 @@ require_once ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
 require_once  ("functions.php");
+$schoolID = 1; //TODO: Change this to user found $schoolID
 
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 
-//Get current year
-$yearBeg = $year-1;
-$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
+//text output
+$output = "<div>" . getSOYears($year) . "</div>";
+$output .= "<br></br><h2>Coaches</h2><div>";
+
+$query = "SELECT * FROM `coach` WHERE `schoolID`=$schoolID";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$output = "";
+
+if($result)
+{
+	while ($row = $result->fetch_assoc()):
+		$output .="<div>";
+		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
+		if($_SESSION['userData']['privilege']>3 || $_SESSION['userData']['id']==$row['userID'])
+		{
+			$output .="<div><a href='javascript:coachEdit(".$row['coachID'].")'>Edit</a> ";
+		}
+		if($row['position'])
+		{
+			$output .="<div>".$row['position']."</div>";
+		}
+		if($row['emailSchool'])
+		{
+			$output .="<div>Email: <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></div>";
+		}
+	endwhile;
+	$output .="</div>";
+}
+
+
+//Get current year
+$yearBeg = $year-1;
+$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year AND `schoolID` = $schoolID";
+//$output .=$query;
+$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {
 	$output .="<div>";
-	$output .= getSOYears($year);
-	if(userHasPrivilege(3))
+		if(userHasPrivilege(3))
 	{
-		$output .="<br><input class='button fa' type='button' onclick=location.href='#officer-emails-$year' value='&#xf01c; Get Emails' />";
+		$output .="<br><input class='button fa' type='button' onclick=location.href='#officer-emails-$year' value='&#xf01c; Get Officer Emails' />";
 	}
 	if(userHasPrivilege(4))
 	{
@@ -68,7 +97,7 @@ if($result)
 	$output .="</div>";
 }
 
-$query = "SELECT * FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year`=$year";
+$query = "SELECT * FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year`=$year AND `schoolID` = $schoolID";
 //$output .=$query;
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -82,7 +111,7 @@ if($result)
 	}
 	if(userHasPrivilege(2))
 	{
-		$output .="<input class='button fa' type='button' onclick=location.href='#eventleader-emails-$year' value='&#xf01c; Get Emails' />";
+		$output .="<input class='button fa' type='button' onclick=location.href='#eventleader-emails-$year' value='&#xf01c; Get Event Leader Emails' />";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";
