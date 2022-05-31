@@ -7,7 +7,7 @@ require_once ("functions.php");
 $output = "";
 
 $name = isset($_POST['tournamentName'])?$mysqlConn->real_escape_string($_POST['tournamentName']):"";
-$year = isset($_POST['tournamentYear'])?intval($_POST['tournamentYear']):getCurrentSOYear();
+$year = isset($_POST['year'])?intval($_POST['year']):getCurrentSOYear();
 
 $query = "SELECT * from `tournament`";
 //check to see what is searched for
@@ -34,7 +34,7 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$myTitle = $row['tournamentName']." - ".$row['year'];
 		$output .="<hr><h2>".$myTitle."</h2>";
-		$output .="<input class='button fa' type='button' onclick='window.location.hash=\"tournament-view-".$row['tournamentID']."\"' value='&#xf108; View Details' />";
+		$output .="<a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."\"'><span class='fa fa-desktop'></span> View Details </a>";
 
 		if($row['websiteHost'])
 		{

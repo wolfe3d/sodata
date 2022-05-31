@@ -73,10 +73,8 @@ if ($totalEvents > 0 )
 	$output .= "<div>Average place: ".$totalPlace/$totalEvents."</div><br><br>";
 }
 
-
 //TODO: make a table instead
 //TODO: Add the option to change the year
-
-$output.= "<br><br><input class='button fa' type='button' onclick=\"window.location='#events'\" value='&#xf0a8; Return' />";
+$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
 echo $output;
 ?>

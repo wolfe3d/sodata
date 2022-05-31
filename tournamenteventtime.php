@@ -34,7 +34,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 if(mysqli_num_rows($result))
 {
 	$output .="<h2>Choose Times</h2><div id='note'></div><div>For all testing events, make sure to choose the same time block for all teams.  Build events can be at different times.</div>";
-	$output .="<form id='timeForm' method='post' action='tournamentChangeMe.php'><table class='tournament'><thead>";
+	$output .="<form id='timeForm' method='post' action='tournamentChangeMe.php'><table class='tournament table table-hover'><thead>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
@@ -117,7 +117,5 @@ echo $output;
 <br>
 <div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 <form id="addTo" method="post" action="tournamenteventadd.php">
-	<p>
-				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-	</p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

@@ -17,7 +17,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 //sum scores with javascript only
 
 
-$returnBtn = "<input class='button fa' type='button' onclick='window.history.back()' value='&#xf0a8; Return' />";
+$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
 
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='warning'>This page is a beta version and calculations are likely to change.</p>";
@@ -146,7 +146,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 	calculateOverallScores($mysqlConn, $students, $tournaments);
 	calculateTeamRanking($students);
 
-	$output .="<table id='tournamentTable' class='tournament'>";
+	$output .="<table id='tournamentTable' class='tournament table table-hover'>";
 	$output .="<colgroup><col span=2>";
 	foreach ($tournaments as $i=>$tournament)
 	{

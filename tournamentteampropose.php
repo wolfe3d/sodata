@@ -503,7 +503,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	$output = "";
 	$notescore = 0;
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<table id='tournamentTable$resultsTableName' class='tournament'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
+	$output .="<table id='tournamentTable$resultsTableName' class='tournament table table-hover'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
 
 	$dateCheck = "";
 	$dateColSpan = 0;
@@ -700,7 +700,5 @@ printTable($mysqlConn, 'temp_studentsMaxScore', 'temp_timeblocks', 'temp_results
 ?>
 <br>
 <form id="addTo" method="post" action="tournamenteventadd.php">
-	<p>
-				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-	</p>
+	<p><input class='btn btn-outline-secondary fa' type='button' onclick='window.history.back()' value='&#xf0a8; Return' /></p>
 </form>

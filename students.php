@@ -17,25 +17,29 @@ if($result)
 }
 ?>
 <div>
-	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='fa'>&#xf002;</span> Find</button> <!-- toggles view of below div -->
+
 	<?php if(userHasPrivilege(3))
 	{ ?>
-	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='fa'>&#xf067;</span> Add</button>
+
 	<form id="addTo" method="post" action="studentadd.php">
 		<fieldset>
 			<legend>Add Student</legend>
 			<?php require_once("studentform.php"); ?>
 		</fieldset>
-		<input class="submit fa" type="submit" value="&#xf067; Add" />
+		<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
+
 	</form>
 	<!--Output student emails -->
-	<input class='button fa' type='button' onclick='location.href="#student-emails"' value='&#xf01c; Get Emails' />
+	<a class="btn btn-secondary" role="button" href="#student-emails-<?=getCurrentSOYear();?>"><span class='fa'>&#xf01c;</span> Get Emails</a>
+
 	<?php }?>
 	<?php if(userHasPrivilege(4))
 	{ ?>
 	<!--Output parent emails -->
-	<input class='button fa' type='button' onclick='location.href="#parent-emails"' value='&#xf01c; Get Parents' />
-	<input class='button fa' type='button' onclick='location.href="studentfile.php"' value='&#xf01c; Students File' />
+	<a class="btn btn-secondary" role="button" href="#parent-emails-<?=getCurrentSOYear();?>"><span class='fa'>&#xf01c;</span> Get Parents</a>
+	<a class="btn btn-secondary" role="button" href="studentfile.php"><span class='fa'>&#xf01c;</span> Students File</a>
 	<?php }?>
 <br><br>
 	<form id="findStudent">
@@ -55,7 +59,7 @@ if($result)
 				<input id="last" name="last" type="text">
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Name">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Find By Name</button>
 			</p>
 		</fieldset>
 	</form>
@@ -66,7 +70,7 @@ if($result)
 				<?=getEventList($mysqlConn, 0,"Event Priority")?>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Event">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Find By Event</button>
 			</p>
 		</fieldset>
 	</form>
@@ -77,7 +81,7 @@ if($result)
 				<?=getEventList($mysqlConn, 1,"Events Competed")?>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Event">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Find By Event</button>
 			</p>
 		</fieldset>
 	</form>
@@ -88,7 +92,7 @@ if($result)
 				<?php include("courseselect.php")?>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Course">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Find By Course</button>
 			</p>
 		</fieldset>
 		</div>

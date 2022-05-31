@@ -9,8 +9,11 @@ $currentYear = getCurrentSOYear();
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 if(!empty($_SESSION['userData'])){
   //$output     = '<h2>Google Account Details</h2>';
+	$output .= "<div style='display: flex; justify-content: center; vertical-align: middle;padding: 10px;'><img style='vertical-align: middle' height='256px' src='images/waltoncthulu256.png'></img></div>";
+
   $output .= '<div class="ac-data">';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
+
 	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vStMRtaqu9vS_F3ih0aW8sfizoMhtexECHy2WdPEywYjVitnFgDnNsHxb8V-R2-XqFjZErmmH5e2Nx9/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
 	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
   $output .= '<img src="'.$_SESSION['userData']['picture'].'">';
@@ -19,6 +22,7 @@ if(!empty($_SESSION['userData'])){
   $output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
 	  //$output .= '<p><b>Gender:</b> '.$userData['gender'].'</p>';
   //$output .= '<p><b>Locale:</b> '.$userData['locale'].'</p>';
+
 
   $output .= "<h2> Quick Links </h2><p>";
   $output .= "<a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a><br>";

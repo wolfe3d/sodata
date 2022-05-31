@@ -20,16 +20,16 @@ if (isset($_SESSION['token'])) {
 		<meta name="keywords" content="Walton, Science, Olympiad, SO" />
 		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 		<script src="js/jquery-3.6.0.min.js"></script>
-		<script src="js/skel.min.js"></script>
-		<script src="js/skel-layers.min.js"></script>
-		<script src="js/init.js"></script>
-		<link rel="shortcut icon" href="images/waltoncthulu32.png">
+		<script src="js/jquery.validate.min.js"></script>
+		<script src="js/additional-methods.min.js"></script> <!--Additional Methods are also for jquery validate-->
+		<!--<script src="js/jquery.modal.min.js"></script> Modal plugin https://github.com/kylefox/jquery-modal-->
+		<link rel="stylesheet" href="css/wolfestyle.css" />
 
-		<noscript>
-			<link rel="stylesheet" href="css/skel.css" />
-			<link rel="stylesheet" href="css/style.css" />
-			<link rel="stylesheet" href="css/style-xlarge.css" />
-		</noscript>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+		<script src="data.js"></script>
+		<link rel="shortcut icon" href="images/waltoncthulu32.png">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script type="text/javascript">
 		$().ready(function() {
 			//myData is a json object type
@@ -82,29 +82,45 @@ if (isset($_SESSION['token'])) {
 	</head>
 	<body id="top">
 		<!-- Header -->
-			<header id="header" class="skel-layers-fixed">
-				<h1 style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> <a href="#">Walton Science Olympiad</a></h1>
 
-				<nav id="nav">
-					<ul>
-						<li><a id="mainBtn" href="#main">Home</a></li>
-						<li><a id="tournamentBtn" href="#tournaments">Tournaments</a></li>
-						<li><a id="summercampBtn" href="#summercamp">Summer Camp</a></li>
-						<li><a id="contactBtn" href="#contact">Contact</a></li>
-						<li><a id='loginBtn' href='#login'>Login</a></li>
-						<li><a id="supportBtn"href="#support" class="button special">Support Us</a></li>
-					</ul>
+
+				<!-- Navbar content -->
+				<nav class="navbar navbar-expand-lg bg-light">
+					<div class="container-fluid">
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<a class="navbar-brand" href="#"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> Walton Science Olympiad</a>
+						<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+							<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+								<li class="nav-item">
+									<a class="nav-link active" id="mainBtn" aria-current="page" href="#home">Home</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="tournamentBtn" href="#tournaments">Tournaments</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="summercampBtn" href="#summercamp">Summer Camp</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="contactBtn" href="#contact">Contact</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="loginBtn" href="#login">Login</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="supportBtn" href="#support">Support Us</a>
+								</li>
+							</ul>
+						</div>
+					</div>
 				</nav>
-			</header>
 
-		<!-- Banner -->
-			<section id="banner" style="padding-top:30px;padding-bottom:30px;">
-				<div class="inner">
-					<div><img style="vertical-align: top" height="256px" src="images/waltoncthulu1200white.png"></img></div>
-					<h2>Walton Science Olympiad</h2>
-					<p>Walton High School</p>
+				<div id="banner" class="jumbotron jumbotron-fluid">
+						<div><img style="vertical-align: top" height="256px" src="images/waltoncthulu1200white.png"></img></div>
+						<h1>Walton Science Olympiad</h1>
+						<p>Walton High School</p>
 				</div>
-			</section>
 
 		<!-- One -->
 			<section id="main" class="wrapper style1">
@@ -202,15 +218,18 @@ if (isset($_SESSION['token'])) {
 					</div>
 				</section>
 
-		<!-- Footer -->
-			<footer id="footer">
-				<div class="container">
-					<ul class="copyright">
-						<li>&copy; Wolfescience. All rights reserved.</li>
-						<li>Design: <a href="http://www.wolfescience.com">Wolfescience</a></li>
-					</ul>
-				</div>
-			</footer>
+				<!-- Footer -->
+				<footer class="text-center text-lg-start bg-light text-muted">
+					  <!-- Copyright -->
+				  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+				    &copy;
+				    <a class="text-reset fw-bold" href="http://www.wolfescience.com">Wolfescience</a> All rights reserved.
+				  </div>
+				  <!-- Copyright -->
+				</footer>
+				<!-- Footer -->
 
-	</body>
+
+				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+		</body>
 </html>

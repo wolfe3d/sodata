@@ -6,7 +6,7 @@ require_once ("functions.php");
 $row = null;
 ?>
 <div>
-	<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" > <!-- toggles view of below div -->
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='fa'>&#xf002;</span> Find</button> <!-- toggles view of below div -->
 	<div id="searchDiv">
 	<form id="findTournament">
 		<fieldset>
@@ -16,26 +16,28 @@ $row = null;
 				<input id="tournamentName" name="tournamentName" type="text">
 			</p>
 			<p>
-				<label for="tournamentYear">Tournament Year</label>
-				<select name="tournamentYear" id="tournamentYear"><option value="0">All Years</option></select> <span style="color=blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
+				<label for="year">Tournament Year</label>
+				<?=getSOYears("",1)?>
+					 <span style="color:blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find Tournament">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf024;</span> Find Tournament</button>
 			</p>
 		</fieldset>
 	</form>
 </div>
 <?php if(userHasPrivilege(4))
 		{ ?>
-	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
+		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='fa'>&#xf067;</span> Add</button>
 	<form id="addTo" method="post" action="tournamentadd.php">
 		<fieldset>
 			<legend>Add Tournament</legend>
 		<?php require_once("tournamentform.php"); ?>
 		</fieldset>
-		<input class="submit fa" type="submit" value="&#xf067; Add">
+		<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
+
 	</form>
-	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'tournaments-score-<?=getCurrentSOYear();?>'" value="&#xf200; Analysis" />
+	<a class="btn btn-secondary" role="button" href="#tournaments-score-<?=getCurrentSOYear();?>"><span class='fa'>&#xf200;</span> Analysis</a>
 
 	</div>
 </div>

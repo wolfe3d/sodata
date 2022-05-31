@@ -10,7 +10,8 @@ require_once  ("functionstournament.php");
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
-$returnBtn = "<input class='button fa' type='button' onclick='window.history.back()' value='&#xf0a8; Return' />";
+$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+
 if(empty($tournamentID))
 {
 	echo "<div style='color:red'>teamID is not set.</div>";
@@ -46,7 +47,7 @@ else
 	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight);
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";
-	$output .="<form id='addTo' method='post' action='fieldupdate.php'><table id='tournamentTable' class='tournament'>";
+	$output .="<form id='addTo' method='post' action='fieldupdate.php'><table id='tournamentTable' class='tournament table table-hover'>";
 	if(userHasPrivilege(4))
 	{
 		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";

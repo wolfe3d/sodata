@@ -33,7 +33,7 @@ function printTable($db, $events)
 	$output = "";
 	$notescore = 0;
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	$output .="<table id='tournamentTable' class='tournament'><thead><tr>";
+	$output .="<table id='tournamentTable' class='tournament table table-hover'><thead><tr>";
 	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`event`, 0)'>Events</a></div></th>";
 	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`avgplace`, 1)'>Average Place</a></div><div>(Lower is Better)</div></th>";
 	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`avgscore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th></tr></thead>";
@@ -58,7 +58,5 @@ printTable($mysqlConn, $events);
 <br>
 <div>This checks the current science olympiad year only.</div>
 <form id="addTo" method="post" action="tournamenteventadd.php">
-	<p>
-				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-	</p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

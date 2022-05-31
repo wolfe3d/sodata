@@ -48,7 +48,7 @@ if($tournamentID)
 		<input id="timeEnd" name="timeEnd" type="datetime-local" value="<?=$tournamentRow["dateTournament"]?>T00:00"/>
 	</p>
 	<p>
-		<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
+		<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button>
 		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</p>
 </form>

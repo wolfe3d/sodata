@@ -23,7 +23,7 @@ if(empty($year))
 		<label for="position">Assign Position</label>
 		<input id="position" name="position" type="text" value="position" onchange="officerAdd()">
 	</p>
-		<input class="button" type="button" onclick="window.history.back()" value="Cancel" />
-		<input class="submit fa" type="submit" value="&#xf067; Add">
+		<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button>
+			<input class="submit fa" type="submit" value="&#xf067; Add">
 	</div>
 </form>

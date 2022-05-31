@@ -170,6 +170,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 	}
 	$output .="</div>";
 
-	$output .= "<input class='button fa' type='button' onclick=\"window.location='#tournaments'\" value='&#xf0a8; Return' />";
+	$output .= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+
 echo $output;
 ?>

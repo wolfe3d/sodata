@@ -37,7 +37,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable' class='tournament'>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable' class='tournament table table-hover'>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		$query = "SELECT * FROM `tournamenttimechosen` INNER JOIN `tournamentevent` ON `tournamenttimechosen`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `timeblockID` = ".$row['timeblockID']." AND `tournamenttimechosen`.`teamID`= $teamID ORDER BY `event`.`event`";
@@ -245,7 +245,5 @@ echo $output;
 ?>
 <br>
 <form id="addTo" method="post" action="tournamenteventadd.php">
-	<p>
-				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-	</p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

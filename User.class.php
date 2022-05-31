@@ -5,6 +5,8 @@ class User {
         if(!isset($this->db)){
             // Connect to the database
 						$this->db = $conn;
+						$this->schoolID = 0;
+						$this->type = 0;
             /*$conn = new mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
             if($conn->connect_error){
                 die("Failed to connect with MySQL: " . $conn->connect_error);
@@ -13,18 +15,37 @@ class User {
             }*/
         }
     }
+		function checkUserType($userID)
+		{
+			//Check to see if user is a student
+			$query = "(SELECT `schoolID`, 'student' as type FROM `student` WHERE `userID`=$userID) UNION (SELECT `schoolID`, 'teacher' as type FROM `coach` WHERE `userID`=$userID)";
+			$result = $this->db->query($query) or print("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+			if($result->num_rows > 0){
+				$row = $result->fetch_assoc();
+				$this->schoolID = $row['schoolID'];
+				$this->type = $row['type'];
+			}
+		}
 
     function checkUser($data = array()){
         if(!empty($data)){
             // Check whether the user already exists in the database
             $checkQuery = "SELECT * FROM `user` WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'";
-            $checkResult = $this->db->query($checkQuery);
+echo $checkQuery;
+
+//TODO: figure out how to find school ID.  See line below.  Problem with this is it misses the superuser that should be able to view all schools.
+//SELECT * FROM `user` LEFT JOIN `student` ON `student`.`schoolID`=`user`.`userID` LEFT JOIN `coach` ON `coach`.`schoolID`=`user`.`userID` WHERE `oauth_provider` = 'google' AND `oauth_uid` = '109397293342063106702';
+						$checkResult = $this->db->query($checkQuery);
             // Add modified time to the data array
             if(!array_key_exists('modified',$data)){
                 $data['modified'] = date("Y-m-d H:i:s");
             }
 
             if($checkResult->num_rows > 0){
+								//Check to see if a user is a student or teacher
+								$checkRow = $checkResult->fetch_assoc();
+								$this->checkUserType($checkRow['userID']);
                 // Prepare column and value format
                 $colvalSet = '';
                 $i = 0;

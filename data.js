@@ -725,11 +725,12 @@ function tournamentsPreparePage()
   		event.preventDefault();
   		getList("tournamentslist.php", $( this ).serialize() );
 		});
-		//Allow person to pick year
+	/*	//Allow person to pick year
 		for (i = new Date().getFullYear()+1; i > 1973; i--)
 		{
 			$('#tournamentYear').append($('<option />').val(i).html(i));
 		}
+		*/
 
 		tournamentAddModify();
 }
@@ -786,6 +787,7 @@ function tournamentEdit(myID)
 							fieldUpdate(myID,'tournament',this.id,this.value,this.id,this.id);
 					});
 		});
+
 }
 
 function tournamentAddModify()
@@ -1531,6 +1533,8 @@ function tournamentCalculateTimeblock(studentID)
 //Check student count, overassigned students to a timeblock, and events over assigned
 function tournamentAssignCheckErrors()
 {
+	//TODO: tournamentTableMakeList('#tournamentTable','#changeme');  //change table into list on mobile
+
 	//console.log("tournamentAssignCheckErrors");
 	$('[id^=teammate-]').each(function (i,v)
 	{
@@ -1554,4 +1558,87 @@ function officerRemove(myID, myName)
   {
 		rowRemove(myID,"officer");
 	}
+}
+
+///////////////////
+///Convert Table to List for Mobile
+//////////////////
+
+//TODO:Maybe just reformat on backend and display one or the other
+function tournamentTableMakeList(table_id, parent) {
+    if ($(window).width() < 767) {
+        var table_header = new Array();
+        var table_data = new Array();
+        i = 1;
+        $(table_id + ' thead>tr').each(function() {
+            var table_row = new Array();
+            $('th', this).each(function() {
+                table_row.push($(this).text());
+            });
+            table_header.push(table_row)
+            i = i + 1;
+        });
+
+        $(table_id + ' tbody>tr').each(function() {
+            var table_row = new Array();
+            $('td', this).each(function() {
+                table_row.push($(this).text());
+            });
+            table_data.push(table_row)
+            i = i + 1;
+        });
+
+        $(table_id).attr('hidden', true);
+        var list = '';
+        for (r = 0; r < table_data.length; r++) {
+
+            for (c = 0; c < table_data[r].length; c++) {
+                list +=
+                    '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">' +
+                    table_header[0][c] + " &nbsp;&nbsp;&nbsp;: &nbsp;&nbsp;&nbsp; " + table_data[r][c] + '</a><div class="flextable-spacer"></div>';
+            }
+            list += '<div class="flextable-spacer mt-3"></div>';
+        }
+
+        $(parent).html(list);
+    }
+}
+//Original Below for Archive
+function tableMakeList(table_id, parent) {
+    if ($(window).width() < 767) {
+        var table_header = new Array();
+        var table_data = new Array();
+        i = 1;
+        $(table_id + ' thead>tr').each(function() {
+            var table_row = new Array();
+            $('th', this).each(function() {
+                table_row.push($(this).text());
+            });
+            table_header.push(table_row)
+            i = i + 1;
+        });
+
+        $(table_id + ' tbody>tr').each(function() {
+            var table_row = new Array();
+            $('td', this).each(function() {
+                table_row.push($(this).text());
+            });
+            table_data.push(table_row)
+            i = i + 1;
+        });
+
+        $(table_id).attr('hidden', true);
+        var list = '';
+        for (r = 0; r < table_data.length; r++) {
+
+            for (c = 0; c < table_data[r].length; c++) {
+                list +=
+                    '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">' +
+                    table_header[0][c] + " &nbsp;&nbsp;&nbsp;: &nbsp;&nbsp;&nbsp; " + table_data[r][c] + '</a><div class="flextable-spacer"></div>';
+            }
+            list += '<div class="flextable-spacer mt-3"></div>';
+        }
+
+        $(parent).html(list);
+    }
 }

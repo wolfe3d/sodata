@@ -16,9 +16,7 @@ if(isset($eventID))
 	<fieldset>
 		<legend>Edit Event</legend>
 		<?php require_once  ("eventform.php"); ?>
-		<p>
-			<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-		</p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 	</fieldset>
 </form>
 <?php

@@ -12,10 +12,10 @@ $currentYear = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 /*check to see if year exists*/
 if(isset($_POST["year"]))
 {
-	$year = intval($_POST['year']);
+	$year = intval($_POST['year']); //use the year sent by the choice box
 }
 else {
-	$year = "";
+	$year = $currentYear; //use the year by the id events-# or the current year
 }
 
 if($year)
@@ -58,15 +58,15 @@ if($result)
 		//check for permissions to create edit an event btn
 		if(userHasPrivilege(3) )
 		{
-			$output .="<input class='button fa' type='button' onclick='window.location.hash=\"event-edit-".$row['eventID']."\"' value='&#xf108; Edit' />";
+			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."'><span class='fa'>&#xf108;</span> Edit</a>";
 		}
 		if(userHasPrivilege(2))
 		{
-			$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"event-emails-".$row['eventID']."\"' value='&#xf01c; Get emails' />";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."'><span class='fa'>&#xf01c;</span> Get emails</a>";
 		}
 		if(userHasPrivilege(3) )
 		{
-			$output .=" <input class='button fa' type='button' onclick='window.location.hash = \"event-analysis-".$row['eventID']."\"' value='&#xf200; Analysis' />";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."'><span class='fa'>&#xf200;</span> Analysis</a>";
 		}
 
 		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `eventyear`.`eventID` = '".($row['eventID'])."' ORDER BY `eventyear`.`year` ASC";

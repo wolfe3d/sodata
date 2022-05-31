@@ -23,7 +23,7 @@ if($result)
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
 		if($_SESSION['userData']['privilege']>3 || $_SESSION['userData']['id']==$row['userID'])
 		{
-			$output .="<div><a href='javascript:coachEdit(".$row['coachID'].")'>Edit</a> ";
+			$output .="<div><a class='btn btn-primary' role='button' href='javascript:coachEdit(".$row['coachID'].")'><span class='fa fa-edit'></span> Edit</a></div>";
 		}
 		if($row['position'])
 		{
@@ -36,7 +36,7 @@ if($result)
 	endwhile;
 	$output .="</div>";
 }
-
+$output .="<br><br>";
 
 //Get current year
 $yearBeg = $year-1;
@@ -47,13 +47,13 @@ $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$que
 if($result)
 {
 	$output .="<div>";
-		if(userHasPrivilege(3))
+	if(userHasPrivilege(3))
 	{
-		$output .="<br><input class='button fa' type='button' onclick=location.href='#officer-emails-$year' value='&#xf01c; Get Officer Emails' />";
+		$output .="<a class='btn btn-primary' role='button' href='#officer-emails-$year'><span class='fa'>&#xf01c;</span> Get Officer Emails</a>";
 	}
 	if(userHasPrivilege(4))
 	{
-		$output .=" <input class='button fa' type='button' onclick='window.location.hash=\"officer-add-".$year."\"' value='&#xf067; Add Officer' />";
+		$output .=" <a class='btn btn-primary' role='button' href='#officer-add-$year'><span class='fa fa-plus'></span> Add Officer</a>";
 	}
 
 	$output .='<br><br>';
@@ -68,7 +68,7 @@ if($result)
 		}
 		if(userHasPrivilege(5))
 		{
-			$output .="<div><a href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")'>Remove</a></div>";
+			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")''><span class='fa fa-eraser'></span> Remove</a>";
 		}
 		$grade = 9;
 		if (date("m")>5)
@@ -111,7 +111,7 @@ if($result)
 	}
 	if(userHasPrivilege(2))
 	{
-		$output .="<input class='button fa' type='button' onclick=location.href='#eventleader-emails-$year' value='&#xf01c; Get Event Leader Emails' />";
+		$output .="<a class='btn btn-primary' role='button' href='#eventleader-emails-$year'><span class='fa'>&#xf01c;</span> Get Event Leader Emails</a>";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";

@@ -31,4 +31,4 @@ echo $output;
 <?php } else {?>
 		<p><?=$row['note']?></p>
 <?php } ?>
-	<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>

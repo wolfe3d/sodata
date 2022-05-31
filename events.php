@@ -2,6 +2,7 @@
 require_once  ("../connectsodb.php");
 require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
+require_once ("functions.php");
 
 $query = "SELECT * from `eventtype`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -14,19 +15,22 @@ if($result)
 	endwhile;
 }
 
-$query = "SELECT DISTINCT `year` FROM `eventyear`";
+/*
+//Replaced by GetSOYears
+$query = "SELECT DISTINCT `year` FROM `eventyear` ORDER BY `year` DESC";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-$eventYears="";
+$eventYears="<option value = '0'>All</option>";
 if($result)
 {
 	while ($row = $result->fetch_assoc()):
 		$eventYears.="<option value = '".$row['year']."'>".$row['year']."</option>";
 	endwhile;
 }
+*/
 ?>
 <div>
-<input class="button fa" type="button" onclick="javascript:toggleSearch()" value="&#xf002; Find" />
+<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='fa'>&#xf002;</span> Find</button> <!-- toggles view of below div -->
 
 	<div id="searchDiv">
 	<form id="findEvent">
@@ -34,27 +38,26 @@ if($result)
 			<legend>Find Event by year</legend>
 			<p>
 				<label for="year">Year</label>
-				<select id="year" name="year" type="text">
-						<?=$eventYears?>
-				</select>
+				<?=getSOYears("",1)?>
 			</p>
 			<p>
-				<input class="submit" type="submit" value="Find By Year">
+				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf073;</span> Find By Year</button>
 			</p>
 		</fieldset>
 	</form>
 </div>
 <?php if(userHasPrivilege(3)){ ?>
-	<input class="button fa" type="button" onclick="javascript:toggleAdd()" value="&#xf067; Add" />
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='fa'>&#xf067;</span> Add</button>
+
 	<form id="addTo" method="post" action="eventadd.php">
 		<fieldset>
 			<legend>Add Event</legend>
 			<?php 	require_once  ("eventform.php"); ?>
-			<input class="submit fa" type="submit" value="&#xf067; Add">
+			<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
 		</fieldset>
 	</form>
-	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'eventyear-edit-<?=getCurrentSOYear();?>'" value="&#xf133; Edit Year" />
-	<input class="button fa" type="button" onclick="javascript:window.location.hash = 'events-analysis-<?=getCurrentSOYear();?>'" value="&#xf200; Analysis" />
+	<a class='btn btn-secondary' role='button' href='#eventyear-edit-<?=getCurrentSOYear();?>'><span class='fa'>&#xf133;</span> Edit Year</a>
+	<a class='btn btn-secondary' role='button' href='#events-analysis-<?=getCurrentSOYear();?>'><span class='fa'>&#xf200;</span> Analysis</a>
 <?php } ?>
 
 <div id="list"></div>

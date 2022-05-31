@@ -9,20 +9,6 @@
 	$output = "";
 
 	$studentID = intval($_REQUEST['myID']);
-	// if(empty($studentID))
-	// {
-	// 	//no student id was sent, so initiate adding a student
-	// 	$defaultYear = date("Y")+4;
-	// 	$query = "INSERT INTO `student` (`studentID`, `userID`, `uniqueToken`, `last`, `first`, `active`, `yearGraduating`, `email`, `emailSchool`, `phoneType`, `phone`, `parent1Last`, `parent1First`, `parent1Email`, `parent1Phone`, `parent2Last`, `parent2First`, `parent2Email`, `parent2Phone`) VALUES (NULL, NULL, '', 'last_name', 'first_name', '1', '$defaultYear', '', NULL, 'cell', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
-	// 	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	// 	if ($result === TRUE)
-	// 	{
-	// 		$studentID =  $mysqlConn->insert_id;
-	// 	}
-	// 	else {
-	// 		exit("Failed to add new student.");
-	// 	}
-	// }
 
 	//check to see if user has a valid studentID
 	$query = "SELECT * FROM `student` WHERE `student`.`studentID` = $studentID";
@@ -70,9 +56,7 @@
 		</fieldset>
 		<?=$privilegeText ?>
 	</form>
-	<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-
-	<div id='eventAndPriority'>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>	<div id='eventAndPriority'>
 		<?php include("eventsselect.php")?>
 		<div id="priority">
 			<label for="priorityList">Priority</label>

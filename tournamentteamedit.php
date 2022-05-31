@@ -35,6 +35,8 @@ if(empty($teamID))
 {
 	exit("<div style='color:red'>TeamID is not set.</div>");
 }
+//TODO: Hide getCurrentTimeStamp variable, then use a js script to recheck every x time.
+echo getCurrentTimestamp($mysqlConn);
 
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -94,7 +96,5 @@ if($resultStudent){
 	<div># of Seniors = <span id="seniors"></span></div>
 	<div>Total Students = <span id="students"></span></div>
 	<br>
-	<p>
-				<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
-	</p>
+	<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

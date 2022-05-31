@@ -2,6 +2,8 @@
 //TODO: Add schoolID to input
 require_once  ("functions.php");
 userCheckPrivilege(2);
+$studentID = 1; //TODO: CHange me
+
 $editing = true;
 if(!isset($row))
 {
@@ -17,7 +19,6 @@ if ($editing)
 </p>
 <?php
 } ?>
-
 <p>
     <label for="first">Firstname</label>
     <input id="first" name="first" type="text" value="<?=$row['first']?>">
@@ -132,3 +133,4 @@ if (userHasPrivilege(4))
     <input id="parent2Phone" name="parent2Phone" type="tel" value="<?=$row['parent2Phone']?>">
 </p>
 </fieldset>
+<input id="studentID" name="studentID" type="hidden" value="<?=$row['studentID']?$row['studentID']:$studentID?>">

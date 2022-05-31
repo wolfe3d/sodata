@@ -23,7 +23,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 if(mysqli_num_rows($result))
 {
 	$output .="<h2>Available Times</h2><div id='note'></div>";
-	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table class='tournament'><thead>";
+	$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table class='tournament table table-hover'><thead>";
 	$timeblocks = [];
 	while ($row = $result->fetch_assoc()):
 		array_push($timeblocks, $row);
@@ -100,7 +100,8 @@ echo $output;
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
 	<p>
-		<input class="button fa" type="button" onclick="window.history.back()" value="&#xf0a8; Return" />
+<p>
+	<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Cancel</button></p>
 		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</p>
 </form>

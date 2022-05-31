@@ -9,7 +9,7 @@ function getAllStudents($db, $active, $studentID)
 
 	if($result)
 	{
-		$myOutput .="<select id='studentID' name='studentID' type='text'>";
+		$myOutput .="<select class='form-select' id='studentID' name='studentID' type='text'>";
 		$myOutput.="<option value = '0'>None</option>";
 		while ($row = $result->fetch_assoc()):
 			$selected = $row['studentID']==$studentID ? " selected " : "";
@@ -115,7 +115,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
 	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     if($tournamentResult && $tournamentResult->num_rows > 0){
         $schedule.="Your events and partners:<br>";
-        $schedule.="<table><tr><th>Time (All times ET)</th><th>Note</th><th>Event</th><th>Partners</th></tr>";
+        $schedule.="<table class='table table-hover'><tr><th>Time (All times ET)</th><th>Note</th><th>Event</th><th>Partners</th></tr>";
         while ($row = $tournamentResult->fetch_assoc()):
             $tournamenteventID = $row['tournamenteventID'];
             $teamID = $row['teamID'];
@@ -449,7 +449,7 @@ function getEventList($db, $number,$label)
 	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
 	$resultEventsList = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
-	$events .="<select id='eventsList-$number' name='eventsList'>";
+	$events .="<select class='form-select' id='eventsList-$number' name='eventsList'>";
 		if($resultEventsList)
 		{
 			while ($rowEvents = $resultEventsList->fetch_assoc()):
@@ -471,7 +471,7 @@ function getTeamsPrevious($db, $tournamentID)
 
 	if($result)
 	{
-		$myOutput .="<select id='teamTournament' name='teamTournament' type='text'>";
+		$myOutput .="<select class='form-select' id='teamTournament' name='teamTournament' type='text'>";
 		while ($row = $result->fetch_assoc()):
 			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['year']." ".$row['tournamentName']." " . $row['teamName'] ."</option>";
 		endwhile;
@@ -480,10 +480,14 @@ function getTeamsPrevious($db, $tournamentID)
 	return $myOutput;
 }
 //Get all Science Olympiad years from 1982 to current year+1
-function getSOYears($myYear)
+function getSOYears($myYear,$all=0)
 {
 	$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
-	$output = "<select id='year' name='year'>";
+	$output = "<select class='form-select' id='year' name='year'>";
+	if($all)
+	{
+		$output .="<option value='0'>All Years</option>";
+	}
 	$i = getCurrentSOYear() + 1;
 	for ($i ; $i >= 1982; $i--) {
 				$selected = $myYear ==$i ? "selected" : "";
@@ -746,5 +750,14 @@ function get_uniqueToken($db, $tableName)
 function removeParenthesisText($string)
 {
 	return preg_replace("/\([^)]+\)/","",$string);
+}
+
+//Gets the MySQL Current Timestamp.  This allows us to look for changes from this timepoint forward.
+function getCurrentTimestamp($db)
+{
+	$query = "SELECT CURRENT_TIMESTAMP(); " ;
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$row = $result->fetch_assoc();
+	return $row['CURRENT_TIMESTAMP()'];
 }
 ?>

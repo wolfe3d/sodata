@@ -7,4 +7,4 @@ userCheckPrivilege(3);
 $year = intval($_REQUEST['myID']);
 echo getLeaderEmails($mysqlConn, $year);
 ?>
-<br><input class='button fa' type='button' onclick='window.history.back()' value='&#xf0a8; Return' />
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
