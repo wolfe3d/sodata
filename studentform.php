@@ -1,6 +1,6 @@
 <?php
 //TODO: Add schoolID to input
-require_once  ("functions.php");
+require_once  ("php/functions.php");
 userCheckPrivilege(2);
 $studentID = 1; //TODO: CHange me
 

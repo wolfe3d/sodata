@@ -7,7 +7,7 @@ header('Content-Disposition: attachment; filename=students.csv');
 // Set the encoding
 header("Content-Transfer-Encoding: UTF-8");
 require_once ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(4);
 
 $query = "SELECT * FROM `student` WHERE `active` = 1";

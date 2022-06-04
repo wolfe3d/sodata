@@ -36,7 +36,7 @@
 
 ## 6.4.1 - 2019-10-23
 
-* No `guzzle.phar` was created in 6.4.0 due expired API token. This release will fix that 
+* No `guzzle.phar` was created in 6.4.0 due expired API token. This release will fix that
 * Added `parent::__construct()` to `FileCookieJar` and `SessionCookieJar`
 
 ## 6.4.0 - 2019-10-23
@@ -403,13 +403,13 @@ interfaces.
   why I did this: http://ocramius.github.io/blog/fluent-interfaces-are-evil/.
   This also makes the Guzzle message interfaces compatible with the current
   PSR-7 message proposal.
-* Removed "functions.php", so that Guzzle is truly PSR-4 compliant. Except
+* Removed "php/functions.php", so that Guzzle is truly PSR-4 compliant. Except
   for the HTTP request functions from function.php, these functions are now
   implemented in `GuzzleHttp\Utils` using camelCase. `GuzzleHttp\json_decode`
   moved to `GuzzleHttp\Utils::jsonDecode`. `GuzzleHttp\get_path` moved to
   `GuzzleHttp\Utils::getPath`. `GuzzleHttp\set_path` moved to
   `GuzzleHttp\Utils::setPath`. `GuzzleHttp\batch` should now be
-  `GuzzleHttp\Pool::batch`, which returns an `objectStorage`. Using functions.php
+  `GuzzleHttp\Pool::batch`, which returns an `objectStorage`. Using php/functions.php
   caused problems for many users: they aren't PSR-4 compliant, require an
   explicit include, and needed an if-guard to ensure that the functions are not
   declared multiple times.
@@ -608,7 +608,7 @@ interfaces.
 * Added the ability to specify custom `sendAll()` event priorities
 * Added the ability to specify custom stream context options to the stream
   adapter.
-* Added a functions.php function for `get_path()` and `set_path()`
+* Added a php/functions.php function for `get_path()` and `set_path()`
 * CurlAdapter and MultiAdapter now use a callable to generate curl resources
 * MockAdapter now properly reads a body and emits a `headers` event
 * Updated Url class to check if a scheme and host are set before adding ":"

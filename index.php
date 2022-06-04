@@ -1,6 +1,6 @@
 <?php
 require_once ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("/php/checksession.php"); //Check to make sure user is logged in and has privileges
 
 if (isset($_SESSION['token'])) {
 	try {
@@ -87,14 +87,15 @@ if (isset($_SESSION['token'])) {
 				<!-- Navbar content -->
 				<nav class="navbar navbar-expand-lg bg-light">
 					<div class="container-fluid">
-						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-							<span class="navbar-toggler-icon"></span>
-						</button>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+				      <span class="navbar-toggler-icon"></span>
+				    </button>
 						<a class="navbar-brand" href="#"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> Walton Science Olympiad</a>
-						<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+
+						<div class="collapse navbar-collapse" id="navbarContent">
 							<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 								<li class="nav-item">
-									<a class="nav-link active" id="mainBtn" aria-current="page" href="#home">Home</a>
+									<a class="nav-link active" id="mainBtn" aria-current="page" href="#">Home</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" id="tournamentBtn" href="#tournaments">Tournaments</a>
@@ -102,14 +103,16 @@ if (isset($_SESSION['token'])) {
 								<li class="nav-item">
 									<a class="nav-link" id="summercampBtn" href="#summercamp">Summer Camp</a>
 								</li>
+							</ul>
+							<ul class="navbar-nav">
 								<li class="nav-item">
 									<a class="nav-link" id="contactBtn" href="#contact">Contact</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" id="loginBtn" href="#login">Login</a>
+									<a class="nav-link" id="supportBtn" href="#support">Support Us</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" id="supportBtn" href="#support">Support Us</a>
+									<a class="nav-link" id="loginBtn" href="#login">Login</a>
 								</li>
 							</ul>
 						</div>

@@ -5,7 +5,7 @@ $().ready(function() {
 	$(window).on('hashchange', function() {
 				checkPage();
 	});
-	//setTimeout(function() { loadpage("user") }, 3500000); //I don't think this does anything see checksession.php for updating token
+	//setTimeout(function() { loadpage("user") }, 3500000); //I don't think this does anything see php/checksession.php for updating token
 });
 
 function checkPage(){

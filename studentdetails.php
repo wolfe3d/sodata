@@ -1,7 +1,7 @@
 <?php
 require_once("../connectsodb.php");
-require_once("checksession.php"); //Check to make sure user is logged in and has privileges
-require_once("functions.php");
+require_once("php/checksession.php"); //Check to make sure user is logged in and has privileges
+require_once("php/functions.php");
 userCheckPrivilege(1);
 
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;

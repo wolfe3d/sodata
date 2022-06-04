@@ -657,7 +657,7 @@ function editPrivilege($privilege,$userID,$db)
 function checkGoogle($gpUserProfile,$db)
 {
 	// Include User library file
-	require_once 'User.class.php';
+	require_once 'php/user.php';
 
   // Initialize User class
   $user = new User($db);

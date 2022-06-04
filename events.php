@@ -1,8 +1,8 @@
 <?php
 require_once  ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
-require_once ("functions.php");
+require_once ("php/functions.php");
 
 $query = "SELECT * from `eventtype`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

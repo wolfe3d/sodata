@@ -323,7 +323,7 @@ $request->getEmitter()->on('foo', function (Event $event, $name) { /* ... */ } )
 - QueryAggregators have been rewritten so that they are simply callable
   functions.
 - `GuzzleHttp\StaticClient` has been removed. Use the functions provided in
-  `functions.php` for an easy to use static client instance.
+  `php/functions.php` for an easy to use static client instance.
 - Exceptions in `GuzzleHttp\Exception` have been updated to all extend from
   `GuzzleHttp\Exception\TransferException`.
 

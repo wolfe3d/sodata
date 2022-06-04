@@ -1,5 +1,5 @@
 <?php
-require_once  ("functions.php");
+require_once  ("php/functions.php");
  ?>
 	<?php if($row){ ?>
 			<input id="eventID" name="eventID" type="hidden" value="<?=$row["eventID"]?>">

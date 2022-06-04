@@ -1,9 +1,9 @@
 
 <?php
 require_once ("../connectsodb.php");
-require_once  ("checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(1);
-require_once  ("functions.php");
+require_once  ("php/functions.php");
 $schoolID = 1; //TODO: Change this to user found $schoolID
 
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();

@@ -1,7 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
-require_once ("checksession.php");
-require_once ("functions.php");
+require_once ("php/checksession.php");
+require_once ("php/functions.php");
  //Check to make sure user is logged in and has privileges
 
  // Include Google API client library
@@ -99,11 +99,12 @@ userCheckPrivilege(1);
 		<!-- Navbar content -->
 		<nav class="navbar navbar-expand-lg bg-light">
 			<div class="container-fluid">
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<a class="navbar-brand" href="#"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> Walton Science Olympiad</a>
-				<div class="collapse navbar-collapse d-flex" id="navbarTogglerDemo03">
+
+				<div class="collapse navbar-collapse" id="navbarContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item">
 							<a class="nav-link active" id="mainBtn" aria-current="page" href="#home">Home</a>
@@ -120,6 +121,8 @@ userCheckPrivilege(1);
 						<li class="nav-item">
 							<a class="nav-link" id="leaderBtn" href="#leaders">Leaders</a>
 						</li>
+					</ul>
+					<ul class="navbar-nav">
 						<li class="nav-item">
 							<a class="nav-link" id="loginBtn" href="#logout">Logout</a>
 						</li>
