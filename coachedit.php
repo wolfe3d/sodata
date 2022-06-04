@@ -1,9 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(4);
 require_once  ("php/functions.php");
-
+userCheckPrivilege(4);
 
 //text output
 $output = "";
@@ -57,4 +54,4 @@ $privilegeText = editPrivilege(4,$row['userID'],$mysqlConn);
 		</fieldset>
 		<?=$privilegeText ?>
 	</form>
-<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>

@@ -1,10 +1,14 @@
 <?php
+//include file
+require_once  ("../connectsodb.php");
+require_once 'checksession.php';
+
 //get all students in a select
 function getAllStudents($db, $active, $studentID)
 {
 	$myOutput = "";
-	$where = $active==1?"WHERE `student`.`active` = 1":"";
-	$query = "SELECT * from `student` $where ORDER BY `last`,`first` ASC";
+	$whereAND = $active==1?"AND `student`.`active` = 1":"";
+	$query = "SELECT * from `student` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `last`,`first` ASC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($result)
@@ -23,7 +27,7 @@ function getAllStudents($db, $active, $studentID)
 //get student ID of user
 function getStudentID($db, $userID)
 {
-	$query = "SELECT * from `student` where `userID` = $userID";
+	$query = "SELECT `studentID` from `student` where `userID` = $userID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -33,10 +37,10 @@ function getStudentID($db, $userID)
 	return 0;
 }
 
-//get student ID of user
+//get Name of user using unique studentID from table.  This is not their school's student id.  Their school's student id is called 'studentschoolID'
 function getStudentName($db, $studentID)
 {
-	$query = "SELECT * from `student` where `studentID` = $studentID";
+	$query = "SELECT `last`, `first` from `student` where `studentID` = $studentID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -44,6 +48,19 @@ function getStudentName($db, $studentID)
 		return $row['last'] . ", " . $row['first'];
 	}
 	return 0;
+}
+
+//get Name of the students school
+function getCurrentSchoolName($db)
+{
+	$query = "SELECT `name`, `division` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['name'] . "(" . $row['division'] . ")";
+	}
+	return 'No school associated';
 }
 
 //check Post variables and others if set.
@@ -265,6 +282,7 @@ function getEmailList($result)
 	$emails = "";
 	while ($row = $result->fetch_assoc()):
 			$emails.=$row['first'] . " " . $row['last'] . " ";
+			echo $emails;
 			if(isset($row['email'])&&$row['email']){
 				$emails.= "&lt;" . $row['email'] . "&gt;; ";
 			}
@@ -295,16 +313,26 @@ function getEmailParentList($result)
 	return $emails;
 }
 
+//Return Coaches leader email list
+function getCoachesEmails($db, $year)
+{
+	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
+	$query = "SELECT DISTINCT `first`, `last`, `emailSchool` FROM `coach` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	return getEmailList($result);
+}
+
 //Get Team Emails either students or parents
 function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 {
 	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1";
 	if($teamID){
-		$query.=" and `team`.`teamID` = $teamID";
+		$query.=" AND `team`.`teamID` = $teamID";
 	}
 	if($tournamentID){
-		$query.=" and `tournamentID` = $tournamentID";
+		$query.=" AND `tournamentID` = $tournamentID";
 	}
+	echo $query;
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
 		if(!$parents){
@@ -312,8 +340,10 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 		}
 		else
 		{
+			echo "here";
 			$emails = getEmailParentList($result);
 		}
+		echo "here";
 	return $emails. getCoachesEmails($db, NULL);
 }
 
@@ -323,7 +353,7 @@ function getOfficerEmails($db, $year)
 {
 	$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
 
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `year`=$year";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	return getEmailList($result) . getCoachesEmails($db, $year);
@@ -333,25 +363,16 @@ function getOfficerEmails($db, $year)
 function getLeaderEmails($db, $year)
 {
 	$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year`=$year";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
 	return getEmailList($result) . getCoachesEmails($db, $year);
-}
-
-//Return Coaches leader email list
-function getCoachesEmails($db, $year)
-{
-	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
-	$query = "SELECT DISTINCT `first`, `last`, `emailSchool` FROM `coach`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	return getEmailList($result);
 }
 
 //Return all active students or parents
 function getStudentEmails($db, $year, $parents=false)
 {
 	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `active`=1";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `active`=1";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
 		if(!$parents){
@@ -509,7 +530,7 @@ function getCurrentSOYear()
 function getOfficerPosition($db,$studentID)
 {
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID AND `year`=$year";
+	$query = "SELECT `position` FROM `officer` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -524,7 +545,7 @@ function getOfficerPositionPrevious($db,$studentID)
 {
 	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT * FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
+	$query = "SELECT `year`, `position` FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
 	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -540,7 +561,7 @@ function getEventLeaderPosition($db,$studentID)
 {
 	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
+	$query = "SELECT `event` FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -557,7 +578,7 @@ function getEventLeaderPositionPrevious($db,$studentID)
 {
 	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
+	$query = "SELECT `year`, `event` FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -657,8 +678,7 @@ function editPrivilege($privilege,$userID,$db)
 function checkGoogle($gpUserProfile,$db)
 {
 	// Include User library file
-	require_once 'php/user.php';
-
+	require_once 'user.php';
   // Initialize User class
   $user = new User($db);
 

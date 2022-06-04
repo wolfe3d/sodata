@@ -3,7 +3,7 @@ function calculateScore($eventPlace, $eventWeight, $tournamentWeight)
 {
 	//formula for scoring here
 	//return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100); old formula
-	$score = (100-(($eventPlace**2)/(($tournamentWeight/100)*50)))*($eventWeight/100)*($tournamentWeight/100);
+	$score = $tournamentWeight-$eventPlace*($tournamentWeight/$eventWeight);
 	if ($score <=1)
 	{
 		return 1;

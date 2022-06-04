@@ -1,8 +1,7 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(2);
 require_once  ("php/functions.php");
+userCheckPrivilege(2);
+
 /*Warnings for senior count and team cound is all handled in javascript
 	*count number of students
 	*count number of seniors
@@ -96,5 +95,5 @@ if($resultStudent){
 	<div># of Seniors = <span id="seniors"></span></div>
 	<div>Total Students = <span id="students"></span></div>
 	<br>
-	<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
+	<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

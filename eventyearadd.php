@@ -1,7 +1,7 @@
 <?php
 require_once ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(3);
+userCheckPrivilege(5);
 
 $year = intval($_POST['year']);
 $eventID = intval($_POST['eventsList']);

@@ -41,6 +41,10 @@
 	<input id="weight" name="weight" type="number" min='0' max='100' value="<?=$row['weight']?>">
 </p>
 <p>
+	<label for="teamsAttended">Number of Teams Participating</label>
+	<input id="teamsAttended" name="teamsAttended" type="number" min='0' max='100' value="<?=$row['teamsAttended']?>">
+</p>
+<p>
 	<label for="note">Note(s)</label>
 	<input id="note" name="note" type="text" value="<?=$row['note']?>">
 </p>

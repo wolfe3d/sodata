@@ -1,4 +1,6 @@
 <?php
+//TODO: I don't think I am using this file.  Remove me.
+
 require_once ("../connectsodb.php");
  //Check to make sure user is logged in and has privileges
  // Include Google API client library

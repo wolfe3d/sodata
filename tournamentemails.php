@@ -1,10 +1,10 @@
 <?php
 header("Content-Type: text/plain");
-require_once ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-$tournamentID = intval($_POST['myID']);
+$team = intval($_POST['myID']);
 
-echo getTeamEmails($mysqlConn, NULL, $tournamentID)."<br><input class='button fa' type='button' onclick=\"window.location='#tournament-view-".$tournamentID."'\" value='&#xf0a8; Return' />";
-?>
+echo getTeamEmails($mysqlConn, NULL, $tournamentID,0);?>
+<p>
+<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
+</p>

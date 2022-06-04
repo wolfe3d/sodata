@@ -23,6 +23,43 @@ header.major {
   margin: 0 0 4em 0;
 }
 
+table.tournament th {
+  color: #666f77;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 0 0.2em 0.2em 0.2em;
+	vertical-align: bottom;
+  text-align: center;
+}
+table.tournament th span{
+  -ms-writing-mode: tb-rl;
+  -webkit-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+	font-size: 1em;
+}
+table.tournament td.student{
+	font-size: 1em;
+	font-weight: 500;
+	min-width:8em;
+}
+table.tournament td{
+	padding: 0em;
+	text-align: center;
+}
+table.tournament input{
+	padding: 0em;
+	text-align: center;
+}
+table.tournament input[type="checkbox"]{
+	padding: 0em;
+	text-align: center;
+	display: inline;
+	margin-right: 0;
+	float: none;
+}
+
 
 @media print {
 	table.tournament tbody tr td {

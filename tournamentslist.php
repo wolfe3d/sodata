@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(1);
 require_once ("php/functions.php");
+userCheckPrivilege(1);
 //text output
 $output = "";
 
@@ -11,20 +9,21 @@ $year = isset($_POST['year'])?intval($_POST['year']):getCurrentSOYear();
 
 $query = "SELECT * from `tournament`";
 //check to see what is searched for
+$whereAND = "";
 if($name&&$year)
 {
-	$query .= " where `tournament`.`tournamentName` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
+	$whereAND .= " AND where `tournament`.`tournamentName` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
 }
 else if($name)
 {
-	$query .= " where `tournament`.`tournamentName` LIKE '$name'";
+	$whereAND .= " AND where `tournament`.`tournamentName` LIKE '$name'";
 }
 else if($year)
 {
-	$query .= " where `tournament`.`year` LIKE '$year' ";
+	$whereAND .= " AND `tournament`.`year` LIKE '$year' ";
 }
 
-$query .= " ORDER BY `tournament`.`dateTournament` DESC";
+$query .= " WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `tournament`.`dateTournament` DESC";
 $output .=userHasPrivilege(4)?$query:"";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 

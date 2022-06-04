@@ -1,9 +1,7 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(4);
 require_once  ("php/functions.php");
-require_once  ("functionstournament.php");
+userCheckPrivilege(4);
+require_once  ("php/functionstournament.php");
 
 function changeTournamentScore($db, $studentID, $tournamentID, $score, $averagePlace, $eventsNumber, $rank)
 {

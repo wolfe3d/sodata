@@ -983,7 +983,7 @@ function calculateScore(eventPlace, eventWeight, tournamentWeight)
 	{
 		//return eventWeight/((eventPlace)^0.5)*(tournamentWeight/100); //old calcuation
 		//var score = (-(eventPlace^2)/100+100)*(tournamentWeight/100)*(eventWeight/100);
-		var score = (100-((eventPlace**2)/((tournamentWeight/100)*50)))*(eventWeight/100)*(tournamentWeight/100);
+		var score = tournamentWeight-eventPlace*(tournamentWeight/eventWeight);
 		if (score <=1)
 		{
 			return 1;
@@ -1021,6 +1021,15 @@ function tournamentScoreCalculate(studentID)
 
 function tournamentScore()
 {
+	//toggle the points
+	$('#showPoints').change(function() {
+		if(this.checked) {
+			$('.score').show('slow');
+			}
+			else {
+				$('.score').hide();
+			}
+		});
 	$('#addTo :input,select').each(function() {
 			$(this).change(function(){
 				$(this).addClass('changed');
@@ -1056,9 +1065,11 @@ function tournamentScoresSave(tournamentID)
 {
 	//fieldUpdate(myID,table,field,value,domID)
 	//Update Weights
+	alert("start");
 	$(".changed").each(function(){
 		if (this.id == "tournamentWeight")
 		{
+			alert("try");
 			fieldUpdate(tournamentID,'tournament','weight',this.value,this.id,this.id);
 		}
 		else
@@ -1068,6 +1079,7 @@ function tournamentScoresSave(tournamentID)
 		}
 		$(this).removeClass( "changed" )
 	});
+	alert("end");
 	var request = $.ajax({
 	 url: "tournamentscoresave.php",
 	 cache: false,

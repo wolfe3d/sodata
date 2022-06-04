@@ -1,6 +1,4 @@
 <?php
-require_once ("../connectsodb.php");
-require_once ("php/checksession.php");
 require_once("php/functions.php");
 userCheckPrivilege(1);
 $output = "";

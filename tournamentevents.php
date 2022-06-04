@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(3);
 require_once  ("php/functions.php");
+userCheckPrivilege(3);
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
@@ -101,7 +99,7 @@ echo $output;
 	</p>
 	<p>
 <p>
-	<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Cancel</button></p>
+	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Cancel</button></p>
 		<input class="submit fa" type="submit" value="&#xf067; Add">
 	</p>
 </form>

@@ -1,5 +1,4 @@
 <?php
-//TODO: Add schoolID to input
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
 $studentID = 1; //TODO: CHange me
@@ -10,10 +9,13 @@ if(!isset($row))
 		$editing = false;
 		$row = NULL;
 }
-
+?>
+<h3><?=getCurrentSchoolName($mysqlConn)?></h3>
+<?php
 if ($editing)
 {
 	?>
+
 <p>
     <input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 </p>

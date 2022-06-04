@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(4);
 require_once  ("php/functions.php");
+userCheckPrivilege(4);
 require_once  ("functionstournament.php");
 
 $output = "";
@@ -17,7 +15,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 //sum scores with javascript only
 
 
-$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
 
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='warning'>This page is a beta version and calculations are likely to change.</p>";

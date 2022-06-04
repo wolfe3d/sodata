@@ -1,7 +1,5 @@
 <?php
 header("Content-Type: text/plain");
-require_once ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
 
@@ -25,7 +23,7 @@ $studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 //semester teams tournament hardcoded, change later
 $output = "<h2>".getEventName($mysqlConn,$eventID)." Analysis</h2>";
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
-$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`year`=".getCurrentSOYear()." Order By `last`, `first`";
+$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= " .$user->schoolID . " AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`year`=".getCurrentSOYear()." Order By `last`, `first`";
 $result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $studentID = 0;
@@ -75,6 +73,6 @@ if ($totalEvents > 0 )
 
 //TODO: make a table instead
 //TODO: Add the option to change the year
-$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
 echo $output;
 ?>

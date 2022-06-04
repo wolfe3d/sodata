@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(4);
 require_once  ("php/functions.php");
+userCheckPrivilege(4);
 
 $year = intval($_POST['myID']);
 if(empty($year))
@@ -23,7 +21,7 @@ if(empty($year))
 		<label for="position">Assign Position</label>
 		<input id="position" name="position" type="text" value="position" onchange="officerAdd()">
 	</p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button>
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
 			<input class="submit fa" type="submit" value="&#xf067; Add">
 	</div>
 </form>

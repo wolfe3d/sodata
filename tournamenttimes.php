@@ -1,9 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(3);
 require_once  ("php/functions.php");
-
+userCheckPrivilege(3);
 
 $tournamentID = intval($_POST['myID']);
 if($tournamentID)
@@ -48,7 +45,7 @@ if($tournamentID)
 		<input id="timeEnd" name="timeEnd" type="datetime-local" value="<?=$tournamentRow["dateTournament"]?>T00:00"/>
 	</p>
 	<p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button>
-		<input class="submit fa" type="submit" value="&#xf067; Add">
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
+		<button class='btn btn-primary' type="submit"><span class='fa fa-plus'></span> Add</button>
 	</p>
 </form>

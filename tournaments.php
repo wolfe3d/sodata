@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(1);
 require_once ("php/functions.php");
+userCheckPrivilege(1);
 $row = null;
 ?>
 <div>

@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(1);
 require_once  ("php/functions.php");
+userCheckPrivilege(1);
 
 $output = "";
 $teamID = intval($_POST['myID']);
@@ -243,7 +241,4 @@ else {
 }
 echo $output;
 ?>
-<br>
-<form id="addTo" method="post" action="tournamenteventadd.php">
-<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
-</form>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>

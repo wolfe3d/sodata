@@ -1,16 +1,14 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(1);
 require_once  ("php/functions.php");
-require_once  ("functionstournament.php");
+userCheckPrivilege(1);
+require_once  ("php/functionstournament.php");
 //calculation of score
 // SUM(eventweighting/eventplacement^3) * tournamentWeight
 //With this method number of events is weighted.
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
-$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+$returnBtn = "<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>";
 
 if(empty($tournamentID))
 {
@@ -20,7 +18,8 @@ if(empty($tournamentID))
 $output .="<h2>".getTournamentName($mysqlConn, $tournamentID)."</h2>";
 $output .="<h3>Tournament Teammate Placement and Score</h3>";
 $output .="<p class='warning'>This page is a beta version and calculations are likely to change.</p>";
-$output .="<p class='warning'>Current Formula for Score = (100-((eventPlace**2)/((tournamentWeight/100)*50)))*(eventWeight/100)*(tournamentWeight/100).</p>";
+//scores are calculated in functionstournament
+$output .="<p class='warning'>Current Formula for Score = tournamentWeight-eventPlace*(tournamentWeight/eventTeams).</p>";
 //check to see if this tournament has placements
 if(!checkPlacements($mysqlConn, $tournamentID))
 {
@@ -32,7 +31,7 @@ if(!checkPlacements($mysqlConn, $tournamentID))
 	{
 		$output .="<p>Placements are not available or have not been entered.  If you know, the placements are available, then ask database manager or coach to add them.</p>";
 	}
-	$output .= $returnBtn;
+	$output .= "<p>" . $returnBtn ."</p>";
 }
 else
 {
@@ -47,7 +46,7 @@ else
 	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight);
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";
-	$output .="<form id='addTo' method='post' action='fieldupdate.php'><table id='tournamentTable' class='tournament table table-hover'>";
+	$output .="<form id='addTo' method='post' action='tournamentscoresave.php'><table id='tournamentTable' class='tournament table table-hover'>";
 	if(userHasPrivilege(4))
 	{
 		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";
@@ -55,8 +54,10 @@ else
 	}
 	else
 	{
-		$output .="Tournament Weight: $tournamentWeight";
+		$output .="<p>Tournament Weight: $tournamentWeight</p>";
 	}
+	$output .="<p><input type='checkbox' id='showPoints' name='showPoints' checked><label for='showPoints'>Show Points</label></p>";
+
 	$output .="<colgroup><col span='2'>";
 	foreach ($events as $i=>$event)
 	{
@@ -64,7 +65,7 @@ else
 	}
 	$output .= "</colgroup><thead><tr>";
 
-	$output .="<th rowspan='1' style='vertical-align:bottom;' colspan='2'><div>Event Weights</div></th>";
+	$output .="<th rowspan='1' style='vertical-align:bottom;' colspan='2'><div>Teams participating in event</div></th>";
 	//list all the eventweights in the header
 	foreach ($events as $event)
 	{
@@ -115,18 +116,18 @@ else
 					break;
 				}
 			}
-			$output .= "<td id='studentplace-".$student['studentID']."-".$event['tournamenteventID']."' class='event-".$event['tournamenteventID']." student-".$student['studentID']."' placement='$placement'>$placement $scoreprint</td>";
+			$output .= "<td id='studentplace-".$student['studentID']."-".$event['tournamenteventID']."' class='event-".$event['tournamenteventID']." student-".$student['studentID']."' placement='$placement'><span class='placement'>$placement</span> <span class='score'>$scoreprint</score></td>";
 		}
 		$output .= "<td>".$student['count']."</td><td>".$averagePlace."</td><td id='score-".$student['studentID']."'>".$totalScore."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 	}
 	$output .= "</tbody><table>";
 
-	$output .= $returnBtn;
+	$output .= "<p>" . $returnBtn;
 	if(userHasPrivilege(4))
 	{
-		$output .= "&nbsp; <input class='button fa' type='button' onclick='javascript:tournamentScoresSave(`$tournamentID`)' value='&#xf073;  Save Scores' />";
+		$output .= " <button class='btn btn-dark' type='button' onclick='tournamentScoresSave(`$tournamentID`)'><span class='fa fa-save'></span> Save Scores</button>";
 	}
-	$output .= "</form>";
+	$output .= "</p></form>";
 }
 
 echo $output;

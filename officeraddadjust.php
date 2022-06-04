@@ -1,8 +1,6 @@
 <?php
-require_once  ("../connectsodb.php");
-require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
-userCheckPrivilege(4);
 require_once  ("php/functions.php");
+userCheckPrivilege(4);
 
 $year = intval($_POST['year']);
 $studentID = intval($_POST['studentID']);
