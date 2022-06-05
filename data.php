@@ -39,7 +39,10 @@ try {
 	}
 	$google_oauth =new Google_Service_Oauth2($gClient);
 	$gpUserProfile = $google_oauth->userinfo->get(); //this is the line causing the following date_get_last_errors
-	checkGoogle($gpUserProfile,$mysqlConn);
+	if(!isset($impersonate))
+	{
+		checkGoogle($gpUserProfile,$mysqlConn);
+	}
 
 } catch (Exception $exception) {
 	if(userHasPrivilege(4))
@@ -91,7 +94,13 @@ userCheckPrivilege(1);
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
+<?php if (isset($impersonate)){?>
 <body id="top">
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		<strong>Impersonation Mode!</strong> This allows you to debug user problems.
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="location.href='data.php#users'"></button>
+	</div>
+<?php }?>
 	<!-- Header -->
 
 	<!-- Navbar content -->
@@ -119,6 +128,11 @@ userCheckPrivilege(1);
 					<li class="nav-item">
 						<a class="nav-link" id="leaderBtn" href="#leaders">Leaders</a>
 					</li>
+					<?php if (userHasPrivilege(4)){?>
+						<li class="nav-item">
+							<a class="nav-link" id="userBtn" href="#users">Users</a>
+						</li>
+					<?php }?>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item">

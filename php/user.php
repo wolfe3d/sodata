@@ -17,12 +17,12 @@ class User {
 		function checkUserType($userID)
 		{
 			//Check to see if user is a student or coach
-			$query = "SELECT `schoolID`, 'student' as type FROM `student` WHERE `userID`=$userID UNION SELECT `schoolID`, 'teacher' as type FROM `coach` WHERE `userID`=$userID";
+			$query = "SELECT `schoolID`, `active`, 'student' as type FROM `student` WHERE `userID`=$userID UNION SELECT `schoolID`, `active`, 'teacher' as type FROM `coach` WHERE `userID`=$userID";
 			$result = $this->db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 			if($result->num_rows > 0){
 				$row = $result->fetch_assoc();
-				return [$row['schoolID'], $row['type']]; //school id, type
+				return [$row['schoolID'], $row['type'], isset($row['active'])?$row['active']:1]; //school id, type
 			}
 			else {
 				//check to see if this is a super user
@@ -32,12 +32,12 @@ class User {
 					$row = $result->fetch_assoc();
 					if($row['privilege']>1)
 					{
-							return [0, 'super']; //school id, type
+							return [0, 'super', 1]; //school id, type
 					}
 				}
 				else {
 					//This is not a registered user
-					return [NULL, 'none']; //school id, type
+					return [NULL, 'none', 0]; //school id, type
 				}
 			}
 		}
@@ -121,6 +121,7 @@ class User {
 							//added to be able to use in session
 							$userData['schoolID'] = $userType[0];
 							$userData['type'] = $userType[1];
+							$userData['active'] = $userType[2];
 						}
         }
         // Return user data
