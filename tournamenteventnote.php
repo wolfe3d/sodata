@@ -19,14 +19,16 @@ echo $output;
 ?>
 <br>
 <div id='myTitle'>View Event Note</div>
-		<p><?=$row['event']?> at <?=$row['tournamentName']?></p>
+<p><?=$row['event']?> at <?=$row['tournamentName']?></p>
 
 <?php if(userHasPrivilege(3)){?>
 	<form id="addTo" method="post" action="tournamentUpdate.php">
+		<p>
 			<label for="note">Event Note</label>
 			<input id="note" name="note" type="text" value="<?=$row['note']?>">
+		</p>
 	</form>
 <?php } else {?>
-		<p><?=$row['note']?></p>
+	<p><?=$row['note']?></p>
 <?php } ?>
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>

@@ -17,7 +17,7 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$output .="<div>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
-		if($_SESSION['userData']['privilege']>3 || $_SESSION['userData']['id']==$row['userID'])
+		if(userHasPrivilege(5) || $_SESSION['userData']['userID']==$row['userID'])
 		{
 			$output .="<div><a class='btn btn-primary' role='button' href='javascript:coachEdit(".$row['coachID'].")'><span class='fa fa-edit'></span> Edit</a></div>";
 		}
@@ -32,7 +32,6 @@ if($result)
 	endwhile;
 	$output .="</div>";
 }
-$output .="<br><br>";
 
 //Get current year
 $yearBeg = $year-1;
@@ -42,7 +41,8 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 
 if($result)
 {
-	$output .="<div>";
+	$output .="<br><hr><h2>Officers May $yearBeg - $year</h2>";
+	$output .='<div>';
 	if(userHasPrivilege(3))
 	{
 		$output .="<a class='btn btn-primary' role='button' href='#officer-emails-$year'><span class='fa'>&#xf01c;</span> Get Officer Emails</a>";
@@ -51,9 +51,7 @@ if($result)
 	{
 		$output .=" <a class='btn btn-primary' role='button' href='#officer-add-$year'><span class='fa fa-plus'></span> Add Officer</a>";
 	}
-
-	$output .='<br><br>';
-	$output .="<h2>Officers May $yearBeg - $year</h2>";
+		$output .='</div><div>';
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='officer-".$row['officerID']."'>";
 		$officerName = $row['first']." ".$row['last'];
@@ -99,7 +97,7 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 
 if($result)
 {
-	$output .="<hr><hr><div>";
+	$output .="<br><hr><div>";
 	$output .="<h2>Event Leaders May $yearBeg - $year</h2>";
 	if(userHasPrivilege(4))
 	{

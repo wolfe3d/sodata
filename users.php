@@ -18,13 +18,14 @@ function printResults($db,$query,$student)
 			$output.="<div class='d-flex'>";
 			$output.="<div class='p-2'>".$row['userID'] ."</div>";
 			$output.="<div class='p-2'>".$row['email'] ."</div>";
+			$output.="<div class='p-2'>".$row['privilege'] ."</div>";
 			$output.="<div class='p-2'>Email Name: ".$row['last_name'] . ", " . $row['first_name'] ."</div>";
 			if($student)
 			{
 				$output.="<div class='p-2'>Student/Coach Name: " .$row['last'] . ", " . $row['first'] ."</div>";
 				$output.="<div class='p-2'>" . $row['schoolName'] ."</div>";
 			}
-			$output.="<div class='ml-auto p-2'><a class='btn btn-dark float-right' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='fa  fa-address-card'></span> Impersonate</a></div>";
+			$output.="<div class='ml-auto p-2'><a class='btn btn-dark' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='fa  fa-address-card'></span> Impersonate</a></div>";
 			$output.="</div>";
 		endwhile;
 	}

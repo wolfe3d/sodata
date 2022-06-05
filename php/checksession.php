@@ -16,11 +16,11 @@ function userCheckPrivilege($level)
 	{
 		die("<div style='text-danger'>You must be logged in to access this page. <a href='index.php'>Go home.</a></div>");
 	}
-	if($_SESSION['userData']['privilege']<$level)
+	else if($_SESSION['userData']['privilege']<$level)
 	{
 		die("<div style='text-danger'>You must have the correct privilige to access this file. <a href='index.php'>Go home.</a></div>");
 	}
-	if(!$_SESSION['userData']['active'])
+	else if(!$_SESSION['userData']['active'])
 	{
 		die("<div class='text-danger'>You have been inactivated.  You have either graduated or been removed from the team.  If this is in error, please contact your coach. <a href='index.php'>Go home.</a></div>");
 	}
