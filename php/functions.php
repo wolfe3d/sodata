@@ -216,8 +216,8 @@ function getLatestTeamTournamentStudent($db, $userID, $studentID)
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$row = $result->fetch_assoc();
-		$output.="<div id='".$row['tournamentName']."'>";
-		$output .="<hr><h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
+		$output.="<hr><div id='".$row['tournamentName']."'>";
+		$output .="<h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
 		$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> View Details</a></div>";
 		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
 		$output.="</div>";
@@ -235,7 +235,7 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 	$output = '';
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output = '<h2>Upcoming Tournaments</h2>';
+		$output = '<hr><h2>Upcoming Tournaments</h2>';
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
