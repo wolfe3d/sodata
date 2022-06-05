@@ -11,7 +11,7 @@ if(empty($myID)){
 }
 
 $query = "INSERT INTO `coursecompleted` (`courseID`,`studentID`) SELECT `courseID`,`studentID` FROM `courseenrolled` WHERE `courseenrolled`.`courseenrolledID` = $myID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {
@@ -23,7 +23,7 @@ if($result)
 }
 else
 {
-			print("\n<br />Warning: query(s) failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			error_log("\n<br />Warning: query(s) failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			echo "0";
 }
 ?>

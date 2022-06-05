@@ -14,7 +14,7 @@ if(empty($eventID)){
 }
 //check to make sure event doesn't already exist
 $query = "SELECT * FROM `tournamentevent` WHERE `eventID`=$eventID AND `tournamentID`=$tournamentID;";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result&&mysqli_num_rows($result))
 {
 	exit("<div style='color:red'>Event already exists!</div>");
@@ -23,7 +23,7 @@ if ($result&&mysqli_num_rows($result))
 
 //add event
 $query = "INSERT INTO `tournamentevent` (`eventID`, `tournamentID`) VALUES ($eventID, $tournamentID);";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if ($result)
 {

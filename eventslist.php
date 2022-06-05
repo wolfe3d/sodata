@@ -20,7 +20,7 @@ if($year)
 {
 	$yearQuery = "SELECT `eventID` FROM `eventyear` WHERE `year` = $year";
 	// echo $yearQuery;
-	$resultYear1 = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $yearQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultYear1 = $mysqlConn->query($yearQuery) or error_log("\n<br />Warning: query failed: $yearQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	$eventIDs = "";
 	while ($row = $resultYear1->fetch_assoc()):
@@ -44,7 +44,7 @@ if(userHasPrivilege(3))
 {
 	echo $query ;
 }
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {
@@ -68,7 +68,7 @@ if($result)
 		}
 
 		$query = "SELECT * from `eventyear` LEFT JOIN `student` ON `eventyear`.`studentID` = `student`.`studentID`  WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `eventyear`.`eventID` = '".($row['eventID'])."' ORDER BY `eventyear`.`year` ASC";
-		$resultYear2 = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$resultYear2 = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 		$yearCollection = "";
 		$selectYear = $year?$year:getCurrentSOYear();

@@ -5,7 +5,7 @@ userCheckPrivilege(1);
 
 //get list of events
 $query = "SELECT * FROM `course` ORDER BY `course` ASC";// where `field` = $fieldId";
-$resultCourseList = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$resultCourseList = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $courses ="<div id='courseListDiv'><label for='courseList'>Courses</label> ";
 $courses .="<select id='courseList'>";
 	if($resultCourseList)

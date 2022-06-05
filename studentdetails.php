@@ -4,7 +4,7 @@ userCheckPrivilege(1);
 
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
 $query = "SELECT * FROM `student` WHERE `studentID` = $studentID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($result)
 {
 	$row = $result->fetch_assoc();
@@ -42,7 +42,7 @@ if(userHasPrivilege(3))
 	}
 	else {
 		$query = "SELECT * FROM `user` WHERE `userID`=".$row['userID'];// where `field` = $fieldId";
-		$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$resultPrivilege = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$rowPriv = $resultPrivilege->fetch_assoc();
 		if ($rowPriv['privilege'])
 		{

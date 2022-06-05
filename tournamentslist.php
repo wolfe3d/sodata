@@ -25,7 +25,7 @@ else if($year)
 
 $query .= " WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `tournament`.`dateTournament` DESC";
 $output .=userHasPrivilege(4)?$query:"";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {

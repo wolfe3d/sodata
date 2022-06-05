@@ -13,7 +13,7 @@ if(empty($tournamentID))
 
 //check to see if user has a valid tournamentID
 $query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 //check to make sure the query was valid
 if(empty($result))

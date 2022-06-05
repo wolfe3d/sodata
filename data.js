@@ -59,7 +59,7 @@ function loadpage(page, type, myID){
 
 	request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 
 		if(html)
 		{
@@ -169,12 +169,12 @@ function loadpage(page, type, myID){
 		}
 		else
 		{
-			$("#mainContainer").append("<div class='modified' class='error'>"+html+"</div>");
+			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='modified' class='error'>"+textStatus+"</div>");
+		$("#mainContainer").append("<div class='text-success' class='error'>"+textStatus+"</div>");
 	});
 }
 
@@ -273,14 +273,14 @@ function studentAddModify()
 					});
 
 					request.done(function( html ) {
-						$(".modified").remove(); //removes any old update notices
+						$(".text-success").remove(); //removes any old update notices
 						if(html>0)
 						{
 							window.location.hash = '#student-edit-'+html;
 						}
 						else
 						{
-							$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+							$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
 						}
 					});
 
@@ -302,20 +302,20 @@ function studentRemove(myID, studentName)
 		 dataType: "html"
 		});
 		request.done(function( html ) {
-			$(".modified").remove(); //remove any old modified notes
+			$(".text-success").remove(); //remove any old text-success notes
 			if(html=="1")
 			{
-			 $("#student-" + myID).before("<div class='modified' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
+			 $("#student-" + myID).before("<div class='text-success' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
 			 $("#student-" + myID).remove(); //remove element
 		 }
 		 else {
-			 $("#student-" + myID).before("<div class='modified' class='error'>Removal Error:"+html+"</div");
+			 $("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
 		 }
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
-			$(".modified").remove();
-			$("#student-" + myID).before("<div class='modified' class='error'>Removal Error:"+textStatus+"</div");
+			$(".text-success").remove();
+			$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+textStatus+"</div");
 		});
 	}
 }
@@ -375,18 +375,18 @@ function studentEventAdd(student, field, value)
 
  request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 	 var eventchoiceID = parseInt(html);
 	 if (eventchoiceID>0)
 	 {
 		 //returns the current update
 		 var eventSplit = $("#eventsList option:selected").text().split(" ");
 		 var eventName = eventSplit[0]+"-"+$("#priorityList option:selected").text()+" "+eventSplit.slice(1).join(" ")
-		 $("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='modified' style='color:blue'>Event added.</span></div>");
+		 $("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='text-success' style='color:blue'>Event added.</span></div>");
 	 }
 	 else
 	 {
-		 $("#events").append("<span class='modified' class='error'>Error while attempting to add an event. Please, report details to site admin. "+html+"</span>");
+		 $("#events").append("<span class='text-success' class='error'>Error while attempting to add an event. Please, report details to site admin. "+html+"</span>");
 	 }
  });
 
@@ -423,7 +423,7 @@ function studentCourseAdd(student, table)
  });
 
  request.done(function( html ) {
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 	 var myCourseID = parseInt(html);
 	 if (myCourseID>0)
 	 {
@@ -432,11 +432,11 @@ function studentCourseAdd(student, table)
 		 if(table=="courseenrolled"){
 			 $("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>");
 		 }
-		 $("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span>");
+		 $("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span>");
 	 }
 	 else
 	 {
-		 $("#"+ table).append("<span class='modified' class='error'>Error while attempting to add a course. Please, report details to site admin.</span>");
+		 $("#"+ table).append("<span class='text-success' class='error'>Error while attempting to add a course. Please, report details to site admin.</span>");
 	 }
  });
 
@@ -458,21 +458,21 @@ function studentCourseCompleted(value, courseName)
  });
 
  request.done(function( text ) {
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 	 var myCourseID = parseInt(text);
 	 if (myCourseID>0)
 	 {
 		 //returns the current update
 		 var table = "coursecompleted";
 		 var table2 = "courseenrolled";
-		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='modified' style='color:blue'>Course added.</span></div>");
+		 $("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span></div>");
 		 $("#"+table2+"-"+value).remove();
-		 $("#"+table2).append("<span class='modified' style='color:blue'>Course removed.</span>");
+		 $("#"+table2).append("<span class='text-success' style='color:blue'>Course removed.</span>");
 	  }
 	 else
 	 {
 		 var table = "courseenrolled";
-		 $("#"+ table).append("<span class='modified' class='error'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
+		 $("#"+ table).append("<span class='text-success' class='error'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
 	 }
  });
 
@@ -497,8 +497,8 @@ function fieldUpdate(myID,table,field,value,domID,messageID)
 
 	 request.done(function( html ) {
 		 //$("label[for='" + field + "']").append(html);
-		 $(".modified").remove(); //removes any old update notices
-		 $("#"+messageID).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
+		 $(".text-success").remove(); //removes any old update notices
+		 $("#"+messageID).parent().append("<span class='text-success' style='color:blue'>"+ html +"</span>"); //returns the current update
 	 });
 
 	 request.fail(function( jqXHR, textStatus ) {
@@ -520,8 +520,8 @@ function userPrivilege(myUser, field,value)
 	 dataType: "text"
 	});
 	request.done(function( html ) {
-	 $(".modified").remove(); //removes any old update notices
-	 $("#"+field).parent().append("<span class='modified' style='color:blue'>"+ html +"</span>"); //returns the current update
+	 $(".text-success").remove(); //removes any old update notices
+	 $("#"+field).parent().append("<span class='text-success' style='color:blue'>"+ html +"</span>"); //returns the current update
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -625,7 +625,7 @@ function eventAddModify()
 				}
 				else
 				{
-					$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+					$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
 				}
 			});
 
@@ -671,7 +671,7 @@ function eventyearPrepare(myID)
 
 			request.done(function( html ) {
 			 //$("label[for='" + field + "']").append(html);
-			 $(".modified").remove(); //removes any old update notices
+			 $(".text-success").remove(); //removes any old update notices
 				if(html>0)
 				{
 					//add event to list
@@ -679,7 +679,7 @@ function eventyearPrepare(myID)
 				}
 				else
 				{
-					$("#eventsP").append("<div class='modified' class='error'>"+html+"</div>");
+					$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
 				}
 			});
 
@@ -829,14 +829,14 @@ function tournamentAddModify()
 				});
 
 				request.done(function( html ) {
-					$(".modified").remove(); //removes any old update notices
+					$(".text-success").remove(); //removes any old update notices
 					if(html>0)
 					{
 						window.location.hash = '#tournament-view-'+html;
 					}
 					else
 					{
-						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+						$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
 					}
 				});
 
@@ -874,7 +874,7 @@ function tournamentTimeAdd(myID)
 				});
 
 				request.done(function( html ) {
-					$(".modified").remove(); //removes any old update notices
+					$(".text-success").remove(); //removes any old update notices
 					if(html>0)
 					{
 						//convert time to standard format
@@ -892,7 +892,7 @@ function tournamentTimeAdd(myID)
 					}
 					else
 					{
-						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+						$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
 					}
 				});
 
@@ -921,7 +921,7 @@ function tournamentEventAdd(myID)
 				});
 
 				request.done(function( html ) {
-					$(".modified").remove(); //removes any old update notices
+					$(".text-success").remove(); //removes any old update notices
 					if(html>0)
 					{
 						// get the last DIV which ID starts with ^= "klon"
@@ -938,7 +938,7 @@ function tournamentEventAdd(myID)
 					}
 					else
 					{
-						$("#addTo").append("<div class='modified' class='error'>"+html+"</div>");
+						$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
 					}
 				});
 
@@ -1090,20 +1090,20 @@ function tournamentScoresSave(tournamentID)
 
 	request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 
 		if(html=="1")
 		{
-			$("#mainContainer").append("<div class='modified'>Saved Scores</div>");
+			$("#mainContainer").append("<div class='text-success'>Saved Scores</div>");
 		}
 		else
 		{
-			$("#mainContainer").append("<div class='modified' class='error'>"+html+"</div>");
+			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='modified' class='error'>"+textStatus+"</div>");
+		$("#mainContainer").append("<div class='text-success' class='error'>"+textStatus+"</div>");
 	});
 }
 
@@ -1140,7 +1140,7 @@ function tournamentEventsAddAll(myID, year)
 
 	request.done(function( html ) {
 	 //$("label[for='" + field + "']").append(html);
-	 $(".modified").remove(); //removes any old update notices
+	 $(".text-success").remove(); //removes any old update notices
 
 		if(html=="1")
 		{
@@ -1148,12 +1148,12 @@ function tournamentEventsAddAll(myID, year)
 		}
 		else
 		{
-			$("#mainContainer").append("<div class='modified' class='error'>"+html+"</div>");
+			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='modified' class='error'>"+textStatus+"</div>");
+		$("#mainContainer").append("<div class='text-success' class='error'>"+textStatus+"</div>");
 	});
 }
 
@@ -1177,14 +1177,14 @@ function addToSubmit(myID)
 
 		request.done(function( html ) {
 		 //$("label[for='" + field + "']").append(html);
-		 $(".modified").remove(); //removes any old update notices
+		 $(".text-success").remove(); //removes any old update notices
 			if(html>0)
 			{
 				history.back();
 			}
 			else
 			{
-				$("#mainContainer").append("<div class='modified' class='error'>"+html+"</div>");
+				$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
 			}
 		});
 
@@ -1230,19 +1230,19 @@ function rowRemove(myID,table)
 
  request.done(function( html ) {
 	 if(html==1) 	 {
-		 $(".modified").remove(); //removes any old update notices
-		 $("#" + table + "-" + myID).before("<div class='modified' style='color:blue'>"+$("#" + table + "-" + myID).text()+" removed permanently.</div>"); //add note to show modification
+		 $(".text-success").remove(); //removes any old update notices
+		 $("#" + table + "-" + myID).before("<div class='text-success' style='color:blue'>"+$("#" + table + "-" + myID).text()+" removed permanently.</div>"); //add note to show modification
 		 $("#" + table + "-" + myID).remove(); //remove element
 	 }
 	 else {
-		 $(".modified").remove();
-		 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Removal Error:"+html+"</div");
+		 $(".text-success").remove();
+		 $("#" + table + "-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
 	 }
  });
 
  request.fail(function( jqXHR, textStatus ) {
-	 $(".modified").remove();
-	 $("#" + table + "-" + myID).before("<div class='modified' class='error'>Request failedr:"+textStatus+"</div");
+	 $(".text-success").remove();
+	 $("#" + table + "-" + myID).before("<div class='text-success' class='error'>Request failedr:"+textStatus+"</div");
  });
 }
 
@@ -1272,16 +1272,16 @@ function tournamentEventTimeSet(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='modified' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
+			$("#note").html("<div class='text-success' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
 
 		}
 		else {
-			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-success' class='error'>Change Error:"+html+"</div");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='modified' class='error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div");
 	});
 }
 
@@ -1349,7 +1349,7 @@ function tournamentTeammate(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='modified' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
+			$("#note").html("<div class='text-success' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
 		}
 		else if(html=='3'){
 			alert("Remove failed: student still has events.");
@@ -1360,13 +1360,13 @@ function tournamentTeammate(inputBtn)
 			inputBtn.prop('checked', false);
 		}
 		else {
-			$("#note").html("<div class='modified' class='error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-success' class='error'>Change Error:"+html+"</div");
 		}
 		tournamentTeamEditCheckErrors();
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='modified' class='error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div");
 	});
 }
 //Check student count and senior count
@@ -1398,20 +1398,20 @@ function tournamentTeamEditCheckErrors()
 
 	if (countStudent >15)
 	{
-		error += " <span class='error'> More than 15 students assigned on the team!</span>";
+		error += " <span class='text-warning'> More than 15 students assigned on the team!</span>";
 		$('#students').html("<span class='error'>"+countStudent+"</span>");
 	}
 	else if (countStudent <15)
 	{
-		error += " <span class='warning'>Less than 15 students on the team!</span>";
-		$('#students').html("<span class='warning'>"+countStudent+"</span>");
+		error += " <span class='text-danger'>Less than 15 students on the team!</span>";
+		$('#students').html("<span class='text-warning'>"+countStudent+"</span>");
 	}
 	else
 	{
 		$('#students').text(countStudent);
 	}
 
-	$("#note").html("<span class='modified'>"+error+"</span");
+	$("#note").html("<span class='text-success'>"+error+"</span");
 }
 
 //sets  teammate in an event
@@ -1440,31 +1440,31 @@ function tournamentEventTeammate(inputBtn)
 			var checkChanged = checked?"added":"removed";
 			if(splitName[2])
 			{
-				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
+				$("#note").html("<div class='text-success' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
 				//recalculate and check for errors
 				tournamentCalculateEvent(splitName[1]);
 				tournamentCalculateStudent(splitName[2]);
 				tournamentCalculateTimeblock(splitName[2]);
 			}
 			else {
-				$("#note").html("<div class='modified' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
+				$("#note").html("<div class='text-success' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
 			}
 
 		}
 		else {
-			$("#note").html("<div class='modified error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-success error'>Change Error:"+html+"</div");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='modified error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-success error'>Change Error:"+textStatus+"</div");
 	});
 }
 
 //Calculate the number of students in an event during one time block
 function tournamentCalculateEvent(tournamenteventID)
 {
-	$("#eventtotal-"+tournamenteventID+" .modified").remove(); //remove old warning
+	$("#eventtotal-"+tournamenteventID+" .text-success").remove(); //remove old warning
 	var eventAssigned = 0; //count number of students assigned
 	if ($(".teammateEvent-"+tournamenteventID+" > input").length)
 	{
@@ -1483,14 +1483,14 @@ function tournamentCalculateEvent(tournamenteventID)
 	}
 	else if(eventAssigned>eventMax){
 		var errorText = "Too MANY!";
-		var errorClass ="error";
+		var errorClass ="text-danger";
 	}
 	else if(eventAssigned<eventMax){
 		var errorText = "Too FEW!";
-		var errorClass ="warning";
+		var errorClass ="text-warning";
 	}
 	//print errors
-	$("#eventtotal-"+tournamenteventID).append("<div class='modified "+errorClass+"'>"+errorText+"</div>");
+	$("#eventtotal-"+tournamenteventID).append("<div class='text-success "+errorClass+"'>"+errorText+"</div>");
 }
 
 //Calculate the number of events for a student
@@ -1511,7 +1511,7 @@ function tournamentCalculateStudent(studentID)
 function tournamentCalculateTimeblock(studentID)
 {
 	//Reminder: jquery selector (*may be omitted) =  $('*[data-timeblock="22"]')
-	$("#teammate-"+studentID+" .modified").remove(); //remove old warning
+	$("#teammate-"+studentID+" .text-success").remove(); //remove old warning
 	//console.log("studentID-"+studentID);
 	$('[id^=timeblock-]').each(function (i,v)
 	{
@@ -1530,8 +1530,8 @@ function tournamentCalculateTimeblock(studentID)
 		}
 		if (studentAssigned >1){
 			//print errors
-		$("#teammate-"+studentID).append("<span class='modified error'>***</span>");
-		$("#teammate-"+studentID+" .modified")	.hover(
+		$("#teammate-"+studentID).append("<span class='text-success error'>***</span>");
+		$("#teammate-"+studentID+" .text-success")	.hover(
 			  function() {
 			    $( this ).append( $( "<div class='error'> More than one event in timeBlock: "+$("#"+timeblockID).text()+"</div>" ) );
 			  }, function() {

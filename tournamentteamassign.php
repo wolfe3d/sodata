@@ -200,6 +200,9 @@ if(mysqli_num_rows($result))
 	}
 	$output .="</tr>";
 
+//if this is a competitive tournament, enter/show placements here.  If this "tournament" is just for diplaying a team assignment, hide this.
+	if(!$rowTeam['notCompetition'])
+	{
 	//print the place for each event
 	$output .="<tr><td colspan='2'>Place</td>";
 	foreach ($timeblocks as $i=>$timeblock) {
@@ -233,6 +236,7 @@ if(mysqli_num_rows($result))
 		}
 	}
 	$output .="</tr>";
+}
 
 	$output .="</tfoot></table></form>";
 }

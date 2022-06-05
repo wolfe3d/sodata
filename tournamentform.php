@@ -4,6 +4,10 @@
 	<label for="tournamentName">Name</label>
 	<input id="tournamentName" name="tournamentName" type="text" value="<?=$row['tournamentName']?>">
 </p>
+<p class="form-check">
+	<input id="notCompetition" name="notCompetition" class="form-check-input" type="checkbox" >
+	<label for="notCompetition" class="form-check-label" title="If you are using this to create team assignments, check this box.  The most recent non competition will show up on the student home page.  There will be no places for this type.">Not a Competition*</label>
+</p>
 <p>
 	<label for="host">Host</label>
 	<input id="host" name="host" type="text" value="<?=$row['host']?>">

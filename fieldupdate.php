@@ -19,7 +19,7 @@ if($field=="timeStart" || $field=="timeEnd")
 
 //check to see if user has a valid ID
 $query = "SELECT `".$table."ID` FROM `$table` WHERE `$table`.`".$table."ID` = $myID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $row = $result->fetch_assoc();
 
 //Check permissions to make this user is an admin or editing their own data

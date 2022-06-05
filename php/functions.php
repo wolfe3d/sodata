@@ -129,7 +129,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
 {
 	$schedule="";
     $tournamentQuery = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID and `student`.`studentID` = $studentID order by `timeStart`";
-	$tournamentResult = $db->query($tournamentQuery) or print("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$tournamentResult = $db->query($tournamentQuery) or error_log("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     if($tournamentResult && $tournamentResult->num_rows > 0){
         $schedule.="Your events and partners:<br>";
         $schedule.="<table class='table table-hover'><tr><th>Time (All times ET)</th><th>Note</th><th>Event</th><th>Partners</th></tr>";
@@ -143,7 +143,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
             $schedule.="</td><td>".$row['note']."</td>";
 			$schedule.="<td>".$row['event']."</td><td>";
             $partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamenteventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
-            $partnerResult = $db->query($partnerQuery) or print("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+            $partnerResult = $db->query($partnerQuery) or error_log("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
             if($partnerResult){
                 while ($row = $partnerResult->fetch_assoc()):
                     $schedule.=$row['first']." ".$row['last']." ".$row['email']."<br>";
@@ -390,7 +390,7 @@ function getStudentEmails($db, $year, $parents=false)
 function getEventName($db,$eventID)
 {
 	$query = "SELECT `event` FROM `event` WHERE `eventID`=$eventID";
-	$result = $db->query($query) or print_r("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows>0){
 	    $row = $result->fetch_assoc();
 			return $row['event'];
@@ -468,7 +468,7 @@ function getPhoneString($type)
 function getEventList($db, $number,$label)
 {
 	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
-	$resultEventsList = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
 	$events .="<select class='form-select' id='eventsList-$number' name='eventsList'>";
 		if($resultEventsList)

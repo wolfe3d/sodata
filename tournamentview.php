@@ -6,7 +6,7 @@ userCheckPrivilege(1);
 function assignmentMade($db, $teamID)
 {
 	$query = "SELECT * from `teammateplace` WHERE `teammateplace`.`teamID` = $teamID";
-	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(empty($result))
 	{
 		return 0;
@@ -18,7 +18,7 @@ $output = "";
 
 $tournamentID = intval($_REQUEST['myID']);
 $query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))
 {
@@ -164,9 +164,12 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			}
 		endwhile;
 
-		$output .="<h2>Tournament Results</h2>";
-		$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'><span class='fa'>&#xf080;</span> View Scores</a></p>";
-
+		if(!$rowTeam['notCompetition'])
+		{
+			//there are no results for a team assignment, so this is only shown for a real tournament
+			$output .="<h2>Tournament Results</h2>";
+			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'><span class='fa'>&#xf080;</span> View Scores</a></p>";
+		}
 	}
 	$output .="</div>";
 

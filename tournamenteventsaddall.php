@@ -18,7 +18,7 @@ if(!$year){
 
 /*find events in year*/
 $yearQuery = "SELECT `eventID` FROM `eventyear` WHERE `year` = $year";
-$resultYear = $mysqlConn->query($yearQuery) or print("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$resultYear = $mysqlConn->query($yearQuery) or error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $eventIDs = "";
 while ($row = $resultYear->fetch_assoc()):
@@ -35,7 +35,7 @@ if($eventIDs  =="")
 }
 
 $query = "INSERT INTO `tournamentevent` (`eventID`, `tournamentID`) VALUES $eventIDs;";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if ($result)
 {

@@ -42,7 +42,7 @@ if($eventPriorityID)
 	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
 	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `eventchoice` ON `student`.`studentID`=`eventchoice`.`studentID` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` WHERE $activeQuery `eventyear`.`eventID`=$eventPriorityID";
 	$output .=$eventQuery;
-	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
 	while ($row = $result->fetch_assoc()):
 		//make array of results
@@ -69,7 +69,7 @@ if($eventCompetitionID)
 	//Search for student who competed in this event
 	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `event` ON `teammateplace`.`tournamenteventID`=`event`.`eventID` WHERE $activeQuery `event`.`eventID`=$eventCompetitionID";
 	$output .=$eventQuery;
-	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs = "";
 	while ($row = $result->fetch_assoc()):
 		//make array of results
@@ -97,7 +97,7 @@ if($courseID)
 	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
 	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `coursecompleted` ON `student`.`studentID`=`coursecompleted`.`studentID` INNER JOIN `courseenrolled` ON `student`.`studentID`=`courseenrolled`.`studentID` WHERE $activeQuery `coursecompleted`.`courseID`=$courseID OR `courseenrolled`.`courseID`=$courseID ";
 	$output .=$eventQuery;
-	$result = $mysqlConn->query($eventQuery) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$studentIDs="";
 	while ($row = $result->fetch_assoc()):
 		//make array of results
@@ -120,7 +120,7 @@ if($courseID)
 
 $query .= " ORDER BY `student`.`last`, `student`.`first`";
 $output .= userHasPrivilege(3)?$query:"";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)
 {
@@ -155,7 +155,7 @@ if($result)
 				$query = "SELECT * FROM `user` WHERE `userID`=".$row['userID'];// where `field` = $fieldId";
 				//$output .= $query;
 				//TODO: Add last logged in to db and print it here
-				$resultPrivilege = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+				$resultPrivilege = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				$rowPriv = $resultPrivilege->fetch_assoc();
 				if ($rowPriv['privilege'])
 				{

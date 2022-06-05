@@ -15,7 +15,7 @@ $emails = "";
 
 $fp = fopen('php://output', 'a');
 $fieldsarr = [];
-if ($result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] ."."))
+if ($result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] ."."))
 {
   /* Get field information for all columns */
   while ($finfo = $result->fetch_field()):

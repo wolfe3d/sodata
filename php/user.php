@@ -18,7 +18,7 @@ class User {
 		{
 			//Check to see if user is a student or coach
 			$query = "SELECT `schoolID`, 'student' as type FROM `student` WHERE `userID`=$userID UNION SELECT `schoolID`, 'teacher' as type FROM `coach` WHERE `userID`=$userID";
-			$result = $this->db->query($query) or print("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$result = $this->db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 			if($result->num_rows > 0){
 				$row = $result->fetch_assoc();
@@ -27,7 +27,7 @@ class User {
 			else {
 				//check to see if this is a super user
 				$query = "SELECT `privilege` FROM `user` WHERE userID=$userID";
-				$result = $this->db->query($query) or print("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+				$result = $this->db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $this->db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				if($result->num_rows > 0){
 					$row = $result->fetch_assoc();
 					if($row['privilege']>1)

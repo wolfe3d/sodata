@@ -17,9 +17,9 @@ if(empty($tournamentID))
 }
 $output .="<h2>".getTournamentName($mysqlConn, $tournamentID)."</h2>";
 $output .="<h3>Tournament Teammate Placement and Score</h3>";
-$output .="<p class='warning'>This page is a beta version and calculations are likely to change.</p>";
+$output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 //scores are calculated in functionstournament
-$output .="<p class='warning'>Current Formula for Score = tournamentWeight-eventPlace*(tournamentWeight/eventTeams).</p>";
+$output .="<p class='text-warning'>Current Formula for Score = tournamentWeight-eventPlace*(tournamentWeight/eventTeams).</p>";
 //check to see if this tournament has placements
 if(!checkPlacements($mysqlConn, $tournamentID))
 {
