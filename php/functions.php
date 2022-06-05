@@ -36,6 +36,18 @@ function getStudentID($db, $userID)
 	}
 	return 0;
 }
+//get coach ID of user
+function getCoachID($db, $userID)
+{
+	$query = "SELECT `coachID` from `coach` where `userID` = $userID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['coachID'];
+	}
+	return 0;
+}
 
 //get Name of user using unique studentID from table.  This is not their school's student id.  Their school's student id is called 'studentschoolID'
 function getStudentName($db, $studentID)
@@ -104,60 +116,157 @@ function studentTournamentResults($db, $studentID)
 	$output = "";
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output .="<br><h3>Results</h3>";
-		$lasttournament = "";
+		$output .="<hr><h3>Results</h3><ul>";
 		while ($row = $result->fetch_assoc()):
-			if ($lasttournament !=$row['tournamentID'])
-			{
-				if ($lasttournament !=0)
-				{
-					$output.="</ul></div>";
-				}
-				$output.="<div id=\"".$row['tournamentName']."\">";
-				$output.="<h3>".$row['tournamentName']."</h3><ul>";
-			}
+			$output.="<div id='".$row['tournamentName']."'>";
+			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament']. "</li>";
 			//show results
 			$output.=	studentEvents($db, $row['tournamentID'], $studentID, true);
-			$lasttournament = $row['tournamentID'];
 		endwhile;
 		$output.="</ul></div>";
 	}
 	return $output;
 }
 
+//check to see if tournament has assigned any students to team
+function tournamentHasTeammates($db, $tournamentID)
+{
+	$query = "SELECT COUNT(*) FROM `teammate`
+	INNER JOIN `student` ON `teammate`.`studentID` = `student`.`studentID`
+	INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID`
+	INNER JOIN `tournament` ON `tournament`.`tournamentID` = `team`.`tournamentID`
+	WHERE `tournament`.`tournamentID` = $tournamentID";
+	//$query = "SELECT COUNT(*) FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` INNER JOIN `tournamenttimechosen` ON `teammateplace`.`tournamenteventID` = `tournamenttimechosen`.`tournamenteventID` INNER JOIN `timeblock` ON `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID` WHERE `tournamentevent`.`tournamentID` = $tournamentID ORDER BY `timeStart` ";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row=$result->fetch_assoc();
+		if($row['COUNT(*)'])
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//check to see if this student is assigned to a team on the tournament
+function tournamentHasThisTeammate($db, $tournamentID, $studentID)
+{
+	//Check if this student is on a team
+	$query = "SELECT `teamName` FROM `teammate`
+	INNER JOIN `student` ON `teammate`.`studentID` = `student`.`studentID`
+	INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID`
+	INNER JOIN `tournament` ON `tournament`.`tournamentID` = `team`.`tournamentID`
+	WHERE `tournament`.`tournamentID` = $tournamentID AND `student`.`studentID`= $studentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && $result->num_rows > 0)
+	{
+		$row=$result->fetch_assoc();
+		return $row['teamName'];
+	}
+	return 0;
+}
+
 function studentTournamentSchedule($db, $tournamentID, $studentID)
 {
 	$schedule="";
-    $tournamentQuery = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID and `student`.`studentID` = $studentID order by `timeStart`";
-	$tournamentResult = $db->query($tournamentQuery) or error_log("\n<br />Warning: query failed:$tournamentQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-    if($tournamentResult && $tournamentResult->num_rows > 0){
-        $schedule.="Your events and partners:<br>";
-        $schedule.="<table class='table table-hover'><tr><th>Time (All times ET)</th><th>Note</th><th>Event</th><th>Partners</th></tr>";
-        while ($row = $tournamentResult->fetch_assoc()):
-            $tournamenteventID = $row['tournamenteventID'];
-            $teamID = $row['teamID'];
-            $schedule.="<tr><td>";
-            if($row['timeStart']){
-				$schedule.=date("H:i",strtotime($row['timeStart']))." - ".date("H:i",strtotime($row['timeEnd']));
-            }
-            $schedule.="</td><td>".$row['note']."</td>";
-			$schedule.="<td>".$row['event']."</td><td>";
-            $partnerQuery = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamenteventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
-            $partnerResult = $db->query($partnerQuery) or error_log("\n<br />Warning: query failed:$partnerQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-            if($partnerResult){
-                while ($row = $partnerResult->fetch_assoc()):
-                    $schedule.=$row['first']." ".$row['last']." ".$row['email']."<br>";
-                endwhile;
-                $schedule.="</td>";
-            }
-            $schedule.="</tr>";
-        endwhile;
-        $schedule.="</table>";
-    }
-	else{
-		return -1;
+	//This query checks to see if there are students on this tournaments
+	if(tournamentHasTeammates($db, $tournamentID))
+	{
+		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))
+		{
+			$query = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID and `student`.`studentID` = $studentID order by `timeStart`";
+			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			if($result && $result->num_rows > 0){
+				$schedule.="<h4>Your events and partners</h4>";
+				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (All times ET)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
+				while ($row = $result->fetch_assoc()):
+					$schedule.="<tr><td>";
+					if($row['timeStart']){
+						$schedule.=date("H:i",strtotime($row['timeStart']))." - ".date("H:i",strtotime($row['timeEnd']));
+					}
+					$schedule.="</td>";
+					$schedule.="<td>".$row['event']."</td>";
+					$schedule.="<td>".$row['note']."</td>";
+					$schedule.="<td>".studentPartnersWithEmails($db,$row['tournamenteventID'], $row['teamID'], $studentID)."</td>";
+					$schedule.="</tr>";
+				endwhile;
+				$schedule.="</tbody></table>";
+			}
+			else {
+				return "<div class='text-warning'>SAVE THE DATE.  You have been assigned to Team $teamName, but you have not been assigned events yet.</div>";
+			}
+		}
+		else {
+			return "<div class='text-warning'>SAVE THE DATE.  You have NOT been assigned to this team, but you may be added later.  Contact Coach/Leader if you cannot make it.</div>";
+		}
+	}
+	else {
+		return "<div class='text-warning'>SAVE THE DATE.  Students have not been scheduled for this tournament.</div>";
 	}
 	return $schedule;
+}
+
+//get latest team schedule - also known as the notCompetition Tournament.
+function getLatestTeamTournamentStudent($db, $userID, $studentID)
+{
+	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 ORDER BY `dateTournament` DESC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$row = $result->fetch_assoc();
+		$output.="<div id='".$row['tournamentName']."'>";
+		$output .="<hr><h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
+		$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> View Details</a></div>";
+		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
+		$output.="</div>";
+	}
+	return $output;
+}
+
+//get upcoming tournament Information for Students
+function getUpcomingTournamentStudent($db, $userID, $studentID)
+{
+	$date = date('Y-m-d', time());
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID` FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID` WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	//$query = "SELECT `tournamentName`,`tournament`.`tournamentID`,`dateTournament`,`teamName` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = '';
+	if($result)
+	{
+		$output = '<h2>Upcoming Tournaments</h2>';
+		while ($row = $result->fetch_assoc()):
+			$output.="<div id=\"".$row['tournamentName']."\">";
+			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
+			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> View Details</a></div>";
+			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID);
+			$output.="</div>";
+		endwhile;
+	}
+	return $output;
+}
+
+//get upcoming tournament Information for Coaches
+function getUpcomingTournamentCoach($db, $schoolID)
+{
+	$date = date('Y-m-d', time());
+	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament` WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = '';
+	if($result)
+	{
+		$output = '<h2>Upcoming Tournaments</h2><ul>';
+		while ($row = $result->fetch_assoc()):
+			$output.="<li id=\"".$row['tournamentName']."\">";
+			$output.= "<a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> ".$row['tournamentName']."</a>";
+			$output .= " - " . $row['dateTournament'];
+			$output.="</li>";
+		endwhile;
+		$output .= '</ul>';
+	}
+	return $output;
 }
 
 //find partners for an event in a tournament
@@ -165,20 +274,38 @@ function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 {
 	//check partner(s)
 	$query = "SELECT `first`,`last` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamentEventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last` ASC, `student`.`first` ASC";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="";
-	$partnerNum = mysqli_num_rows($result);
-	if ($partnerNum>0)
+	if ($result)
 	{
+		$partnerNum =mysqli_num_rows($result);
+		if($partnerNum>0)
+		{
+			while ($row = $result->fetch_assoc()):
+				if($output) $output.=$partnerNum>1 ? ", ":" and "; //adds comma if more than two partners or and to add last partner
+				$output.=$row['first']." ".$row['last'];
+				$partnerNum -=1;  //reduces partners left to add
+			endwhile;
+			return $output;
+		}
+	}
+	return "No partner!";
+}
+
+//find partners for an event in a tournament and returns Emails with line breaks
+function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
+{
+	//check partner(s)
+	$output =  "";
+	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID and `student`.`studentID` != $studentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
-			if($output) $output.=$partnerNum>1 ? ", ":" and "; //adds comma if more than two partners or and to add last partner
-			$output.=$row['first']." ".$row['last'];
-			$partnerNum -=1;  //reduces partners left to add
+			$output.= $row['first']." ".$row['last']." <a href='mailto:".$row['email']."'>".$row['email']."</a><br>";
 		endwhile;
 	}
-	else
-	{
-		$output="No partner!";
+	else {
+		$output = "No partner!";
 	}
 	return $output;
 }
@@ -187,11 +314,11 @@ function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 function studentScilympiadID($db, $studentID)
 {
 	$query = "SELECT `scilympiadID` FROM `student` WHERE `student`.`studentID`=$studentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="";
 	if ($row = $result->fetch_assoc())
 	{
-			$output=$row['scilympiadID']?$row['scilympiadID']:"Not set";
+		$output=$row['scilympiadID']?$row['scilympiadID']:"Not set";
 	}
 	return $output;
 }
@@ -237,10 +364,11 @@ function studentEventPriority($db, $studentID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if ($result && mysqli_num_rows($result)>0)
 	{
-			$output .="<br><h3>Event Priority</h3>";
-			while ($row = $result->fetch_assoc()):
-				$output .= "<div id='eventPriority-" . $row['eventchoiceID'] . "'>" . $row['year'] . "-" . $row['priority'] . " " . $row['event'] . "</div>";
-			endwhile;
+		$output .="<h3>Event Priority</h3><ul>";
+		while ($row = $result->fetch_assoc()):
+			$output .= "<li id='eventPriority-" . $row['eventchoiceID'] . "'>" . $row['year'] . "-" . $row['priority'] . " " . $row['event'] . "</li>";
+		endwhile;
+		$output .="</ul>";
 	}
 	return $output;
 }
@@ -254,7 +382,7 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 	if ($result && mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
-				//show results
+			//show results
 			$output.="<li>".$row['event'];
 			if($showPlace)
 			{
@@ -271,7 +399,7 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 function getStudentTeam($db, $tournamentID, $studentID)
 {
 	$eventQuery = "SELECT DISTINCT `teamName` FROM `teammateplace` inner join `student` on `teammateplace`.`studentID` = student.studentID inner join team on teammateplace.teamID = team.teamID where tournamentID = $tournamentID and student.studentID = $studentID";
-	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$row = $result->fetch_assoc();
 	return $row['teamName'];
 }
@@ -281,16 +409,16 @@ function getEmailList($result)
 {
 	$emails = "";
 	while ($row = $result->fetch_assoc()):
-			$emails.=$row['first'] . " " . $row['last'] . " ";
-			echo $emails;
-			if(isset($row['email'])&&$row['email']){
-				$emails.= "&lt;" . $row['email'] . "&gt;; ";
-			}
+		$emails.=$row['first'] . " " . $row['last'] . " ";
+		echo $emails;
+		if(isset($row['email'])&&$row['email']){
+			$emails.= "&lt;" . $row['email'] . "&gt;; ";
+		}
 
-			if(isset($row['emailSchool'])&&$row['emailSchool']){
-				$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
-			}
-			$emails.="<br>";
+		if(isset($row['emailSchool'])&&$row['emailSchool']){
+			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+		}
+		$emails.="<br>";
 	endwhile;
 	return $emails;
 }
@@ -335,15 +463,15 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	echo $query;
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
-		if(!$parents){
-			$emails = getEmailList($result);
-		}
-		else
-		{
-			echo "here";
-			$emails = getEmailParentList($result);
-		}
+	if(!$parents){
+		$emails = getEmailList($result);
+	}
+	else
+	{
 		echo "here";
+		$emails = getEmailParentList($result);
+	}
+	echo "here";
 	return $emails. getCoachesEmails($db, NULL);
 }
 
@@ -366,22 +494,22 @@ function getLeaderEmails($db, $year)
 	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
 	return getEmailList($result) . getCoachesEmails($db, $year);
-}
+	}
 
-//Return all active students or parents
-function getStudentEmails($db, $year, $parents=false)
-{
+	//Return all active students or parents
+	function getStudentEmails($db, $year, $parents=false)
+	{
 	//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
 	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `active`=1";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
-		if(!$parents){
-			$emails = getEmailList($result);
-		}
-		else
-		{
-			$emails = getEmailParentList($result);
-		}
+	if(!$parents){
+		$emails = getEmailList($result);
+	}
+	else
+	{
+		$emails = getEmailParentList($result);
+	}
 	return $emails. getCoachesEmails($db, NULL);
 }
 
@@ -392,8 +520,8 @@ function getEventName($db,$eventID)
 	$query = "SELECT `event` FROM `event` WHERE `eventID`=$eventID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows>0){
-	    $row = $result->fetch_assoc();
-			return $row['event'];
+		$row = $result->fetch_assoc();
+		return $row['event'];
 	}
 	return 0;
 }
@@ -402,19 +530,19 @@ function getEventName($db,$eventID)
 function getEventString($type)
 {
 	if (!$type || $type == 0){
-    return "Core Knowledge (Test Only)";
+		return "Core Knowledge (Test Only)";
 	}
 	elseif ($type == 1) {
-	    return "Build";
+		return "Build";
 	}
 	elseif ($type == 2) {
-			return "Laboratory or Hands On";
+		return "Laboratory or Hands On";
 	}
 	elseif ($type == 3) {
-	    return "Hybrid Build";
+		return "Hybrid Build";
 	}
 	elseif ($type == 4) {
-	    return "Hybrid Lab";
+		return "Hybrid Lab";
 	}
 }
 
@@ -422,16 +550,16 @@ function getEventString($type)
 function getCalulatorString($type)
 {
 	if (!$type || $type == 0){
-    return "None";
+		return "None";
 	}
 	elseif ($type == 1) {
-	    return "Graphing or any other type";
+		return "Graphing or any other type";
 	}
 	elseif ($type == 2) {
-	    return "4-Function Only";
+		return "4-Function Only";
 	}
 	elseif ($type == 3) {
-	    return "Scientific or 4-Function Only";
+		return "Scientific or 4-Function Only";
 	}
 }
 
@@ -439,13 +567,13 @@ function getCalulatorString($type)
 function getGoggleString($type)
 {
 	if (!$type || $type == 0){
-    return "None";
+		return "None";
 	}
 	elseif ($type == 1) {
-	    return "Class B - Impact only, for Most Builds";
+		return "Class B - Impact only, for Most Builds";
 	}
 	elseif ($type == 2) {
-	    return "Class C - Splash Resistant, for Most Labs";
+		return "Class C - Splash Resistant, for Most Labs";
 	}
 }
 
@@ -453,14 +581,14 @@ function getGoggleString($type)
 function getPhoneString($type)
 {
 	switch (getIfSet($type, 0)) {
-	  case 1:
-	    return "home";
-	    break;
-	  case 2:
-	    return "parent cell";
-	    break;
-	  default:
-	    return "cell";
+		case 1:
+		return "home";
+		break;
+		case 2:
+		return "parent cell";
+		break;
+		default:
+		return "cell";
 	}
 }
 
@@ -468,18 +596,18 @@ function getPhoneString($type)
 function getEventList($db, $number,$label)
 {
 	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
-	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
 	$events .="<select class='form-select' id='eventsList-$number' name='eventsList'>";
-		if($resultEventsList)
-		{
-			while ($rowEvents = $resultEventsList->fetch_assoc()):
-				$event = htmlspecialchars($db->real_escape_string($rowEvents['event']));
-				$type = getEventString($rowEvents['type']);
-				$events .= "<option value='".$rowEvents['eventID']."'>$event - $type</option>";
-			endwhile;
-		}
-		$events.="</select></div>";
+	if($resultEventsList)
+	{
+		while ($rowEvents = $resultEventsList->fetch_assoc()):
+			$event = htmlspecialchars($db->real_escape_string($rowEvents['event']));
+			$type = getEventString($rowEvents['type']);
+			$events .= "<option value='".$rowEvents['eventID']."'>$event - $type</option>";
+		endwhile;
+	}
+	$events.="</select></div>";
 	return $events;
 }
 
@@ -511,8 +639,8 @@ function getSOYears($myYear,$all=0)
 	}
 	$i = getCurrentSOYear() + 1;
 	for ($i ; $i >= 1982; $i--) {
-				$selected = $myYear ==$i ? "selected" : "";
-				$output .="<option value='$i' $selected>$i</option>";
+		$selected = $myYear ==$i ? "selected" : "";
+		$output .="<option value='$i' $selected>$i</option>";
 	}
 	$output .="</select>";
 	return $output;
@@ -654,20 +782,20 @@ function editPrivilege($privilege,$userID,$db)
 		//show privilege
 		if(empty($userID))
 		{
-				$output .= "User has never logged in with registered account.";
+			$output .= "User has never logged in with registered account.";
 		}
 		else {
 			$query = "SELECT * FROM `user` WHERE `userID`=".$userID;// where `field` = $fieldId";
-			$resultPrivilege = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+			$resultPrivilege = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			$rowPriv = $resultPrivilege->fetch_assoc();
 			if ($rowPriv['privilege'])
 			{
-					$output .= "<label for='privilege'>Privilege</label>";
-					$output .= "<input id='privilege' name='privilege' type='text' value='".$rowPriv['privilege']."' onchange='userPrivilege(".$userID.",this.id,this.value)'>";
+				$output .= "<label for='privilege'>Privilege</label>";
+				$output .= "<input id='privilege' name='privilege' type='text' value='".$rowPriv['privilege']."' onchange='userPrivilege(".$userID.",this.id,this.value)'>";
 			}
 			else
 			{
-					$output .=  "User has never logged in with registered account.";
+				$output .=  "User has never logged in with registered account.";
 			}
 		}
 		$output .=  "</p></fieldset>";
@@ -679,24 +807,24 @@ function checkGoogle($gpUserProfile,$db)
 {
 	// Include User library file
 	require_once 'user.php';
-  // Initialize User class
-  $user = new User($db);
+	// Initialize User class
+	$user = new User($db);
 
-  // Getting user profile info
-  $gpUserData = array();
-  $gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
-  $gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
-  $gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
-  $gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
-  $gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
-  $gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
-  $gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
+	// Getting user profile info
+	$gpUserData = array();
+	$gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
+	$gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
+	$gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
+	$gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
+	$gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
+	$gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
+	$gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
 
-  // Insert or update user data to the database
-  $gpUserData['oauth_provider'] = 'google';
-  $userData = $user->checkUser($gpUserData);
-  // Storing user data in the session
-  $_SESSION['userData'] = $userData;
+	// Insert or update user data to the database
+	$gpUserData['oauth_provider'] = 'google';
+	$userData = $user->checkUser($gpUserData);
+	// Storing user data in the session
+	$_SESSION['userData'] = $userData;
 }
 
 //a much shorter function than previously
@@ -706,78 +834,78 @@ function rainbow($i) {
 	$light = "60%"; //lightnes of HSL
 	$sat = "100%";
 	$t=0.3;
-  //hue of color
+	//hue of color
 	$n = $i*42;  //pick a number that does not divide evenly into 360, so that the colors don't repeat.
 	$hue = $n-floor($n/360)*360; //360 is the highest color, so after 360 the number returns to around zero
-  return 'hsla('. $hue .','. $sat .','. $light .','.$t.')';
+	return 'hsla('. $hue .','. $sat .','. $light .','.$t.')';
 }
 
 /**
- * Generate a random string, using a cryptographically secure
- * pseudorandom number generator (random_int)
- *
- * This function uses type hints now (PHP 7+ only), but it was originally
- * written for PHP 5 as well.
- *
- * For PHP 7, random_int is a PHP core function
- * For PHP 5.x, depends on https://github.com/paragonie/random_compat
- *
- * @param int $length      How many characters do we want?
- * @param string $keyspace A string of all possible characters
- *                         to select from
- * @return string
- */
+* Generate a random string, using a cryptographically secure
+* pseudorandom number generator (random_int)
+*
+* This function uses type hints now (PHP 7+ only), but it was originally
+* written for PHP 5 as well.
+*
+* For PHP 7, random_int is a PHP core function
+* For PHP 5.x, depends on https://github.com/paragonie/random_compat
+*
+* @param int $length      How many characters do we want?
+* @param string $keyspace A string of all possible characters
+*                         to select from
+* @return string
+*/
 function random_str(
-    int $length = 64,
-    string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-): string {
-    if ($length < 1) {
-        throw new \RangeException("Length must be a positive integer");
-    }
-    $pieces = [];
-    $max = mb_strlen($keyspace, '8bit') - 1;
-    for ($i = 0; $i < $length; ++$i) {
-        $pieces []= $keyspace[random_int(0, $max)];
-    }
-    return implode('', $pieces);
-}
-
-
-//usage
-/*
-$a = random_str(32);
-$b = random_str(8, 'abcdefghijklmnopqrstuvwxyz');
-$c = random_str();
-*/
-
-/*
-get a token is not used elsewhere in the table
-*/
-function get_uniqueToken($db, $tableName)
-{
-	$uniqueToken = random_str(20);
-	$query ="SELECT * FROM `$tableName` WHERE `uniqueToken` LIKE '$uniqueToken'";
-	echo $query;
-	$result = $db->query($query);
-	if ($row = $result->fetch_row()) {
-    return get_uniqueToken($db,$tableName);
-	} else {
-    return $uniqueToken;
+	int $length = 64,
+	string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	): string {
+		if ($length < 1) {
+			throw new \RangeException("Length must be a positive integer");
+		}
+		$pieces = [];
+		$max = mb_strlen($keyspace, '8bit') - 1;
+		for ($i = 0; $i < $length; ++$i) {
+			$pieces []= $keyspace[random_int(0, $max)];
+		}
+		return implode('', $pieces);
 	}
-}
 
-//Remove text with parenthesis.  This is used to remove names in parenthesis for alphabetizing in tournaments.
-function removeParenthesisText($string)
-{
-	return preg_replace("/\([^)]+\)/","",$string);
-}
 
-//Gets the MySQL Current Timestamp.  This allows us to look for changes from this timepoint forward.
-function getCurrentTimestamp($db)
-{
-	$query = "SELECT CURRENT_TIMESTAMP(); " ;
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$row = $result->fetch_assoc();
-	return $row['CURRENT_TIMESTAMP()'];
-}
-?>
+	//usage
+	/*
+	$a = random_str(32);
+	$b = random_str(8, 'abcdefghijklmnopqrstuvwxyz');
+	$c = random_str();
+	*/
+
+	/*
+	get a token is not used elsewhere in the table
+	*/
+	function get_uniqueToken($db, $tableName)
+	{
+		$uniqueToken = random_str(20);
+		$query ="SELECT * FROM `$tableName` WHERE `uniqueToken` LIKE '$uniqueToken'";
+		echo $query;
+		$result = $db->query($query);
+		if ($row = $result->fetch_row()) {
+			return get_uniqueToken($db,$tableName);
+		} else {
+			return $uniqueToken;
+		}
+	}
+
+	//Remove text with parenthesis.  This is used to remove names in parenthesis for alphabetizing in tournaments.
+	function removeParenthesisText($string)
+	{
+		return preg_replace("/\([^)]+\)/","",$string);
+	}
+
+	//Gets the MySQL Current Timestamp.  This allows us to look for changes from this timepoint forward.
+	function getCurrentTimestamp($db)
+	{
+		$query = "SELECT CURRENT_TIMESTAMP(); " ;
+		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$row = $result->fetch_assoc();
+		return $row['CURRENT_TIMESTAMP()'];
+	}
+	?>

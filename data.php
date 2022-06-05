@@ -136,7 +136,7 @@ userCheckPrivilege(1);
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a class="nav-link" id="loginBtn" href="#logout">Logout</a>
+						<a class="nav-link" id="loginBtn" href="logout.php">Logout</a>
 					</li>
 					<li style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="<?=$_SESSION['userData']['picture']?>" /></li>
 				</ul>

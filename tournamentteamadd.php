@@ -38,7 +38,7 @@ if($tournamentID)
 		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:$alphabet[$amountOfCreatedTeams]?>">
 	</p>
 	<p>
-		<input class='btn btn-outline-secondary fa' type='button' onclick='window.history.back()' value='&#xf0a8; Cancel' />
-		<input class="submit" type="submit" value="Submit">
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Cancel</button> 
+		<button class="btn btn-primary" type="submit"><span class='fa fa-save'></span> Save</button>
 	</p>
 </form>
