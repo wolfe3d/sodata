@@ -4,7 +4,6 @@
 
 	//text output
 	$output = "";
-
 	$studentID = intval($_REQUEST['myID']);
 
 	//check to see if user has a valid studentID

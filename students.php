@@ -26,7 +26,7 @@ if($result)
 			<legend>Add Student</legend>
 			<?php require_once("studentform.php"); ?>
 		</fieldset>
-		<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
+		<p><button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button></p>
 
 	</form>
 	<!--Output student emails -->

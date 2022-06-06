@@ -189,3 +189,7 @@ only screen and (max-width: 760px),
 	td:nth-of-type(10):before { content: "Arbitrary Data"; }
 	*/
 }
+.error {
+  color: red;
+	text-shadow: 1px 1px #000000;
+}

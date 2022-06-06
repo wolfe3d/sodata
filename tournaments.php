@@ -32,7 +32,7 @@ $row = null;
 			<legend>Add Tournament</legend>
 		<?php require_once("tournamentform.php"); ?>
 		</fieldset>
-		<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
+		<p><button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button></p>
 
 	</form>
 	<a class="btn btn-secondary" role="button" href="#tournaments-score-<?=getCurrentSOYear();?>"><span class='fa'>&#xf200;</span> Analysis</a>

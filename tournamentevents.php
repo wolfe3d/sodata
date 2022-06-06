@@ -66,7 +66,7 @@ if(mysqli_num_rows($result))
 	if($totalEvents)
 	{
 		while ($rowEvent = $resultEvent->fetch_assoc()):
-			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><td><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>" . $rowEvent["event"] ."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",\"".$rowEvent["event"] ."\")'>X</a></td>";
+			$output .= "<tr id='tournamentevent-".$rowEvent['tournamenteventID']."'><td><span id='tournamenteventname-".$rowEvent['tournamenteventID']."'>".$rowEvent["event"]."</span> <a href='javascript:tournamentEventRemove(". $rowEvent['tournamenteventID'] .",".cleanForJavascript($rowEvent["event"]).")'>X</a></td>";
 			for ($i = 0; $i < count($timeblocks); $i++) {
 					$checkbox = "tournamenttimeavailable-".$rowEvent['tournamenteventID']."--".$timeblocks[$i]['timeblockID'];
 					$queryEventTime = "SELECT * FROM `tournamenttimeavailable` WHERE `tournamenteventID` =  ".$rowEvent['tournamenteventID']." AND `timeblockID` = ".$timeblocks[$i]['timeblockID'];
@@ -79,7 +79,7 @@ if(mysqli_num_rows($result))
 		endwhile;
 	}
 	else {
-		exit("<input class='button fa' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")' value='&#xf0c3; Add all events from this year' />");
+		exit("<p><button class='btn btn-primary' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")'><span class='fa fa-plus'></span> Add all events from this year</button></p>");
 	}
 	$output .="<tr><td>Total Events=$totalEvents</td></tr>";
 	$output .="</tbody></table></form>";
@@ -97,9 +97,7 @@ echo $output;
 	<p>
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
-	<p>
-<p>
-	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Cancel</button></p>
-		<input class="submit fa" type="submit" value="&#xf067; Add">
-	</p>
+	<p><button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button></p>
+
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
 </form>

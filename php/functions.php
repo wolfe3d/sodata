@@ -3,6 +3,14 @@
 require_once  ("../connectsodb.php");
 require_once 'checksession.php';
 
+//clean text so that it can be a variable in javascript
+function cleanForJavascript($string)
+{
+	$string = str_replace("'", "", $string);
+	$string = str_replace("\"", "", $string);
+	$string = json_encode ($string);  //puts string in quotes for direct placement into javascript function
+	return $string;
+}
 //get all students in a select
 function getAllStudents($db, $active, $studentID)
 {
@@ -65,12 +73,12 @@ function getStudentName($db, $studentID)
 //get Name of the students school
 function getCurrentSchoolName($db)
 {
-	$query = "SELECT `name`, `division` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$query = "SELECT `schoolName`, `division` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		$row = $result->fetch_assoc();
-		return $row['name'] . "(" . $row['division'] . ")";
+		return $row['schoolName'] . "(" . $row['division'] . ")";
 	}
 	return 'No school associated';
 }
@@ -119,7 +127,9 @@ function studentTournamentResults($db, $studentID)
 		$output .="<hr><h3>Results</h3><ul>";
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id='".$row['tournamentName']."'>";
-			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament']. "</li>";
+			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament'];
+			$output.=" <a class='btn btn-secondary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='fa fa-desktop'></span> View Details</a></div>";
+			$output.="</li>";
 			//show results
 			$output.=	studentEvents($db, $row['tournamentID'], $studentID, true);
 		endwhile;
@@ -216,9 +226,9 @@ function getLatestTeamTournamentStudent($db, $userID, $studentID)
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$row = $result->fetch_assoc();
-		$output.="<hr><div id='".$row['tournamentName']."'>";
+		$output.="<div id='".$row['tournamentName']."'>";
 		$output .="<h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
-		$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> View Details</a></div>";
+		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='fa fa-desktop'></span> View Details</a></div>";
 		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
 		$output.="</div>";
 	}
@@ -632,7 +642,7 @@ function getTeamsPrevious($db, $tournamentID)
 function getSOYears($myYear,$all=0)
 {
 	$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
-	$output = "<select class='form-select' id='year' name='year'>";
+	$output = "<select class='form-control' id='year' name='year'>";
 	if($all)
 	{
 		$output .="<option value='0'>All Years</option>";

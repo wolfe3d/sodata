@@ -34,7 +34,7 @@ if(!empty($_SESSION['userData'])){
 		{
 			$output .= "<li><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</li>";
 		}
-		$output .= "</ul><hr>";
+		$output .= "</ul>";
 
 		//Reminders
 		//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.

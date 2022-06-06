@@ -9,7 +9,7 @@ $studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 $emails = "<h2>".getEventName($mysqlConn,$event)."</h2>";
 $fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
 $emails.="<h3>Fall Roster</h3>";
-$query = "SELECT DISTINCT `first`, `last`, `email`, `emailSchool` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `schoolID`= " .$user->schoolID . " AND eventID = $event and dateTournament = '$fallRosterDate' and `student`.`studentID` != $studentID and `student`.`active` = 1";
+$query = "SELECT DISTINCT `first`, `last`, `email`, `emailSchool` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `schoolID`= " .$_SESSION['userData']['schoolID']. " AND eventID = $event and dateTournament = '$fallRosterDate' and `student`.`studentID` != $studentID and `student`.`active` = 1";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 while ($row = $result->fetch_assoc()):

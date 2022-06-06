@@ -1,7 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
-require_once  ("functionstournament.php");
+require_once  ("php/functionstournament.php");
 
 $output = "";
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();

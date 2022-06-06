@@ -82,8 +82,10 @@ userCheckPrivilege(1);
 	<meta name="keywords" content="Walton, Science, Olympiad, SO" />
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 	<script src="js/jquery-3.6.0.min.js"></script>
+	<!--
 	<script src="js/jquery.validate.min.js"></script>
 	<script src="js/additional-methods.min.js"></script> <!--Additional Methods are also for jquery validate-->
+
 	<!--<script src="js/jquery.modal.min.js"></script> Modal plugin https://github.com/kylefox/jquery-modal-->
 	<link rel="stylesheet" href="css/wolfestyle.css" />
 
