@@ -40,7 +40,7 @@ if($year)
 }
 
 $query.=" ORDER BY `event`";
-if(userHasPrivilege(3))
+if(userHasPrivilege(4))
 {
 	echo $query ;
 }

@@ -50,11 +50,14 @@ if(!empty($_SESSION['userData'])){
 
 		if($studentID)
 		{
-			$output .= "<hr><h2>My Events</h2>";
 			//Get latest team assignments
-			$output .= getLatestTeamTournamentStudent($mysqlConn, $studentID);
+			$myEvents = getLatestTeamTournamentStudent($mysqlConn, $studentID);
 			//show student's event priority
-			$output .= studentEventPriority($mysqlConn, $studentID);
+			$myEvents .= studentEventPriority($mysqlConn, $studentID);
+			if($myEvents)
+			{
+				$output .= "<hr><h2>My Events</h2>" . $myEvents;
+			}
 			//show all previous results for this student
 			$output .= studentTournamentResults($mysqlConn, $studentID, true);
 		}

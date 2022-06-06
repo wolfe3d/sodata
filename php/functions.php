@@ -422,7 +422,6 @@ function getEmailList($result)
 	$emails = "";
 	while ($row = $result->fetch_assoc()):
 		$emails.=$row['first'] . " " . $row['last'] . " ";
-		echo $emails;
 		if(isset($row['email'])&&$row['email']){
 			$emails.= "&lt;" . $row['email'] . "&gt;; ";
 		}
@@ -472,7 +471,6 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	if($tournamentID){
 		$query.=" AND `tournamentID` = $tournamentID";
 	}
-	echo $query;
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails = "";
 	if(!$parents){
@@ -480,10 +478,8 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	}
 	else
 	{
-		echo "here";
 		$emails = getEmailParentList($result);
 	}
-	echo "here";
 	return $emails. getCoachesEmails($db, NULL);
 }
 
@@ -897,7 +893,6 @@ function random_str(
 	{
 		$uniqueToken = random_str(20);
 		$query ="SELECT * FROM `$tableName` WHERE `uniqueToken` LIKE '$uniqueToken'";
-		echo $query;
 		$result = $db->query($query);
 		if ($row = $result->fetch_row()) {
 			return get_uniqueToken($db,$tableName);
