@@ -52,7 +52,7 @@ if(!empty($_SESSION['userData'])){
 		{
 			$output .= "<hr><h2>My Events</h2>";
 			//Get latest team assignments
-			$output .= getLatestTeamTournamentStudent($mysqlConn, $userID, $studentID);
+			$output .= getLatestTeamTournamentStudent($mysqlConn, $studentID);
 			//show student's event priority
 			$output .= studentEventPriority($mysqlConn, $studentID);
 			//show all previous results for this student

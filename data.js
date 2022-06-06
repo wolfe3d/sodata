@@ -209,536 +209,483 @@ function studentPreparePage()
 		event.preventDefault();
 		getList("studentslist.php", {courseList: $("#courseList").val(),active:$("#active").is(':checked')?"1":"0"});
 	});
-	studentAddModify()
+
+	$( "#addTo" ).submit(function( event ) {
+		event.preventDefault();
+		var request = $.ajax({
+			url: "studentadd.php",
+			cache: false,
+			method: "POST",
+			data: $("#addTo").serialize(),
+			dataType: "text"
+		});
+
+		request.done(function( html ) {
+			$(".text-success").remove(); //removes any old update notices
+			if(html>0)
+			{
+				window.location.hash = '#student-edit-'+html;
+			}
+			else
+			{
+				$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").html("Student Adding Error");
+		});
+	});
 }
 
-function studentAddModify()
+function studentRemove(myID, studentName)
 {
-	/*$("#addTo").validate({
-		rules: {
-			first: "required",
-			last: "required",
-			parent1First: "required",
-			parent1Last: "required",
-			yearGraduating: 			{
-				number: true
-			},
-			phone: 			{
-				phoneUS: true
-			},
-			parent1Phone: 			{
-				phoneUS: true
-			},
-			parent2Phone: 			{
-				phoneUS: true
-			},
-			email: {
-				required: true,
-				email: true
-			},
-			emailSchool: {
-				required: true,
-				email: true
-			},
-			parent1Email: {
-				required: true,
-				email: true
-			},
-			parent2Email: {
-				email: true
-			},
-		},
-		messages: {
-			first: "*Please enter the student\'s first name",
-			last: "*Please enter the student\'s last name",
-			yearGraduating: {
-				required: "*Enter the year the student is graduating",
-			},
-			email: {
-				required: "*Enter the student\'s email.",
-			},
-			phone: {
-				required: "*Enter the phone number in the correct format.",
-			},
-		},
-		submitHandler: function(form) {
-			event.preventDefault();
-
-			var request = $.ajax({
-				url: $("#addTo").attr('action'),
-				cache: false,
-				method: "POST",
-				data: $("#addTo").serialize(),
-				dataType: "text"
-			});
-
-			request.done(function( html ) {
-				$(".text-success").remove(); //removes any old update notices
-				if(html>0)
-				{
-					window.location.hash = '#student-edit-'+html;
-				}
-				else
-				{
-					$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
-				}
-			});
-
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Student Adding Error");
-			});
-		}});
-		*/
-	}
-
-	function studentRemove(myID, studentName)
-	{
-		if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
-		{
-			var request = $.ajax({
-				url: "studentremove.php",
-				cache: false,
-				method: "POST",
-				data: {myID:myID},
-				dataType: "html"
-			});
-			request.done(function( html ) {
-				$(".text-success").remove(); //remove any old text-success notes
-				if(html=="1")
-				{
-					$("#student-" + myID).before("<div class='text-success' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
-					$("#student-" + myID).remove(); //remove element
-				}
-				else {
-					$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
-				}
-			});
-
-			request.fail(function( jqXHR, textStatus ) {
-				$(".text-success").remove();
-				$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+textStatus+"</div");
-			});
-		}
-	}
-
-	///////////////////
-	///Student Edit functions
-	//////////////////
-	function studentEditPrepare(myID)
-	{
-		$("#eventAndPriority").hide();
-		$("#courseListDiv").hide();
-		$('#addTo :input,select').each(function() {
-			$(this).change(function(){
-				if (this.id == 'active'){
-					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
-				}
-				else if (this.id == 'paidDues'){
-					fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
-				}
-				else if(this.id == 'privilege'){ //user privilege is defined in the user table
-					fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id);
-				}
-				else if(this.id == 'courseList'){ //user privilege is defined in the user table
-					//do nothing wait for add button
-				}
-				else{
-					fieldUpdate(myID,'student',this.id,this.value,this.id,this.id);
-				}
-			});
-		});
-	}
-	function studentEventAddChoice(studentID)
-	{
-		//adds the event choice selection
-		$("#studentEventAdd").hide();
-		$("#eventAndPriority").clone().appendTo("#studentEventAddDiv").show();
-		$("#studentEventAddDiv").append("<a id='addThisEvent' href='javascript:studentEventAdd("+studentID+",this.id,this.value);'>Add</a>");
-	}
-	function studentEventRemove(myID)
-	{
-		if(confirm("Are you sure you want to delete the event, called " + $("#eventchoice"+"-"+myID +" .event").text() +", from the user?"))
-		{
-			rowRemove(myID,"eventchoice");
-		}
-	}
-	function studentEventAdd(student, field, value)
-	{
-		// validate signup form on keyup and submit
-		//alert("got"+$("#eventsList").val());
-		var request = $.ajax({
-			url: "studenteventadd.php",
-			cache: false,
-			method: "POST",
-			data: { studentID: student, eventyearID : $("#eventsList").val(), priority : $("#priorityList").val() },
-			dataType: "text"
-		});
-
-		request.done(function( html ) {
-			//$("label[for='" + field + "']").append(html);
-			$(".text-success").remove(); //removes any old update notices
-			var eventchoiceID = parseInt(html);
-			if (eventchoiceID>0)
-			{
-				//returns the current update
-				var eventSplit = $("#eventsList option:selected").text().split(" ");
-				var eventName = eventSplit[0]+"-"+$("#priorityList option:selected").text()+" "+eventSplit.slice(1).join(" ")
-				$("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='text-success' style='color:blue'>Event added.</span></div>");
-			}
-			else
-			{
-				$("#events").append("<span class='text-success' class='error'>Error while attempting to add an event. Please, report details to site admin. "+html+"</span>");
-			}
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Request failed: " + textStatus );
-		});
-	}
-	function studentCourseAddChoice(student, table)
-	{
-		//adds the course list selection
-		$("#courseListDiv").appendTo("#add"+table+"Div").show();
-		$(".addCourseBtn").show();
-		$("#add"+table).hide();
-		$("#addThisCourse").remove();
-		$("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:studentCourseAdd('"+student+"','"+table+"')\">Add</a>");
-	}
-	function studentCourseRemove(myID,table)
-	{
-		if(confirm("Are you sure you want to delete the course, called " + $("#"+table+"-"+myID +" .course").text() +", from the user?"))
-		{
-			rowRemove(myID,table);
-		}
-	}
-
-	function studentCourseAdd(student, table)
-	{
-		// validate signup form on keyup and submit
-		var request = $.ajax({
-			url: "studentcourseadd.php",
-			cache: false,
-			method: "POST",
-			data: { studentID: student, tableName : table, courseID : $("#courseList").val() },
-			dataType: "text"
-		});
-
-		request.done(function( html ) {
-			$(".text-success").remove(); //removes any old update notices
-			var myCourseID = parseInt(html);
-			if (myCourseID>0)
-			{
-				//returns the current update
-				$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span></div>");
-				if(table=="courseenrolled"){
-					$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>");
-				}
-				$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span>");
-			}
-			else
-			{
-				$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to add a course. Please, report details to site admin.</span>");
-			}
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Request failed: " + textStatus );
-		});
-	}
-
-
-	function studentCourseCompleted(value, courseName)
-	{
-		// validate signup form on keyup and submit
-		var request = $.ajax({
-			url: "studentcoursecompleted.php",
-			cache: false,
-			method: "POST",
-			data: { myID: value},
-			dataType: "text"
-		});
-
-		request.done(function( text ) {
-			$(".text-success").remove(); //removes any old update notices
-			var myCourseID = parseInt(text);
-			if (myCourseID>0)
-			{
-				//returns the current update
-				var table = "coursecompleted";
-				var table2 = "courseenrolled";
-				$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span></div>");
-				$("#"+table2+"-"+value).remove();
-				$("#"+table2).append("<span class='text-success' style='color:blue'>Course removed.</span>");
-			}
-			else
-			{
-				var table = "courseenrolled";
-				$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
-			}
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Request failed: " + textStatus );
-		});
-	}
-
-	function fieldUpdate(myID,table,field,value,domID,messageID)
-	{
-		// validate field before submitting
-		if($("#"+domID)[0].checkValidity())
-		{
-			//submit changes
-			var request = $.ajax({
-				url: "fieldupdate.php",
-				cache: false,
-				method: "POST",
-				data: { myid: myID, mytable:table, myfield : field, myvalue : value },
-				dataType: "text"
-			});
-
-			request.done(function( html ) {
-				//$("label[for='" + field + "']").append(html);
-				$(".text-success").remove(); //removes any old update notices
-				$("#"+messageID).parent().append("<span class='text-success'>"+ html +"</span>"); //returns the current update
-			});
-
-			request.fail(function( jqXHR, textStatus ) {
-				alert( "Request failed: " + textStatus );
-			});
-		}
-		else {
-			$("#"+domID)[0].reportValidity();
-		}
-	}
-
-	function userPrivilege(myUser, field,value)
-	{
-		//alert(JSON.stringify(myData) );
-		//myData is a json object type
-
-		var request = $.ajax({
-			url: "userprivilege.php",
-			cache: false,
-			method: "POST",
-			data: {userID: myUser, privilege: value},
-			dataType: "text"
-		});
-		request.done(function( html ) {
-			$(".text-success").remove(); //removes any old update notices
-			$("#"+field).parent().append("<span class='text-success' style='color:blue'>"+ html +"</span>"); //returns the current update
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Request failed: " + textStatus );
-		});
-	}
-
-	///////////////////
-	///Coach Edit
-	//////////////////
-	function coachEdit(myID)
+	if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
 	{
 		var request = $.ajax({
-			url: "coachedit.php",
+			url: "studentremove.php",
 			cache: false,
 			method: "POST",
-			data: {coachID:myID},
+			data: {myID:myID},
 			dataType: "html"
 		});
 		request.done(function( html ) {
+			$(".text-success").remove(); //remove any old text-success notes
+			if(html=="1")
+			{
+				$("#student-" + myID).before("<div class='text-success' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
+				$("#student-" + myID).remove(); //remove element
+			}
+			else {
+				$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$(".text-success").remove();
+			$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+textStatus+"</div");
+		});
+	}
+}
+
+///////////////////
+///Student Edit functions
+//////////////////
+function studentEditPrepare(myID)
+{
+	$("#eventAndPriority").hide();
+	$("#courseListDiv").hide();
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+			if (this.id == 'active'){
+				fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
+			}
+			else if (this.id == 'paidDues'){
+				fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
+			}
+			else if(this.id == 'privilege'){ //user privilege is defined in the user table
+				fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id);
+			}
+			else if(this.id == 'courseList'){ //user privilege is defined in the user table
+				//do nothing wait for add button
+			}
+			else{
+				fieldUpdate(myID,'student',this.id,this.value,this.id,this.id);
+			}
+		});
+	});
+}
+function studentEventAddChoice(studentID)
+{
+	//adds the event choice selection
+	$("#studentEventAdd").hide();
+	$("#eventAndPriority").clone().appendTo("#studentEventAddDiv").show();
+	$("#studentEventAddDiv").append("<a id='addThisEvent' href='javascript:studentEventAdd("+studentID+",this.id,this.value);'>Add</a>");
+}
+function studentEventRemove(myID)
+{
+	if(confirm("Are you sure you want to delete the event, called " + $("#eventchoice"+"-"+myID +" .event").text() +", from the user?"))
+	{
+		rowRemove(myID,"eventchoice");
+	}
+}
+function studentEventAdd(student, field, value)
+{
+	// validate signup form on keyup and submit
+	//alert("got"+$("#eventsList").val());
+	var request = $.ajax({
+		url: "studenteventadd.php",
+		cache: false,
+		method: "POST",
+		data: { studentID: student, eventyearID : $("#eventsList").val(), priority : $("#priorityList").val() },
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		//$("label[for='" + field + "']").append(html);
+		$(".text-success").remove(); //removes any old update notices
+		var eventchoiceID = parseInt(html);
+		if (eventchoiceID>0)
+		{
+			//returns the current update
+			var eventSplit = $("#eventsList option:selected").text().split(" ");
+			var eventName = eventSplit[0]+"-"+$("#priorityList option:selected").text()+" "+eventSplit.slice(1).join(" ")
+			$("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='text-success' style='color:blue'>Event added.</span></div>");
+		}
+		else
+		{
+			$("#events").append("<span class='text-success' class='error'>Error while attempting to add an event. Please, report details to site admin. "+html+"</span>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+	});
+}
+function studentCourseAddChoice(student, table)
+{
+	//adds the course list selection
+	$("#courseListDiv").appendTo("#add"+table+"Div").show();
+	$(".addCourseBtn").show();
+	$("#add"+table).hide();
+	$("#addThisCourse").remove();
+	$("#add"+table+"Div").append("<a id='addThisCourse' href=\"javascript:studentCourseAdd('"+student+"','"+table+"')\">Add</a>");
+}
+function studentCourseRemove(myID,table)
+{
+	if(confirm("Are you sure you want to delete the course, called " + $("#"+table+"-"+myID +" .course").text() +", from the user?"))
+	{
+		rowRemove(myID,table);
+	}
+}
+
+function studentCourseAdd(student, table)
+{
+	// validate signup form on keyup and submit
+	var request = $.ajax({
+		url: "studentcourseadd.php",
+		cache: false,
+		method: "POST",
+		data: { studentID: student, tableName : table, courseID : $("#courseList").val() },
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		$(".text-success").remove(); //removes any old update notices
+		var myCourseID = parseInt(html);
+		if (myCourseID>0)
+		{
+			//returns the current update
+			$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span></div>");
+			if(table=="courseenrolled"){
+				$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>");
+			}
+			$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span>");
+		}
+		else
+		{
+			$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to add a course. Please, report details to site admin.</span>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+	});
+}
+
+
+function studentCourseCompleted(value, courseName)
+{
+	// validate signup form on keyup and submit
+	var request = $.ajax({
+		url: "studentcoursecompleted.php",
+		cache: false,
+		method: "POST",
+		data: { myID: value},
+		dataType: "text"
+	});
+
+	request.done(function( text ) {
+		$(".text-success").remove(); //removes any old update notices
+		var myCourseID = parseInt(text);
+		if (myCourseID>0)
+		{
+			//returns the current update
+			var table = "coursecompleted";
+			var table2 = "courseenrolled";
+			$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span></div>");
+			$("#"+table2+"-"+value).remove();
+			$("#"+table2).append("<span class='text-success' style='color:blue'>Course removed.</span>");
+		}
+		else
+		{
+			var table = "courseenrolled";
+			$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+	});
+}
+
+function fieldUpdate(myID,table,field,value,domID,messageID)
+{
+	// validate field before submitting
+	if($("#"+domID)[0].checkValidity())
+	{
+		//submit changes
+		var request = $.ajax({
+			url: "fieldupdate.php",
+			cache: false,
+			method: "POST",
+			data: { myid: myID, mytable:table, myfield : field, myvalue : value },
+			dataType: "text"
+		});
+
+		request.done(function( html ) {
 			//$("label[for='" + field + "']").append(html);
-			window.location.hash = '#coach-edit-'+ myID;
-			$("#mainContainer").html(html);
+			$(".text-success").remove(); //removes any old update notices
+			$("#"+messageID).parent().append("<span class='text-success'>"+ html +"</span>"); //returns the current update
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			alert( "Request failed: " + textStatus );
+		});
+	}
+	else {
+		$("#"+domID)[0].reportValidity();
+	}
+}
+
+function userPrivilege(myUser, field,value)
+{
+	//alert(JSON.stringify(myData) );
+	//myData is a json object type
+
+	var request = $.ajax({
+		url: "userprivilege.php",
+		cache: false,
+		method: "POST",
+		data: {userID: myUser, privilege: value},
+		dataType: "text"
+	});
+	request.done(function( html ) {
+		$(".text-success").remove(); //removes any old update notices
+		$("#"+field).parent().append("<span class='text-success' style='color:blue'>"+ html +"</span>"); //returns the current update
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+	});
+}
+
+///////////////////
+///Coach Edit
+//////////////////
+function coachEdit(myID)
+{
+	var request = $.ajax({
+		url: "coachedit.php",
+		cache: false,
+		method: "POST",
+		data: {coachID:myID},
+		dataType: "html"
+	});
+	request.done(function( html ) {
+		//$("label[for='" + field + "']").append(html);
+		window.location.hash = '#coach-edit-'+ myID;
+		$("#mainContainer").html(html);
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").html("Removal Error");
+	});
+}
+
+///////////////////
+///Event functions
+//////////////////
+function toggleSearch()
+{
+	$('#searchDiv').toggle();
+}
+
+function eventsPreparePage()
+{
+	$("#searchDiv").hide();
+	$("#addTo").hide();
+
+	getList("eventslist.php",{});
+	// validate signup form on keyup and submit
+
+	//when Find by Name is clicked, this initiates the search
+	$("#findEvent").on( "submit", function( event ) {
+		event.preventDefault();
+		getList("eventslist.php", $( this ).serialize() );
+	});
+
+	$( "#addTo" ).submit(function( event ) {
+		event.preventDefault();
+		var request = $.ajax({
+			url: "eventadd.php",
+			cache: false,
+			method: "POST",
+			data: $("#addTo").serialize(),
+			dataType: "text"
+		});
+
+		request.done(function( html ) {
+			//$("label[for='" + field + "']").append(html);
+			if(html>0)
+			{
+				window.location.hash = '#events--'+html;
+			}
+			else
+			{
+				$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$("#mainContainer").html("Removal Error");
 		});
-	}
+	});
+}
 
-	///////////////////
-	///Event functions
-	//////////////////
-	function toggleSearch()
-	{
-		$('#searchDiv').toggle();
-	}
-
-	function eventsPreparePage()
-	{
-		$("#searchDiv").hide();
-		$("#addTo").hide();
-
-		getList("eventslist.php",{});
-		// validate signup form on keyup and submit
-
-		//when Find by Name is clicked, this initiates the search
-		$("#findEvent").on( "submit", function( event ) {
-			event.preventDefault();
-			getList("eventslist.php", $( this ).serialize() );
+function eventEdit(myID)
+{
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+			fieldUpdate(myID,'event',this.id,this.value,this.id,this.id);
 		});
+	});
+}
 
-		eventAddModify();
-	}
+function eventyearPreparePage(myYear)
+{
+	$("#mainHeader").html("Edit a Year's Events");
+	window.location.hash = '#eventyear-edit-'+ myYear;
+}
+function eventyearPrepare(myID)
+{
+	//change year to add to
+	$("#year").change(function(){
+		eventyearPreparePage($( "#year" ).val());
+	});
+	$("#addLeader").hide();
+	$("#eventID").hide();
+	// validate event form on keyup and submit
+	/*$("#addTo").validate({
+	rules: {
+	eventName: "required",
+	typeName: "required",
+},
+messages: {
+eventName: "*Please enter the name of the event.",
+typeName: "*Please enter the event type.",
+},
+submitHandler: function(form) {
+event.preventDefault();
+//alert($("#addTo").serialize());
+var request = $.ajax({
+url: $("#addTo").attr('action'),
+cache: false,
+method: "POST",
+data: $("#addTo").serialize(),
+dataType: "html"
+});
 
-	function eventEdit(myID)
-	{
-		eventAddModify();
-		$('#addTo :input,select').each(function() {
-			$(this).change(function(){
-				fieldUpdate(myID,'event',this.id,this.value,this.id,this.id);
-			});
+request.done(function( html ) {
+//$("label[for='" + field + "']").append(html);
+$(".text-success").remove(); //removes any old update notices
+if(html>0)
+{
+//add event to list
+$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a id='leaderlink-"+html+"' href='#eventyear-leader-"+html+"'>Add Leader</a> <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
+}
+else
+{
+$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
+}
+});
+
+request.fail(function( jqXHR, textStatus ) {
+$("#mainContainer").html("Add event to year error");
+});
+}
+});
+*/
+}
+
+function eventyearLeader(myID)
+{
+	addToSubmit(myID);
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+			fieldUpdate(myID,'eventyear',this.id,this.value,this.id,this.id);
 		});
-	}
+	});
+}
 
-	function eventAddModify()
+function eventYearRemove(myID)
+{
+	if(confirm("Are you sure you want to delete the eventyear: " + $("#eventyear-"+myID+" .event").text() +"?  This removes the event permanently from this year!!!"))
 	{
-		// validate event form on keyup and submit
-		/*$("#addTo").validate({
-			rules: {
-				event: "required",
-				type: "required",
-				numberStudents: {
-					required:true,
-					number: true
-				},
-				sciolyLink: {
-					url: true
-				}
-			},
-			messages: {
-				eventName: "*Please enter the name of the event.",
-				type: "*Please select the event type.",
-			},
-			submitHandler: function(form) {
-				event.preventDefault();
-
-				var request = $.ajax({
-					url: $("#addTo").attr('action'),
-					cache: false,
-					method: "POST",
-					data: $("#addTo").serialize(),
-					dataType: "text"
-				});
-
-				request.done(function( html ) {
-					//$("label[for='" + field + "']").append(html);
-					if(html>0)
-					{
-						window.location.hash = '#events--'+html;
-					}
-					else
-					{
-						$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
-					}
-				});
-
-				request.fail(function( jqXHR, textStatus ) {
-					$("#mainContainer").html("Removal Error");
-				});
-			}
-		});
-		*/
+		rowRemove(myID,"eventyear");
 	}
-	function eventyearPreparePage(myYear)
-	{
-		$("#mainHeader").html("Edit a Year's Events");
-		window.location.hash = '#eventyear-edit-'+ myYear;
-	}
-	function eventyearPrepare(myID)
-	{
-		//change year to add to
-		$("#year").change(function(){
-			eventyearPreparePage($( "#year" ).val());
-		});
-		$("#addLeader").hide();
-		$("#eventID").hide();
-		// validate event form on keyup and submit
-		/*$("#addTo").validate({
-			rules: {
-				eventName: "required",
-				typeName: "required",
-			},
-			messages: {
-				eventName: "*Please enter the name of the event.",
-				typeName: "*Please enter the event type.",
-			},
-			submitHandler: function(form) {
-				event.preventDefault();
-				//alert($("#addTo").serialize());
-				var request = $.ajax({
-					url: $("#addTo").attr('action'),
-					cache: false,
-					method: "POST",
-					data: $("#addTo").serialize(),
-					dataType: "html"
-				});
+}
 
-				request.done(function( html ) {
-					//$("label[for='" + field + "']").append(html);
-					$(".text-success").remove(); //removes any old update notices
-					if(html>0)
-					{
-						//add event to list
-						$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a id='leaderlink-"+html+"' href='#eventyear-leader-"+html+"'>Add Leader</a> <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
-					}
-					else
-					{
-						$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
-					}
-				});
+///////////////////
+///Tournament functions
+//////////////////
 
-				request.fail(function( jqXHR, textStatus ) {
-					$("#mainContainer").html("Add event to year error");
-				});
-			}
-		});
-		*/
-	}
+function tournamentsPreparePage()
+{
+	$("#searchDiv").hide();
+	$("#addTo").hide();
+	//Load Students
+	getList("tournamentslist.php",{});
+	// validate signup form on keyup and submit
 
-	function eventyearLeader(myID)
+	//when Find by Name is clicked, this initiates the search
+	$("#findTournament").on( "submit", function( event ) {
+		event.preventDefault();
+		getList("tournamentslist.php", $( this ).serialize() );
+	});
+	/*	//Allow person to pick year
+	for (i = new Date().getFullYear()+1; i > 1973; i--)
 	{
-		addToSubmit(myID);
-		$('#addTo :input,select').each(function() {
-			$(this).change(function(){
-				fieldUpdate(myID,'eventyear',this.id,this.value,this.id,this.id);
-			});
-		});
-	}
+	$('#tournamentYear').append($('<option />').val(i).html(i));
+}
+*/
 
-	function eventYearRemove(myID)
-	{
-		if(confirm("Are you sure you want to delete the eventyear: " + $("#eventyear-"+myID+" .event").text() +"?  This removes the event permanently from this year!!!"))
+$( "#addTo" ).submit(function( event ) {
+	event.preventDefault();
+	var request = $.ajax({
+		url: "tournamentadd.php",
+		cache: false,
+		method: "POST",
+		data: $("#addTo").serialize(),
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		$(".text-success").remove(); //removes any old update notices
+		if(html>0)
 		{
-			rowRemove(myID,"eventyear");
+			window.location.hash = '#tournament-view-'+html;
 		}
-	}
-
-	///////////////////
-	///Tournament functions
-	//////////////////
-
-	function tournamentsPreparePage()
-	{
-		$("#searchDiv").hide();
-		$("#addTo").hide();
-		//Load Students
-		getList("tournamentslist.php",{});
-		// validate signup form on keyup and submit
-
-		//when Find by Name is clicked, this initiates the search
-		$("#findTournament").on( "submit", function( event ) {
-			event.preventDefault();
-			getList("tournamentslist.php", $( this ).serialize() );
-		});
-		/*	//Allow person to pick year
-		for (i = new Date().getFullYear()+1; i > 1973; i--)
+		else
 		{
-		$('#tournamentYear').append($('<option />').val(i).html(i));
-	}
-	*/
+			$("#addTo").append("<div class='text-success'>"+html+"</div>");
+		}
+	});
 
-	tournamentAddModify();
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").html("Removal Error");
+	});
+});
 }
 
 
@@ -787,7 +734,6 @@ function tournamentSort(byAttr, isNumber=0)
 
 function tournamentEdit(myID)
 {
-	tournamentAddModify();
 	$('#addTo :input,select').each(function() {
 		$(this).change(function(){
 			if (this.id == 'notCompetition'){
@@ -798,66 +744,6 @@ function tournamentEdit(myID)
 			}
 		});
 	});
-}
-
-function tournamentAddModify()
-{
-	/*
-	$("#addTo").validate({
-		ignore: ".ignore",
-		rules: {
-			tournamentName: "required",
-			host: "required",
-			dateTournament: "required",
-			dateRegistration: "required",
-			directorPhone: 	{
-				phoneUS: true
-			},
-			directorEmail: {
-				email: true
-			},
-			websiteHost: {
-				url: true
-			},
-			websiteScilympiad: {
-				url: true
-			},
-		},
-		messages: {
-			tournamentName: "*Please enter the tournament name",
-			host: "*Please enter the tournament host",
-			dateTournament: "*Please enter the tournament date",
-			dateRegistration: "*Please enter the tournament registration date"
-		},
-		submitHandler: function(form) {
-			event.preventDefault();
-
-			var request = $.ajax({
-				url: $("#addTo").attr('action'),
-				cache: false,
-				method: "POST",
-				data: $("#addTo").serialize(),
-				dataType: "text"
-			});
-
-			request.done(function( html ) {
-				$(".text-success").remove(); //removes any old update notices
-				if(html>0)
-				{
-					window.location.hash = '#tournament-view-'+html;
-				}
-				else
-				{
-					$("#addTo").append("<div class='text-success'>"+html+"</div>");
-				}
-			});
-
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Removal Error");
-			});
-		}
-	});
-	*/
 }
 
 //formats javascript time to have leading zeroes.  For instance 9:00AM is formatted as 09:00AM.
@@ -873,86 +759,86 @@ function appendLeadingZeroes(n){
 function tournamentTimeAdd(myID)
 {
 	/*$("#addTo").validate({
-		submitHandler: function(form) {
-			var formData = $("#addTo").serialize();
-			formData+='&myID='+myID;
-			event.preventDefault();
+	submitHandler: function(form) {
+	var formData = $("#addTo").serialize();
+	formData+='&myID='+myID;
+	event.preventDefault();
 
-			var request = $.ajax({
-				url: $("#addTo").attr('action'),
-				cache: false,
-				method: "POST",
-				data: formData,
-				dataType: "text"
-			});
+	var request = $.ajax({
+	url: $("#addTo").attr('action'),
+	cache: false,
+	method: "POST",
+	data: formData,
+	dataType: "text"
+});
 
-			request.done(function( html ) {
-				$(".text-success").remove(); //removes any old update notices
-				if(html>0)
-				{
-					//convert time to standard format
-					let timeStart = new Date($("#timeStart").val());
-					let timeStartFormatted = timeStart.getFullYear() + "-" + appendLeadingZeroes(timeStart.getMonth() + 1) + "-" + appendLeadingZeroes(timeStart.getDate()) + " " + appendLeadingZeroes(timeStart.getHours()) + ":" + appendLeadingZeroes(timeStart.getMinutes()) + ":" + appendLeadingZeroes(timeStart.getSeconds());
+request.done(function( html ) {
+$(".text-success").remove(); //removes any old update notices
+if(html>0)
+{
+//convert time to standard format
+let timeStart = new Date($("#timeStart").val());
+let timeStartFormatted = timeStart.getFullYear() + "-" + appendLeadingZeroes(timeStart.getMonth() + 1) + "-" + appendLeadingZeroes(timeStart.getDate()) + " " + appendLeadingZeroes(timeStart.getHours()) + ":" + appendLeadingZeroes(timeStart.getMinutes()) + ":" + appendLeadingZeroes(timeStart.getSeconds());
 
-					let timeEnd = new Date($("#timeEnd").val());
-					let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
-					//clear empty timeblock output
-					if($("#timeblocks").html()=="None Added")
-					{
-						$("#timeblocks").empty();
-					}
-					$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
-				}
-				else
-				{
-					$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
-				}
-			});
+let timeEnd = new Date($("#timeEnd").val());
+let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
+//clear empty timeblock output
+if($("#timeblocks").html()=="None Added")
+{
+$("#timeblocks").empty();
+}
+$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
+}
+else
+{
+$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+}
+});
 
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Removal Error");
-			});
-		}
-	});
-	addToSetGenericRules();
-	*/
+request.fail(function( jqXHR, textStatus ) {
+$("#mainContainer").html("Removal Error");
+});
+}
+});
+addToSetGenericRules();
+*/
 }
 
 function tournamentEventAdd(myID)
 {
 	/*$("#addTo").validate({
-		submitHandler: function(form) {
-			var formData = $("#addTo").serialize();
-			formData+='&myID='+myID;
-			event.preventDefault();
+	submitHandler: function(form) {
+	var formData = $("#addTo").serialize();
+	formData+='&myID='+myID;
+	event.preventDefault();
 
-			var request = $.ajax({
-				url: $("#addTo").attr('action'),
-				cache: false,
-				method: "POST",
-				data: formData,
-				dataType: "text"
-			});
+	var request = $.ajax({
+	url: $("#addTo").attr('action'),
+	cache: false,
+	method: "POST",
+	data: formData,
+	dataType: "text"
+});
 
-			request.done(function( html ) {
-				$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
-				if(html>0)
-				{
-					loadpage('tournament','events',27); //refresh page to show added event
-					//$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Click refresh to select times or <button class='btn btn-primary' type='button' onclick='window.location.reload()'><span class='fa fa-refresh'></span> Refresh here</button>.</td></tr>");
-				}
-				else
-				{
-					$("#addTo").append("<div class='text-warning'>"+html+"</div>");
-				}
-			});
+request.done(function( html ) {
+$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
+if(html>0)
+{
+loadpage('tournament','events',27); //refresh page to show added event
+//$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Click refresh to select times or <button class='btn btn-primary' type='button' onclick='window.location.reload()'><span class='fa fa-refresh'></span> Refresh here</button>.</td></tr>");
+}
+else
+{
+$("#addTo").append("<div class='text-warning'>"+html+"</div>");
+}
+});
 
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Removal Error");
-			});
-		}
-	});
-	*/
+request.fail(function( jqXHR, textStatus ) {
+$("#mainContainer").html("Removal Error");
+});
+}
+});
+*/
 }
 
 function tournamentEventNote(myID)
@@ -1165,47 +1051,47 @@ function tournamentEventsAddAll(myID, year)
 function addToSubmit(myID)
 {
 	/*$("#addTo").validate({
-		submitHandler: function(form) {
-			var formData = $("#addTo").serialize();
-			formData+='&myID='+myID;
-			event.preventDefault();
-			//alert($("#addTo").serialize());
-			var request = $.ajax({
-				url: $("#addTo").attr('action'), //"tournamentteaminsert.php",
-				cache: false,
-				method: "POST",
-				data:  formData,
-				dataType: "html"
-			});
+	submitHandler: function(form) {
+	var formData = $("#addTo").serialize();
+	formData+='&myID='+myID;
+	event.preventDefault();
+	//alert($("#addTo").serialize());
+	var request = $.ajax({
+	url: $("#addTo").attr('action'), //"tournamentteaminsert.php",
+	cache: false,
+	method: "POST",
+	data:  formData,
+	dataType: "html"
+});
 
-			request.done(function( html ) {
-				//$("label[for='" + field + "']").append(html);
-				$(".text-success").remove(); //removes any old update notices
-				if(html>0)
-				{
-					history.back();
-				}
-				else
-				{
-					$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
-				}
-			});
+request.done(function( html ) {
+//$("label[for='" + field + "']").append(html);
+$(".text-success").remove(); //removes any old update notices
+if(html>0)
+{
+history.back();
+}
+else
+{
+$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
+}
+});
 
-			request.fail(function( jqXHR, textStatus ) {
-				$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
-			});
-		}
-	});
-	*/
+request.fail(function( jqXHR, textStatus ) {
+$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
+});
+}
+});
+*/
 }
 function addToSetGenericRules()
 {
 	$('#addTo :input').each(function() {
-	/*	$(this).rules('add', {
-			required: true,
-		});
-		*/
+		/*	$(this).rules('add', {
+		required: true,
 	});
+	*/
+});
 }
 
 function tournamentTimeblockRemove(myID)

@@ -17,63 +17,63 @@ if ($editing)
 	?>
 
 	<p>
-		<input id="active" name="active" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
+		<input id="active" name="active" class="form-check-input" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 	</p>
 	<?php
 } ?>
 <p>
 	<label for="first">Firstname</label>
-	<input id="first" name="first" type="text" value="<?=$row['first']?>">
+	<input id="first" name="first" class="form-control" type="text" value="<?=$row['first']?>" required>
 </p>
 <p>
 	<label for="last">Lastname</label>
-	<input id="last" name="last" type="text" value="<?=$row['last']?>">
+	<input id="last" name="last" class="form-control" type="text" value="<?=$row['last']?>" required>
 </p>
 <?php
 if (userHasPrivilege(4))
 {
 	?>
 	<p>
-		<input id="paidDues" name="paidDues" type="checkbox" <?=$row['paidDues']==1?"checked":""?>><label for="paidDues">Dues Paid</label>
+		<input id="paidDues" name="paidDues" class="form-check-input" type="checkbox" <?=$row['paidDues']==1?"checked":""?>><label for="paidDues">Dues Paid</label>
 
 		<label for="paidDuesDate">on Date</label>
-		<input id="paidDuesDate" name="paidDuesDate" type="date" value="<?=$row['paidDuesDate']?>">
+		<input id="paidDuesDate" name="paidDuesDate" class="form-control" type="date" value="<?=$row['paidDuesDate']?>">
 	</p>
 	<?php
 }
 ?>
 <p>
 	<label for="yearGraduating">Year Graduating</label>
-	<input id="yearGraduating" name="yearGraduating" type="text" value="<?=$row['yearGraduating']?>">
+	<input id="yearGraduating" name="yearGraduating" class="form-control" type="text" value="<?=$row['yearGraduating']?>" required>
 </p>
 <p>
 	<label for="studentschoolID">Student's School ID</label>
-	<input id="studentschoolID" name="studentschoolID" type="text" value="<?=$row['studentschoolID']?>">
+	<input id="studentschoolID" name="studentschoolID" class="form-control" type="text" value="<?=$row['studentschoolID']?>">
 </p>
 <p>
 	<label for="scilympiadID"><a href="https://scilympiad.com/">Scilympiad</a> ID</label>
-	<input id="scilympiadID" name="scilympiadID" type="text" value="<?=$row['scilympiadID']?>">
+	<input id="scilympiadID" name="scilympiadID" class="form-control" type="text" value="<?=$row['scilympiadID']?>">
 </p>
 <p>
 	<!--Changing Google Email may break functions TODO: Think about changing this ability-->
 	<label for="email">Google Email</label>
-	<input id="email" name="email" type="email" value="<?=$row['email']?>">
+	<input id="email" name="email" type="email" class="form-control" value="<?=$row['email']?>" required>
 </p>
 <p>
 	<label for="emailSchool">School Email</label>
-	<input id="emailSchool" name="emailSchool" type="email" value="<?=$row['emailSchool']?>">
+	<input id="emailSchool" name="emailSchool" class="form-control" type="email" value="<?=$row['emailSchool']?>" required>
 </p>
 <p>
 	<label for="phoneType">Phone Type</label>
-	<select id="phoneType" name="phoneType" value="<?=$row['phoneType']?>">
+	<select id="phoneType" name="phoneType" class="form-control" value="<?=$row['phoneType']?>">
 		<option value='0' <?=getSelected(0,$row['phoneType'])?>><?=getPhoneString(0)?></option>
 		<option value='1' <?=getSelected(1,$row['phoneType'])?>><?=getPhoneString(1)?></option>
 		<option value='2' <?=getSelected(2,$row['phoneType'])?>><?=getPhoneString(2)?></option>
 	</select>
 </p>
 <p>
-	<label for="phone">Phone</label>
-	<input id="phone" name="phone" type="tel" value="<?=$row['phone']?>">
+	<label for="phone">Phone (Format: 555-555-5555)</label>
+	<input id="phone" name="phone" class="form-control" placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" value="<?=$row['phone']?>" required>
 </p>
 <?php if($editing)
 {?>
@@ -101,37 +101,37 @@ if (userHasPrivilege(4))
 	<legend>Parent 1</legend>
 	<p>
 		<label for="parent1First">First</label>
-		<input id="parent1First" name="parent1First" type="text" value="<?=$row['parent1First']?>">
+		<input id="parent1First" name="parent1First" class="form-control" type="text" value="<?=$row['parent1First']?>" required>
 	</p>
 	<p>
 		<label for="parent1Last">Last</label>
-		<input id="parent1Last" name="parent1Last" type="text" value="<?=$row['parent1Last']?>">
+		<input id="parent1Last" name="parent1Last" class="form-control" type="text" value="<?=$row['parent1Last']?>" required>
 	</p>
 	<p>
 		<label for="parent1Email">Email</label>
-		<input id="parent1Email" name="parent1Email" type="email" value="<?=$row['parent1Email']?>">
+		<input id="parent1Email" name="parent1Email" class="form-control" type="email" value="<?=$row['parent1Email']?>" required>
 	</p>
 	<p>
-		<label for="parent1Phone">Phone</label>
-		<input id="parent1Phone" name="parent1Phone" type="tel" value="<?=$row['parent1Phone']?>">
+		<label for="parent1Phone">Phone (Format: 555-555-5555)</label>
+		<input id="parent1Phone" name="parent1Phone" class="form-control"placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" value="<?=$row['parent1Phone']?>" required>
 	</p>
 </fieldset>
 <fieldset>
 	<legend>Parent 2</legend>
 	<p>
 		<label for="parent2First">First</label>
-		<input id="parent2First" name="parent2First" type="text" value="<?=$row['parent2First']?>">
+		<input id="parent2First" name="parent2First" class="form-control" type="text" value="<?=$row['parent2First']?>">
 	</p>
 	<p>
 		<label for="parent2Last">Last</label>
-		<input id="parent2Last" name="parent2Last" type="text" value="<?=$row['parent2Last']?>">
+		<input id="parent2Last" name="parent2Last" class="form-control" type="text" value="<?=$row['parent2Last']?>">
 	</p>
 	<p>
 		<label for="parent2Email">Email</label>
-		<input id="parent2Email" name="parent2Email" type="email" value="<?=$row['parent2Email']?>">
+		<input id="parent2Email" name="parent2Email" class="form-control" type="email" value="<?=$row['parent2Email']?>">
 	</p>
 	<p>
-		<label for="parent2Phone">Phone</label>
-		<input id="parent2Phone" name="parent2Phone" type="tel" value="<?=$row['parent2Phone']?>">
+		<label for="parent2Phone">Phone (Format: 555-555-5555)</label>
+		<input id="parent2Phone" name="parent2Phone" class="form-control" placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" value="<?=$row['parent2Phone']?>">
 	</p>
 </fieldset>

@@ -218,7 +218,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
 }
 
 //get latest team schedule - also known as the notCompetition Tournament.
-function getLatestTeamTournamentStudent($db, $userID, $studentID)
+function getLatestTeamTournamentStudent($db, $studentID)
 {
 	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 ORDER BY `dateTournament` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -341,10 +341,11 @@ function studentCourseCompleted($db, $studentID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output .="<br><h3>Courses Completed - Level</h3>";
+		$output .="<h3>Courses Completed - Level</h3><ul>";
 		while ($row = $result->fetch_assoc()):
-			$output .= "<div id='courseCompleted-" . $row['coursecompletedID'] . "'>" . $row['course'] . " - " . $row['level'] . "</div>";
+			$output .= "<li id='courseCompleted-" . $row['coursecompletedID'] . "'>" . $row['course'] . " - " . $row['level'] . "</li>";
 		endwhile;
+		$output .= "</ul>";
 	}
 	return $output;
 }
@@ -358,10 +359,11 @@ function studentCourseEnrolled($db, $studentID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output .="<br><h3>Courses Enrolled - Level</h3>";
+		$output .="<h3>Courses Enrolled - Level</h3><ul>";
 		while ($row = $result->fetch_assoc()):
-			$output .= "<div id='courseEnrolled-" . $row['courseenrolledID'] . "'>" . $row['course'] . " - " . $row['level'] . "</div>";
+			$output .= "<li id='courseEnrolled-" . $row['courseenrolledID'] . "'>" . $row['course'] . " - " . $row['level'] . "</li>";
 		endwhile;
+		$output .= "</ul>";
 	}
 	return $output;
 }

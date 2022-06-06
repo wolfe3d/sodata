@@ -27,7 +27,7 @@ $row = null;
 <?php if(userHasPrivilege(4))
 		{ ?>
 		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='fa'>&#xf067;</span> Add</button>
-	<form id="addTo" method="post" action="tournamentadd.php">
+	<form id="addTo" method="post" action="javascript:alert( 'success!' );">
 		<fieldset>
 			<legend>Add Tournament</legend>
 		<?php require_once("tournamentform.php"); ?>

@@ -51,7 +51,7 @@ if($result)
 		<fieldset>
 			<legend>Add Event</legend>
 			<?php 	require_once  ("eventform.php"); ?>
-			<button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button>
+			<p><button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button><p>
 		</fieldset>
 	</form>
 	<a class='btn btn-secondary' role='button' href='#eventyear-edit-<?=getCurrentSOYear();?>'><span class='fa'>&#xf133;</span> Edit Year</a>
