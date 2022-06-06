@@ -265,7 +265,7 @@ function getUpcomingTournamentCoach($db, $schoolID)
 	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament` WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
-	if($result)
+	if($result && mysqli_num_rows($result)>0)
 	{
 		$output = '<h2>Upcoming Tournaments</h2><ul>';
 		while ($row = $result->fetch_assoc()):
