@@ -11,6 +11,7 @@ $eventPriorityID = isset($_POST['eventPriority'])?intval($_POST['eventPriority']
 $eventCompetitionID = isset($_POST['eventCompetition'])?intval($_POST['eventCompetition']):0;
 $courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
 $active = isset($_POST['active'])?intval($_POST['active']):0;
+$year = getCurrentSOYear();
 
 $activeQuery ="";
 if($active)
@@ -132,7 +133,7 @@ if($result)
 		{
 			$output .="<h3>Officer: $officerPos</h3>";
 		}
-		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID']);
+		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID'],$year);
 		if($eventLeaderPos)
 		{
 			$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";

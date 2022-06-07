@@ -1,31 +1,6 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
-
-$query = "SELECT * from `eventtype`";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-$eventTypes="";
-if($result)
-{
-	while ($row = $result->fetch_assoc()):
-		$eventTypes.="<option value = '".$row['type']."'>".$row['type']."</option>";
-	endwhile;
-}
-
-/*
-//Replaced by GetSOYears
-$query = "SELECT DISTINCT `year` FROM `eventyear` ORDER BY `year` DESC";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-$eventYears="<option value = '0'>All</option>";
-if($result)
-{
-	while ($row = $result->fetch_assoc()):
-		$eventYears.="<option value = '".$row['year']."'>".$row['year']."</option>";
-	endwhile;
-}
-*/
 ?>
 <div>
 <button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='fa'>&#xf002;</span> Find</button> <!-- toggles view of below div -->
@@ -39,7 +14,10 @@ if($result)
 				<?=getSOYears("",1)?>
 			</p>
 			<p>
-				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf073;</span> Find By Year</button>
+				<?=getDivisionList($mysqlConn,1)?>
+			</p>
+			<p>
+				<button class="btn btn-primary" type="submit"><span class='fa fa-search'></span> Search</button>
 			</p>
 		</fieldset>
 	</form>

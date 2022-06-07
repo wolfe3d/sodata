@@ -1,23 +1,31 @@
 <?php
 require_once  ("php/functions.php");
-userCheckPrivilege(3);
+userCheckPrivilege(5);
 
 $year = getIfSet($_REQUEST['myID'],getCurrentSOYear());
-$query = "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` LEFT JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` WHERE `schoolID`= " .$_SESSION['userData']['schoolID']. " AND `eventyear`.`year` LIKE '$year' ORDER BY `event`.`event` ASC ";
+$query = "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `eventyear`.`divisionID`, `event`.`event`";
+echo $query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
 $events = "";
+$eventDivision = "";
+if($result && mysqli_num_rows($result)>0)
+{
 while ($row = $result->fetch_assoc()):
-	$leaderStr = "Add";
-	$leaderName = "";
-	if($row['studentID'])
+	if($eventDivision!=$row['divisionID'])
 	{
-		$leaderStr ="Edit";
-		$leaderName = " - " . $row["last"] . ", " . $row["first"];
+		if($eventDivision)
+		{
+			$events .= "</ul>";
+		}
+		$events .= "<h2>Division ".$row['divisionID']."</h2><ul>";
 	}
-	$events .= "<div id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <span class='eventleader' data-id='".$row['studentID']."'>$leaderName</span> <a id='leaderlink-".$row["eventyearID"]."' href='#eventyear-leader-".$row["eventyearID"]."'>$leaderStr Leader</a> <a href='javascript:eventYearRemove(\"".$row["eventyearID"]."\")'>Remove</a></div>";
+	$events .= "<li id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <button class='btn btn-danger' type='button' onclick='eventYearRemove(".$row["eventyearID"].")'><span class='bi bi-trash'></span> Remove</button></li>";
+	$eventDivision=$row['divisionID'];
 endwhile;
+$events .= "</ul>";
+}
 ?>
+
 <form id="addTo" method="post" action="eventyearadd.php">
 	<p>
 		<label for="year">Year</label>
@@ -26,11 +34,15 @@ endwhile;
 	<div id="eventsP">
 		<?=$events?>
 	</div>
+	<hr>
+	<p>
+		<?=getDivisionList($mysqlConn, 0,"Division")?>
+	</p>
 	<p>
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
-	<p>
-		<input class="button fa" type="button" onclick="window.location='#events'" value="&#xf0a8; Return" />
-		<input class="submit fa" type="submit" value="&#xf067; Add">
-	</p>
+</p>
+	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
+	<button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button>
+</p>
 </form>

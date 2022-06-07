@@ -44,7 +44,7 @@ if (userHasPrivilege(4))
 ?>
 <p>
 	<label for="yearGraduating">Year Graduating</label>
-	<input id="yearGraduating" name="yearGraduating" class="form-control" type="text" value="<?=$row['yearGraduating']?>" required>
+	<input id="yearGraduating" name="yearGraduating" class="form-control" type="text" min="1982" value="<?=$row['yearGraduating']?>" required>
 </p>
 <p>
 	<label for="studentschoolID">Student's School ID</label>

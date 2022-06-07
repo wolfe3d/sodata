@@ -21,7 +21,7 @@ function getAllStudents($db, $active, $studentID)
 
 	if($result)
 	{
-		$myOutput .="<select class='form-select' id='studentID' name='studentID' type='text'>";
+		$myOutput .="<select class='form-select' id='studentID' name='studentID' type='text' required>";
 		$myOutput.="<option value = '0'>None</option>";
 		while ($row = $result->fetch_assoc()):
 			$selected = $row['studentID']==$studentID ? " selected " : "";
@@ -73,14 +73,27 @@ function getStudentName($db, $studentID)
 //get Name of the students school
 function getCurrentSchoolName($db)
 {
-	$query = "SELECT `schoolName`, `division` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$query = "SELECT `schoolName`, `divisionID` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		$row = $result->fetch_assoc();
-		return $row['schoolName'] . "(" . $row['division'] . ")";
+		return $row['schoolName'] . "(" . $row['divisionID'] . ")";
 	}
 	return 'No school associated';
+}
+
+//get Division of the students school
+function getCurrentSchoolDivision($db)
+{
+	$query = "SELECT `divisionID` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$row = $result->fetch_assoc();
+		return $row['divisionID'];
+	}
+	return 0;
 }
 
 //check Post variables and others if set.
@@ -390,9 +403,9 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 {
 	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID";
 	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "<ul>";
 	if ($result && mysqli_num_rows($result)>0)
 	{
+		$output = "<ul>";
 		while ($row = $result->fetch_assoc()):
 			//show results
 			$output.="<li>".$row['event'];
@@ -402,8 +415,8 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 			}
 			$output.=" (".studentPartners($db, $row['tournamenteventID'], $row['teamID'], $studentID).")</li>";
 		endwhile;
+		$output .= "</ul>";
 	}
-	$output .= "</ul>";
 	return $output;
 }
 
@@ -601,18 +614,59 @@ function getPhoneString($type)
 }
 
 //get list of events
+function getDivisionList($db, $all=0)
+{
+	$query = "SELECT * FROM `division` ORDER BY `divisionID` ASC";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output ="<div id='divisionsListDiv'><label for='division'>Division</label> ";
+	$output .="<select class='form-select' id='division' name='division' required>";
+	if($all)
+	{
+		$output .="<option value='0'>All Divisions</option>";
+	}
+	if($result && mysqli_num_rows($result)>0)
+	{
+		while ($row = $result->fetch_assoc()):
+			$output .= "<option value='".$row['divisionID']."'>Division " . $row['divisionID'] . " - ". $row['divisionName'] ."</option>";
+		endwhile;
+	}
+	$output.="</select></div>";
+	return $output;
+}
+
+//get list of events
 function getEventList($db, $number,$label)
 {
 	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
 	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
-	$events .="<select class='form-select' id='eventsList-$number' name='eventsList'>";
+	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
 	if($resultEventsList)
 	{
-		while ($rowEvents = $resultEventsList->fetch_assoc()):
-			$event = htmlspecialchars($db->real_escape_string($rowEvents['event']));
-			$type = getEventString($rowEvents['type']);
-			$events .= "<option value='".$rowEvents['eventID']."'>$event - $type</option>";
+		while ($row = $resultEventsList->fetch_assoc()):
+			$event = htmlspecialchars($db->real_escape_string($row['event']));
+			$type = getEventString($row['type']);
+			$events .= "<option value='".$row['eventID']."'>$event - $type</option>";
+		endwhile;
+	}
+	$events.="</select></div>";
+	return $events;
+}
+
+//get list of events for year
+function getEventListYear($db, $number,$label, $year)
+{
+	$year = intval($year);
+	$query = "SELECT `event`.`eventID`,`event`.`event`,`event`.`type` FROM `event` INNER JOIN `eventyear` ON `event`.`eventID`=`eventyear`.`eventID` WHERE `eventyear`.`year`=$year ORDER BY `event` ASC";
+	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
+	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
+	if($resultEventsList)
+	{
+		while ($row = $resultEventsList->fetch_assoc()):
+			$event = htmlspecialchars($db->real_escape_string($row['event']));
+			$type = getEventString($row['type']);
+			$events .= "<option value='".$row['eventID']."'>$event - $type</option>";
 		endwhile;
 	}
 	$events.="</select></div>";
@@ -628,7 +682,7 @@ function getTeamsPrevious($db, $tournamentID)
 
 	if($result)
 	{
-		$myOutput .="<select class='form-select' id='teamTournament' name='teamTournament' type='text'>";
+		$myOutput .="<select class='form-select' id='teamTournament' name='teamTournament' type='text' required>";
 		while ($row = $result->fetch_assoc()):
 			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['year']." ".$row['tournamentName']." " . $row['teamName'] ."</option>";
 		endwhile;
@@ -640,7 +694,7 @@ function getTeamsPrevious($db, $tournamentID)
 function getSOYears($myYear,$all=0)
 {
 	$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
-	$output = "<select class='form-control' id='year' name='year'>";
+	$output = "<select class='form-control' id='year' name='year' required>";
 	if($all)
 	{
 		$output .="<option value='0'>All Years</option>";
@@ -693,7 +747,7 @@ function getOfficerPositionPrevious($db,$studentID)
 	return $output;
 }
 //get Current Event Leader Position
-function getEventLeaderPosition($db,$studentID)
+function getEventLeaderPosition($db,$studentID,$year)
 {
 	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");

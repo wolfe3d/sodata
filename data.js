@@ -35,7 +35,6 @@ function getList(myPage, myData)
 	});
 	request.done(function( html ) {
 		$("#list").html(html);
-		//$('body,html').animate({scrollTop: $("#list").offset().top + "px"}, "slow");//move to search results
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -116,7 +115,6 @@ function loadpage(page, type, myID){
 					});
 				});
 				if(typepage=="add"){
-					//addToSetGenericRules();
 					addToSubmit();
 				}
 				break;
@@ -158,7 +156,6 @@ function loadpage(page, type, myID){
 					}
 					else{
 						addToSubmit(myID);
-						addToSetGenericRules();
 					}
 				});
 				break;
@@ -575,47 +572,34 @@ function eventyearPrepare(myID)
 	});
 	$("#addLeader").hide();
 	$("#eventID").hide();
-	// validate event form on keyup and submit
-	/*$("#addTo").validate({
-	rules: {
-	eventName: "required",
-	typeName: "required",
-},
-messages: {
-eventName: "*Please enter the name of the event.",
-typeName: "*Please enter the event type.",
-},
-submitHandler: function(form) {
-event.preventDefault();
-//alert($("#addTo").serialize());
-var request = $.ajax({
-url: $("#addTo").attr('action'),
-cache: false,
-method: "POST",
-data: $("#addTo").serialize(),
-dataType: "html"
-});
+	$( "#addTo" ).submit(function( event ) {
+		event.preventDefault();
+		var request = $.ajax({
+			url: $("#addTo").attr('action'),
+			cache: false,
+			method: "POST",
+			data: $("#addTo").serialize(),
+			dataType: "html"
+		});
 
-request.done(function( html ) {
-//$("label[for='" + field + "']").append(html);
-$(".text-success").remove(); //removes any old update notices
-if(html>0)
-{
-//add event to list
-$("#eventsP").append("<div id='eventyear-" + html + "'>"+$("#eventsList-0 option:selected" ).text()+" <a id='leaderlink-"+html+"' href='#eventyear-leader-"+html+"'>Add Leader</a> <a href='javascript:eventYearRemove(\""+html+"\")'>Remove</a></div>");
-}
-else
-{
-$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
-}
-});
+		request.done(function( html ) {
+			//$("label[for='" + field + "']").append(html);
+			$(".text-success").remove(); //removes any old update notices
+			if(html>0)
+			{
+				//add event to list
+				loadpage('eventyear','edit',$( "#year" ).val());
+			}
+			else
+			{
+				$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
+			}
+		});
 
-request.fail(function( jqXHR, textStatus ) {
-$("#mainContainer").html("Add event to year error");
-});
-}
-});
-*/
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").html("Add event to year error");
+		});
+	});
 }
 
 function eventyearLeader(myID)
@@ -758,87 +742,74 @@ function appendLeadingZeroes(n){
 
 function tournamentTimeAdd(myID)
 {
-	/*$("#addTo").validate({
-	submitHandler: function(form) {
-	var formData = $("#addTo").serialize();
-	formData+='&myID='+myID;
-	event.preventDefault();
+	$( "#addTo" ).submit(function( event ) {
+		event.preventDefault();
+		var request = $.ajax({
+			url: $("#addTo").attr('action'),
+			cache: false,
+			method: "POST",
+			data: formData,
+			dataType: "text"
+		});
 
-	var request = $.ajax({
-	url: $("#addTo").attr('action'),
-	cache: false,
-	method: "POST",
-	data: formData,
-	dataType: "text"
-});
+		request.done(function( html ) {
+			$(".text-success").remove(); //removes any old update notices
+			if(html>0)
+			{
+				//convert time to standard format
+				let timeStart = new Date($("#timeStart").val());
+				let timeStartFormatted = timeStart.getFullYear() + "-" + appendLeadingZeroes(timeStart.getMonth() + 1) + "-" + appendLeadingZeroes(timeStart.getDate()) + " " + appendLeadingZeroes(timeStart.getHours()) + ":" + appendLeadingZeroes(timeStart.getMinutes()) + ":" + appendLeadingZeroes(timeStart.getSeconds());
 
-request.done(function( html ) {
-$(".text-success").remove(); //removes any old update notices
-if(html>0)
-{
-//convert time to standard format
-let timeStart = new Date($("#timeStart").val());
-let timeStartFormatted = timeStart.getFullYear() + "-" + appendLeadingZeroes(timeStart.getMonth() + 1) + "-" + appendLeadingZeroes(timeStart.getDate()) + " " + appendLeadingZeroes(timeStart.getHours()) + ":" + appendLeadingZeroes(timeStart.getMinutes()) + ":" + appendLeadingZeroes(timeStart.getSeconds());
+				let timeEnd = new Date($("#timeEnd").val());
+				let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
+				//clear empty timeblock output
+				if($("#timeblocks").html()=="None Added")
+				{
+					$("#timeblocks").empty();
+				}
+				$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
+			}
+			else
+			{
+				$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+			}
+		});
 
-let timeEnd = new Date($("#timeEnd").val());
-let timeEndFormatted = timeEnd.getFullYear() + "-" + appendLeadingZeroes(timeEnd.getMonth() + 1) + "-" + appendLeadingZeroes(timeEnd.getDate()) + " " + appendLeadingZeroes(timeEnd.getHours()) + ":" + appendLeadingZeroes(timeEnd.getMinutes()) + ":" + appendLeadingZeroes(timeEnd.getSeconds());
-//clear empty timeblock output
-if($("#timeblocks").html()=="None Added")
-{
-$("#timeblocks").empty();
-}
-$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
-}
-else
-{
-$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
-}
-});
-
-request.fail(function( jqXHR, textStatus ) {
-$("#mainContainer").html("Removal Error");
-});
-}
-});
-addToSetGenericRules();
-*/
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").html("Removal Error");
+		});
+	});
 }
 
 function tournamentEventAdd(myID)
 {
-	/*$("#addTo").validate({
-	submitHandler: function(form) {
-	var formData = $("#addTo").serialize();
-	formData+='&myID='+myID;
-	event.preventDefault();
+	$( "#addTo" ).submit(function( event ) {
+		event.preventDefault();
+		var request = $.ajax({
+			url: $("#addTo").attr('action'),
+			cache: false,
+			method: "POST",
+			data: formData,
+			dataType: "text"
+		});
 
-	var request = $.ajax({
-	url: $("#addTo").attr('action'),
-	cache: false,
-	method: "POST",
-	data: formData,
-	dataType: "text"
-});
+		request.done(function( html ) {
+			$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
+			if(html>0)
+			{
+				loadpage('tournament','events',27); //refresh page to show added event
+				//$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Click refresh to select times or <button class='btn btn-primary' type='button' onclick='window.location.reload()'><span class='fa fa-refresh'></span> Refresh here</button>.</td></tr>");
+			}
+			else
+			{
+				$("#addTo").append("<div class='text-warning'>"+html+"</div>");
+			}
+		});
 
-request.done(function( html ) {
-$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
-if(html>0)
-{
-loadpage('tournament','events',27); //refresh page to show added event
-//$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Click refresh to select times or <button class='btn btn-primary' type='button' onclick='window.location.reload()'><span class='fa fa-refresh'></span> Refresh here</button>.</td></tr>");
-}
-else
-{
-$("#addTo").append("<div class='text-warning'>"+html+"</div>");
-}
-});
-
-request.fail(function( jqXHR, textStatus ) {
-$("#mainContainer").html("Removal Error");
-});
-}
-});
-*/
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").html("Removal Error");
+		});
+	});
 }
 
 function tournamentEventNote(myID)
@@ -1046,52 +1017,33 @@ function tournamentEventsAddAll(myID, year)
 	});
 }
 
-
-//TODO Work on this function to make it as resusable as possible
+//TODO: Work on this function to make it as resusable as possible
 function addToSubmit(myID)
 {
-	/*$("#addTo").validate({
-	submitHandler: function(form) {
-	var formData = $("#addTo").serialize();
-	formData+='&myID='+myID;
-	event.preventDefault();
-	//alert($("#addTo").serialize());
 	var request = $.ajax({
-	url: $("#addTo").attr('action'), //"tournamentteaminsert.php",
-	cache: false,
-	method: "POST",
-	data:  formData,
-	dataType: "html"
-});
-
-request.done(function( html ) {
-//$("label[for='" + field + "']").append(html);
-$(".text-success").remove(); //removes any old update notices
-if(html>0)
-{
-history.back();
-}
-else
-{
-$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
-}
-});
-
-request.fail(function( jqXHR, textStatus ) {
-$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
-});
-}
-});
-*/
-}
-function addToSetGenericRules()
-{
-	$('#addTo :input').each(function() {
-		/*	$(this).rules('add', {
-		required: true,
+		url: $("#addTo").attr('action'),
+		cache: false,
+		method: "POST",
+		data: {tournamentID: myID, year: year},
+		dataType: "html"
 	});
-	*/
-});
+
+	request.done(function( html ) {
+		//$("label[for='" + field + "']").append(html);
+		$(".text-success").remove(); //removes any old update notices
+		if(html>0)
+		{
+			history.back();
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
+	});
 }
 
 function tournamentTimeblockRemove(myID)
@@ -1122,12 +1074,14 @@ function rowRemove(myID,table)
 	request.done(function( html ) {
 		if(html==1) 	 {
 			$(".text-success").remove(); //removes any old update notices
-			$("#" + table + "-" + myID).before("<div class='text-success' style='color:blue'>"+$("#" + table + "-" + myID).text()+" removed permanently.</div>"); //add note to show modification
+			$("#" + table + "-" + myID + " button").remove();  //remove buttons in list
+			$("#" + table + "-" + myID + " a").remove(); //remove links in list
+			$("#" + table + "-" + myID).before("<div class='text-success'>"+$("#" + table + "-" + myID).text()+" removed permanently.</div>"); //add note to show modification
 			$("#" + table + "-" + myID).remove(); //remove element
 		}
 		else {
 			$(".text-success").remove();
-			$("#" + table + "-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
+			$("#" + table + "-" + myID).before("<div class='text-success'>Removal Error:"+html+"</div");
 		}
 	});
 

@@ -1,6 +1,11 @@
-	<?php if($row){ ?>
+	<?php
+	if(isset($row)){ ?>
 			<input id="eventID" name="eventID" class="form-control" type="hidden" value="<?=$row["eventID"]?>">
-	<?php } ?>
+	<?php }
+	else {
+		$row = NULL;
+	}
+	 ?>
 	<p>
 		<label for="event">Name</label>
 		<input id="event" name="event" class="form-control" type="text" value="<?=$row["event"]?>" required>

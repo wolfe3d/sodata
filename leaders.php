@@ -99,13 +99,13 @@ if($result)
 {
 	$output .="<br><hr><div>";
 	$output .="<h2>Event Leaders May $yearBeg - $year</h2>";
-	if(userHasPrivilege(4))
-	{
-		$output .="<div style='color:blue'>Note to coach: Modify event leaders in events.</div>";
-	}
 	if(userHasPrivilege(2))
 	{
 		$output .="<a class='btn btn-primary' role='button' href='#eventleader-emails-$year'><span class='fa'>&#xf01c;</span> Get Event Leader Emails</a>";
+	}
+	if(userHasPrivilege(4))
+	{
+		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-add-$year'><span class='fa fa-plus'></span> Add Event Leader</a>";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";

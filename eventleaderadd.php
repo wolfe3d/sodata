@@ -18,10 +18,9 @@ if(empty($year))
 		<?=getAllStudents($mysqlConn,1, NULL)?>
 	</p>
 	<p>
-		<label for="position">Assign Position</label>
-		<input id="position" name="position" class="form-control" type="text" placeholder="position" onchange="officerAdd()">
+		<?=getEventListYear($mysqlConn, 0,'Choose Event', $year)?>
 	</p>
 		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
-			<button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button>
+		<button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button>
 	</p>
 </form>
