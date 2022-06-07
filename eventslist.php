@@ -15,7 +15,7 @@ function getEventYears($db, $eventID)
 			{
 				if($division)
 				{
-					$output .= "$years</span>";
+					$output .= "$years</span> ";
 				}
 				$output .= "<span>Division ".$row['divisionID'].": ";
 				$years = "";
@@ -38,26 +38,27 @@ function getEventYears($db, $eventID)
 function getEventLeader($db, $eventID, $year, $schoolID)
 {
 	$yearWhere = "";
-	if(!$year)
+	if($year)
 	{
 		$yearWhere = "AND `eventleader`.`year` = $year";
 	}
-	$query = "SELECT `studentID`, `first`, `last`, `year` from `eventleader` LEFT JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
+	$query = "SELECT `student`.`studentID`, `first`, `last`, `year` from `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = "";
 	$leaderNumber = 0;
 	if($result && $result->num_rows>0){
-		$output = "<div>Event Leader:";
+		$output = "<div>Event Leader: ";
 		while ($row = $result->fetch_assoc()):
 			if($leaderNumber)
 			{
 				$output .= ", ";
 			}
-			if($result->num_rows>1)
+			$yearString = "";
+			if(!$year)
 			{
 				$yearString = "(" . $row['year'] . ")";
 			}
-			$output .= "<a href='#student-details-". $row['studentID'] ."'>".$row['first']." ".$row['last']."</a>";
+			$output .= "<a href='#student-details-". $row['studentID'] ."'>".$row['first']." ".$row['last']." $yearString</a>";
 			$leaderNumber +=1;
 		endwhile;
 		return $output;
