@@ -26,13 +26,13 @@ $row = null;
 </div>
 <?php if(userHasPrivilege(4))
 		{ ?>
-		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='bi bi-plus'></span> Add</button>
+		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='bi bi-plus-circle'></span> Add</button>
 	<form id="addTo" method="post" action="javascript:alert( 'success!' );">
 		<fieldset>
 			<legend>Add Tournament</legend>
 		<?php require_once("tournamentform.php"); ?>
 		</fieldset>
-		<p><button class="btn btn-primary" type="submit"><span class='bi bi-plus'></span> Add</button></p>
+		<p><button class="btn btn-primary" type="submit"><span class='bi bi-plus-circle'></span> Add</button></p>
 
 	</form>
 	<a class="btn btn-secondary" role="button" href="#tournaments-score-<?=getCurrentSOYear();?>"><span class='bi bi-pie-chart-fill'></span> Analysis</a>

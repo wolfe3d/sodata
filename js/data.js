@@ -101,7 +101,7 @@ function loadpage(page, type, myID){
 
 				case 'eventyear':
 				if(typepage=="edit"){
-					eventyearPrepare(myID);
+					//eventyearPrepare(myID);
 				}
 				else if (typepage=="leader"){
 					eventyearLeader(myID);
@@ -114,9 +114,6 @@ function loadpage(page, type, myID){
 						window.location.hash = '#leaders--'+ $("#year option:selected").text();
 					});
 				});
-				if(typepage=="add"){
-					addToSubmit();
-				}
 				break;
 
 				case 'tournaments':
@@ -559,67 +556,6 @@ function eventEdit(myID)
 	});
 }
 
-function eventyearPreparePage(myYear)
-{
-	$("#mainHeader").html("Edit a Year's Events");
-	window.location.hash = '#eventyear-edit-'+ myYear;
-}
-function eventyearPrepare(myID)
-{
-	//change year to add to
-	$("#year").change(function(){
-		eventyearPreparePage($( "#year" ).val());
-	});
-	$("#addLeader").hide();
-	$("#eventID").hide();
-	$( "#addTo" ).submit(function( event ) {
-		event.preventDefault();
-		var request = $.ajax({
-			url: $("#addTo").attr('action'),
-			cache: false,
-			method: "POST",
-			data: $("#addTo").serialize(),
-			dataType: "html"
-		});
-
-		request.done(function( html ) {
-			//$("label[for='" + field + "']").append(html);
-			$(".text-success").remove(); //removes any old update notices
-			if(html>0)
-			{
-				//add event to list
-				loadpage('eventyear','edit',$( "#year" ).val());
-			}
-			else
-			{
-				$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
-			}
-		});
-
-		request.fail(function( jqXHR, textStatus ) {
-			$("#mainContainer").html("Add event to year error");
-		});
-	});
-}
-
-function eventyearLeader(myID)
-{
-	addToSubmit(myID);
-	$('#addTo :input,select').each(function() {
-		$(this).change(function(){
-			fieldUpdate(myID,'eventyear',this.id,this.value,this.id,this.id);
-		});
-	});
-}
-
-function eventYearRemove(myID)
-{
-	if(confirm("Are you sure you want to delete the eventyear: " + $("#eventyear-"+myID+" .event").text() +"?  This removes the event permanently from this year!!!"))
-	{
-		rowRemove(myID,"eventyear");
-	}
-}
-
 ///////////////////
 ///Tournament functions
 //////////////////
@@ -1045,6 +981,33 @@ function addToSubmit(myID)
 	});
 }
 
+function addToSubmitNow(page)
+{
+	var request = $.ajax({
+		url: page,
+		cache: false,
+		method: "POST",
+		data: $("#addTo").serialize(),
+		dataType: "html"
+	});
+
+	request.done(function( html ) {
+		$(".text-success").remove(); //removes any old update notices
+		if(html>0)
+		{
+			history.back();
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
+	});
+}
+
 function tournamentTimeblockRemove(myID)
 {
 	if(confirm("Are you sure you want to delete the time block " + myID +"?  This removes the time block permanently!!!"))
@@ -1413,6 +1376,13 @@ function officerRemove(myID, myName)
 	if(confirm("Are you sure you want to remove " + myName + "(" + myID +") from their officer position?"))
 	{
 		rowRemove(myID,"officer");
+	}
+}
+function leaderRemove(myID, myName)
+{
+	if(confirm("Are you sure you want to remove " + myName + "(" + myID +") from their event leader position?"))
+	{
+		rowRemove(myID,"eventleader");
 	}
 }
 

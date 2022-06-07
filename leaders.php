@@ -35,7 +35,7 @@ if($result)
 
 //Get current year
 $yearBeg = $year-1;
-$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
+$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year ORDER BY `officerID`";
 //$output .=$query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -49,31 +49,19 @@ if($result)
 	}
 	if(userHasPrivilege(4))
 	{
-		$output .=" <a class='btn btn-primary' role='button' href='#officer-add-$year'><span class='bi bi-plus'></span> Add Officer</a>";
+		$output .=" <a class='btn btn-primary' role='button' href='#officer-addform-$year'><span class='bi bi-plus-circle'></span> Add Officer</a>";
 	}
 		$output .='</div><div>';
 	while ($row = $result->fetch_assoc()):
-		$output .="<div id='officer-".$row['officerID']."'>";
-		$officerName = $row['first']." ".$row['last'];
-		$output .="<hr><h3>$officerName</h3>";
-		if($row['position'])
-		{
-			$output .="<h4>".$row['position']."</h4>";
-		}
+		$output .="<hr><div id='officer-".$row['officerID']."'>";
+		$output .="<h3>".$row['position']."</h3>";
+		$leaderName = $row['first']." ".$row['last'];
+		$output .="<h4>$leaderName</h4>";
 		if(userHasPrivilege(5))
 		{
-			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")''><span class='bi bi-eraser'></span> Remove</a>";
+			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
-		$grade = 9;
-		if (date("m")>5)
-		{
-			$grade = 12-($row['yearGraduating']-date("Y")-1);
-		}
-		else
-		{
-			$grade = 12-($row['yearGraduating']-date("Y"));
-		}
-		$output .="<div>Grade: $grade (".$row['yearGraduating'].")</div>";
+		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
 			$output .="<div>Google Email:".$row['email']."</div>";
@@ -91,7 +79,7 @@ if($result)
 	$output .="</div>";
 }
 
-$query = "SELECT * FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
+$query = "SELECT * FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year ORDER BY `event`";
 //$output .=$query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -105,26 +93,19 @@ if($result)
 	}
 	if(userHasPrivilege(4))
 	{
-		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-add-$year'><span class='bi bi-plus'></span> Add Event Leader</a>";
+		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-addform-$year'><span class='bi bi-plus-circle'></span> Add Event Leader</a>";
 	}
 	while ($row = $result->fetch_assoc()):
-		$output .="<div id='eventleader-".$row['eventyearID']."'>";
-		$officerName = $row['first']." ".$row['last'];
-		$output .="<hr><h3>$officerName</h3>";
-		if($row['event'])
+		$output .="<hr><div id='eventleader-".$row['eventleaderID']."'>";
+		$output .="<h3>".$row['event']."</h3>";
+		$leaderName = $row['first']." ".$row['last'];
+		$output .="<h4>$leaderName</h4>";
+
+		if(userHasPrivilege(5))
 		{
-			$output .="<h4>".$row['event']."</h4>";
+			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
-		$grade = 9;
-		if (date("m")>5)
-		{
-			$grade = 12-($row['yearGraduating']-date("Y")+1);
-		}
-		else
-		{
-			$grade = 12-($row['yearGraduating']-date("Y"));
-		}
-		$output .="<div>Grade: $grade (".$row['yearGraduating'].")</div>";
+		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
 			$output .="<div>Google Email:".$row['email']."</div>";

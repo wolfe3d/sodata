@@ -48,7 +48,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			//only show add teams button if there needs to be more teams added
 			if($amountOfCreatedTeams<$numberTeams)
 			{
-				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-teamadd-".$row['tournamentID']."'><span class='bi bi-plus'></span> Add Teams</a>";
+				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-teamadd-".$row['tournamentID']."'><span class='bi bi-plus-circle'></span> Add Teams</a>";
 			}
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-times-".$row['tournamentID']."'><span class='bi bi-clock-history'></span> Time Blocks</a>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-events-".$row['tournamentID']."'><span class='bi bi-puzzle'></span> Events</a>";

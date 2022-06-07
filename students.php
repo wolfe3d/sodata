@@ -19,14 +19,14 @@ if($result)
 
 	<?php if(userHasPrivilege(3))
 	{ ?>
-	<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='bi bi-plus'></span> Add</button>
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='bi bi-plus-circle'></span> Add</button>
 
 	<form id="addTo" method="post" action="studentadd.php">
 		<fieldset>
 			<legend>Add Student</legend>
 			<?php require_once("studentform.php"); ?>
 		</fieldset>
-		<p><button class="btn btn-primary" type="submit"><span class='bi bi-plus'></span> Add</button></p>
+		<p><button class="btn btn-primary" type="submit"><span class='bi bi-plus-circle'></span> Add</button></p>
 
 	</form>
 	<!--Output student emails -->

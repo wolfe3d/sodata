@@ -2,26 +2,34 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
 
-$year = intval($_POST['myID']);
-if(empty($year))
+$year = intval($_POST['year']);
+$studentID = intval($_POST['studentID']);
+$position = $mysqlConn->real_escape_string($_POST['position']);
+if(empty($year)||empty($studentID)||empty($position))
 {
-	$year = getCurrentSOYear();
+	echo "Missing a required field in order to add an officer";
+	exit();
+}
+
+//Check to see if officer is already added
+$query = "SELECT * FROM `officer` WHERE `year` = $year AND `studentID` = $studentID AND `position` LIKE '$position'";
+$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+if ($row = $result->fetch_assoc())
+{
+	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	echo "Duplicate entry of $position";
+	exit();
+}
+
+//Insert event
+$query = "INSERT INTO `officer` (`studentID`, `year`, `position`) VALUES ($studentID, $year, '$position') ";
+if ($mysqlConn->query($query) === TRUE)
+{
+	echo $mysqlConn->insert_id;
+}
+else
+{
+	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	echo "Insert of $eventName failed.";
 }
 ?>
-<form id="addTo" method="post" action="officeraddadjust.php">
-	<p>
-		<label for="year">Year</label>
-		<?=getSOYears($year)?>
-	</p>
-	<p id="eventsP">
-		<label for="student">Student</label>
-		<?=getAllStudents($mysqlConn,1, NULL)?>
-	</p>
-	<p>
-		<label for="position">Assign Position</label>
-		<input id="position" name="position" class="form-control" type="text" placeholder="position" onchange="officerAdd()">
-	</p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
-			<button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button>
-	</p>
-</form>

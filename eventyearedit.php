@@ -43,6 +43,7 @@ $events .= "</ul>";
 	</p>
 </p>
 	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
-	<button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button>
+	<button class='btn btn-primary' type='submit'><span class='bi bi-plus-circle'></span> Add</button>
 </p>
 </form>
+<script src="js/eventyear.js"></script>

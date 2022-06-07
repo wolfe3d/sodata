@@ -22,7 +22,7 @@ function getAllStudents($db, $active, $studentID)
 	if($result)
 	{
 		$myOutput .="<select class='form-select' id='studentID' name='studentID' type='text' required>";
-		$myOutput.="<option value = '0'>None</option>";
+		$myOutput.="<option></option>";
 		while ($row = $result->fetch_assoc()):
 			$selected = $row['studentID']==$studentID ? " selected " : "";
 			$myOutput.="<option value = '".$row['studentID']."'$selected>".$row['last'].", ".$row['first']."</option>";
@@ -661,6 +661,7 @@ function getEventListYear($db, $number,$label, $year)
 	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
 	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
+	$events .="<option></option>";
 	if($resultEventsList)
 	{
 		while ($row = $resultEventsList->fetch_assoc()):

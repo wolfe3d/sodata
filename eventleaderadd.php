@@ -2,25 +2,34 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
 
-$year = intval($_POST['myID']);
-if(empty($year))
+$year = intval($_POST['year']);
+$studentID = intval($_POST['studentID']);
+$eventID = intval($_POST['eventsList']);
+if(empty($year)||empty($studentID)||empty($eventID))
 {
-	$year = getCurrentSOYear();
+	echo "Missing a required field in order to add an event leader";
+	exit();
+}
+
+//Check to see if officer is already added
+$query = "SELECT * FROM `eventleader` WHERE `year` = $year AND `studentID` = $studentID AND `eventID` = $eventID";
+$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+if ($row = $result->fetch_assoc())
+{
+	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	echo "Duplicate entry of $position";
+	exit();
+}
+
+//Insert event
+$query = "INSERT INTO `eventleader` (`studentID`, `year`, `eventID`) VALUES ($studentID, $year, $eventID) ";
+if ($mysqlConn->query($query) === TRUE)
+{
+	echo $mysqlConn->insert_id;
+}
+else
+{
+	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	echo "Insert of $studentID as a leader of $eventID failed.";
 }
 ?>
-<form id="addTo" method="post" action="officeraddadjust.php">
-	<p>
-		<label for="year">Year</label>
-		<?=getSOYears($year)?>
-	</p>
-	<p id="eventsP">
-		<label for="student">Student</label>
-		<?=getAllStudents($mysqlConn,1, NULL)?>
-	</p>
-	<p>
-		<?=getEventListYear($mysqlConn, 0,'Choose Event', $year)?>
-	</p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
-		<button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button>
-	</p>
-</form>
