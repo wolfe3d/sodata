@@ -9,11 +9,17 @@ if(empty($teamID))
 	echo "<div style='color:red'>teamID is not set.</div>";
 	exit();
 }
+$width = isset($_POST['width'])?intval($_POST['width']):0;
+$height = isset($_POST['height'])?intval($_POST['height']):0;
 
 //Get team and tournament row information
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $rowTeam = $resultTeam->fetch_assoc();
+
+
+if($width>600)
+{
 
 //Get tournament times
 $query = "SELECT * FROM `timeblock` WHERE `tournamentID` = ".$rowTeam['tournamentID']." ORDER BY `timeStart`";
@@ -243,6 +249,76 @@ if(mysqli_num_rows($result))
 else {
 	exit("<div>Set available time blocks first!</div>");
 }
+}
+else {
+		//mobile version
+
+		//Get student information row information
+		$query = "SELECT `student`.`studentID`, `student`.`first`, `student`.`last` FROM `team`
+		INNER JOIN `teammate` ON `teammate`.`teamID`=`team`.`teamID`
+		INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID`
+		INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+		WHERE `team`.`teamID` = $teamID
+		ORDER BY `last`, `first`";
+		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
+		$output .="<h3>".$rowTeam['tournamentName']."</h3>";
+	$output .="<div id='carouselExampleIndicators' class='carousel carousel-dark slide' data-bs-ride='false'>";
+	$output .="<div class='carousel-indicators'>";
+	for ($n = 0; $n < mysqli_num_rows($result); $n++) {
+  $output .="<button type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide-to='$n' class='active' aria-current='true' aria-label='Slide ". ($n+1) . "'></button>";
+	}
+		$output .="</div>";
+		$output .="<div class='carousel-inner' style='min-height:400px;'>";
+		$active = "active";
+		while ($row = $result->fetch_assoc()):
+			$output .="<div class='carousel-item $active '>";
+			$heading = $row['last'] . ", " . $row['first'];
+			$output .=studentTournamentSchedule($mysqlConn, $rowTeam['tournamentID'], $row['studentID'], $heading);
+			$output .="</div>";
+			$active  = "";
+		endwhile;
+
+		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>";
+		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>";
+	    $output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+	    $output .="<span class='visually-hidden'>Previous</span>";
+	  $output .="</button>";
+	  $output .="<button class='carousel-control-next' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='next'>";
+	    $output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+	    $output .="<span class='visually-hidden'>Next</span>";
+	  $output .="</button>";
+	$output .="</div>";
+}
+}
+/*
+	<div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="false">
+	  <div class="carousel-indicators">
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+	  </div>
+	  <div class="carousel-inner" style='height:<?=$height-225?>px'>
+	    <div class="carousel-item active">
+	      <div>One</div>
+	    </div>
+	    <div class="carousel-item">
+	      <div>Two</div>
+	    </div>
+	    <div class="carousel-item">
+				<div>Three</div>
+	    </div>
+	  </div>
+	  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+	    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	    <span class="visually-hidden">Previous</span>
+	  </button>
+	  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+	    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	    <span class="visually-hidden">Next</span>
+	  </button>
+	</div>
+ */
 echo $output;
 ?>
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>

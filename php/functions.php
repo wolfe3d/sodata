@@ -190,7 +190,7 @@ function tournamentHasThisTeammate($db, $tournamentID, $studentID)
 	return 0;
 }
 
-function studentTournamentSchedule($db, $tournamentID, $studentID)
+function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='Your events and partners')
 {
 	$schedule="";
 	//This query checks to see if there are students on this tournaments
@@ -201,7 +201,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID)
 			$query = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID AND `student`.`studentID` = $studentID order by `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			if($result && $result->num_rows > 0){
-				$schedule.="<h4>Your events and partners</h4>";
+				$schedule.="<h4>$heading</h4>";
 				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (All times ET)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
 				while ($row = $result->fetch_assoc()):
 					$schedule.="<tr><td>";

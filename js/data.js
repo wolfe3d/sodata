@@ -8,6 +8,30 @@ $().ready(function() {
 	//setTimeout(function() { loadpage("user") }, 3500000); //I don't think this does anything see php/checksession.php for updating token
 });
 
+//recognize if the window is too small for tables
+//You may use this to dynamically change format by sending width to backend
+//However, this would use lots of transfer data
+/*function pageResize(page)
+{
+$( window ).resize(function() {
+	var request = $.ajax({
+		url: page,
+		cache: false,
+		method: "POST",
+		data:{ width:$( window ).width()},
+		dataType: "html"
+	});
+	request.done(function( html ) {
+		alert(html);
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		//
+	});
+});
+}*/
+
+
 function checkPage(){
 	var splitHash = location.hash.substr(1).split("-");
 	$("section:not(#banner)").hide();
@@ -52,7 +76,7 @@ function loadpage(page, type, myID){
 		url: page+typepage+".php", //only adds page type if it exists, ex. #tournament-edit-6 ---> tournamentedit.php
 		cache: false,
 		method: "POST",
-		data: {myID: myID}, //myID passed to page here
+		data: {myID: myID, width:$( window ).width(), height:$( window ).height()}, //myID passed to page here
 		dataType: "html"
 	});
 
