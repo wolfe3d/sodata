@@ -16,7 +16,7 @@ if($officerPos)
 {
 	$output .="<h3>Officer: $officerPos</h3>";
 }
-$eventLeaderPos = getEventLeaderPosition($mysqlConn,$studentID);
+$eventLeaderPos = getEventLeaderPosition($mysqlConn,$studentID, getCurrentSOYear());
 if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";

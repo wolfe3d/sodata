@@ -61,8 +61,13 @@ function getEventLeader($db, $eventID, $year, $schoolID)
 			$output .= "<a href='#student-details-". $row['studentID'] ."'>".$row['first']." ".$row['last']." $yearString</a>";
 			$leaderNumber +=1;
 		endwhile;
-		return $output;
 	}
+	else
+	{
+		//Add leader
+		//TODO: Add button to add leader if there is not actually a leader assigned
+	}
+	return $output;
 }
 
 $output = "";//text output
