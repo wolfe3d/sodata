@@ -20,7 +20,7 @@ if(empty($year))
 	<p>
 		<?=getEventListYear($mysqlConn, 0,'Choose Event', $year)?>
 	</p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
-		<button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button>
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
+		<button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button>
 	</p>
 </form>

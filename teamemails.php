@@ -6,5 +6,5 @@ $teamID = intval($_POST['myID']);
 
 echo getTeamEmails($mysqlConn, $teamID, NULL,0);?>
 <p>
-<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='fa fa-arrow-circle-left'></span> Return</button>
+<button class='btn btn-outline-secondary' onclick='window.history.back()'><span class='bi bi-arrow-left-circle'></span> Return</button>
 </p>

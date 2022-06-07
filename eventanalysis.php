@@ -73,6 +73,6 @@ if ($totalEvents > 0 )
 
 //TODO: make a table instead
 //TODO: Add the option to change the year
-$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 echo $output;
 ?>

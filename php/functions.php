@@ -141,7 +141,7 @@ function studentTournamentResults($db, $studentID)
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id='".$row['tournamentName']."'>";
 			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament'];
-			$output.=" <a class='btn btn-secondary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='fa fa-desktop'></span> View Details</a></div>";
+			$output.=" <a class='btn btn-secondary btn-sm' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
 			$output.="</li>";
 			//show results
 			$output.=	studentEvents($db, $row['tournamentID'], $studentID, true);
@@ -241,7 +241,7 @@ function getLatestTeamTournamentStudent($db, $studentID)
 		$row = $result->fetch_assoc();
 		$output.="<div id='".$row['tournamentName']."'>";
 		$output .="<h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
-		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='fa fa-desktop'></span> View Details</a></div>";
+		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
 		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
 		$output.="</div>";
 	}
@@ -262,7 +262,7 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
-			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> View Details</a></div>";
+			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
 			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID);
 			$output.="</div>";
 		endwhile;
@@ -283,7 +283,7 @@ function getUpcomingTournamentCoach($db, $schoolID)
 		$output = '<h2>Upcoming Tournaments</h2><ul>';
 		while ($row = $result->fetch_assoc()):
 			$output.="<li id=\"".$row['tournamentName']."\">";
-			$output.= "<a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='fa fa-desktop'></span> ".$row['tournamentName']."</a>";
+			$output.= "<a class='btn btn-primary btn-sm' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> ".$row['tournamentName']."</a>";
 			$output .= " - " . $row['dateTournament'];
 			$output.="</li>";
 		endwhile;

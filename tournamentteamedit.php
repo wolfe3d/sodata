@@ -95,5 +95,5 @@ if($resultStudent){
 	<div># of Seniors = <span id="seniors"></span></div>
 	<div>Total Students = <span id="students"></span></div>
 	<br>
-	<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
+	<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
 </form>

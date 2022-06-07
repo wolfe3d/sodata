@@ -19,7 +19,7 @@ if($tournamentID)
 	{
 		$i=0;
 		while ($row = $result->fetch_assoc()):
-			$output .= "<li id='timeblock-".$row['timeblockID']."'>" . timeblockEdit($row['timeblockID'],date("Y:m:d G:i",strtotime($row["timeStart"])) ." - " . date("Y:m:d G:i",strtotime($row["timeEnd"])),(userHasPrivilege(3))) . " <a class='fa' href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .")'>&#xf00d; Remove</a>  </li>";
+			$output .= "<li id='timeblock-".$row['timeblockID']."'>" . timeblockEdit($row['timeblockID'],date("Y:m:d G:i",strtotime($row["timeStart"])) ." - " . date("Y:m:d G:i",strtotime($row["timeEnd"])),(userHasPrivilege(3))) . " <a href='javascript:tournamentTimeblockRemove(". $row['timeblockID'] .")'><span class='bi bi-trash'></span> Remove</a>  </li>";
 			$i+=1;
 			if ($i>11) $i=0;
 		endwhile;
@@ -45,7 +45,7 @@ if($tournamentID)
 		<input id="timeEnd" name="timeEnd" type="datetime-local" value="<?=$tournamentRow["dateTournament"]?>T00:00"/>
 	</p>
 	<p>
-		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
-		<button class='btn btn-primary' type="submit"><span class='fa fa-plus'></span> Add</button>
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
+		<button class='btn btn-primary' type="submit"><span class='bi bi-plus'></span> Add</button>
 	</p>
 </form>

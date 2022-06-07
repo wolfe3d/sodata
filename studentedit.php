@@ -51,7 +51,7 @@
 		</fieldset>
 		<?=$privilegeText ?>
 	</form>
-<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>	<div id='eventAndPriority'>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>	<div id='eventAndPriority'>
 		<?php include("eventsselect.php")?>
 		<div id="priority">
 			<label for="priorityList">Priority</label>

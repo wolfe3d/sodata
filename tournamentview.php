@@ -44,15 +44,15 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		if(userHasPrivilege(3))
 		{
 			//tournament edit button -> changes hash to tournament-edit-tournamentID
-			$output .="<div><a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='fa'>&#xf0ad;</span> Edit Information</a>";
+			$output .="<div><a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='bi bi-pencil-square'></span> Edit Information</a>";
 			//only show add teams button if there needs to be more teams added
 			if($amountOfCreatedTeams<$numberTeams)
 			{
-				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-teamadd-".$row['tournamentID']."'><span class='fa'>&#xf0c0;</span> Add Teams</a>";
+				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-teamadd-".$row['tournamentID']."'><span class='bi bi-plus'></span> Add Teams</a>";
 			}
-			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-times-".$row['tournamentID']."'><span class='fa'>&#xf017;</span> Time Blocks</a>";
-			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-events-".$row['tournamentID']."'><span class='fa'>&#xf0c3;</span> Events</a>";
-			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='fa'>&#xf073;</span> Choose Times</a>";
+			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-times-".$row['tournamentID']."'><span class='bi bi-clock-history'></span> Time Blocks</a>";
+			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-events-".$row['tournamentID']."'><span class='bi bi-puzzle'></span> Events</a>";
+			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
 			$output .="</div><br>";
 		}
 		if($row['websiteHost'])
@@ -129,8 +129,8 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		if(userHasPrivilege(3))
 		{
 			$output .="<p>";
-			$output .="<a class='btn btn-secondary' role='button' href='#tournament-emails-".$row['tournamentID']."'><span class='fa'>&#xf01c;</span> Get all teammate emails</a>";
-			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-parentemails-".$row['tournamentID']."'><span class='fa'>&#xf01c;</span> Get all parents</a>";
+			$output .="<a class='btn btn-secondary' role='button' href='#tournament-emails-".$row['tournamentID']."'><span class='bi bi-envelope'></span> Get all teammate emails</a>";
+			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-parentemails-".$row['tournamentID']."'><span class='bi bi-envelope-heart'></span> Get all parents</a>";
 			$output .="</p>";
 		}
 		if($studentID)
@@ -150,17 +150,17 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			if(userHasPrivilege(3))
 			{
 				$output .="<p>";
-				$output .="<a class='btn btn-primary' role='button' href='#tournament-teamedit-".$rowTeam['teamID']."'><span class='fa'>&#xf0c0;</span> Edit Team ".$rowTeam['teamName'] ."</a>";
+				$output .="<a class='btn btn-primary' role='button' href='#tournament-teamedit-".$rowTeam['teamID']."'><span class='bi bi-pencil-square'></span> Edit Team ".$rowTeam['teamName'] ."</a>";
 				if(!assignmentMade($mysqlConn, $rowTeam['teamID'])||userHasPrivilege(4))
 				{
-						$output .=" <a class='btn btn-info' role='button' href='#tournament-teampropose-".$rowTeam['teamID']."'><span class='fa'>&#xf06d;</span> Propose Assignments</a>";
+						$output .=" <a class='btn btn-info' role='button' href='#tournament-teampropose-".$rowTeam['teamID']."'><span class='bi bi-tornado'></span> Propose Assignments</a>";
 				}
-				$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."'><span class='fa'>&#xf06d;</span> Assign Events</a>";
-				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-emails-".$rowTeam['teamID']."'><span class='fa'>&#xf01c;</span> Get team emails</a>";
+				$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."'><span class='bi bi-clipboard-plus'></span> Assign Events</a>";
+				$output .=" <a class='btn btn-secondary' role='button' href='#tournament-emails-".$rowTeam['teamID']."'><span class='bi bi-envelope'></span> Get team emails</a>";
 				$output .="</p>";
 			}
 			else {
-				$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."'><span class='fa'>&#xf06d;</span> View Events</a>";
+				$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."'><span class='bi bi-clipboard-data'></span> View Events</a>";
 			}
 		endwhile;
 
@@ -168,12 +168,12 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 		{
 			//there are no results for a team assignment, so this is only shown for a real tournament
 			$output .="<h2>Tournament Results</h2>";
-			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'><span class='fa'>&#xf080;</span> View Scores</a></p>";
+			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'><span class='bi bi-chart-line'></span> View Scores</a></p>";
 		}
 	}
 	$output .="</div>";
 
-	$output .= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+	$output .= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 
 echo $output;
 ?>

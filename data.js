@@ -767,7 +767,7 @@ function tournamentTimeAdd(myID)
 				{
 					$("#timeblocks").empty();
 				}
-				$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a class='fa' href='javascript:tournamentTimeblockRemove("+html+")'>&#xf00d; Remove</a></li>");
+				$("#timeblocks").append("<li id='timeblock-"+html+"'><a href='#tournament-eventtimechange-"+html+"'>"+timeStartFormatted+" - "+timeEndFormatted+"</a> <a href='javascript:tournamentTimeblockRemove("+html+")'><span class='bi bi-trash'></span> Remove</a></li>");
 			}
 			else
 			{
@@ -798,7 +798,6 @@ function tournamentEventAdd(myID)
 			if(html>0)
 			{
 				loadpage('tournament','events',27); //refresh page to show added event
-				//$("#eventBody").append("<tr><th>"+$("#eventsList-0  option:selected").text()+"("+$("#eventsList-0").val()+")</th><td colspan=3>Click refresh to select times or <button class='btn btn-primary' type='button' onclick='window.location.reload()'><span class='fa fa-refresh'></span> Refresh here</button>.</td></tr>");
 			}
 			else
 			{

@@ -19,7 +19,7 @@ while ($row = $result->fetch_assoc()):
 		}
 		$events .= "<h2>Division ".$row['divisionID']."</h2><ul>";
 	}
-	$events .= "<li id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <button class='btn btn-danger' type='button' onclick='eventYearRemove(".$row["eventyearID"].")'><span class='bi bi-trash'></span> Remove</button></li>";
+	$events .= "<li id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <button class='btn btn-danger btn-sm' type='button' onclick='eventYearRemove(".$row["eventyearID"].")'><span class='bi bi-trash'></span> Remove</button></li>";
 	$eventDivision=$row['divisionID'];
 endwhile;
 $events .= "</ul>";
@@ -42,7 +42,7 @@ $events .= "</ul>";
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
 </p>
-	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>
-	<button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button>
+	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
+	<button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button>
 </p>
 </form>

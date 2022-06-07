@@ -19,7 +19,7 @@ if($result)
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
 		if(userHasPrivilege(5) || $_SESSION['userData']['userID']==$row['userID'])
 		{
-			$output .="<div><a class='btn btn-primary' role='button' href='javascript:coachEdit(".$row['coachID'].")'><span class='fa fa-edit'></span> Edit</a></div>";
+			$output .="<div><a class='btn btn-primary' role='button' href='javascript:coachEdit(".$row['coachID'].")'><span class='bi bi-pencil-square'></span> Edit</a></div>";
 		}
 		if($row['position'])
 		{
@@ -45,11 +45,11 @@ if($result)
 	$output .='<div>';
 	if(userHasPrivilege(3))
 	{
-		$output .="<a class='btn btn-primary' role='button' href='#officer-emails-$year'><span class='fa'>&#xf01c;</span> Get Officer Emails</a>";
+		$output .="<a class='btn btn-primary' role='button' href='#officer-emails-$year'><span class='bi bi-envelope'></span> Get Officer Emails</a>";
 	}
 	if(userHasPrivilege(4))
 	{
-		$output .=" <a class='btn btn-primary' role='button' href='#officer-add-$year'><span class='fa fa-plus'></span> Add Officer</a>";
+		$output .=" <a class='btn btn-primary' role='button' href='#officer-add-$year'><span class='bi bi-plus'></span> Add Officer</a>";
 	}
 		$output .='</div><div>';
 	while ($row = $result->fetch_assoc()):
@@ -62,7 +62,7 @@ if($result)
 		}
 		if(userHasPrivilege(5))
 		{
-			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")''><span class='fa fa-eraser'></span> Remove</a>";
+			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$officerName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
 		$grade = 9;
 		if (date("m")>5)
@@ -101,11 +101,11 @@ if($result)
 	$output .="<h2>Event Leaders May $yearBeg - $year</h2>";
 	if(userHasPrivilege(2))
 	{
-		$output .="<a class='btn btn-primary' role='button' href='#eventleader-emails-$year'><span class='fa'>&#xf01c;</span> Get Event Leader Emails</a>";
+		$output .="<a class='btn btn-primary' role='button' href='#eventleader-emails-$year'><span class='bi bi-envelope'></span> Get Event Leader Emails</a>";
 	}
 	if(userHasPrivilege(4))
 	{
-		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-add-$year'><span class='fa fa-plus'></span> Add Event Leader</a>";
+		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-add-$year'><span class='bi bi-plus'></span> Add Event Leader</a>";
 	}
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='eventleader-".$row['eventyearID']."'>";

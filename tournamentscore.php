@@ -8,7 +8,7 @@ require_once  ("php/functionstournament.php");
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
-$returnBtn = "<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button>";
+$returnBtn = "<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>";
 
 if(empty($tournamentID))
 {
@@ -125,7 +125,7 @@ else
 	$output .= "<p>" . $returnBtn;
 	if(userHasPrivilege(4))
 	{
-		$output .= " <button class='btn btn-dark' type='button' onclick='tournamentScoresSave(`$tournamentID`)'><span class='fa fa-save'></span> Save Scores</button>";
+		$output .= " <button class='btn btn-dark' type='button' onclick='tournamentScoresSave(`$tournamentID`)'><span class='bi bi-save'></span> Save Scores</button>";
 	}
 	$output .= "</p></form>";
 }

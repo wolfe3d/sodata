@@ -26,7 +26,7 @@ else {
 		if($amountOfCreatedTeams>=$numberTeams)
 		{
 			echo "<div style='color:red'>The maximum number of teams has been created.</div>";
-			echo "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+			echo "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 			exit();
 		}
 	}

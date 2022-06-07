@@ -15,7 +15,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 //sum scores with javascript only
 
 
-$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>";
+$returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";

@@ -4,7 +4,7 @@ userCheckPrivilege(1);
 $row = null;
 ?>
 <div>
-	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='fa'>&#xf002;</span> Find</button> <!-- toggles view of below div -->
+	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='bi bi-search'></span> Find</button> <!-- toggles view of below div -->
 	<div id="searchDiv">
 	<form id="findTournament">
 		<fieldset>
@@ -19,23 +19,23 @@ $row = null;
 					 <span style="color:blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>
-				<button class="btn btn-primary" type="submit"><span class='fa'>&#xf024;</span> Find Tournament</button>
+				<button class="btn btn-primary" type="submit"><span class='bi bi-controller'></span> Find Tournament</button>
 			</p>
 		</fieldset>
 	</form>
 </div>
 <?php if(userHasPrivilege(4))
 		{ ?>
-		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='fa'>&#xf067;</span> Add</button>
+		<button class="btn btn-secondary" type="button" onclick="javascript:toggleAdd()"><span class='bi bi-plus'></span> Add</button>
 	<form id="addTo" method="post" action="javascript:alert( 'success!' );">
 		<fieldset>
 			<legend>Add Tournament</legend>
 		<?php require_once("tournamentform.php"); ?>
 		</fieldset>
-		<p><button class="btn btn-primary" type="submit"><span class='fa'>&#xf067;</span> Add</button></p>
+		<p><button class="btn btn-primary" type="submit"><span class='bi bi-plus'></span> Add</button></p>
 
 	</form>
-	<a class="btn btn-secondary" role="button" href="#tournaments-score-<?=getCurrentSOYear();?>"><span class='fa'>&#xf200;</span> Analysis</a>
+	<a class="btn btn-secondary" role="button" href="#tournaments-score-<?=getCurrentSOYear();?>"><span class='bi bi-pie-chart-fill'></span> Analysis</a>
 
 	</div>
 </div>

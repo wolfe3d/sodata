@@ -103,15 +103,15 @@ if($result&& $result->num_rows>0)
 		//check for permissions to create edit an event btn
 		if(userHasPrivilege(3) )
 		{
-			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."'><span class='fa'>&#xf108;</span> Edit</a>";
+			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
 		}
 		if(userHasPrivilege(2))
 		{
-			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."'><span class='fa'>&#xf01c;</span> Get emails</a>";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."'><span class='bi bi-envelope'></span> Get emails</a>";
 		}
 		if(userHasPrivilege(3) )
 		{
-			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."'><span class='fa'>&#xf200;</span> Analysis</a>";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."'><span class='bi bi-pie-chart-fill'></span> Analysis</a>";
 		}
 
 		//$yearCollection = $yearCollection?$yearCollection:"Trial Event";

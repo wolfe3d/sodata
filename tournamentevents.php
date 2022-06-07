@@ -79,7 +79,7 @@ if(mysqli_num_rows($result))
 		endwhile;
 	}
 	else {
-		exit("<p><button class='btn btn-primary' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")'><span class='fa fa-plus'></span> Add all events from this year</button></p>");
+		exit("<p><button class='btn btn-primary' type='button' onclick='javascript:tournamentEventsAddAll($tournamentID,".$tournamentRow['year'].")'><span class='bi bi-plus'></span> Add all events from this year</button></p>");
 	}
 	$output .="<tr><td>Total Events=$totalEvents</td></tr>";
 	$output .="</tbody></table></form>";
@@ -97,7 +97,7 @@ echo $output;
 	<p>
 		<?=getEventList($mysqlConn, 0,"Events")?>
 	</p>
-	<p><button class='btn btn-primary' type='submit'><span class='fa fa-plus'></span> Add</button></p>
+	<p><button class='btn btn-primary' type='submit'><span class='bi bi-plus'></span> Add</button></p>
 
-<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='fa fa-arrow-circle-left'></span> Return</button></p>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
 </form>

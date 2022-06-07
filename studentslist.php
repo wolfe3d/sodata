@@ -141,9 +141,9 @@ if($result)
 
 		if(userHasPrivilege(3)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
 		{
-			$output .="<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='fa'>&#xf044;</span> Edit</a>";
+			$output .="<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
 		}
-		$output .= userHasPrivilege(5)?" <a class='btn btn-danger' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='fa fa-eraser'></span> Remove</a>":"";
+		$output .= userHasPrivilege(5)?" <a class='btn btn-danger' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
 		$output .= "</div>";
 		//show privilege
 		if(userHasPrivilege(3))
@@ -183,7 +183,7 @@ if($result)
 		}
 		if(userHasPrivilege(3))
 		{
-			$output .="<div><a class='btn btn-primary' role='button' href='#student-details-".$row['studentID']."'><span class='fa fa-book'></span> Details</a></div>";
+			$output .="<div><a class='btn btn-primary' role='button' href='#student-details-".$row['studentID']."'><span class='bi bi-journal'></span> Details</a></div>";
 		}
 
 		$output .="</div>";

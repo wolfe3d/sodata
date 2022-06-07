@@ -616,7 +616,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 						$checkbox = "teammateplace-".$row['tournamenteventID']."-".$row['studentID'];
 						$checkboxEvent = "timeblock-".$row['timeblockID']." teammateEvent-".$row['tournamenteventID']." teammateStudent-".$row['studentID'];
 						$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$row['timeblockID']."'>";
-						$output .="<div class='fa'>&#xf00c; (".number_format($row['note'],1).")</div>";
+						$output .="<div class='bi bi-clipboard-pulse'> (".number_format($row['note'],1).")</div>";
 						$notescore +=$row['note'];
 						$output .="</td>";
 					}
