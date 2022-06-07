@@ -64,4 +64,4 @@
 			</select>
 		</div>
 	</div>
-	<?php include("courseselect.php")?>
+	<?=getCourseList($mysqlConn)?>

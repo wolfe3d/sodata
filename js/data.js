@@ -152,7 +152,6 @@ function loadpage(page, type, myID){
 						tournamentScore();
 					}
 					else{
-						addToSubmit(myID);
 					}
 				});
 				break;
@@ -192,7 +191,7 @@ function studentPreparePage()
 	//when Find by Event is clicked, this initiates the search
 	$("#findByEventPriority").on( "submit", function( event ) {
 		event.preventDefault();
-		getList("studentslist.php", {eventPriority: $("#eventsList-0").val(),active:$("#active").is(':checked')?"1":"0"});
+		getList("studentslist.php", {eventPriority: $("#eventsList").val(),active:$("#active").is(':checked')?"1":"0"});
 	});
 	$("#findByEventCompetition").on( "submit", function( event ) {
 		event.preventDefault();
@@ -952,36 +951,7 @@ function tournamentEventsAddAll(myID, year)
 	});
 }
 
-//TODO: Work on this function to make it as resusable as possible
-function addToSubmit(myID)
-{
-	var request = $.ajax({
-		url: $("#addTo").attr('action'),
-		cache: false,
-		method: "POST",
-		data: {tournamentID: myID, year: year},
-		dataType: "html"
-	});
-
-	request.done(function( html ) {
-		//$("label[for='" + field + "']").append(html);
-		$(".text-success").remove(); //removes any old update notices
-		if(html>0)
-		{
-			history.back();
-		}
-		else
-		{
-			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
-		}
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
-	});
-}
-
-function addToSubmitNow(page)
+function addToSubmit(page)
 {
 	var request = $.ajax({
 		url: page,

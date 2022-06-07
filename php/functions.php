@@ -437,12 +437,13 @@ function getEmailList($result)
 		$emails.=$row['first'] . " " . $row['last'] . " ";
 		if(isset($row['email'])&&$row['email']){
 			$emails.= "&lt;" . $row['email'] . "&gt;; ";
+			$emails.="<br>";
 		}
 
 		if(isset($row['emailSchool'])&&$row['emailSchool']){
 			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+			$emails.="<br>";
 		}
-		$emails.="<br>";
 	endwhile;
 	return $emails;
 }
@@ -455,12 +456,13 @@ function getEmailParentList($result)
 		if($row['parent1Email']){
 			$emails.=$row['parent1First'] . " " . $row['parent1Last']." ";
 			$emails.="&lt;" . $row['parent1Email'] . "&gt;; ";
+			$emails.="<br>";
 		}
 		if($row['parent2Email']){
 			$emails.=$row['parent2First'] . " " . $row['parent2Last']." ";
 			$emails.="&lt;" . $row['parent2Email'] . "&gt;; ";
+			$emails.="<br>";
 		}
-		$emails.="<br>";
 	endwhile;
 	return $emails;
 }
@@ -635,12 +637,14 @@ function getDivisionList($db, $all=0)
 }
 
 //get list of events
-function getEventList($db, $number,$label)
+function getEventList($db, $number=0,$label)
 {
+	$name = $number>0?"eventsList-$number":"eventsList";
 	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
 	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
-	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
+	$events .="<select class='form-select' id='$name' name='$name' required>";
+	$events .="<option></option>";
 	if($resultEventsList)
 	{
 		while ($row = $resultEventsList->fetch_assoc()):
@@ -651,6 +655,24 @@ function getEventList($db, $number,$label)
 	}
 	$events.="</select></div>";
 	return $events;
+}
+
+//get list of courses
+function getCourseList($db)
+{
+$query = "SELECT * FROM `course` ORDER BY `course` ASC";// where `field` = $fieldId";
+$resultCourseList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqldbConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$courses ="<div id='courseListDiv'><label for='courseList'>Courses</label> ";
+$courses .="<select id='courseList' name='courseList' class='form-select'>";
+	$courses .="<option></option>";
+	if($resultCourseList)
+	{
+		while ($row = $resultCourseList->fetch_assoc()):
+			$courses .= "<option value='" . $row['courseID'] . "'>" . $row['course'] . " - " . $row['level'] . "</option>";
+		endwhile;
+	}
+	$courses.="</select></div>";
+echo $courses;
 }
 
 //get list of events for year

@@ -26,7 +26,7 @@ function printResults($db,$query,$student)
 				$output.="<div class='p-2'>Student/Coach Name: " .$row['last'] . ", " . $row['first'] ."</div>";
 				$output.="<div class='p-2'>" . $row['schoolName'] ."</div>";
 			}
-			$output.="<div class='ml-auto p-2'><a class='btn btn-dark btn-sm' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='bi bi-earmark-person'></span> Impersonate</a></div>";
+			$output.="<div class='ml-auto p-2'><a class='btn btn-dark btn-sm' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='bi bi-file-earmark-person'></span> Impersonate</a></div>";
 			$output.="</div>";
 		endwhile;
 	}

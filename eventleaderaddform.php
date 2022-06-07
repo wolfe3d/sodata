@@ -8,7 +8,7 @@ if(empty($year))
 	$year = getCurrentSOYear();
 }
 ?>
-<form id="addTo" method="post" action="javascript:addToSubmitNow('eventleaderadd.php')">
+<form id="addTo" method="post" action="javascript:addToSubmit('eventleaderadd.php')">
 	<p>
 		<label for="year">Year</label>
 		<?=getSOYears($year)?>

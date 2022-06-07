@@ -42,22 +42,22 @@ if($result)
 <br><br>
 	<form id="findStudent">
 		<div>
-			<input type="checkbox" id="active" name="active" value="1" checked>
-			<label for="active">Show only active students</label>
+			<input type="checkbox" id="active" name="active" value="1" class="form-check-input" checked>
+			<label for="active" class="form-check-label">Show only active students</label>
 		</div>
 		<div id="searchDiv">
 		<fieldset>
 			<legend>Find Student By name</legend>
 			<p>
 				<label for="first">Firstname</label>
-				<input id="first" name="first" type="text">
+				<input id="first" name="first" class="form-control" type="text">
 			</p>
 			<p>
 				<label for="last">Lastname</label>
-				<input id="last" name="last" type="text">
+				<input id="last" name="last" class="form-control" type="text">
 			</p>
 			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-earmark-person'></span> Find By Name</button>
+				<button class="btn btn-primary" type="submit"><span class='bi bi-file-earmark-person'></span> Find By Name</button>
 			</p>
 		</fieldset>
 	</form>
@@ -87,7 +87,7 @@ if($result)
 		<fieldset>
 			<legend>Find Students by Coursework</legend>
 			<p>
-				<?php include("courseselect.php")?>
+				<?=getCourseList($mysqlConn)?>
 			</p>
 			<p>
 				<button class="btn btn-primary" type="submit"><span class='bi bi-book'></span> Find By Course</button>
