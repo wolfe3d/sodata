@@ -198,15 +198,22 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 	{
 		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))
 		{
-			$query = "SELECT DISTINCT `student`.`studentID`, `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`userID`,`event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` inner join tournamenttimechosen on teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID inner join timeblock on tournamenttimechosen.timeblockID = timeblock.timeblockID where tournamentevent.`tournamentID` = $tournamentID AND `student`.`studentID` = $studentID order by `timeStart`";
+			$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace`
+			INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
+			INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
+			INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
+			INNER JOIN `tournamenttimechosen` ON teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID
+			INNER JOIN `timeblock` ON tournamenttimechosen.timeblockID = timeblock.timeblockID
+			WHERE `tournamentevent`.`tournamentID` = $tournamentID AND `student`.`studentID` = $studentID
+			ORDER BY `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			if($result && $result->num_rows > 0){
 				$schedule.="<h4>$heading</h4>";
-				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (All times ET)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
+				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (Local)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
 				while ($row = $result->fetch_assoc()):
 					$schedule.="<tr><td>";
 					if($row['timeStart']){
-						$schedule.=date("H:i",strtotime($row['timeStart']))." - ".date("H:i",strtotime($row['timeEnd']));
+						$schedule.="<div>" . date("g:iA",strtotime($row["timeStart"]))."</div><div>".date("g:iA",strtotime($row["timeEnd"]))."</div>";
 					}
 					$schedule.="</td>";
 					$schedule.="<td>".$row['event']."</td>";
@@ -227,6 +234,38 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 	else {
 		return "<div class='text-warning'>SAVE THE DATE.  Students have not been scheduled for this tournament.</div>";
 	}
+	return $schedule;
+}
+
+function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
+{
+	$schedule="";
+$query = "SELECT DISTINCT `timeblock`.`timeblockID`,`event`.`eventID`, `tournamentevent`.`tournamenteventID`, `event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `tournamenttimechosen`
+INNER JOIN `tournamentevent` on `tournamenttimechosen`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
+INNER JOIN `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
+INNER JOIN  `event` on `tournamentevent`.`eventID` = `event`.`eventID`
+where `tournamenttimechosen`.`timeblockID` = $timeBlockID AND `tournamenttimechosen`.`teamID`=$teamID
+order by `event`.`event`";
+	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && $result->num_rows > 0){
+	$firstRow = 1;
+				while ($row = $result->fetch_assoc()):
+				if($firstRow)
+				{
+					$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
+					$schedule.="<h4>$time</h4>";
+					$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
+					$firstRow = 0;
+				}
+					$schedule.="<tr>";
+					$schedule.="<td>".$row['event']."</td>";
+					$schedule.="<td>".$row['note']."</td>";
+					$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID)."</td>";
+					$schedule.="</tr>";
+				endwhile;
+				$schedule.="</tbody></table>";
+
+}
 	return $schedule;
 }
 
@@ -332,6 +371,25 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 	}
 	return $output;
 }
+
+//find partners for an event in a tournament and returns Emails with line breaks
+function partnersWithEmails($db,$tournamentEventID, $teamID)
+{
+	//check partner(s)
+	$output =  "";
+	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID ORDER BY `student`.`last`, `student`.`first`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
+		while ($row = $result->fetch_assoc()):
+			$output.= $row['first']." ".$row['last']." <a href='mailto:".$row['email']."'>".$row['email']."</a><br>";
+		endwhile;
+	}
+	else {
+		$output = "No partner!";
+	}
+	return $output;
+}
+
 
 //find Scilympiad ID
 function studentScilympiadID($db, $studentID)

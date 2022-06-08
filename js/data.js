@@ -1,5 +1,10 @@
 //TODO: Add blocker to keep users from clicking multiple times while an AJAX event is being completed.
-$().ready(function() {
+var mobile = 0;
+if ( $( window ).width() <= 650 )
+{
+	mobile = 1;
+}
+$(document).ready(function() {
 	//wait for the page to load before the following is run
 	checkPage();
 	$(window).on('hashchange', function() {
@@ -9,28 +14,19 @@ $().ready(function() {
 });
 
 //recognize if the window is too small for tables
-//You may use this to dynamically change format by sending width to backend
-//However, this would use lots of transfer data
-/*function pageResize(page)
+$( window ).resize(function()
 {
-$( window ).resize(function() {
-	var request = $.ajax({
-		url: page,
-		cache: false,
-		method: "POST",
-		data:{ width:$( window ).width()},
-		dataType: "html"
-	});
-	request.done(function( html ) {
-		alert(html);
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-		//
-	});
+	if(mobile && $( window ).width()>650)
+	{
+		mobile = 0;
+		checkPage();
+	}
+	else if(!mobile && $( window ).width()<=650)
+	{
+		mobile = 1;
+		checkPage();
+	}
 });
-}*/
-
 
 function checkPage(){
 	var splitHash = location.hash.substr(1).split("-");
@@ -76,7 +72,7 @@ function loadpage(page, type, myID){
 		url: page+typepage+".php", //only adds page type if it exists, ex. #tournament-edit-6 ---> tournamentedit.php
 		cache: false,
 		method: "POST",
-		data: {myID: myID, width:$( window ).width(), height:$( window ).height()}, //myID passed to page here
+		data: {myID: myID, mobile: mobile}, //myID passed to page here
 		dataType: "html"
 	});
 
@@ -582,6 +578,19 @@ function eventEdit(myID)
 ///////////////////
 ///Tournament functions
 //////////////////
+
+function touramentCarouselToggle()
+{
+if($('input[name="btnradio"]:checked').val()=='time')
+	{
+		$('#studentCarousel').hide();
+		$('#timeCarousel').show();
+	}
+	else {
+		$('#timeCarousel').hide();
+		$('#studentCarousel').show();
+	}
+}
 
 function tournamentsPreparePage()
 {

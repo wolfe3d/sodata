@@ -9,16 +9,14 @@ if(empty($teamID))
 	echo "<div style='color:red'>teamID is not set.</div>";
 	exit();
 }
-$width = isset($_POST['width'])?intval($_POST['width']):0;
-$height = isset($_POST['height'])?intval($_POST['height']):0;
+$mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
 
 //Get team and tournament row information
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $rowTeam = $resultTeam->fetch_assoc();
 
-
-if($width>600)
+if(!$mobile)
 {
 
 //Get tournament times
@@ -88,7 +86,7 @@ if(mysqli_num_rows($result))
 	for ($i = 0; $i < count($timeblocks); $i++) {
 		$eventNumber = count($timeblocks[$i]['events'])>0?count($timeblocks[$i]['events']):1;
 		$border = isset($timeblocks[$i]['border'])?$timeblocks[$i]['border']:"";
-		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' colspan='$eventNumber' style='".$border."background-color:".rainbow($i)."'>" . timeblockEdit($timeblocks[$i]['timeblockID'],date("g:i A",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:i A",strtotime($timeblocks[$i]["timeEnd"])),(userHasPrivilege(3)))  . "</th>";
+		$output .= "<th id='timeblock-".$timeblocks[$i]['timeblockID']."' colspan='$eventNumber' style='".$border."background-color:".rainbow($i)."'>" . timeblockEdit($timeblocks[$i]['timeblockID'],date("g:iA",strtotime($timeblocks[$i]["timeStart"])) ." - " . date("g:iA",strtotime($timeblocks[$i]["timeEnd"])),(userHasPrivilege(3)))  . "</th>";
 	}
 	$output .="</tr>";
 
@@ -252,6 +250,14 @@ else {
 }
 else {
 		//mobile version
+		$output .="<h3>".$rowTeam['tournamentName']." - Team " . $rowTeam['teamName'] ."</h3>";
+		$output .="<div class='btn-group' role='group' aria-label='Basic radio toggle button group' onchange='javascript:touramentCarouselToggle()'>";
+		  $output .="<input type='radio' class='btn-check' name='btnradio' id='btnradio1' autocomplete='off' value='student' checked>";
+		  $output .="<label class='btn btn-outline-primary' for='btnradio1'>Student</label>";
+
+		  $output .="<input type='radio' class='btn-check' name='btnradio' id='btnradio2' autocomplete='off' value='time'>";
+		  $output .="<label class='btn btn-outline-primary' for='btnradio2'>Time Block</label>";
+		$output .="</div>";
 
 		//Get student information row information
 		$query = "SELECT `student`.`studentID`, `student`.`first`, `student`.`last` FROM `team`
@@ -260,16 +266,15 @@ else {
 		INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
 		WHERE `team`.`teamID` = $teamID
 		ORDER BY `last`, `first`";
-		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
-		$output .="<h3>".$rowTeam['tournamentName']."</h3>";
-	$output .="<div id='carouselExampleIndicators' class='carousel carousel-dark slide' data-bs-ride='false'>";
+	$output .="<div id='studentCarousel' class='carousel carousel-dark slide' data-bs-ride='false'>";
 	$output .="<div class='carousel-indicators'>";
 	for ($n = 0; $n < mysqli_num_rows($result); $n++) {
-  $output .="<button type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide-to='$n' class='active' aria-current='true' aria-label='Slide ". ($n+1) . "'></button>";
+  $output .="<button type='button' data-bs-target='#studentCarousel' data-bs-slide-to='$n' class='active' aria-current='true' aria-label='Slide ". ($n+1) . "'></button>";
 	}
 		$output .="</div>";
-		$output .="<div class='carousel-inner' style='min-height:400px;'>";
+		$output .="<div class='carousel-inner' style='min-height:450px;'>";
 		$active = "active";
 		while ($row = $result->fetch_assoc()):
 			$output .="<div class='carousel-item $active '>";
@@ -278,25 +283,63 @@ else {
 			$output .="</div>";
 			$active  = "";
 		endwhile;
-
-		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>";
-		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>";
+			$output .="</div>";
+		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#studentCarousel' data-bs-slide='prev'>";
+		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#studentCarousel' data-bs-slide='prev'>";
 	    $output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
 	    $output .="<span class='visually-hidden'>Previous</span>";
 	  $output .="</button>";
-	  $output .="<button class='carousel-control-next' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='next'>";
+	  $output .="<button class='carousel-control-next' type='button' data-bs-target='#studentCarousel' data-bs-slide='next'>";
 	    $output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
 	    $output .="<span class='visually-hidden'>Next</span>";
 	  $output .="</button>";
 	$output .="</div>";
 }
+
+	//Get student information row information
+	$query = "SELECT `timeblockID`,`timeStart`,`timeEnd`  FROM `timeblock`
+	INNER JOIN `tournament` ON `timeblock`.`tournamentID`=`tournament`.`tournamentID`
+	WHERE `tournament`.`tournamentID` = '".$rowTeam['tournamentID']."'
+	ORDER BY `timeblock`.`timeStart`";
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+if($result && mysqli_num_rows($result)>0){
+$output .="<div id='timeCarousel' class='carousel carousel-dark slide' data-bs-ride='false' style='display:none'>";
+$output .="<div class='carousel-indicators'>";
+for ($n = 0; $n < mysqli_num_rows($result); $n++) {
+$output .="<button type='button' data-bs-target='#timeCarousel' data-bs-slide-to='$n' class='active' aria-current='true' aria-label='Slide ". ($n+1) . "'></button>";
+}
+	$output .="</div>";
+	$output .="<div class='carousel-inner' style='min-height:450px;'>";
+	$active = "active";
+	while ($row = $result->fetch_assoc()):
+		$output .="<div class='carousel-item $active '>";
+		//$output .=$row['timeStart'];
+		$output .=timeBlockTournamentSchedule($mysqlConn, $rowTeam['tournamentID'], $row['timeblockID'], $teamID);
+
+		//$heading = $row['last'] . ", " . $row['first'];
+		//$output .=studentTournamentSchedule($mysqlConn, $rowTeam['tournamentID'], $row['studentID'], $heading);
+		$output .="</div>";
+		$active  = "";
+	endwhile;
+	$output .="</div>";
+	$output .="<button class='carousel-control-prev' type='button' data-bs-target='#timeCarousel' data-bs-slide='prev'>";
+	$output .="<button class='carousel-control-prev' type='button' data-bs-target='#timeCarousel' data-bs-slide='prev'>";
+		$output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+		$output .="<span class='visually-hidden'>Previous</span>";
+	$output .="</button>";
+	$output .="<button class='carousel-control-next' type='button' data-bs-target='#timeCarousel' data-bs-slide='next'>";
+		$output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+		$output .="<span class='visually-hidden'>Next</span>";
+	$output .="</button>";
+$output .="</div>";
+}
 }
 /*
-	<div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="false">
+	<div id="studentCarousel" class="carousel carousel-dark slide" data-bs-ride="false">
 	  <div class="carousel-indicators">
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+	    <button type="button" data-bs-target="#studentCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+	    <button type="button" data-bs-target="#studentCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+	    <button type="button" data-bs-target="#studentCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
 	  </div>
 	  <div class="carousel-inner" style='height:<?=$height-225?>px'>
 	    <div class="carousel-item active">
@@ -309,11 +352,11 @@ else {
 				<div>Three</div>
 	    </div>
 	  </div>
-	  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+	  <button class="carousel-control-prev" type="button" data-bs-target="#studentCarousel" data-bs-slide="prev">
 	    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
 	    <span class="visually-hidden">Previous</span>
 	  </button>
-	  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+	  <button class="carousel-control-next" type="button" data-bs-target="#studentCarousel" data-bs-slide="next">
 	    <span class="carousel-control-next-icon" aria-hidden="true"></span>
 	    <span class="visually-hidden">Next</span>
 	  </button>
