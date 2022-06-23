@@ -19,18 +19,29 @@ $( window ).resize(function()
 	if(mobile && $( window ).width()>650)
 	{
 		mobile = 0;
-		checkPage();
+		resizePage();
 	}
 	else if(!mobile && $( window ).width()<=650)
 	{
 		mobile = 1;
-		checkPage();
+		resizePage();
 	}
 });
 
+//at this point in time, it only causes a reload of a page on resize if it is the teamassign page
+function resizePage(){
+	var splitHash = location.hash.substr(1).split("-");
+	var page = splitHash[1];
+	if(page = "teamassign")
+	{
+		loadpage(splitHash[0], splitHash[1], splitHash[2]); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
+		$("#mainHeader").html(splitHash[0]);
+	}
+}
+
 function checkPage(){
 	var splitHash = location.hash.substr(1).split("-");
-	$("section:not(#banner)").hide();
+	$("section:not(.navbar)").hide();
 	if(splitHash[0])
 	{
 		loadpage(splitHash[0], splitHash[1], splitHash[2]); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
@@ -241,7 +252,7 @@ function studentPreparePage()
 			}
 			else
 			{
-				$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+				$("#addTo").append("<div class='text-danger' class='error'>"+html+"</div>");
 			}
 		});
 
@@ -266,17 +277,17 @@ function studentRemove(myID, studentName)
 			$(".text-success").remove(); //remove any old text-success notes
 			if(html=="1")
 			{
-				$("#student-" + myID).before("<div class='text-success' style='color:blue'>"+studentName+" removed permanently.</div>"); //add note to show modification
+				$("#student-" + myID).before("<div class='text-success'>"+studentName+" removed permanently.</div>"); //add note to show modification
 				$("#student-" + myID).remove(); //remove element
 			}
 			else {
-				$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+html+"</div");
+				$("#student-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
 			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".text-success").remove();
-			$("#student-" + myID).before("<div class='text-success' class='error'>Removal Error:"+textStatus+"</div");
+			$("#student-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
 		});
 	}
 }
@@ -343,7 +354,7 @@ function studentEventAdd(student, field, value)
 			//returns the current update
 			var eventSplit = $("#eventsList option:selected").text().split(" ");
 			var eventName = eventSplit[0]+"-"+$("#priorityList option:selected").text()+" "+eventSplit.slice(1).join(" ")
-			$("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='text-success' style='color:blue'>Event added.</span></div>");
+			$("#events").append("<div id='eventchoice-" + eventchoiceID + "'><span class='event'>"+ eventName + "</span> <a href=\"javascript:studentEventRemove('" + eventchoiceID + "')\">Remove</a> <span class='text-success'>Event added.</span></div>");
 		}
 		else
 		{
@@ -393,11 +404,11 @@ function studentCourseAdd(student, table)
 			if(table=="courseenrolled"){
 				$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseCompleted('" + myCourseID + "','" + $("#courseList option:selected").text() +"')\">Completed</a>");
 			}
-			$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span>");
+			$("#"+ table + "-" + myCourseID).append(" <a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success'>Course added.</span>");
 		}
 		else
 		{
-			$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to add a course. Please, report details to site admin.</span>");
+			$("#"+ table).append("<span class='text-danger'>Error while attempting to add a course. Please, report details to site admin.</span>");
 		}
 	});
 
@@ -426,14 +437,14 @@ function studentCourseCompleted(value, courseName)
 			//returns the current update
 			var table = "coursecompleted";
 			var table2 = "courseenrolled";
-			$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success' style='color:blue'>Course added.</span></div>");
+			$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ courseName + " </span><a href=\"javascript:studentCourseRemove('" + myCourseID + "','"+table+"')\">Remove</a> <span class='text-success'>Course added.</span></div>");
 			$("#"+table2+"-"+value).remove();
-			$("#"+table2).append("<span class='text-success' style='color:blue'>Course removed.</span>");
+			$("#"+table2).append("<span class='text-success'>Course removed.</span>");
 		}
 		else
 		{
 			var table = "courseenrolled";
-			$("#"+ table).append("<span class='text-success' class='error'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
+			$("#"+ table).append("<span class='text-danger'>Error while attempting to move a course. Please, report details to site admin."+text+"</span>");
 		}
 	});
 
@@ -485,7 +496,7 @@ function userPrivilege(myUser, field,value)
 	});
 	request.done(function( html ) {
 		$(".text-success").remove(); //removes any old update notices
-		$("#"+field).parent().append("<span class='text-success' style='color:blue'>"+ html +"</span>"); //returns the current update
+		$("#"+field).parent().append("<span class='text-success'>"+ html +"</span>"); //returns the current update
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -1082,16 +1093,16 @@ function tournamentEventTimeSet(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='text-success' style='color:blue'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
+			$("#note").html("<div class='text-success'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
 
 		}
 		else {
-			$("#note").html("<div class='text-success' class='error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
 	});
 }
 
@@ -1159,7 +1170,7 @@ function tournamentTeammate(inputBtn)
 	request.done(function( html ) {
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
-			$("#note").html("<div class='text-success' style='color:blue'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
+			$("#note").html("<div class='text-success'>"+$("label[for='"+ inputBtn.attr('id') +"']").text()+" "+modified+"</div>"); //add note to show modification
 		}
 		else if(html=='3'){
 			alert("Remove failed: student still has events.");
@@ -1170,7 +1181,7 @@ function tournamentTeammate(inputBtn)
 			inputBtn.prop('checked', false);
 		}
 		else {
-			$("#note").html("<div class='text-success' class='error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
 		}
 		tournamentTeamEditCheckErrors();
 	});
@@ -1250,24 +1261,24 @@ function tournamentEventTeammate(inputBtn)
 			var checkChanged = checked?"added":"removed";
 			if(splitName[2])
 			{
-				$("#note").html("<div class='text-success' style='color:blue'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
+				$("#note").html("<div class='text-success'>"+$("#event-"+splitName[1]).text() +" " +checkChanged+" for "+$("#teammate-"+splitName[2]).text()+"</div>"); //add note to show modification
 				//recalculate and check for errors
 				tournamentCalculateEvent(splitName[1]);
 				tournamentCalculateStudent(splitName[2]);
 				tournamentCalculateTimeblock(splitName[2]);
 			}
 			else {
-				$("#note").html("<div class='text-success' style='color:blue'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
+				$("#note").html("<div class='text-success'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
 			}
 
 		}
 		else {
-			$("#note").html("<div class='text-success error'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-success error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
 	});
 }
 
@@ -1390,84 +1401,82 @@ function leaderRemove(myID, myName)
 }
 
 ///////////////////
-///Convert Table to List for Mobile
+///Slides for Home
 //////////////////
+function slideAdd(slideOrder)
+{
+	var request = $.ajax({
+		url: $("#addTo").attr('action'),
+		cache: false,
+		method: "POST",
+		data: $("#addTo").serialize(),
+		dataType: "text"
+	});
 
-//TODO:Maybe just reformat on backend and display one or the other
-function tournamentTableMakeList(table_id, parent) {
-	if ($(window).width() < 767) {
-		var table_header = new Array();
-		var table_data = new Array();
-		i = 1;
-		$(table_id + ' thead>tr').each(function() {
-			var table_row = new Array();
-			$('th', this).each(function() {
-				table_row.push($(this).text());
-			});
-			table_header.push(table_row)
-			i = i + 1;
-		});
+request.done(function( html ) {
+	var slideID = parseInt(html);
+	if(slideID)
+	{
+		$("#note").html("<div class='text-success'>Added new slide.</div>"); //add note to show modification
+		$("#slideList").append("<div id='slide-"+slideID+"'></div>"); //add note to show modification
+		$("#slide-"+slideID+"").append("<div id='order-"+slideID+"'>"+slideOrder+"</div>"); //add note to show modification
+		$("#slide-"+slideID+"").append("<div id='image-"+slideID+"'>test</div>"); //add note to show modification
+		$("#slide-"+slideID+"").append("<div id='text-"+slideID+"'></div>"); //add note to show modification
 
-		$(table_id + ' tbody>tr').each(function() {
-			var table_row = new Array();
-			$('td', this).each(function() {
-				table_row.push($(this).text());
-			});
-			table_data.push(table_row)
-			i = i + 1;
-		});
-
-		$(table_id).attr('hidden', true);
-		var list = '';
-		for (r = 0; r < table_data.length; r++) {
-
-			for (c = 0; c < table_data[r].length; c++) {
-				list +=
-				'<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">' +
-				table_header[0][c] + " &nbsp;&nbsp;&nbsp;: &nbsp;&nbsp;&nbsp; " + table_data[r][c] + '</a><div class="flextable-spacer"></div>';
-			}
-			list += '<div class="flextable-spacer mt-3"></div>';
-		}
-
-		$(parent).html(list);
 	}
+	else {
+		$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
+	}
+});
+
+request.fail(function( jqXHR, textStatus ) {
+	$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+});
 }
-//Original Below for Archive
-function tableMakeList(table_id, parent) {
-	if ($(window).width() < 767) {
-		var table_header = new Array();
-		var table_data = new Array();
-		i = 1;
-		$(table_id + ' thead>tr').each(function() {
-			var table_row = new Array();
-			$('th', this).each(function() {
-				table_row.push($(this).text());
-			});
-			table_header.push(table_row)
-			i = i + 1;
-		});
+function slideUploadImage(slideID)
+{
+	var fd = new FormData();
+	var files = $("#image-"+slideID)[0].files;
+	// Check file selected or not
+if(files.length > 0 ){
+	 fd.append('file',files[0]);
+	 fd.append('slideID',slideID);
 
-		$(table_id + ' tbody>tr').each(function() {
-			var table_row = new Array();
-			$('td', this).each(function() {
-				table_row.push($(this).text());
-			});
-			table_data.push(table_row)
-			i = i + 1;
-		});
+	var request = $.ajax({
+		url: 'slideimageupload.php',
+		cache: false,
+		method: "POST",
+		data: fd,
+		contentType: false,
+		processData: false,
+	});
 
-		$(table_id).attr('hidden', true);
-		var list = '';
-		for (r = 0; r < table_data.length; r++) {
-
-			for (c = 0; c < table_data[r].length; c++) {
-				list +=
-				'<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">' +
-				table_header[0][c] + " &nbsp;&nbsp;&nbsp;: &nbsp;&nbsp;&nbsp; " + table_data[r][c] + '</a><div class="flextable-spacer"></div>';
-			}
-			list += '<div class="flextable-spacer mt-3"></div>';
+	request.done(function( html ) {
+		if(html)
+		{
+			$("#slide-image-"+slideID).attr('src', html);
 		}
+	});
 
-		$(parent).html(list);
+	request.fail(function( jqXHR, textStatus ) {
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+	});
+}
+}
+//Edit text Modal
+var slideIDE = "" ; //the editing slide ID
+function editSlideText(slideID)
+{
+	var html = $('#html-'+slideID).html();
+	editor1_commands.setHTML(html);
+	slideIDE = slideID;
+}
+//Edit text Modal
+function saveSlideText()
+{
+	if(slideIDE)
+	{
+	var html = editor1_commands.getHTML();
+	$('#html-'+slideIDE).html(html);
 	}
 }

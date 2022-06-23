@@ -323,7 +323,6 @@ $output .="<button type='button' data-bs-target='#timeCarousel' data-bs-slide-to
 	endwhile;
 	$output .="</div>";
 	$output .="<button class='carousel-control-prev' type='button' data-bs-target='#timeCarousel' data-bs-slide='prev'>";
-	$output .="<button class='carousel-control-prev' type='button' data-bs-target='#timeCarousel' data-bs-slide='prev'>";
 		$output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
 		$output .="<span class='visually-hidden'>Previous</span>";
 	$output .="</button>";

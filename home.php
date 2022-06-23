@@ -20,51 +20,51 @@ if(!empty($_SESSION['userData'])){
 	$output .= '<div>';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
 
-	$output .= '<p style="text-align:center"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vStMRtaqu9vS_F3ih0aW8sfizoMhtexECHy2WdPEywYjVitnFgDnNsHxb8V-R2-XqFjZErmmH5e2Nx9/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></p>';
-		$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
-		$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
-		$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
-		$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
+	$output .= getCarousel($mysqlConn, $_SESSION['userData']['schoolID']);
+	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
+	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
+	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
+	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
 
-		$output .= "<h2> Quick Links </h2><ul>";
-		$output .= "<li><a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a></li>";
-		$output .= "<li><a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a></li>";
-		$output .= "<li><a href='https://calendar.google.com/calendar/embed?src=waltonscienceclub%40gmail.com&ctz=America%2FNew_York'> Google Calendar </a></li>";
-		if($studentID)
-		{
-			$output .= "<li><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</li>";
-		}
-		$output .= "</ul>";
-
-		//Reminders
-		//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
-		$tournament = "";
-		if($studentID)
-		{
-			$tournament =	getUpcomingTournamentStudent($mysqlConn, $userID, $studentID);
-		}
-		else if($coachID){
-			$tournament =	getUpcomingTournamentCoach($mysqlConn, $_SESSION['userData']['schoolID']);
-		}
-		$output .= $tournament;
-
-		if($studentID)
-		{
-			//Get latest team assignments
-			$myEvents = getLatestTeamTournamentStudent($mysqlConn, $studentID);
-			//show student's event priority
-			$myEvents .= studentEventPriority($mysqlConn, $studentID);
-			if($myEvents)
-			{
-				$output .= "<hr><h2>My Events</h2>" . $myEvents;
-			}
-			//show all previous results for this student
-			$output .= studentTournamentResults($mysqlConn, $studentID, true);
-		}
-		//Coach Reminders
-
-	}else{
-		$output = '<h3 style="color:red">Some problem occurred, please try again.</h3>';
+	$output .= "<h2> Quick Links </h2><ul>";
+	$output .= "<li><a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a></li>";
+	$output .= "<li><a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a></li>";
+	$output .= "<li><a href='https://calendar.google.com/calendar/embed?src=waltonscienceclub%40gmail.com&ctz=America%2FNew_York'> Google Calendar </a></li>";
+	if($studentID)
+	{
+		$output .= "<li><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</li>";
 	}
-	echo $output;
-	?>
+	$output .= "</ul>";
+
+	//Reminders
+	//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
+	$tournament = "";
+	if($studentID)
+	{
+		$tournament =	getUpcomingTournamentStudent($mysqlConn, $userID, $studentID);
+	}
+	else if($coachID){
+		$tournament =	getUpcomingTournamentCoach($mysqlConn, $_SESSION['userData']['schoolID']);
+	}
+	$output .= $tournament;
+
+	if($studentID)
+	{
+		//Get latest team assignments
+		$myEvents = getLatestTeamTournamentStudent($mysqlConn, $studentID);
+		//show student's event priority
+		$myEvents .= studentEventPriority($mysqlConn, $studentID);
+		if($myEvents)
+		{
+			$output .= "<hr><h2>My Events</h2>" . $myEvents;
+		}
+		//show all previous results for this student
+		$output .= studentTournamentResults($mysqlConn, $studentID, true);
+	}
+	//Coach Reminders
+
+}else{
+	$output = '<h3 style="color:red">Some problem occurred, please try again.</h3>';
+}
+echo $output;
+?>

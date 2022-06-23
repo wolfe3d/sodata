@@ -31,26 +31,24 @@ else {
 		}
 	}
 	else {
-		echo "<div style='color:red'>tournamentID is not set.</div>";
-		exit();
+		exit( "<div style='color:red'>tournamentID is not set.</div>");
 	}
 $query = "INSERT INTO `team` (`tournamentID`, `teamName`) VALUES ( '$tournamentID', '$teamName');";
 }
 if(empty($teamName))
 {
 	//no event id was sent, so initiate adding an event
-	echo "<div style='color:red'>No team name was sent.</div>";
-	exit();
+	exit("<div style='color:red'>No team name was sent.</div>");
 }
 
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if ($result)
 {
-	echo "1";
+	exit("1");
 }
 else
 {
-	echo $mysqlConn->error;
+	exit("Unspecified error. Check database log.");
 }
 ?>

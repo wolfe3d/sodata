@@ -240,32 +240,32 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
 {
 	$schedule="";
-$query = "SELECT DISTINCT `timeblock`.`timeblockID`,`event`.`eventID`, `tournamentevent`.`tournamenteventID`, `event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `tournamenttimechosen`
-INNER JOIN `tournamentevent` on `tournamenttimechosen`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
-INNER JOIN `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
-INNER JOIN  `event` on `tournamentevent`.`eventID` = `event`.`eventID`
-where `tournamenttimechosen`.`timeblockID` = $timeBlockID AND `tournamenttimechosen`.`teamID`=$teamID
-order by `event`.`event`";
+	$query = "SELECT DISTINCT `timeblock`.`timeblockID`,`event`.`eventID`, `tournamentevent`.`tournamenteventID`, `event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `tournamenttimechosen`
+	INNER JOIN `tournamentevent` on `tournamenttimechosen`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
+	INNER JOIN `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
+	INNER JOIN  `event` on `tournamentevent`.`eventID` = `event`.`eventID`
+	where `tournamenttimechosen`.`timeblockID` = $timeBlockID AND `tournamenttimechosen`.`teamID`=$teamID
+	order by `event`.`event`";
 	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && $result->num_rows > 0){
-	$firstRow = 1;
-				while ($row = $result->fetch_assoc()):
-				if($firstRow)
-				{
-					$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
-					$schedule.="<h4>$time</h4>";
-					$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
-					$firstRow = 0;
-				}
-					$schedule.="<tr>";
-					$schedule.="<td>".$row['event']."</td>";
-					$schedule.="<td>".$row['note']."</td>";
-					$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID)."</td>";
-					$schedule.="</tr>";
-				endwhile;
-				$schedule.="</tbody></table>";
+		$firstRow = 1;
+		while ($row = $result->fetch_assoc()):
+			if($firstRow)
+			{
+				$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
+				$schedule.="<h4>$time</h4>";
+				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
+				$firstRow = 0;
+			}
+			$schedule.="<tr>";
+			$schedule.="<td>".$row['event']."</td>";
+			$schedule.="<td>".$row['note']."</td>";
+			$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID)."</td>";
+			$schedule.="</tr>";
+		endwhile;
+		$schedule.="</tbody></table>";
 
-}
+	}
 	return $schedule;
 }
 
@@ -718,10 +718,10 @@ function getEventList($db, $number=0,$label)
 //get list of courses
 function getCourseList($db)
 {
-$query = "SELECT * FROM `course` ORDER BY `course` ASC";// where `field` = $fieldId";
-$resultCourseList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqldbConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$courses ="<div id='courseListDiv'><label for='courseList'>Courses</label> ";
-$courses .="<select id='courseList' name='courseList' class='form-select'>";
+	$query = "SELECT * FROM `course` ORDER BY `course` ASC";// where `field` = $fieldId";
+	$resultCourseList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqldbConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$courses ="<div id='courseListDiv'><label for='courseList'>Courses</label> ";
+	$courses .="<select id='courseList' name='courseList' class='form-select'>";
 	$courses .="<option></option>";
 	if($resultCourseList)
 	{
@@ -730,7 +730,7 @@ $courses .="<select id='courseList' name='courseList' class='form-select'>";
 		endwhile;
 	}
 	$courses.="</select></div>";
-echo $courses;
+	echo $courses;
 }
 
 //get list of events for year
@@ -1049,5 +1049,55 @@ function random_str(
 		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$row = $result->fetch_assoc();
 		return $row['CURRENT_TIMESTAMP()'];
+	}
+
+	//get home.php carousel for the home schoolID
+	function getCarousel($db, $schoolID)
+	{
+		$output = "";
+		//Get student information row information
+		$query = "SELECT * FROM `slide` WHERE `schoolID` = $schoolID ORDER BY `slideOrder`";
+		$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result && mysqli_num_rows($result)>0){
+			$output .="<div style='display: block;   margin-left: auto;  margin-right: auto; max-width: 1080px'><div id='homeCarousel' class='carousel slide carousel-dark' data-bs-ride='carousel' style='height:400px;'>";
+			$output .="<div class='carousel-indicators'>";
+			for ($n = 0; $n < mysqli_num_rows($result); $n++) {
+				$active = "";
+				if(!$n)
+				{
+					$active = "class='active' aria-current='true'";
+				}
+				$output .="<button type='button' data-bs-target='#homeCarousel' data-bs-slide-to='$n' $active aria-label='Slide ". ($n+1) . "'></button>";
+			}
+			$output .="</div>";
+			$output .="<div class='carousel-inner'>";
+			$active = "active";
+			$interval = "3000";
+			while ($row = $result->fetch_assoc()):
+				$output .="<div class='carousel-item $active' data-bs-interval='$interval'>";
+				$output .="<img src='".$row['image']."' class='d-block w-100' alt='...' style='height:360px;object-fit:cover;'>";
+				$output .="<div class='carousel-caption'>";
+				$output .= $row['text'];
+				$output .="</div>";
+				$output .="</div>";
+				$active  = "";
+				$interval ="1000";
+				$n++;
+
+			endwhile;
+			$output .="</div>";
+			$output .="<button class='carousel-control-prev' type='button' data-bs-target='#homeCarousel' data-bs-slide='prev'>";
+			$output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+			$output .="<span class='visually-hidden'>Previous</span>";
+			$output .="</button>";
+			$output .="<button class='carousel-control-next' type='button' data-bs-target='#homeCarousel' data-bs-slide='next'>";
+			$output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+			$output .="<span class='visually-hidden'>Next</span>";
+			$output .="</button>";
+			$output .="</div>";
+			$output .="</div>";
+
+		}
+		return $output;
 	}
 	?>
