@@ -1464,19 +1464,73 @@ if(files.length > 0 ){
 }
 }
 //Edit text Modal
+
 var slideIDE = "" ; //the editing slide ID
-function editSlideText(slideID)
+/*function editSlideText(slideID)
 {
 	var html = $('#html-'+slideID).html();
-	editor1_commands.setHTML(html);
+	$('#summernote').summernote('code', html);
 	slideIDE = slideID;
 }
+*/
 //Edit text Modal
-function saveSlideText()
+/*function saveSlideText()
 {
 	if(slideIDE)
 	{
-	var html = editor1_commands.getHTML();
+	var html = $('#summernote').summernote('code');
 	$('#html-'+slideIDE).html(html);
 	}
+}*/
+function loadSummerNoteButtons()
+{
+	//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
+	let buttons = $('.note-editor button[data-toggle="dropdown"]');
+	buttons.each((key, value)=>{
+				$(value).attr('data-bs-toggle', 'dropdown'); //TODO:  Attempt to remove this in later summernote versions
+				//$(value).removeAttr('data-toggle');
+		})
 }
+var editSlideText = function(slideID) {
+  $('#html-'+slideID).summernote({focus: true});
+	loadSummerNoteButtons();
+	slideIDE = slideID;
+	//$('.dropdown-toggle').dropdown(); //put this line to make the dropdown work
+
+	/*$('.click2edit').summernote({
+             height: 250,                 // set editor height
+             minHeight: null,             // set minimum height of editor
+             maxHeight: null,             // set maximum height of editor
+             focus: false,                 // set focus to editable area after initializing summernote
+             toolbar: [
+                 ['style', ['style']],
+                 ['font', ['bold', 'italic', 'underline', 'clear']],
+                 ['fontname', ['fontname']],
+                 ['color', ['color']],
+                 ['para', ['ul', 'ol', 'paragraph']],
+                 ['height', ['height']],
+                 ['table', ['table']],
+                 ['insert', ['template', 'link', 'picture', 'hr']],
+                 ['view', ['fullscreen', 'codeview']],
+                 ['help', ['help']]
+             ],
+             template: {
+                 path: 'summernote', // path to your template folder
+                 list: [ // list of your template (without the .html extension)
+                     'template1',
+                     'template2'
+                 ]
+             }
+         });
+
+         $('.inline-editor').summernote({
+             airMode: true
+         });
+
+*/
+};
+
+var saveSlideText = function() {
+  var markup = $('#html-'+slideIDE).summernote('code');
+  $('#html-'+slideIDE).summernote('destroy');
+};
