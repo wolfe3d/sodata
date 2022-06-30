@@ -65,7 +65,7 @@ function getEventLeader($db, $eventID, $year, $schoolID)
 	else
 	{
 		//Add leader
-		//TODO: Add button to add leader if there is not actually a leader assigned
+		$output .=" <a class='btn btn-primary' role='button' href='#eventleader-addform-$year-event=$eventID' data-toggle='tooltip' data-placement='top' title='Add Event Leader'><span class='bi bi-plus-circle'></span> Add Leader</a>";
 	}
 	return $output;
 }
@@ -107,18 +107,20 @@ if($result&& $result->num_rows>0)
 		$output .="";
 
 		//check for permissions to create edit an event btn
+		$output .="<div class='btn-group' role='group' aria-label='Event Buttons'>"; //start button group
 		if(userHasPrivilege(3) )
 		{
-			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
+			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Edit'><span class='bi bi-pencil-square'></span></a>";
 		}
 		if(userHasPrivilege(2))
 		{
-			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."'><span class='bi bi-envelope'></span> Get emails</a>";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Get emails'><span class='bi bi-envelope'></span></a>";
 		}
 		if(userHasPrivilege(3) )
 		{
-			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."'><span class='bi bi-pie-chart-fill'></span> Analysis</a>";
+			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Analysis'><span class='bi bi-pie-chart-fill'></span></a>";
 		}
+		$output .="</div>"; //end button group
 
 		//$yearCollection = $yearCollection?$yearCollection:"Trial Event";
 		$output .=getEventLeader($mysqlConn, $row['eventID'], $year, $_SESSION['userData']['schoolID'] );
@@ -146,3 +148,8 @@ if($result&& $result->num_rows>0)
 
 echo $output;
 ?>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>

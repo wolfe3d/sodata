@@ -3,6 +3,7 @@ require_once  ("php/functions.php");
 userCheckPrivilege(4);
 
 $year = intval($_POST['myID']);
+$eventID = intval($_POST['event']);
 if(empty($year))
 {
 	$year = getCurrentSOYear();
@@ -18,7 +19,7 @@ if(empty($year))
 		<?=getAllStudents($mysqlConn,1, NULL)?>
 	</p>
 	<p>
-		<?=getEventListYear($mysqlConn, 0,'Choose Event', $year)?>
+		<?=getEventListYear($mysqlConn, 0,'Choose Event', $year, $eventID)?>
 	</p>
 		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
 		<button class='btn btn-primary' type='submit'><span class='bi bi-plus-circle'></span> Add</button>

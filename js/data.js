@@ -34,9 +34,29 @@ function resizePage(){
 	var page = splitHash[1];
 	if(page = "teamassign")
 	{
-		loadpage(splitHash[0], splitHash[1], splitHash[2]); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
+		loadpage(splitHash); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
 		$("#mainHeader").html(splitHash[0]);
 	}
+}
+
+function queryStringToJSON(queryString,myID) {
+    //var pairs = location.search.slice(1).split('&');
+		//separate query string, note to self: I am not using a question mark because it does not follow standard url formatting
+    var result = {};
+		if (queryString)
+		{
+		var pairs = queryString.split("+"); //get query string
+		if (pairs)
+		{
+    pairs.forEach(function(pair) {
+        pair = pair.split('=');
+        result[pair[0]] = decodeURIComponent(pair[1] || '');
+    });
+	}
+}
+result["myID"] = myID;
+result["mobile"] = "mobile";
+    return JSON.parse(JSON.stringify(result));
 }
 
 function checkPage(){
@@ -44,12 +64,12 @@ function checkPage(){
 	$("section:not(.navbar)").hide();
 	if(splitHash[0])
 	{
-		loadpage(splitHash[0], splitHash[1], splitHash[2]); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
+		loadpage(splitHash); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
 		$("#mainHeader").html(splitHash[0]);
 	}
 	else
 	{
-		loadpage("home");
+		loadpage(["home"]);
 	}
 }
 
@@ -73,17 +93,21 @@ function getList(myPage, myData)
 	});
 }
 
-function loadpage(page, type, myID){
+function loadpage(myPage){
+	//myPage[0]= page address, myPagemyPage[1]= type of page, pamyPagege[2] = id
 	var typepage = "";
-	if(type)
+	var page = myPage[0];
+	var myID = myPage[2];
+	if(myPage[1])
 	{
-		typepage = type;
+		typepage = myPage[1];
 	}
+var dataJSON = queryStringToJSON(myPage[3],myID);
 	var request = $.ajax({
 		url: page+typepage+".php", //only adds page type if it exists, ex. #tournament-edit-6 ---> tournamentedit.php
 		cache: false,
 		method: "POST",
-		data: {myID: myID, mobile: mobile}, //myID passed to page here
+		data: dataJSON, //myID passed to page here
 		dataType: "html"
 	});
 
@@ -776,7 +800,7 @@ function tournamentEventAdd(myID)
 			$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
 			if(html>0)
 			{
-				loadpage('tournament','events',27); //refresh page to show added event
+				loadpage(['tournament','events',27]); //refresh page to show added event
 			}
 			else
 			{

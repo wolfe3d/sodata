@@ -734,10 +734,10 @@ function getCourseList($db)
 }
 
 //get list of events for year
-function getEventListYear($db, $number,$label, $year)
+function getEventListYear($db, $number,$label, $year, $select)
 {
 	$year = intval($year);
-	$query = "SELECT `event`.`eventID`,`event`.`event`,`event`.`type` FROM `event` INNER JOIN `eventyear` ON `event`.`eventID`=`eventyear`.`eventID` WHERE `eventyear`.`year`=$year ORDER BY `event` ASC";
+	$query = "SELECT DISTINCT `event`.`eventID`,`event`.`event`,`event`.`type` FROM `event` INNER JOIN `eventyear` ON `event`.`eventID`=`eventyear`.`eventID` WHERE `eventyear`.`year`=$year ORDER BY `event` ASC";
 	$resultEventsList = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
 	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
@@ -747,7 +747,8 @@ function getEventListYear($db, $number,$label, $year)
 		while ($row = $resultEventsList->fetch_assoc()):
 			$event = htmlspecialchars($db->real_escape_string($row['event']));
 			$type = getEventString($row['type']);
-			$events .= "<option value='".$row['eventID']."'>$event - $type</option>";
+			$selected = $row['eventID']==$select?"selected":"";
+			$events .= "<option value='".$row['eventID']."' $selected>$event - $type</option>";
 		endwhile;
 	}
 	$events.="</select></div>";
