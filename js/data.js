@@ -55,7 +55,7 @@ function queryStringToJSON(queryString,myID) {
 		}
 	}
 	result["myID"] = myID;
-	result["mobile"] = "mobile";
+	result["mobile"] = mobile;
 	return JSON.parse(JSON.stringify(result));
 }
 
