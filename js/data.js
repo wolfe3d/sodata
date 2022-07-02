@@ -40,23 +40,23 @@ function resizePage(){
 }
 
 function queryStringToJSON(queryString,myID) {
-    //var pairs = location.search.slice(1).split('&');
-		//separate query string, note to self: I am not using a question mark because it does not follow standard url formatting
-    var result = {};
-		if (queryString)
-		{
+	//var pairs = location.search.slice(1).split('&');
+	//separate query string, note to self: I am not using a question mark because it does not follow standard url formatting
+	var result = {};
+	if (queryString)
+	{
 		var pairs = queryString.split("+"); //get query string
 		if (pairs)
 		{
-    pairs.forEach(function(pair) {
-        pair = pair.split('=');
-        result[pair[0]] = decodeURIComponent(pair[1] || '');
-    });
+			pairs.forEach(function(pair) {
+				pair = pair.split('=');
+				result[pair[0]] = decodeURIComponent(pair[1] || '');
+			});
+		}
 	}
-}
-result["myID"] = myID;
-result["mobile"] = "mobile";
-    return JSON.parse(JSON.stringify(result));
+	result["myID"] = myID;
+	result["mobile"] = "mobile";
+	return JSON.parse(JSON.stringify(result));
 }
 
 function checkPage(){
@@ -102,7 +102,7 @@ function loadpage(myPage){
 	{
 		typepage = myPage[1];
 	}
-var dataJSON = queryStringToJSON(myPage[3],myID);
+	var dataJSON = queryStringToJSON(myPage[3],myID);
 	var request = $.ajax({
 		url: page+typepage+".php", //only adds page type if it exists, ex. #tournament-edit-6 ---> tournamentedit.php
 		cache: false,
@@ -616,7 +616,7 @@ function eventEdit(myID)
 
 function touramentCarouselToggle()
 {
-if($('input[name="btnradio"]:checked').val()=='time')
+	if($('input[name="btnradio"]:checked').val()=='time')
 	{
 		$('#studentCarousel').hide();
 		$('#timeCarousel').show();
@@ -1437,48 +1437,19 @@ function slideAdd(slideOrder)
 		dataType: "text"
 	});
 
-request.done(function( html ) {
-	var slideID = parseInt(html);
-	if(slideID)
-	{
-		$("#note").html("<div class='text-success'>Added new slide.</div>"); //add note to show modification
-		$("#slideList").append("<div id='slide-"+slideID+"'></div>"); //add note to show modification
-		$("#slide-"+slideID+"").append("<div id='order-"+slideID+"'>"+slideOrder+"</div>"); //add note to show modification
-		$("#slide-"+slideID+"").append("<div id='image-"+slideID+"'>test</div>"); //add note to show modification
-		$("#slide-"+slideID+"").append("<div id='text-"+slideID+"'></div>"); //add note to show modification
-
-	}
-	else {
-		$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
-	}
-});
-
-request.fail(function( jqXHR, textStatus ) {
-	$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
-});
-}
-function slideUploadImage(slideID)
-{
-	var fd = new FormData();
-	var files = $("#image-"+slideID)[0].files;
-	// Check file selected or not
-if(files.length > 0 ){
-	 fd.append('file',files[0]);
-	 fd.append('slideID',slideID);
-
-	var request = $.ajax({
-		url: 'slideimageupload.php',
-		cache: false,
-		method: "POST",
-		data: fd,
-		contentType: false,
-		processData: false,
-	});
-
 	request.done(function( html ) {
-		if(html)
+		var slideID = parseInt(html);
+		if(slideID)
 		{
-			$("#slide-image-"+slideID).attr('src', html);
+			$("#note").html("<div class='text-success'>Added new slide.</div>"); //add note to show modification
+			$("#slideList").append("<div id='slide-"+slideID+"'></div>"); //add note to show modification
+			$("#slide-"+slideID+"").append("<div id='order-"+slideID+"'>"+slideOrder+"</div>"); //add note to show modification
+			$("#slide-"+slideID+"").append("<div id='image-"+slideID+"'>test</div>"); //add note to show modification
+			$("#slide-"+slideID+"").append("<div id='text-"+slideID+"'></div>"); //add note to show modification
+
+		}
+		else {
+			$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
 		}
 	});
 
@@ -1486,75 +1457,102 @@ if(files.length > 0 ){
 		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
 	});
 }
-}
-//Edit text Modal
+function slidePreviewImage(slideID)
+{
+		if ($("#image-"+slideID)[0].files && $("#image-"+slideID)[0].files[0]) {
+				var reader = new FileReader();
 
-var slideIDE = "" ; //the editing slide ID
-/*function editSlideText(slideID)
-{
-	var html = $('#html-'+slideID).html();
-	$('#summernote').summernote('code', html);
-	slideIDE = slideID;
+				reader.onload = function (e) {
+						$("#slide-image-"+slideID).attr('src', e.target.result);
+				}
+
+				reader.readAsDataURL($("#image-"+slideID)[0].files[0]);
+				$('#saveSlideButton-'+slideID).show();
+		}
 }
-*/
-//Edit text Modal
-/*function saveSlideText()
+
+
+function slideSave(slideID)
 {
-	if(slideIDE)
-	{
-	var html = $('#summernote').summernote('code');
-	$('#html-'+slideIDE).html(html);
+	var fd = new FormData();
+	var files = $("#image-"+slideID)[0].files;
+	// Check file selected or not
+	if(files.length > 0 ){
+		fd.append('file',files[0]);
+		fd.append('slideID',slideID);
+
+		var request = $.ajax({
+			url: 'slideimageupload.php',
+			cache: false,
+			method: "POST",
+			data: fd,
+			contentType: false,
+			processData: false,
+		});
+
+		request.done(function( html ) {
+			if(html)
+			{
+				$("#slide-image-"+slideID).attr('src', html);
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		});
 	}
-}*/
+
+  slideSaveText();
+}
+var slideIDE = "" ; //the editing slide ID
 function loadSummerNoteButtons()
 {
 	//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
 	let buttons = $('.note-editor button[data-toggle="dropdown"]');
 	buttons.each((key, value)=>{
-				$(value).attr('data-bs-toggle', 'dropdown'); //TODO:  Attempt to remove this in later summernote versions
-				//$(value).removeAttr('data-toggle');
-		})
+		$(value).attr('data-bs-toggle', 'dropdown'); //TODO:  Attempt to remove this in later summernote versions
+		//$(value).removeAttr('data-toggle');
+	})
 }
-var editSlideText = function(slideID) {
-  $('#html-'+slideID).summernote({focus: true});
+var slideEditText = function(slideID) {
+	$('#html-'+slideID).summernote({focus: true});
 	loadSummerNoteButtons();
 	slideIDE = slideID;
-	//$('.dropdown-toggle').dropdown(); //put this line to make the dropdown work
-
-	/*$('.click2edit').summernote({
-             height: 250,                 // set editor height
-             minHeight: null,             // set minimum height of editor
-             maxHeight: null,             // set maximum height of editor
-             focus: false,                 // set focus to editable area after initializing summernote
-             toolbar: [
-                 ['style', ['style']],
-                 ['font', ['bold', 'italic', 'underline', 'clear']],
-                 ['fontname', ['fontname']],
-                 ['color', ['color']],
-                 ['para', ['ul', 'ol', 'paragraph']],
-                 ['height', ['height']],
-                 ['table', ['table']],
-                 ['insert', ['template', 'link', 'picture', 'hr']],
-                 ['view', ['fullscreen', 'codeview']],
-                 ['help', ['help']]
-             ],
-             template: {
-                 path: 'summernote', // path to your template folder
-                 list: [ // list of your template (without the .html extension)
-                     'template1',
-                     'template2'
-                 ]
-             }
-         });
-
-         $('.inline-editor').summernote({
-             airMode: true
-         });
-
-*/
+	$('#previewSlideButton-'+slideIDE).show();
 };
 
-var saveSlideText = function() {
-  var markup = $('#html-'+slideIDE).summernote('code');
-  $('#html-'+slideIDE).summernote('destroy');
+var slidePreviewText = function() {
+	var markup = $('#html-'+slideIDE).summernote('code');
+	$('#slideText-'+slideIDE).html(markup);
+	$('#saveSlideButton-'+slideIDE).show();
+};
+
+var slideSaveText = function() {
+	if($('#html-'+slideIDE).is(':hidden')) //original html is hidden while editing
+	{
+		var markup = $('#html-'+slideIDE).summernote('code');
+
+		var request = $.ajax({
+			url: 'slidetextupdate.php',
+			cache: false,
+			method: "POST",
+			data: {slideID:slideIDE, slideText:markup},
+			dataType: "text"
+		});
+
+		request.done(function( html ) {
+			if(html=="1")
+			{
+				$('#html-'+slideIDE).summernote('destroy');
+				$('#slideText-'+slideIDE).html(markup);
+			}
+			else {
+				$('#html-'+slideIDE).html(html);
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		});
+	}
 };

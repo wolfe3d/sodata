@@ -21,6 +21,10 @@ if(!empty($_SESSION['userData'])){
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
 
 	$output .= getCarousel($mysqlConn, $_SESSION['userData']['schoolID']);
+	if(userHasPrivilege(4))
+	{
+		$output .= "<p><a type='button' class='btn btn-primary' href='#home-edit'><span class='bi bi-edit'></span> Edit Carousel</button></div></a>";
+	}
 	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
 	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
 	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
