@@ -30,10 +30,6 @@ if(!empty($_SESSION['userData'])){
 	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
 	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
 
-	$output .= "<h2> Quick Links </h2><ul>";
-	$output .= "<li><a href='https://drive.google.com/file/d/13gIkPawogKlDHzhNBfTPgQ5hi045QDiv/view?usp=sharing'> 2022 Official Rules Manual </a></li>";
-	$output .= "<li><a href='https://drive.google.com/drive/folders/17LMINQEqhEP3IQzT8jj1-3Iw6gt8boRI?usp=sharing'> Digital Test Bank </a></li>";
-	$output .= "<li><a href='https://calendar.google.com/calendar/embed?src=waltonscienceclub%40gmail.com&ctz=America%2FNew_York'> Google Calendar </a></li>";
 	if($studentID)
 	{
 		$output .= "<li><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</li>";

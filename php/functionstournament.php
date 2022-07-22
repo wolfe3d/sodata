@@ -3,7 +3,7 @@ function calculateScore($eventPlace, $eventWeight, $tournamentWeight)
 {
 	//formula for scoring here
 	//return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100); old formula
-	$score = $tournamentWeight-$eventPlace*($tournamentWeight/$eventWeight);
+	$score = $tournamentWeight-($eventPlace-1)*($tournamentWeight/$eventWeight);
 	if ($score <=1)
 	{
 		return 1;
@@ -58,7 +58,7 @@ function getStudents($db,$tournamentID)
 function getEvents($db,$tournamentID)
 {
 	$output = [];
-	$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `tournamentevent`.`weight`, `event`.`event`, `event`.`weightingDefault` FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentevent`.`tournamentID` = $tournamentID ORDER BY `event`.`event`";
+	$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `tournamentevent`.`weight`, `event`.`event` FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentevent`.`tournamentID` = $tournamentID ORDER BY `event`.`event`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):

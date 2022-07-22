@@ -19,7 +19,7 @@ $output .="<h2>".getTournamentName($mysqlConn, $tournamentID)."</h2>";
 $output .="<h3>Tournament Teammate Placement and Score</h3>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 //scores are calculated in functionstournament
-$output .="<p class='text-warning'>Current Formula for Score = tournamentWeight-eventPlace*(tournamentWeight/eventTeams).</p>";
+$output .="<p class='text-warning'>Current Formula for Score = tournamentWeight-(eventPlace-1)*(tournamentWeight/eventTeams).</p>";
 //check to see if this tournament has placements
 if(!checkPlacements($mysqlConn, $tournamentID))
 {
@@ -50,7 +50,7 @@ else
 	if(userHasPrivilege(4))
 	{
 		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";
-		$output .="  <input id='tournamentWeight' type='number' min='0' max='999' value='".$tournamentWeight."' style='display: inline-block'/></div>";
+		$output .="  <input id='tournamentWeight' type='number' class='form-control' min='0' max='999' value='".$tournamentWeight."' style='display: inline-block'/></div>";
 	}
 	else
 	{
@@ -72,7 +72,7 @@ else
 		$eventWeight =  $event['weight'];
 		if(userHasPrivilege(4))
 		{
-			$eventWeight = "<input id='eventweight-".$event['tournamenteventID']."' type='number' min='1' max='999' value='".$event['weight']."'/>";
+			$eventWeight = "<input id='eventweight-".$event['tournamenteventID']."' class='form-control' type='number' min='1' max='999' value='".$event['weight']."'/>";
 		}
 		$output .= "<th rowspan='1' id='eventweightth-".$event['tournamenteventID']."'>$eventWeight</th>";
 	}
