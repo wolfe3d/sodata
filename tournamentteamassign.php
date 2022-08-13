@@ -168,7 +168,7 @@ if(!$mobile)
 								$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 							}
 							else {
-								$output .=$checked?"<div class='fa'>&#xf00c;</div>":"";
+								$output .=$checked?"<span class='bi bi-check'></span>":"";
 							}
 							$output .="</td>";
 						}
