@@ -272,7 +272,7 @@ function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
 //get latest team schedule - also known as the notCompetition Tournament.
 function getLatestTeamTournamentStudent($db, $studentID)
 {
-	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`
+	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`, `teamName`
 	FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID`
 	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
 	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1
@@ -283,7 +283,7 @@ function getLatestTeamTournamentStudent($db, $studentID)
 	{
 		$row = $result->fetch_assoc();
 		$output.="<div id='".$row['tournamentName']."'>";
-		$output .="<h3>".$row['tournamentName']." - " . $row['dateTournament']. "</h3>";
+		$output .="<h3>".$row['tournamentName']." (Team ". $row['teamName'] .") - " . $row['dateTournament']. "</h3>";
 		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
 		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
 		$output.="</div>";
