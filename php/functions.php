@@ -202,8 +202,8 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 			INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
 			INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
 			INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
-			INNER JOIN `tournamenttimechosen` ON teammateplace.tournamenteventID = tournamenttimechosen.tournamenteventID
-			INNER JOIN `timeblock` ON tournamenttimechosen.timeblockID = timeblock.timeblockID
+			INNER JOIN `tournamenttimechosen` ON `teammateplace`.`tournamenteventID` = `tournamenttimechosen`.`tournamenteventID`
+			INNER JOIN `timeblock` ON `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
 			WHERE `tournamentevent`.`tournamentID` = $tournamentID AND `student`.`studentID` = $studentID
 			ORDER BY `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -272,7 +272,11 @@ function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
 //get latest team schedule - also known as the notCompetition Tournament.
 function getLatestTeamTournamentStudent($db, $studentID)
 {
-	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 ORDER BY `dateTournament` DESC";
+	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`
+	FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID`
+	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
+	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1
+	ORDER BY `dateTournament` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = "";
 	if($result && mysqli_num_rows($result)>0)
@@ -291,7 +295,10 @@ function getLatestTeamTournamentStudent($db, $studentID)
 function getUpcomingTournamentStudent($db, $userID, $studentID)
 {
 	$date = date('Y-m-d', time());
-	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID` FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID` WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`
+	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
+	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
+	ORDER BY `dateTournament`";
 	//$query = "SELECT `tournamentName`,`tournament`.`tournamentID`,`dateTournament`,`teamName` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
@@ -314,7 +321,9 @@ function getUpcomingTournamentCoach($db, $schoolID)
 {
 	$date = date('Y-m-d', time());
 	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
-	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament` WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament`
+	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0
+	ORDER BY `dateTournament`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
 	if($result && mysqli_num_rows($result)>0)
@@ -335,7 +344,12 @@ function getUpcomingTournamentCoach($db, $schoolID)
 function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 {
 	//check partner(s)
-	$query = "SELECT `first`,`last` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` WHERE `teammateplace`.`tournamenteventID`=".$tournamentEventID." AND `teammateplace`.`teamID`=".$teamID." AND NOT `teammateplace`.`studentID` = $studentID ORDER BY `student`.`last`, `student`.`first`";
+	$query = "SELECT `first`,`last` FROM `student`
+	INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID`
+	WHERE `teammateplace`.`tournamenteventID`='$tournamentEventID'
+	AND `teammateplace`.`teamID`='$teamID'
+	AND NOT `teammateplace`.`studentID` = $studentID
+	ORDER BY `student`.`last`, `student`.`first`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="";
 	if ($result)
@@ -359,7 +373,10 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 {
 	//check partner(s)
 	$output =  "";
-	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID and `student`.`studentID` != $studentID ORDER BY `student`.`last`, `student`.`first`";
+	$query = "SELECT * FROM `teammateplace`
+	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
+	WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID
+	and `student`.`studentID` != $studentID ORDER BY `student`.`last`, `student`.`first`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
@@ -506,6 +523,25 @@ function getEmailList($result)
 	return $emails;
 }
 
+//returns a bare list of names with multiple emails
+function getEmailListWithTeam($result)
+{
+	$emails = "";
+	while ($row = $result->fetch_assoc()):
+		$emails.=$row['first'] . " " . $row['last'] . " (" . $row['teamName'] .")";
+		if(isset($row['email'])&&$row['email']){
+			$emails.= "&lt;" . $row['email'] . "&gt;; ";
+			$emails.="<br>";
+		}
+
+		if(isset($row['emailSchool'])&&$row['emailSchool']){
+			$emails.="&lt;".$row['emailSchool'] . "&gt;; ";
+			$emails.="<br>";
+		}
+	endwhile;
+	return $emails;
+}
+
 //returns a bare list of parent names with multiple emails
 function getEmailParentList($result)
 {
@@ -572,10 +608,48 @@ function getOfficerEmails($db, $year)
 function getLeaderEmails($db, $year)
 {
 	$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventyear` INNER JOIN `student` ON `eventyear`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
-	return getEmailList($result) . getCoachesEmails($db, $year);
+	if($result && $result->num_rows>0){
+		return getEmailList($result) . getCoachesEmails($db, $year);
+		}
 	}
+
+	//Return event leader email list
+	function getEventEmails($db, $tournamentID, $tournamentName, $eventID, $year)
+	{
+		$output = "<h3>$tournamentName</h3>";
+		$schoolID = $_SESSION['userData']['schoolID'];
+		$leader = getEventLeaderIDs($db, $eventID, $year, $schoolID);
+		$query = "SELECT DISTINCT `student`.`studentID`, `event`.`event`, `first`, `last`, `email`, `teamName`, `emailSchool`
+		FROM `tournament`
+		INNER JOIN `team` ON `tournament`.`tournamentID`=`team`.`tournamentID`
+		INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
+		INNER JOIN `tournamentEvent` ON `teammateplace`.`tournamentEventID`=`tournamentEvent`.`tournamentEventID`
+		INNER JOIN `event` ON `tournamentEvent`.`eventID`=`event`.`eventID`
+		INNER JOIN `student` ON `teammateplace`.`studentID`= `student`.`studentID`
+		WHERE `tournament`.`tournamentID` = '$tournamentID' AND `tournamentEvent`.`eventID` = '$eventID'
+		AND `student`.`schoolID` = '$schoolID'
+		ORDER BY `teamName`,`last`,`first`";
+		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
+		while ($row = $result->fetch_assoc()):
+			$output.=$row['first'] . " " . $row['last'] . " (" . $row['teamName'] .")";
+			if(in_array($row['studentID'], $leader, $strict = true))
+			{
+				$output.=" **" . $row['event']. " Event Leader";
+			}
+			if(isset($row['email'])&&$row['email']){
+				$output.= "&lt;" . $row['email'] . "&gt;; ";
+				$output.="<br>";
+			}
+
+			if(isset($row['emailSchool'])&&$row['emailSchool']){
+				$output.="&lt;".$row['emailSchool'] . "&gt;; ";
+				$output.="<br>";
+			}
+		endwhile;
+		return $output;
+		}
 
 	//Return all active students or parents
 	function getStudentEmails($db, $year, $parents=false)
@@ -857,6 +931,26 @@ function getEventLeaderPositionPrevious($db,$studentID)
 		while ($row = $result->fetch_assoc()):
 			$output .= $output ? ", ":"";
 			$output .= $row['year']."-".$row['event'];
+		endwhile;
+	}
+	return $output;
+}
+
+//Get the current event Leader(s) for this school of this event during the selected year
+function getEventLeaderIDs($db, $eventID, $year, $schoolID)
+{
+	$yearWhere = "";
+	if($year)
+	{
+		$yearWhere = "AND `eventleader`.`year` = $year";
+	}
+	$query = "SELECT `student`.`studentID`, `first`, `last`, `year` from `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = [];
+	$leaderNumber = 0;
+	if($result && $result->num_rows>0){
+		while ($row = $result->fetch_assoc()):
+			array_push($output, $row['studentID']);
 		endwhile;
 	}
 	return $output;

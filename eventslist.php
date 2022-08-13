@@ -34,7 +34,7 @@ function getEventYears($db, $eventID)
 }
 
 
-//Get the current for this school of this event during the selected year
+//Get the current event Leader for this school of this event during the selected year
 function getEventLeader($db, $eventID, $year, $schoolID)
 {
 	$yearWhere = "";
