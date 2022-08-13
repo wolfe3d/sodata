@@ -55,6 +55,8 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
 			$output .="</div><br>";
 		}
+		if(!$row['notCompetition'])
+		{
 		if($row['websiteHost'])
 		{
 			$output .="<div>Host: <a href='".$row['websiteHost']."'>".$row['host']."</a></div>";
@@ -124,6 +126,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 				$output .="<div>Billing: ".$row['addressBilling']."</div>";
 			}
 		}
+	}
 		$schedule ="";
 		if(userHasPrivilege(3))
 		{
