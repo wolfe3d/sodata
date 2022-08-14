@@ -1110,7 +1110,7 @@ function rowRemove(myID,table)
 		}
 		else {
 			$(".text-success").remove();
-			$("#" + table + "-" + myID).before("<div class='text-success'>Removal Error:"+html+"</div");
+			$("#" + table + "-" + myID).before("<div class='text-warning'>Removal Error:"+html+"</div");
 		}
 	});
 
@@ -1442,15 +1442,45 @@ function officerRemove(myID, myName)
 {
 	if(confirm("Are you sure you want to remove " + myName + "(" + myID +") from their officer position?"))
 	{
-		rowRemove(myID,"officer");
+		leaderRemoveRow(myID,"officer", myName);
 	}
 }
 function leaderRemove(myID, myName)
 {
 	if(confirm("Are you sure you want to remove " + myName + "(" + myID +") from their event leader position?"))
 	{
-		rowRemove(myID,"eventleader");
+		leaderRemoveRow(myID,"eventleader", myName);
 	}
+}
+
+function leaderRemoveRow(myID,table, myName)
+{
+	// validate signup form on keyup and submit
+	var request = $.ajax({
+		url: "rowremove.php",
+		cache: false,
+		method: "POST",
+		data: { myid: myID, mytable:table},
+		dataType: "text"
+	});
+
+	request.done(function( html )
+	{
+		$(".text-success").remove(); //removes any old update notices
+		if(html==1)
+		{
+			$("#" + table + "-" + myID).before("<div class='text-success'>"+myName+" removed permanently.</div>"); //add note to show modification
+			$("#" + table + "-" + myID).remove();  //remove buttons in list
+		}
+		else {
+			$("#" + table + "-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$(".text-success").remove();
+		$("#" + table + "-" + myID).before("<div class='text-danger' class='error'>Request failed:"+textStatus+"</div");
+	});
 }
 
 ///////////////////

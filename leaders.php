@@ -103,7 +103,7 @@ if($result)
 
 		if(userHasPrivilege(5))
 		{
-			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
+			$output .="<a class='btn btn-warning' role='button' href='javascript:leaderRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
 		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])

@@ -22,8 +22,7 @@ if(empty($tableName))
 
 
 $query = "DELETE FROM `$tableName` WHERE `$tableName`.`".$tableName."ID` = $myID";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 //Make changes to database
 if ($result === TRUE)
 {
