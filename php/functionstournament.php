@@ -176,4 +176,28 @@ function calculateTeamRanking(&$students)
 		$students[$n]['rank'] = $n+1;
 	}
 }
+
+function tournamentTimeChosenEmpty($db, $tournamenteventID,$timeblockID)
+{
+	$query = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	if($result && $result->num_rows > 0)
+	{
+		return false;
+	}
+	return true;
+}
+
+function tournamentTimeChosenAllEmpty($db, $tournamenteventID)
+{
+	$query = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` = '$tournamenteventID';";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+	if($result && $result->num_rows > 0)
+	{
+		return false;
+	}
+	return true;
+}
 ?>

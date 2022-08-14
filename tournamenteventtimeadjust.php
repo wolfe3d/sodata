@@ -1,6 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("php/functionstournament.php");
 userCheckPrivilege(3);
 
 //javascript prevents assigning the same event to two different event blocks for in table tournamenttimechosen
@@ -11,7 +12,7 @@ if(empty($table))
 {
 	exit("<div style='color:red'>Table is not set.</div>");
 }
-$tournamenteventID = intval($_POST['tournamenteventID']);
+$tournamenteventID = intval($_POST['tournamentevent']);
 if(empty($tournamenteventID))
 {
 	exit("<div style='color:red'>tournamenteventID is not set.</div>");
@@ -42,9 +43,19 @@ if($checked)
 	}
 }
 else {
-	//TODO: Instead of removing a tournamenteventID in tournamenteventchosen that may be linked to students already.  Try modifying the time block.
-  //TODO: Answer question -- what if the tournamenttimeavailable is wrong and the tournamenttimechosen used one of these available times.  IF you remove the time from tournamenttimeavailable, how does that affect the db?
-	$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
+	//check to see if a tournamenttimechosen has used this available time
+	if($table=="tournamenttimeavailable")
+	{
+		if(!tournamentTimeChosenEmpty($mysqlConn, $tournamenteventID, $timeblockID))
+		{
+			exit("There is a timeblock chosen for a team for this event.  You must unselect the time before removing the event.");
+		}
+	}
+	else if($table=="tournamenttimechosen")
+	{
+		//Users should be able to remove a time chosen to pick another time.
+	}
+		$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
 }
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)

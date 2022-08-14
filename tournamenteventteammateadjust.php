@@ -1,6 +1,7 @@
 <?php
 require_once  ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
+require_once  ("php/functions.php");
 userCheckPrivilege(3);
 
 $tournamenteventID = $mysqlConn->real_escape_string($_POST['tournamenteventID']);
@@ -18,12 +19,8 @@ if(empty($studentID))
 {
 	//studentID is null if the place is changed for all students
 }
-$place = intval($_POST['place']);
-if(empty($place))
-{
-	$place = 'NULL';
-}
-$checked = intval($_POST['checked']);
+$place = getIfSet($_POST['place'],'NULL');
+$checked = getIfSet($_POST['checked'],0);
 if($checked){
 	$query = "INSERT INTO `teammateplace` (`tournamenteventID`, `teamID`, `studentID`, `place`) VALUES ('$tournamenteventID', '$teamID', '$studentID', $place);";
 }

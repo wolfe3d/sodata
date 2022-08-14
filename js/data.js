@@ -1082,16 +1082,9 @@ function tournamentTimeblockRemove(myID)
 		rowRemove(myID,"timeblock");
 	}
 }
-function tournamentEventRemove(myID,myName)
-{
-	if(confirm("Are you sure you want to delete "+myName+" from this tournament " + myID +"?  This removes the event permanently!!!"))
-	{
-		rowRemove(myID,"tournamentevent");
-	}
-}
 function rowRemove(myID,table)
 {
-	// validate signup form on keyup and submit
+	// check to see if the event has anyone signed up for this tournament
 	var request = $.ajax({
 		url: "rowremove.php",
 		cache: false,
@@ -1119,12 +1112,61 @@ function rowRemove(myID,table)
 		$("#" + table + "-" + myID).before("<div class='text-success' class='error'>Request failedr:"+textStatus+"</div");
 	});
 }
+function tournamentEventRemove(myID,myName)
+{
+	// validate signup form on keyup and submit
+	var request = $.ajax({
+		url: "tournamenteventempty.php",
+		cache: false,
+		method: "POST",
+		data: { tournamentevent: myID},
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		if(parseInt(html)==1) 	 {
+			if(confirm("Are you sure you want to delete "+myName+" from this tournament " + myID +"?  This removes the event permanently!!!"))
+			{
+				var request2 = $.ajax({
+					url: "tournamenteventtimeempty.php",
+					cache: false,
+					method: "POST",
+					data: { tournamentevent: myID},
+					dataType: "text"
+				});
+				request2.done(function( html ) {
+				if(parseInt(html)==1) 	 {
+						rowRemove(myID,"tournamentevent");
+				}
+				else {
+					$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+					inputBtn.prop('checked', checked?0:1);
+				}
+			});
+
+			request2.fail(function( jqXHR, textStatus ) {
+				$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
+			});
+
+			}
+		}
+		else {
+			alert (html);
+			return 0;
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		return 0;
+	});
+
+
+}
 
 //This changes the tournamenttimeavailable and tournamenttimechosen
 function tournamentEventTimeSet(inputBtn)
 {
 	//alert(inputBtn.attr('name'));
-	//alert(inputBtn.is(":checked"));
 	var objectName = inputBtn.attr('name');
 	var splitName = objectName.split("-");
 	var checked = inputBtn.is(":checked")?1:0;
@@ -1139,7 +1181,7 @@ function tournamentEventTimeSet(inputBtn)
 		url: "tournamenteventtimeadjust.php",
 		cache: false,
 		method: "POST",
-		data: { table: splitName[0], tournamenteventID: splitName[1], timeblockID: splitName[3], teamID: splitName[2], checked: checked },
+		data: { table: splitName[0], tournamentevent: splitName[1], timeblockID: splitName[3], teamID: splitName[2], checked: checked },
 		dataType: "text"
 	});
 
@@ -1147,15 +1189,15 @@ function tournamentEventTimeSet(inputBtn)
 		if(html=='1') 	 {
 			var modified = checked?"added":"removed";
 			$("#note").html("<div class='text-success'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
-
 		}
 		else {
-			$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+			inputBtn.prop('checked', checked?0:1);
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 	});
 }
 
@@ -1296,8 +1338,7 @@ function tournamentEventTeammate(inputBtn)
 	var objectName = inputBtn.attr('name');
 	var splitName = objectName.split("-");
 	var checked = inputBtn.is(":checked")?1:0;
-	var place = $("#placement-"+splitName[1]+"--"+splitName[3]).val();
-
+	var place = $("#placement-"+splitName[1]+"--"+splitName[3]).length ? $("#placement-"+splitName[1]+"--"+splitName[3]).val():0;
 
 	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
 	//Do not allow 2 or more timeblocks for the same event!
@@ -1518,16 +1559,16 @@ function slideAdd(slideOrder)
 }
 function slidePreviewImage(slideID)
 {
-		if ($("#image-"+slideID)[0].files && $("#image-"+slideID)[0].files[0]) {
-				var reader = new FileReader();
+	if ($("#image-"+slideID)[0].files && $("#image-"+slideID)[0].files[0]) {
+		var reader = new FileReader();
 
-				reader.onload = function (e) {
-						$("#slide-image-"+slideID).attr('src', e.target.result);
-				}
-
-				reader.readAsDataURL($("#image-"+slideID)[0].files[0]);
-				$('#saveSlideButton-'+slideID).show();
+		reader.onload = function (e) {
+			$("#slide-image-"+slideID).attr('src', e.target.result);
 		}
+
+		reader.readAsDataURL($("#image-"+slideID)[0].files[0]);
+		$('#saveSlideButton-'+slideID).show();
+	}
 }
 
 
@@ -1561,7 +1602,7 @@ function slideSave(slideID)
 		});
 	}
 
-  slideSaveText();
+	slideSaveText();
 }
 var slideIDE = "" ; //the editing slide ID
 function loadSummerNoteButtons()
