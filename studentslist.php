@@ -4,12 +4,10 @@ userCheckPrivilege(1);
 
 //text output
 $output = "";
-echo print_r($_POST);
 $last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
 $first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
 $eventPriorityID = isset($_POST['eventPriority'])?intval($_POST['eventPriority']):0;
 $eventCompetitionID = isset($_POST['eventCompetition'])?intval($_POST['eventCompetition']):0;
-echo "eC".$eventCompetitionID;
 $courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
 $active = isset($_POST['active'])?intval($_POST['active']):0;
 $year = getCurrentSOYear();
