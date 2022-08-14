@@ -162,7 +162,7 @@ if(!$mobile)
 							$border = isset($timeblock['border'])?$timeblock['border']:"";
 							$output .="<td style='$border background-color:".rainbow($i)."' class='$checkboxEvent' data-timeblock='".$timeblock['timeblockID']."'>";
 							$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
-							$timeEvent['eventTotal'] +=$checked?1:0;
+							//$timeEvent['eventTotal'] +=$checked?1:0;  //done in javascript
 							//$studentTotal +=$checked?1:0;  //done in javascript
 							if(userHasPrivilege(3)){
 								$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
@@ -194,7 +194,7 @@ if(!$mobile)
 			if($timeEvents)
 			{
 				foreach ($timeEvents as $timeEvent) {
-					$output .= "<td data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>".$timeEvent['eventTotal']." </td>";
+					$output .= "<td class='eventtotal' data-eventmax='".$timeEvent['numberStudents']."' id='eventtotal-".$timeEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'></td>"; //event total is entered here via javascript
 				}
 			}
 			else {
@@ -249,6 +249,7 @@ if(!$mobile)
 	}
 }
 else {
+
 	//mobile version
 	$output .="<h3>".$rowTeam['tournamentName']." - Team " . $rowTeam['teamName'] ."</h3>";
 	$output .="<div class='btn-group' role='group' aria-label='Basic radio toggle button group' onchange='javascript:touramentCarouselToggle()'>";

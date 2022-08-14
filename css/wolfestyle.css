@@ -42,6 +42,10 @@ table.tournament td.student{
 	font-size: 1em;
 	font-weight: 500;
 	min-width:8em;
+	text-align:left;
+}
+table.tournament td.eventtotal{
+	vertical-align: top;
 }
 table.tournament td{
 	padding: 0em;

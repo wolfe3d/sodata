@@ -1318,7 +1318,7 @@ function tournamentCalculateEvent(tournamenteventID)
 	}
 	else {
 		//Student view without edit priviledge
-		var eventAssigned = $(".teammateEvent-"+tournamenteventID+" > div").length; //count number of students assigned to event
+		var eventAssigned = $(".teammateEvent-"+tournamenteventID+" > .bi-check").length; //count number of students assigned to event
 	}
 	$("#eventtotal-"+tournamenteventID).text(eventAssigned); //print number of students assigned
 	var eventMax = $("#eventtotal-"+tournamenteventID).data( "eventmax" );//check number of students allowed in stored data
@@ -1335,7 +1335,7 @@ function tournamentCalculateEvent(tournamenteventID)
 		var errorClass ="text-warning";
 	}
 	//print errors
-	$("#eventtotal-"+tournamenteventID).append("<div class='text-success "+errorClass+"'>"+errorText+"</div>");
+	$("#eventtotal-"+tournamenteventID).append("<div class='"+errorClass+"'>"+errorText+"</div>");
 }
 
 //Calculate the number of events for a student
@@ -1348,7 +1348,7 @@ function tournamentCalculateStudent(studentID)
 	}
 	else {
 		//Student view without edit priviledge
-		$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" > div").length);
+		$("#studenttotal-"+studentID).text($(".teammateStudent-"+studentID+" > .bi-check").length);
 	}
 }
 
@@ -1371,7 +1371,7 @@ function tournamentCalculateTimeblock(studentID)
 		}
 		else {
 			//Student view without edit priviledge
-			studentAssigned = $("."+$(v).attr('id')+".teammateStudent-"+studentID+" > div").length; //count number of students assigned		}
+			studentAssigned = $("."+$(v).attr('id')+".teammateStudent-"+studentID+" > .bi-check").length; //count number of students assigned		}
 		}
 		if (studentAssigned >1){
 			//print errors
