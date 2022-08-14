@@ -1167,7 +1167,7 @@ function random_str(
 			$output .="</div>";
 			$output .="<div class='carousel-inner'>";
 			$active = "active";
-			$interval = "3000";
+			$interval = "5000";
 			while ($row = $result->fetch_assoc()):
 				$output .="<div class='carousel-item $active' data-bs-interval='$interval'>";
 				$output .="<img src='".$row['image']."' class='d-block w-100' alt='...' style='height:360px;object-fit:cover;'>";
@@ -1176,7 +1176,7 @@ function random_str(
 				$output .="</div>";
 				$output .="</div>";
 				$active  = "";
-				$interval ="1000";
+				$interval ="3000";
 				$n++;
 
 			endwhile;
