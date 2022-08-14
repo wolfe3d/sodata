@@ -54,7 +54,6 @@ try {
 	header("Location:logout.php");
 }
 
-
 if(empty($gpUserProfile['id']))
 {
 	//header("Location:logout.php");

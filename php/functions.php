@@ -625,10 +625,10 @@ function getLeaderEmails($db, $year)
 		FROM `tournament`
 		INNER JOIN `team` ON `tournament`.`tournamentID`=`team`.`tournamentID`
 		INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
-		INNER JOIN `tournamentEvent` ON `teammateplace`.`tournamentEventID`=`tournamentEvent`.`tournamentEventID`
-		INNER JOIN `event` ON `tournamentEvent`.`eventID`=`event`.`eventID`
+		INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID`
+		INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID`
 		INNER JOIN `student` ON `teammateplace`.`studentID`= `student`.`studentID`
-		WHERE `tournament`.`tournamentID` = '$tournamentID' AND `tournamentEvent`.`eventID` = '$eventID'
+		WHERE `tournament`.`tournamentID` = '$tournamentID' AND `tournamentevent`.`eventID` = '$eventID'
 		AND `student`.`schoolID` = '$schoolID'
 		ORDER BY `teamName`,`last`,`first`";
 		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] . ".");
