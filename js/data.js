@@ -373,7 +373,7 @@ function studentEventAdd(student, field, value)
 		//$("label[for='" + field + "']").append(html);
 		$(".text-success").remove(); //removes any old update notices
 		var eventchoiceID = parseInt(html);
-		if (eventchoiceID>0)
+		if(!isNaN(eventchoiceID)) //checks to see if a number is returned
 		{
 			//returns the current update
 			var eventSplit = $("#eventsList option:selected").text().split(" ");
@@ -421,7 +421,7 @@ function studentCourseAdd(student, table)
 	request.done(function( html ) {
 		$(".text-success").remove(); //removes any old update notices
 		var myCourseID = parseInt(html);
-		if (myCourseID>0)
+		if(!isNaN(myCourseID))//checks to see if a number is returned
 		{
 			//returns the current update
 			$("#" + table).append("<div id='" + table + "-" + myCourseID + "'><span class='course'>"+ $("#courseList option:selected").text() + "</span></div>");
@@ -456,7 +456,7 @@ function studentCourseCompleted(value, courseName)
 	request.done(function( text ) {
 		$(".text-success").remove(); //removes any old update notices
 		var myCourseID = parseInt(text);
-		if (myCourseID>0)
+		if(!isNaN(myCourseID))//checks to see if a number is returned
 		{
 			//returns the current update
 			var table = "coursecompleted";
@@ -1015,7 +1015,38 @@ function tournamentEventsAddAll(myID, year)
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='text-success' class='error'>"+textStatus+"</div>");
+		$("#mainContainer").append("<div class='text-success'>"+textStatus+"</div>");
+	});
+}
+
+function tournamentEventsAdd(tournamentID)
+{
+	var eventID = $("#eventsList option:selected").val();
+	alert (eventID);
+
+	var request = $.ajax({
+		url: "tournamenteventsadd.php",
+		cache: false,
+		method: "POST",
+		data: {tournament: tournamentID, event: eventID},
+		dataType: "html"
+	});
+
+	request.done(function( html ) {
+		//$("label[for='" + field + "']").append(html);
+		$(".text-success").remove(); //removes any old update notices
+		if(!isNaN(parseInt(html)))//checks to see if a number is returned 
+		{
+			window.location.hash = window.location.hash + "-updated";
+		}
+		else
+		{
+			$("#mainContainer").append("<div class='text-warning'>"+html+"</div>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$("#mainContainer").append("<div class='text-warning'>"+textStatus+"</div>");
 	});
 }
 
@@ -1439,7 +1470,7 @@ function slideAdd(slideOrder)
 
 	request.done(function( html ) {
 		var slideID = parseInt(html);
-		if(slideID)
+		if(!isNaN(slideID)) //checks to see if a number is returned
 		{
 			$("#note").html("<div class='text-success'>Added new slide.</div>"); //add note to show modification
 			$("#slideList").append("<div id='slide-"+slideID+"'></div>"); //add note to show modification

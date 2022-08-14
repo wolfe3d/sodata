@@ -92,12 +92,7 @@ echo $output;
 <br>
 <div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 
-<h2>Add Other Events</h2>
-<form id="addTo" method="post" action="tournamenteventsadd.php">
-	<p>
-		<?=getEventList($mysqlConn, 0,"Events")?>
-	</p>
-	<p><button class='btn btn-primary' type='submit'><span class='bi bi-plus-circle'></span> Add</button></p>
+<p><?=getEventList($mysqlConn, 0,"Add Other Events")?></p>
+<p><button class='btn btn-primary' type='button' onclick='javascript:tournamentEventsAdd(<?=$tournamentID?>)'><span class='bi bi-plus-circle'></span> Add</button></p>
 
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
-</form>

@@ -3,12 +3,12 @@ require_once  ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(3);
 
-$tournamentID = intval($_POST['myID']);
+$tournamentID = intval($_POST['tournament']);
 if(empty($tournamentID)){
 	exit("<div style='color:red'>tournamentID is not set.</div>");
 }
 
-$eventID = intval($_POST['eventsList']);
+$eventID = intval($_POST['event']);
 if(empty($eventID)){
 	exit("<div style='color:red'>eventID was not set.</div>");
 }
