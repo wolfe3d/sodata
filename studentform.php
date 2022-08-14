@@ -91,7 +91,7 @@ if (userHasPrivilege(4))
 	</fieldset>
 	<fieldset>
 		<legend>Courses Enrolled (but not completed)</legend>
-		<div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
+		<div id="courseenrolled"><?= getCourses($mysqlConn, $row['studentID'], "courseenrolled")?></div>
 		<div id="addcourseenrolledDiv"></div>
 		<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','courseenrolled')">Add Course Enrolled</a>
 	</fieldset>
