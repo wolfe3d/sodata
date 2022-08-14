@@ -1022,8 +1022,6 @@ function tournamentEventsAddAll(myID, year)
 function tournamentEventsAdd(tournamentID)
 {
 	var eventID = $("#eventsList option:selected").val();
-	alert (eventID);
-
 	var request = $.ajax({
 		url: "tournamenteventsadd.php",
 		cache: false,
@@ -1035,7 +1033,7 @@ function tournamentEventsAdd(tournamentID)
 	request.done(function( html ) {
 		//$("label[for='" + field + "']").append(html);
 		$(".text-success").remove(); //removes any old update notices
-		if(!isNaN(parseInt(html)))//checks to see if a number is returned 
+		if(!isNaN(parseInt(html)))//checks to see if a number is returned
 		{
 			window.location.hash = window.location.hash + "-updated";
 		}
