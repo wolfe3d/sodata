@@ -10,7 +10,7 @@ if(empty($myID)){
 	exit("No ID sent.");
 }
 
-$query = "INSERT INTO `coursecompleted` (`courseID`,`studentID`) SELECT `courseID`,`studentID` FROM `courseenrolled` WHERE `courseenrolled`.`courseenrolledID` = $myID";
+$query = "INSERT INTO `coursecompleted` (`courseID`,`studentID`) SELECT `courseID`,`studentID` FROM `courseenrolled` WHERE `courseenrolled`.`courseenrolledID` = '$myID'";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)

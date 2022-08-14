@@ -10,7 +10,7 @@ require_once ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
 userCheckPrivilege(4);
 
-$query = "SELECT * FROM `student` WHERE `active` = 1";
+$query = "SELECT * FROM `student` WHERE `active` = 1 AND `schoolID` = "  . $_SESSION['userData']['schoolID'];
 $emails = "";
 
 $fp = fopen('php://output', 'a');

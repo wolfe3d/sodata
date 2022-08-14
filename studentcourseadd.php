@@ -5,7 +5,6 @@ userCheckPrivilege(2);
 
 //text output
 $output = "";
-
 $studentID = intval($_REQUEST['studentID']);
 $courseID = intval($_REQUEST['courseID']);
 $tableName = strtolower ($mysqlConn->real_escape_string($_REQUEST['tableName']));

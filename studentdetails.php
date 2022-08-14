@@ -99,7 +99,7 @@ if(userHasPrivilege(3))
 	}
 	$output .= "<hr>";
 	//Get latest team assignments
-	$output .= getLatestTeamTournamentStudent($mysqlConn, $studentID);
+	$output .=getLatestTeamTournamentStudent($mysqlConn, $studentID);
 	$output .=studentEventPriority($mysqlConn, $row['studentID']);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
 	$output .=studentCourseEnrolled($mysqlConn, $row['studentID']);

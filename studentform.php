@@ -81,19 +81,19 @@ if (userHasPrivilege(4))
 		<legend>Events</legend>
 		<div id="events"><?=$eventsChoice?></div>
 		<div id="studentEventAddDiv"></div>
-		<a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$studentID?>')" href="">Add Event</a>
+		<a id="studentEventAdd" href="javascript:studentEventAddChoice('<?=$row['studentID']?>')" href="">Add Event</a>
 	</fieldset>
 	<fieldset>
 		<legend>Courses Completed</legend>
-		<div id="coursecompleted"><?= getCourses($mysqlConn, $studentID, "coursecompleted")?></div>
+		<div id="coursecompleted"><?= getCourses($mysqlConn, $row['studentID'], "coursecompleted")?></div>
 		<div id="addcoursecompletedDiv"></div>
-		<a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','coursecompleted')">Add Course Completed</a>
+		<a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','coursecompleted')">Add Course Completed</a>
 	</fieldset>
 	<fieldset>
 		<legend>Courses Enrolled (but not completed)</legend>
 		<div id="courseenrolled"><?= getCourses($mysqlConn, $studentID, "courseenrolled")?></div>
 		<div id="addcourseenrolledDiv"></div>
-		<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$studentID?>','courseenrolled')">Add Course Enrolled</a>
+		<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','courseenrolled')">Add Course Enrolled</a>
 	</fieldset>
 	<?php
 }?>
