@@ -32,7 +32,9 @@ if(!empty($_SESSION['userData'])){
 
 	if($studentID)
 	{
-		$output .= "<li><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</li>";
+		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</p>";
+	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Your Information</a></p>";
+
 	}
 	$output .= "</ul>";
 
@@ -53,13 +55,18 @@ if(!empty($_SESSION['userData'])){
 		//Get latest team assignments
 		$myEvents = getLatestTeamTournamentStudent($mysqlConn, $studentID);
 		//show student's event priority
-		$myEvents .= studentEventPriority($mysqlConn, $studentID);
+		//$myEvents .= studentEventPriority($mysqlConn, $studentID);
 		if($myEvents)
 		{
 			$output .= "<hr><h2>My Events</h2>" . $myEvents;
 		}
 		//show all previous results for this student
-		$output .= studentTournamentResults($mysqlConn, $studentID, true);
+		$myTournamentResults = studentTournamentResults($mysqlConn, $studentID, true);
+		if($myTournamentResults)
+		{
+			$output .= "<hr><h2>My Results</h2>" . $myTournamentResults;
+		}
+
 	}
 	//Coach Reminders
 

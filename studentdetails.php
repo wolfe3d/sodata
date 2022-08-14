@@ -3,6 +3,7 @@ require_once("php/functions.php");
 userCheckPrivilege(1);
 
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
+$myStudentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 $query = "SELECT * FROM `student` WHERE `studentID` = $studentID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($result)
@@ -54,10 +55,10 @@ if(userHasPrivilege(3))
 		}
 	}
 }
-if(userHasPrivilege(4))
+if(userHasPrivilege(4)||$studentID==$myStudentID)
 {
 	$output .= "<div>School ID: ".$row['schoolID']."</div>";
-	$output .= "<div>Student\'s School ID: ".$row['studentschoolID']."</div>";
+	$output .= "<div>Student's School ID: ".$row['studentschoolID']."</div>";
 	$output .= "<div>Scilympiad ID: ".$row['scilympiadID']."</div>";
 }
 $output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
@@ -75,7 +76,7 @@ if($row['phone'])
 }
 
 
-if(userHasPrivilege(3))
+if(userHasPrivilege(3)||$studentID==$myStudentID)
 {
 	$officerPosPrev = getOfficerPositionPrevious($mysqlConn,$studentID);
 	if($officerPosPrev)
@@ -111,3 +112,4 @@ $output .="</div>";
 }
 echo $output;
 ?>
+<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
