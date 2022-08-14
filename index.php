@@ -18,6 +18,8 @@ if (isset($_SESSION['token'])) {
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="description" content="Walton Science Olympiad Homepage" />
 	<meta name="keywords" content="Walton, Science, Olympiad, SO" />
+	<meta property="og:image" content="images/waltoncthulu1200.png" />
+
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 	<script src="js/jquery-3.6.0.min.js"></script>
 	<script src="js/jquery.validate.min.js"></script>
