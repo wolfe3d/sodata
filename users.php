@@ -2,7 +2,7 @@
 require_once ("php/functions.php");
 userCheckPrivilege(4);
 
-$where = "WHERE `schoolID`=".$_SESSION['userData']['schoolID'];
+$where = "WHERE `school`.`schoolID`=".$_SESSION['userData']['schoolID'];
 if(userHasPrivilege(5))
 {
 	$where='';
