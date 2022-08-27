@@ -24,7 +24,7 @@ if($eventLeaderPos)
 }
 if(userHasPrivilege(4))
 {
-	$output .= "<div><a href='#changeuser'>Imitate User (ToBe added)</a></div>";
+	$output .= "<div><a href='impersonate.php?userID=".$row['userID']."'>Impersonate User</a></div>";
 }
 if(userHasPrivilege(3))
 {
@@ -57,7 +57,7 @@ if(userHasPrivilege(3))
 }
 if(userHasPrivilege(4)||$studentID==$myStudentID)
 {
-	$output .= "<div>School ID: ".$row['schoolID']."</div>";
+	$output .= "<div>School Name: ".getCurrentSchoolName($mysqlConn,$row['schoolID'])."</div>";
 	$output .= "<div>Student's School ID: ".$row['studentschoolID']."</div>";
 	$output .= "<div>Scilympiad ID: ".$row['scilympiadID']."</div>";
 }

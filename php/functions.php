@@ -78,7 +78,7 @@ function getCurrentSchoolName($db, $schoolID)
 	if($result)
 	{
 		$row = $result->fetch_assoc();
-		return $row['schoolName'] . "(" . $row['divisionID'] . ")";
+		return $row['schoolName'] . " (" . $row['divisionID'] . " Division)";
 	}
 	return 'No school associated';
 }
