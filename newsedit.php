@@ -19,7 +19,7 @@ if ($result && mysqli_num_rows($result) > 0)
 }
 $output .="</div>";
 
-if(!$newsID)
+if($newsID<0)
 {
 	$query = "INSERT INTO `news` (`schoolID`) VALUES ($schoolID);";
 	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -29,7 +29,7 @@ if(!$newsID)
 	}
 }
 
-if(!$newsID)
+if(!$newsID<0)
 {
 	exit("ERROR: Adding row to news for new school ($schoolID).");
 }
