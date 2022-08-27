@@ -33,16 +33,17 @@ if(!$newsID)
 {
 	exit("ERROR: Adding row to news for new school ($schoolID).");
 }
-
+else
+{
 $output.="<p>
 	 <button type='button' id='editButton' class='btn btn-primary' onClick='editText()'>
 		 <span class='bi bi-pencil-square'></span> Edit Text
 	 </button>";
 	 $output.="<div><!-- Button trigger modal -->
 			<button type='button' id='saveButton' class='btn btn-primary' onClick='saveText($newsID)'  style='display: none;>
-				<span class='bi bi-hdd'></span> Save Slide
+				<span class='bi bi-hdd'></span> Save News
 			</button></div>";
-
+}
 //Button to Add Slide
 
 echo $output;
