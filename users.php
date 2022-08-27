@@ -10,7 +10,7 @@ if(userHasPrivilege(5))
 
 function printResults($db,$query,$student)
 {
-	echo $query ;
+	//echo $query ;
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="<div class='container-fluid'>";
 	if($result && mysqli_num_rows($result)>0)
