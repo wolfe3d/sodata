@@ -71,9 +71,9 @@ function getStudentName($db, $studentID)
 }
 
 //get Name of the students school
-function getCurrentSchoolName($db)
+function getCurrentSchoolName($db, $schoolID)
 {
-	$query = "SELECT `schoolName`, `divisionID` from `school` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$query = "SELECT `schoolName`, `divisionID` from `school` WHERE `schoolID` = $schoolID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{

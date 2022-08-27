@@ -10,7 +10,7 @@ if(!isset($row))
 	$row = NULL;
 }
 ?>
-<h3><?=getCurrentSchoolName($mysqlConn)?></h3>
+<h3><?=getCurrentSchoolName($mysqlConn, $row['schoolID'])?></h3>
 <?php
 if ($editing)
 {
