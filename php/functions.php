@@ -1195,4 +1195,19 @@ function random_str(
 		}
 		return $output;
 	}
+
+	//get home.php carousel for the home schoolID
+	function getInfo($db, $schoolID)
+	{
+		$output = "";
+		//Get student information row information
+		$query = "SELECT * FROM `news` WHERE `schoolID` = $schoolID";
+		$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result && mysqli_num_rows($result)>0){
+			while ($row = $result->fetch_assoc()):
+			$output .=$row['news'];
+			endwhile;
+		}
+		return $output;
+	}
 	?>

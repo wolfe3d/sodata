@@ -16,6 +16,8 @@ if(!empty($_SESSION['userData'])){
 	{
 		$coachID = getCoachID($mysqlConn, $userID);
 	}
+	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
+
 	$output .= "<div style='display: flex; justify-content: center; vertical-align: middle;padding: 10px;'><img style='vertical-align: middle' height='256px' src='images/waltoncthulu256.png'></img></div>";
 	$output .= '<div>';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
@@ -23,9 +25,14 @@ if(!empty($_SESSION['userData'])){
 	$output .= getCarousel($mysqlConn, $_SESSION['userData']['schoolID']);
 	if(userHasPrivilege(4))
 	{
-		$output .= "<p><a type='button' class='btn btn-primary' href='#home-edit'><span class='bi bi-edit'></span> Edit Carousel</button></div></a>";
+		$output .= "<p><a type='button' class='btn btn-primary' href='#home-edit'><span class='bi bi-edit'></span> Edit Carousel</button></a></p>";
 	}
-	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
+	$output .= getInfo($mysqlConn, $_SESSION['userData']['schoolID']);
+	if(userHasPrivilege(4))
+	{
+		$output .= "<p><a type='button' class='btn btn-primary' href='#news-edit'><span class='bi bi-edit'></span> Edit News</button></a></p>";
+	}
+
 	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
 	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
 	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';

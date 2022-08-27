@@ -24,9 +24,9 @@ if ($result && mysqli_num_rows($result) > 0)
 							<button class='btn btn-outline-secondary' type='button' id='uploadimage-".$row['slideID']."' onclick='javascript:slidePreviewImage(".$row['slideID'].")'>Preview</button>
 							</div>";
 		$output.="<p>
-			 <button type='button' class='btn btn-primary' onClick='slideEditText(".$row['slideID'].")'>
+			 <button type='button' class='btn btn-primary' onClick='editText(".$row['slideID'].")'>
 			   <span class='bi bi-pencil-square'></span> Edit Text
-			 </button> <button type='button' id='previewSlideButton-".$row['slideID']."' class='btn btn-primary' onClick='slidePreviewText(".$row['slideID'].")'  style='display: none;>
+			 </button> <button type='button' id='previewSlideButton-".$row['slideID']."' class='btn btn-primary' onClick='previewText(".$row['slideID'].")'  style='display: none;>
 			   <span class='bi bi-pencil-square''></span> Preview
 			 </button></p>";
 			 $output.="<div id='html-".$row['slideID']."'style='text-align: center;'>".$row['text']."</div>";
@@ -54,7 +54,7 @@ echo $output;
 ?>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
-
+<script src="js/slide.js"></script>
 <br>
 <form id="addTo" method="post" action="slideinsert.php"><p>
 	<input type="hidden" id="slideOrder" name="slideOrder" value="<?=$slideInt?>">
