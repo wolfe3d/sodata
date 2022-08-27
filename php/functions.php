@@ -283,7 +283,7 @@ function getLatestTeamTournamentStudent($db, $studentID)
 	{
 		$row = $result->fetch_assoc();
 		$output.="<div id='".$row['tournamentName']."'>";
-		$output .="<h3>".$row['tournamentName']." - Team ". $row['teamName'] ." (" . $row['dateTournament']. "</h3>";
+		$output .="<h3>".$row['tournamentName']." - Team ". $row['teamName'] ." (" . $row['dateTournament']. ")</h3>";
 		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
 		$output.=	studentEvents($db, $row['tournamentID'], $studentID, false);
 		$output.="</div>";
