@@ -22,21 +22,21 @@ if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 }
+if(userHasPrivilege(3))
+{
+	$output.="<div><a class='btn btn-warning' role='button' href='#student-edit-$studentID'><span class='bi bi-pencil-square'></span> Edit</a>";
+}
 if(userHasPrivilege(4))
 {
-	$output .= "<div><a href='impersonate.php?userID=".$row['userID']."'>Impersonate User</a></div>";
+	$output.=" <a class='btn btn-dark' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='bi bi-file-earmark-person'></span> Impersonate User</a>";
+}
+if(userHasPrivilege(5))
+{
+	$output.=" <a class='btn btn-danger' role='button' href='javascript:studentRemove($studentID,'".$row['last'] . ", " . $row['first']."')'><span class='bi bi-eraser'></span> Remove</a>";
 }
 if(userHasPrivilege(3))
 {
-	$output .= "<div><a href='#student-edit-$studentID'>Edit</a> ";
-}
-if(userHasPrivilege(4))
-{
-	$output .= "<a href=\"javascript:studentRemove($studentID,'".$row['last'] . ", " . $row['first']."')\">Remove</a>";
 	$output .= "</div>";
-}
-if(userHasPrivilege(3))
-{
 	if(empty($row['userID']))
 	{
 			$output .= "User has never logged in with registered account.";
