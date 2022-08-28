@@ -22,7 +22,7 @@ function userCheckPrivilege($level)
 	}
 	else if(!$_SESSION['userData']['active'])
 	{
-		die("<div class='text-danger'>You have been inactivated.  You have either graduated or been removed from the team.  If this is in error, please contact your coach. <a href='index.php'>Go home.</a></div>");
+		die("<div class='text-danger'>You have been inactivated.  You have either graduated or been removed from the team.  If this is in error, please contact your coach. <a href='logout.php'>Go home.</a></div>");
 	}
 	//TODO: figure out how to refresh Google token here https://stackoverflow.com/questions/9241213/how-to-refresh-token-with-google-api-client
 }
