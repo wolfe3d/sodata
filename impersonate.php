@@ -13,15 +13,14 @@ $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:
 $users="<ul class='list-group'>";
 if($result && mysqli_num_rows($result)>0)
 {
-	$row = $result->fetch_assoc();
-	// Getting user profile info
-	$userData = $row;
+	$userData = $result->fetch_assoc();
+
 
 	// Include User library file
 	require_once 'php/user.php';
 	// Initialize User class
 	$user = new User($mysqlConn);
-	$userType = $user->checkUserType($userID);
+	$userType = $user->checkUserType($userID, $userData['email'], true);
 	//added to be able to use in session
 	$userData['schoolID'] = $userType[0];
 	$userData['type'] = $userType[1];
