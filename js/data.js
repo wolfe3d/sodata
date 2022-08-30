@@ -32,7 +32,7 @@ $( window ).resize(function()
 function resizePage(){
 	var splitHash = location.hash.substr(1).split("-");
 	var page = splitHash[1];
-	if(page = "teamassign")
+	if(page == "teamassign")
 	{
 		loadpage(splitHash); //example: splitHash[0] = 'event' (page), splitHash[1] = 'edit' (type), splitHash[2] = '6' (myID)
 		$("#mainHeader").html(splitHash[0]);
@@ -217,12 +217,12 @@ function loadpage(myPage){
 		}
 		else
 		{
-			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
+			$("#mainContainer").append("<div class='text-danger' class='error'>"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").append("<div class='text-success' class='error'>"+textStatus+"</div>");
+		$("#mainContainer").append("<div class='text-danger' class='error'>Line 225: "+textStatus+"</div>");
 	});
 }
 
@@ -1122,7 +1122,7 @@ function rowRemove(myID,table)
 
 	request.fail(function( jqXHR, textStatus ) {
 		$(".text-success").remove();
-		$("#" + table + "-" + myID).before("<div class='text-success' class='error'>Request failedr:"+textStatus+"</div");
+		$("#" + table + "-" + myID).before("<div class='text-danger'>Request failed:"+textStatus+"</div");
 	});
 }
 function tournamentEventRemove(myID,myName)
