@@ -180,6 +180,7 @@ function loadpage(myPage){
 				case 'tournament':
 				if(typepage=="teamassign"){
 					tournamentAssignCheckErrors();
+					touramentCarouselToggle();
 				}
 				else if(typepage=="teamedit"){
 					tournamentTeamEditCheckErrors();
@@ -491,31 +492,31 @@ function fieldUpdate(myID,table,field,value,domID,messageID)
 
 function fieldUpdateValid(myID,table,field,value,messageID)
 {
-		//submit changes
-		var request = $.ajax({
-			url: "fieldupdate.php",
-			cache: false,
-			method: "POST",
-			data: { myid: myID, mytable:table, myfield : field, myvalue : value },
-			dataType: "text"
-		});
+	//submit changes
+	var request = $.ajax({
+		url: "fieldupdate.php",
+		cache: false,
+		method: "POST",
+		data: { myid: myID, mytable:table, myfield : field, myvalue : value },
+		dataType: "text"
+	});
 
-		request.done(function( html ) {
-			//$("label[for='" + field + "']").append(html);
-			$(".text-success").remove(); //removes any old update notices
-			if(html=="1")
-			{
-				$("#"+messageID).parent().append("<span class='text-success'>*Record Updated</span>"); //returns the current update
-			}
-			else
-			{
+	request.done(function( html ) {
+		//$("label[for='" + field + "']").append(html);
+		$(".text-success").remove(); //removes any old update notices
+		if(html=="1")
+		{
+			$("#"+messageID).parent().append("<span class='text-success'>*Record Updated</span>"); //returns the current update
+		}
+		else
+		{
 			$("#"+messageID).parent().append("<span class='text-success'>"+ html +"</span>"); //returns the warning
-			}
-		});
+		}
+	});
 
-		request.fail(function( jqXHR, textStatus ) {
-			$("#"+messageID).parent().append("<span class='text-danger'>"+ textStatus +"</span>"); //returns the error
-		});
+	request.fail(function( jqXHR, textStatus ) {
+		$("#"+messageID).parent().append("<span class='text-danger'>"+ textStatus +"</span>"); //returns the error
+	});
 }
 
 function userPrivilege(myUser, field,value)
@@ -626,18 +627,21 @@ function eventEdit(myID)
 ///////////////////
 ///Tournament functions
 //////////////////
-
+// On before slide change
 function touramentCarouselToggle()
 {
-	if($('input[name="btnradio"]:checked').val()=='time')
-	{
-		$('#studentCarousel').hide();
-		$('#timeCarousel').show();
-	}
-	else {
-		$('#timeCarousel').hide();
-		$('#studentCarousel').show();
-	}
+	$(document).ready(function() {
+
+		if($('input[name="btnradio"]:checked').val()=='time')
+		{
+			$('#studentCarousel').hide();
+			$('#timeCarousel').show();
+		}
+		else {
+			$('#timeCarousel').hide();
+			$('#studentCarousel').show();
+		}
+	});
 }
 
 function tournamentsPreparePage()
@@ -1148,18 +1152,18 @@ function tournamentEventRemove(myID,myName)
 					dataType: "text"
 				});
 				request2.done(function( html ) {
-				if(parseInt(html)==1) 	 {
+					if(parseInt(html)==1) 	 {
 						rowRemove(myID,"tournamentevent");
-				}
-				else {
-					$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
-					inputBtn.prop('checked', checked?0:1);
-				}
-			});
+					}
+					else {
+						$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+						inputBtn.prop('checked', checked?0:1);
+					}
+				});
 
-			request2.fail(function( jqXHR, textStatus ) {
-				$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
-			});
+				request2.fail(function( jqXHR, textStatus ) {
+					$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
+				});
 
 			}
 		}

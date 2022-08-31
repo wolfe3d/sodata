@@ -380,7 +380,7 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
-			$output.= $row['first']." ".$row['last']." <a href='mailto:".$row['email']."'>".$row['email']."</a><br>";
+			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a> <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
 		endwhile;
 	}
 	else {
@@ -398,7 +398,7 @@ function partnersWithEmails($db,$tournamentEventID, $teamID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
-			$output.= $row['first']." ".$row['last']." <a href='mailto:".$row['email']."'>".$row['email']."</a><br>";
+			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a> <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
 		endwhile;
 	}
 	else {
