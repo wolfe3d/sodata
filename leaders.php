@@ -59,7 +59,7 @@ if($result)
 		$output .="<h4>$leaderName</h4>";
 		if(userHasPrivilege(5))
 		{
-			$output .="<a class='btn btn-warning' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
+			$output .="<a class='btn btn-danger btn-sm' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
 		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
@@ -103,7 +103,7 @@ if($result)
 
 		if(userHasPrivilege(5))
 		{
-			$output .="<a class='btn btn-warning' role='button' href='javascript:leaderRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
+			$output .="<a class='btn btn-danger btn-sm' role='button' href='javascript:leaderRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
 		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])

@@ -42,24 +42,33 @@ function getEventLeader($db, $eventID, $year, $schoolID)
 	{
 		$yearWhere = "AND `eventleader`.`year` = $year";
 	}
-	$query = "SELECT `student`.`studentID`, `first`, `last`, `year` from `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
+	$query = "SELECT `student`.`studentID`, `first`, `last`, `year`, `eventleaderID` from `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = "";
 	$leaderNumber = 0;
 	if($result && $result->num_rows>0){
-		$output = "<div>Event Leader: ";
+		$output .=" <a class='btn btn-warning' role='button' href='#eventleader-addform-$year-event=$eventID' data-toggle='tooltip' data-placement='top' title='Add Event Leader'><span class='bi bi-plus-circle'></span> Add Leader</a>";
+
+		$output .= "<div>Event Leader: ";
 		while ($row = $result->fetch_assoc()):
-			if($leaderNumber)
-			{
-				$output .= ", ";
-			}
+			$output .="<span id='eventleader-".$row['eventleaderID']."'>";
 			$yearString = "";
 			if(!$year)
 			{
 				$yearString = "(" . $row['year'] . ")";
 			}
-			$output .= "<a href='#student-details-". $row['studentID'] ."'>".$row['first']." ".$row['last']." $yearString</a>";
+			$leaderName = $row['first']." ".$row['last'];
+			$output .= "<a href='#student-details-". $row['studentID'] ."'>".$leaderName." $yearString</a>";
+			if(userHasPrivilege(5))
+			{
+				$output .=" <a class='btn btn-danger btn-sm' role='button' href='javascript:leaderRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
+			}
 			$leaderNumber +=1;
+			if($leaderNumber<$result->num_rows)
+			{
+				$output .= ", ";
+			}
+			$output .="</span>";
 		endwhile;
 	}
 	else

@@ -22,7 +22,7 @@ if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 }
-if(userHasPrivilege(3))
+if(userHasPrivilege(4))
 {
 	$output.="<div><a class='btn btn-warning' role='button' href='#student-edit-$studentID'><span class='bi bi-pencil-square'></span> Edit</a>";
 }
@@ -32,7 +32,7 @@ if(userHasPrivilege(4))
 }
 if(userHasPrivilege(5))
 {
-	$output.=" <a class='btn btn-danger' role='button' href='javascript:studentRemove($studentID,'".$row['last'] . ", " . $row['first']."')'><span class='bi bi-eraser'></span> Remove</a>";
+	$output.=" <a class='btn btn-danger btn-sm' role='button' href='javascript:studentRemove($studentID,'".$row['last'] . ", " . $row['first']."')'><span class='bi bi-eraser'></span> Remove</a>";
 }
 if(userHasPrivilege(3))
 {

@@ -150,8 +150,12 @@ if($result)
 		{
 			$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
 		}
-
-		if(userHasPrivilege(3)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
+		$output .="<div>";
+		if(userHasPrivilege(3))
+		{
+			$output .="<a class='btn btn-primary' role='button' href='#student-details-".$row['studentID']."'><span class='bi bi-journal'></span> Details</a> ";
+		}
+		if(userHasPrivilege(4)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
 		{
 			$output .="<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
 		}
@@ -192,10 +196,6 @@ if($result)
 		if($row['phone'])
 		{
 			$output .="<div>Phone(".getPhoneString($row['phoneType'])."): ".$row['phone']."</div>";
-		}
-		if(userHasPrivilege(3))
-		{
-			$output .="<div><a class='btn btn-primary' role='button' href='#student-details-".$row['studentID']."'><span class='bi bi-journal'></span> Details</a></div>";
 		}
 
 		$output .="</div>";
