@@ -1,18 +1,6 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
-
-/*check to see if id exists*/
-$query = "SELECT * from `phonetype`";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-$phoneTypes="";
-if($result)
-{
-	while ($row = $result->fetch_assoc()):
-		$phoneTypes.="<option value = '".$row['phoneType']."'>".$row['phoneType']."</option>";
-	endwhile;
-}
 ?>
 <div>
 	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='bi bi-search'></span> Find</button> <!-- toggles view of below div -->

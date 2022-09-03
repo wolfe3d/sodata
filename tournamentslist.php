@@ -32,8 +32,11 @@ if($result)
 	$output .="<div>";
 	while ($row = $result->fetch_assoc()):
 		$myTitle = $row['tournamentName']." - ".$row['year'];
-		$output .="<hr><h2>".$myTitle."</h2>";
+		$output .="<div id='tournament-".$row['tournamentID']."'><hr><h2>".$myTitle."</h2>"; //start tournament output
+		$output .="<div>";
 		$output .="<a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-journal'></span> View Details </a>";
+		$output .=userHasPrivilege(5)?" <a class='btn btn-danger btn-sm' role='button' href='javascript:tournamentRemove(".$row['tournamentID'].",\"".$myTitle."\")'><span class='bi bi-eraser'></span> Remove</a>":"";
+		$output .="</div>";
 
 		if($row['websiteHost'])
 		{
@@ -72,6 +75,7 @@ if($result)
 		{
 			$output .="<div>Scilympiad Competition Website: <a href='".$row['websiteScilympiad']."'>".$row['websiteScilympiad']."</a></div>";
 		}
+			$output .="</div>"; //end tournament output
 	endwhile;
 	$output .="</div>";
 }

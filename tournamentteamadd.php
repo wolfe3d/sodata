@@ -36,9 +36,10 @@ if($tournamentID)
 	<p id="teamName">
 		<label for="teamName">Team Name</label>
 		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:$alphabet[$amountOfCreatedTeams]?>">
+		<input id="myID" type="hidden" name="myID" value="<?=$tournamentID?>">
 	</p>
 	<p>
 		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Cancel</button>
-		<button class="btn btn-primary" type="submit"><span class='bi bi-save'></span> Save</button>
+		<button class="btn btn-primary" onclick='addToSubmit("tournamentteaminsert.php")' type="button"><span class='bi bi-save'></span> Save</button>
 	</p>
 </form>

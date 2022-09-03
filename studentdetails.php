@@ -55,7 +55,7 @@ if(userHasPrivilege(3))
 		}
 	}
 }
-if(userHasPrivilege(4)||$studentID==$myStudentID)
+if(userHasPrivilege(4)||$studentID=$myStudentID)
 {
 	$output .= "<div>School Name: ".getCurrentSchoolName($mysqlConn,$row['schoolID'])."</div>";
 	$output .= "<div>Student's School ID: ".$row['studentschoolID']."</div>";

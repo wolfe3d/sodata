@@ -140,16 +140,6 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$output .="<div id='student-". $row['studentID'] ."'>";
 		$output .="<hr><h2>".$row['first']." ".$row['last']."</h2>";
-		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
-		if($officerPos)
-		{
-			$output .="<h3>Officer: $officerPos</h3>";
-		}
-		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID'],$year);
-		if($eventLeaderPos)
-		{
-			$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
-		}
 		$output .="<div>";
 		if(userHasPrivilege(3))
 		{
@@ -161,6 +151,17 @@ if($result)
 		}
 		$output .= userHasPrivilege(5)?" <a class='btn btn-danger' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
 		$output .= "</div>";
+		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
+		if($officerPos)
+		{
+			$output .="<h4>Officer: $officerPos</h4>";
+		}
+		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID'],$year);
+		if($eventLeaderPos)
+		{
+			$output .="<h4>Leading Event(s): $eventLeaderPos</h4>";
+		}
+
 		//show privilege
 		if(userHasPrivilege(3))
 		{

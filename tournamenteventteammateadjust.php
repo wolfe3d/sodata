@@ -33,6 +33,7 @@ else {
 		$query = "DELETE FROM `teammateplace` WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID' AND `studentID` = '$studentID';";
 	}
 }
+error_log ($query);
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {

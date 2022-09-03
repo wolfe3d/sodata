@@ -1,6 +1,7 @@
 <?php
 require_once  ("php/functions.php");
-userCheckPrivilege(3);
+userCheckPrivilege(4);
+//TODO: Check that you have permission for this schoolID to add
 
 $tournamentID = intval($_POST['myID']);
 $teamName = $mysqlConn->real_escape_string($_POST['teamName']);

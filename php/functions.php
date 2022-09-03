@@ -478,6 +478,7 @@ function studentEvents($db, $tournamentID, $studentID, $showPlace)
 {
 	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID ORDER BY `event`.`event`";
 	$result = $db->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
 	if ($result && mysqli_num_rows($result)>0)
 	{
 		$output = "<ul>";
@@ -907,7 +908,7 @@ function getEventLeaderPosition($db,$studentID,$year)
 {
 	$output = "";
 	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT `event` FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
+	$query = "SELECT `event` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{

@@ -289,7 +289,7 @@ function studentPreparePage()
 
 function studentRemove(myID, studentName)
 {
-	if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!!"))
+	if(confirm("Are you sure you want to delete the user named: " + studentName +"?  This removes all of their data and it is permanent!!! It is much safer to mark them INACTIVE without deleting them."))
 	{
 		var request = $.ajax({
 			url: "studentremove.php",
@@ -306,13 +306,13 @@ function studentRemove(myID, studentName)
 				$("#student-" + myID).remove(); //remove element
 			}
 			else {
-				$("#student-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
+				$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+html+"</div");
 			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".text-success").remove();
-			$("#student-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+			$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+textStatus+"</div");
 		});
 	}
 }
@@ -676,6 +676,7 @@ $( "#addTo" ).submit(function( event ) {
 
 	request.done(function( html ) {
 		$(".text-success").remove(); //removes any old update notices
+		alert(html);
 		if(html>0)
 		{
 			window.location.hash = '#tournament-view-'+html;
@@ -748,6 +749,36 @@ function tournamentEdit(myID)
 			}
 		});
 	});
+}
+
+function tournamentRemove(myID, tournamentName)
+{
+	if(confirm("Are you sure you want to delete the tournament named: " + tournamentName +"?  This removes all of their data and it is permanent!!!  This will only work if all assignments and times have been removed."))
+	{
+		var request = $.ajax({
+			url: "tournamentremove.php",
+			cache: false,
+			method: "POST",
+			data: {myID:myID},
+			dataType: "html"
+		});
+		request.done(function( html ) {
+			$(".text-success").remove(); //remove any old text-success notes
+			if(html=="1")
+			{
+				$("#tournament-" + myID).before("<div class='text-success'>"+tournamentName+" removed permanently.</div>"); //add note to show modification
+				$("#tournament-" + myID).remove(); //remove element
+			}
+			else {
+				$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$(".text-success").remove();
+			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+		});
+	}
 }
 
 //formats javascript time to have leading zeroes.  For instance 9:00AM is formatted as 09:00AM.
@@ -1302,6 +1333,7 @@ function tournamentTeammate(inputBtn)
 		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div");
 	});
 }
+
 //Check student count and senior count
 function tournamentTeamEditCheckErrors()
 {
