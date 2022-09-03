@@ -676,7 +676,6 @@ $( "#addTo" ).submit(function( event ) {
 
 	request.done(function( html ) {
 		$(".text-success").remove(); //removes any old update notices
-		alert(html);
 		if(html>0)
 		{
 			window.location.hash = '#tournament-view-'+html;

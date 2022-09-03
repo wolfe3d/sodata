@@ -35,16 +35,16 @@
 	</select>
 </p>
 <p>
-	<label for="numberTeams">Number of Teams Registered</label>
-	<input id="numberTeams" name="numberTeams" class="form-control" type="number" min='0' max='100' value="<?=$row['numberTeams']?>" required>
+	<label for="numberTeams">Number of Teams</label>
+	<input id="numberTeams" name="numberTeams" class="form-control" type="number" min='0' max='10' value="<?=$row['numberTeams']?>" required>
 </p>
 <p>
 	<label for="weight">Weight</label>
 	<input id="weight" name="weight" class="form-control" type="number" min='0' max='100' value="<?=$row['weight']?>">
 </p>
 <p>
-	<label for="teamsAttended">Number of Teams Participating</label>
-	<input id="teamsAttended" name="teamsAttended" class="form-control" type="number" min='0' max='100' value="<?=$row['teamsAttended']?>">
+	<label for="teamsAttended">Number of Teams from All Schools Registered<</label>
+	<input id="teamsAttended" name="teamsAttended" class="form-control" type="number" min='0' value="<?=$row['teamsAttended']?>">
 </p>
 <p>
 	<label for="note">Note(s)</label>
