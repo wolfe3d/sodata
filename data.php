@@ -91,7 +91,6 @@ userCheckPrivilege(1);
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
 	<script src="js/data.js"></script>
-	<script src="js/itemslide.js"></script>
 	<!-- Add the slick-theme.css if you want default styling -->
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 	<!-- Add the slick-theme.css if you want default styling -->

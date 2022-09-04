@@ -66,7 +66,7 @@ if (userHasPrivilege(4))
 </p>
 <p>
 	<label for="phoneType">Phone Type</label>
-	<select id="phoneType" name="phoneType" class="form-control" value="<?=$row['phoneType']?>">
+	<select id="phoneType" name="phoneType" class="form-select" value="<?=$row['phoneType']?>">
 		<option value='0' <?=getSelected(0,$row['phoneType'])?>><?=getPhoneString(0)?></option>
 		<option value='1' <?=getSelected(1,$row['phoneType'])?>><?=getPhoneString(1)?></option>
 		<option value='2' <?=getSelected(2,$row['phoneType'])?>><?=getPhoneString(2)?></option>

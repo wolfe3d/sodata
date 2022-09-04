@@ -196,6 +196,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 	//This query checks to see if there are students on this tournaments
 	if(tournamentHasTeammates($db, $tournamentID))
 	{
+		$schedule.="<h4>$heading</h4>";
 		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))
 		{
 			$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace`
@@ -208,7 +209,6 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 			ORDER BY `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			if($result && $result->num_rows > 0){
-				$schedule.="<h4>$heading</h4>";
 				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (Local)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
 				while ($row = $result->fetch_assoc()):
 					$schedule.="<tr><td>";
@@ -224,15 +224,15 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 				$schedule.="</tbody></table>";
 			}
 			else {
-				return "<div class='text-warning'>SAVE THE DATE.  You have been assigned to Team $teamName, but you have not been assigned events yet.</div>";
+				$schedule.="<div class='text-warning'>SAVE THE DATE.  You have been assigned to Team $teamName, but you have not been assigned events yet.</div>";
 			}
 		}
 		else {
-			return "<div class='text-warning'>SAVE THE DATE.  You have NOT been assigned to this team, but you may be added later.  Contact Coach/Leader if you cannot make it.</div>";
+			$schedule.="<div class='text-warning'>SAVE THE DATE.  You have NOT been assigned to this team, but you may be added later.  Contact Coach/Leader if you cannot make it.</div>";
 		}
 	}
 	else {
-		return "<div class='text-warning'>SAVE THE DATE.  Students have not been scheduled for this tournament.</div>";
+		$schedule.="<div class='text-warning'>SAVE THE DATE.  Students have not been scheduled for this tournament.</div>";
 	}
 	return $schedule;
 }
@@ -851,7 +851,7 @@ function getEventListYear($db, $number,$label, $year, $select)
 function getSOYears($myYear,$all=0)
 {
 	$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
-	$output = "<select class='form-control' id='year' name='year' required>";
+	$output = "<select class='form-select' id='year' name='year' required>";
 	if($all)
 	{
 		$output .="<option value='0'>All Years</option>";

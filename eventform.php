@@ -12,7 +12,7 @@
 	</p>
 	<p>
 		<label for="type">Type</label>
-		<select id="type" name="type" class="form-control">
+		<select id="type" name="type" class="form-select">
 			<option value="0" <?=getSelected($row["type"],0)?>><?=getEventString(0)?></option>
 			<option value="1" <?=getSelected($row["type"],1)?>><?=getEventString(1)?></option>
 			<option value="2" <?=getSelected($row["type"],2)?>><?=getEventString(2)?></option>
@@ -22,7 +22,7 @@
 	</p>
 	<p>
 		<label for="calculatorType">Calculator</label>
-		<select id="calculatorType" name="calculatorType" class="form-control">
+		<select id="calculatorType" name="calculatorType" class="form-select">
 			<option value="0" <?=getSelected($row["calculatorType"],0)?>><?=getCalulatorString(0)?></option>
 			<option value="1" <?=getSelected($row["calculatorType"],1)?>><?=getCalulatorString(1)?></option>
 			<option value="2" <?=getSelected($row["calculatorType"],2)?>><?=getCalulatorString(2)?></option>

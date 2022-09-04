@@ -1,7 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(1);
-
+$schoolID =$_SESSION['userData']['schoolID'] ;
 $output = "";
 $teamID = intval($_POST['myID']);
 if(empty($teamID))
@@ -22,23 +22,29 @@ if(!$mobile)
 	//Get tournament times
 	$query = "SELECT * FROM `timeblock` WHERE `tournamentID` = ".$rowTeam['tournamentID']." ORDER BY `timeStart`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output .="<h2>";
 	if(mysqli_num_rows($result))
 	{
-		$output .="<h2>";
 		if(userHasPrivilege(3)){
-			$output .="Adjust Teammate Assignments";
+			if($rowTeam['dateTournament']>date("Y-m-d")||$rowTeam['notCompetition']){
+				$output .="Adjust Teammate Assignments";
+			}
+			else {
+				$output .="Modify Results";
+			}
 		}
 		else{
 			if($rowTeam['dateTournament']<date("Y-m-d")){
 				//Show results as title after tournament date
-				$output .="<h2>Results</h2>";
+				$output .="Results";
 			}
 			else {
 				//Show schedule as title before and during tournament date
-				$output .="<h2>Schedule</h2>";
+				$output .="Schedule";
 			}
 		}
 		$output .=" <span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
+
 		$output .="<form id='changeme' method='post' action='tournamentChangeMe.php'><table id='tournamentTable' class='tournament table table-hover'>";
 		$timeblocks = [];
 		while ($row = $result->fetch_assoc()):
@@ -155,7 +161,7 @@ if(!$mobile)
 					{
 						foreach ($timeEvents as $timeEvent) {
 							$checkbox = "teammateplace-".$timeEvent['tournamenteventID']."-".$rowStudent['studentID']."-".$teamID;
-							$checkboxEvent = "timeblock-".$timeblock['timeblockID']." teammateEvent-".$timeEvent['tournamenteventID']." teammateStudent-".$rowStudent['studentID'];
+							$checkboxEvent = "timeblock-".$timeblock['timeblockID']." teammateEvent-".$timeEvent['tournamenteventID']." teammateStudent-".$rowStudent['studentID'] ." event-".$timeEvent['eventID'];
 
 							$query = "SELECT * FROM `teammateplace` WHERE `tournamenteventID` =  ".$timeEvent['tournamenteventID']." AND `studentID` = ".$rowStudent['studentID']." AND `teamID` = $teamID";
 							$resultTeammateplace = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -343,6 +349,14 @@ else {
 </button>
 </div>
 */
+
+if(userHasPrivilege(3)){
+	if($rowTeam['dateTournament']>date("Y-m-d")||$rowTeam['notCompetition']){
+		$output .="<p id='tournamentTeamp'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
+			"<input class='btn btn-primary' role='button' type='button' onclick='javascript:teamCopyAssignments($teamID)' value='Copy Event Assignments' /></p>";
+	}
+}
+
 echo $output;
 ?>
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>

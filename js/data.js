@@ -627,7 +627,7 @@ function eventEdit(myID)
 ///////////////////
 ///Team functions
 //////////////////
-// On teamcopy
+// Copy the teammates in a team into a new team competition
 function teamCopy(thisTeamID)
 {
 	var copiedTeamID = $("#team option:selected").val();
@@ -655,8 +655,40 @@ function teamCopy(thisTeamID)
 		request.fail(function( jqXHR, textStatus ) {
 			$("#mainContainer").append("Removal Error");
 		});
+}
+// Copy the events in a team into a new team competition
+function teamCopyAssignments(thisTeamID)
+{
+	var copiedTeamID = $("#team option:selected").val();
+	//get student list on team
+	var request = $.ajax({
+			url: "teamcopyassignments.php",
+			cache: false,
+			method: "POST",
+			data: {myID:copiedTeamID},
+			dataType: "json"
+		});
+
+		request.done(function( data ) {
+			alert(data);
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				inputBtn = $(".teammateStudent-"+ val[0] + ".event-" + val[1] + " input");
+				if (inputBtn && !inputBtn.is(":checked"))
+				{
+					inputBtn.trigger( "click" );
+				}
+			});
+			$("#mainContainer").append("<div class='text-success'>Added Students</div>");
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").append("Removal Error");
+		});
 
 }
+
+
 
 ///////////////////
 ///Tournament functions
@@ -823,7 +855,6 @@ function appendLeadingZeroes(n){
 }
 
 
-
 function tournamentTimeAdd(myID)
 {
 	$( "#addTo" ).submit(function( event ) {
@@ -832,7 +863,7 @@ function tournamentTimeAdd(myID)
 			url: $("#addTo").attr('action'),
 			cache: false,
 			method: "POST",
-			data: formData,
+			data: $("#addTo").serialize() + '&myID=' + myID,
 			dataType: "text"
 		});
 
@@ -873,7 +904,7 @@ function tournamentEventAdd(myID)
 			url: $("#addTo").attr('action'),
 			cache: false,
 			method: "POST",
-			data: formData,
+			data: $("#addTo").serialize() + '&myID=' + myID,
 			dataType: "text"
 		});
 

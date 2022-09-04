@@ -19,10 +19,10 @@ if(empty($studentID))
 {
 	//studentID is null if the place is changed for all students
 }
-$place = getIfSet($_POST['place'],'NULL');
+$place = getIfSet($_POST['place'],0);
 $checked = getIfSet($_POST['checked'],0);
 if($checked){
-	$query = "INSERT INTO `teammateplace` (`tournamenteventID`, `teamID`, `studentID`, `place`) VALUES ('$tournamenteventID', '$teamID', '$studentID', $place);";
+	$query = "INSERT INTO `teammateplace` (`tournamenteventID`, `teamID`, `studentID`) VALUES ('$tournamenteventID', '$teamID', '$studentID');";
 }
 else {
 	if(empty($studentID)){
@@ -33,7 +33,6 @@ else {
 		$query = "DELETE FROM `teammateplace` WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID' AND `studentID` = '$studentID';";
 	}
 }
-error_log ($query);
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {

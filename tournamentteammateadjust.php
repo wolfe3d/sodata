@@ -35,7 +35,6 @@ else {
 	//check to see if the student is assigned events on this teams
 	//note to hackers - notice that the query below looks in teammateplace (not teammate)
 	$query = "SELECT * FROM `teammateplace` where teamID = $teamID and studentID = $studentID";
-	error_log($query);
 	$teammateplaces = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($teammateplaces)>0){
 		exit("3");  //student already has events

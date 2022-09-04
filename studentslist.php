@@ -149,7 +149,7 @@ if($result)
 		{
 			$output .="<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
 		}
-		$output .= userHasPrivilege(5)?" <a class='btn btn-danger' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
+		$output .= userHasPrivilege(5)?" <a class='btn btn-danger btn-sm' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
 		$output .= "</div>";
 		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
 		if($officerPos)
