@@ -769,6 +769,23 @@ function getDivisionList($db, $all=0)
 	return $output;
 }
 
+//get list of tournaments
+function getTeamList($db, $schoolID, $excludeTournament,$labelName='Team')
+{
+	$query = "SELECT `teamID`,`teamName`,`tournamentName`,`dateTournament` FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `schoolID`= $schoolID AND NOT `tournament`.`tournamentID`= $excludeTournament ORDER BY `dateTournament` DESC, `teamName`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output ="<div id='teamsListDiv'><label for='team'>$labelName</label> ";
+	$output .="<select class='form-select' id='team' name='team' required>";
+	if($result && mysqli_num_rows($result)>0)
+	{
+		while ($row = $result->fetch_assoc()):
+			$output .= "<option value='".$row['teamID']."'>" . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
+		endwhile;
+	}
+	$output.="</select></div>";
+	return $output;
+}
+
 //get list of events
 function getEventList($db, $number=0,$label)
 {
@@ -830,23 +847,6 @@ function getEventListYear($db, $number,$label, $year, $select)
 	return $events;
 }
 
-//get Teams from previous tournaments
-function getTeamsPrevious($db, $tournamentID)
-{
-	$myOutput = "";
-	$query = "SELECT * from `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `team`.`tournamentID`!= $tournamentID ORDER BY `dateTournament` DESC";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-	if($result)
-	{
-		$myOutput .="<select class='form-select' id='teamTournament' name='teamTournament' type='text' required>";
-		while ($row = $result->fetch_assoc()):
-			$myOutput.="<option value = '". $row['teamID'] ."'>".$row['year']." ".$row['tournamentName']." " . $row['teamName'] ."</option>";
-		endwhile;
-		$myOutput .="</select>";
-	}
-	return $myOutput;
-}
 //Get all Science Olympiad years from 1982 to current year+1
 function getSOYears($myYear,$all=0)
 {

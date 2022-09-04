@@ -625,6 +625,40 @@ function eventEdit(myID)
 }
 
 ///////////////////
+///Team functions
+//////////////////
+// On teamcopy
+function teamCopy(thisTeamID)
+{
+	var copiedTeamID = $("#team option:selected").val();
+	//get student list on team
+	var request = $.ajax({
+			url: "teamcopylist.php",
+			cache: false,
+			method: "POST",
+			data: {myID:copiedTeamID},
+			dataType: "json"
+		});
+
+		request.done(function( data ) {
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				inputBtn = $("#teammate-"+ thisTeamID + "-" + val);
+				if (!inputBtn.is(":checked"))
+				{
+					inputBtn.trigger( "click" );
+				}
+			});
+			$("#mainContainer").append("<div class='text-success'>Added Students</div>");
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#mainContainer").append("Removal Error");
+		});
+
+}
+
+///////////////////
 ///Tournament functions
 //////////////////
 // On before slide change

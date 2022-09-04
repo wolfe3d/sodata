@@ -1,7 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-
+$schoolID = $_SESSION['userData']['schoolID'];
 /*Warnings for senior count and team cound is all handled in javascript
 	*count number of students
 	*count number of seniors
@@ -79,15 +79,12 @@ if($resultStudent){
 		<label for="teamName">Team Name</label>
 		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamName',$(this).val(),'teamName','teamName')">
 	</p>
-	<!---
-	//TODO: ADD Javascript and php backend for the function below
+
 	<p id="tournamentTeamp">
-		<label for="tournamentTeam">Select Students from a Previous Tournament (TODO: Function not added yet)</label>
-		<?=getTeamsPrevious($mysqlConn, $row['tournamentID'])?>
-		<br>
-		<input class="button" type="button" onclick="" value="Select" />
+			<?=getTeamList($mysqlConn, $schoolID, $tournamentID, "Select Students from a Previous Tournament")?>
+		<input class="btn btn-primary" role="button" type="button" onclick="javascript:teamCopy(<?=$teamID?>)" value="Copy Team" />
 	</p>
--->
+
 	<p>
 		<?=$studentList?>
 	</p>
