@@ -442,7 +442,7 @@ function assignStudent($db, $teammate, $timeblocks, $studentTableName, $timebloc
 //Calculate students in times and then fill in table to be read
 function calculateStudentsTimes($db, $teammates, $timeblocks, $studentTableName, $timeblockTableName, $resultsTableName)
 {
-	echo "<input class='button fa' type='button' onclick='javascript:$(\"#$resultsTableName\").toggle();' value='&#xf0f9; Verbose' /><div id='$resultsTableName' style='display:none;'>";
+	echo "<button class='btn btn-primary' type='button' onclick='javascript:$(\"#$resultsTableName\").toggle();'><span class='bi bi-journal-code'></span> Verbose</button></p><div id='$resultsTableName' style='display:none;'>";
 	tempStudentInitialize($db, $studentTableName);
 	tempTimeblockInitialize($db, $timeblockTableName);
 	tempResultInitialize($db, $resultsTableName);
