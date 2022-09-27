@@ -2,8 +2,8 @@
 require_once("php/functions.php");
 userCheckPrivilege(1);
 
-$studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
 $myStudentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
 $query = "SELECT * FROM `student` WHERE `studentID` = $studentID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($result)
@@ -55,7 +55,7 @@ if(userHasPrivilege(3))
 		}
 	}
 }
-if(userHasPrivilege(4)||$studentID=$myStudentID)
+if(userHasPrivilege(4)||$studentID==$myStudentID)
 {
 	$output .= "<div>School Name: ".getCurrentSchoolName($mysqlConn,$row['schoolID'])."</div>";
 	$output .= "<div>Student's School ID: ".$row['studentschoolID']."</div>";
@@ -101,10 +101,10 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	$output .= "<hr>";
 	//Get latest team assignments
 	$output .=getLatestTeamTournamentStudent($mysqlConn, $studentID);
-	$output .=studentEventPriority($mysqlConn, $row['studentID']);
+	$output .=studentEventPriority($mysqlConn, $studentID);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
-	$output .=studentCourseEnrolled($mysqlConn, $row['studentID']);
-	$output .=studentTournamentResults($mysqlConn, $row['studentID'], true);
+	$output .=studentCourseEnrolled($mysqlConn, $studentID);
+	$output .=studentTournamentResults($mysqlConn, $studentID, true);
 }
 
 
