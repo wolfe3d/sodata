@@ -76,7 +76,7 @@ function slideSave(slideID)
 		});
 	}
 
-	slideSaveText();
+	saveText();
 }
 var slideIDE = "" ; //the editing slide ID
 function loadSummerNoteButtons()
