@@ -1,4 +1,4 @@
-
+//TODO: FIX ME
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
