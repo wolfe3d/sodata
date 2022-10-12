@@ -1004,6 +1004,22 @@ function getCourses($db, $studentID, $tableName)
 	return $myOutput;
 }
 
+//find student's awards
+function studentAwards($db, $studentID)
+{
+	$myOutput = "";
+	$query = "SELECT * FROM `award` WHERE `studentID`=$studentID ORDER BY `dateAwarded` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(mysqli_num_rows($result)>0)
+	{
+		$myOutput .="<h3>Awards</h3>";
+		while ($row = $result->fetch_assoc()):
+			$myOutput .= "<div id='award-" . $row['awardID'] . "'>" . $row['dateAwarded'] . " <strong>" . $row['awardName']   . "</strong> ". $row['note'] ."</div>";
+		endwhile;
+	}
+	return $myOutput;
+}
+
 //get tournament
 function getTournamentDates()
 {

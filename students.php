@@ -26,6 +26,7 @@ userCheckPrivilege(1);
 	<!--Output parent emails -->
 	<a class="btn btn-secondary" role="button" href="#parent-emails-<?=getCurrentSOYear();?>"><span class='bi bi-envelope-heart'></span> Get Parents</a>
 	<a class="btn btn-secondary" role="button" href="studentfile.php"><span class='bi bi-archive'></span> Students File</a>
+	<a class="btn btn-secondary" role="button" href="awards.php"><span class='bi bi-archive'></span> Awards List</a>
 	<?php }?>
 <br><br>
 	<form id="findStudent">

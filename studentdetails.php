@@ -104,6 +104,7 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	$output .=studentEventPriority($mysqlConn, $studentID);
 	$output .=studentCourseCompleted($mysqlConn, $studentID);
 	$output .=studentCourseEnrolled($mysqlConn, $studentID);
+	$output .=studentAwards($mysqlConn, $studentID);
 	$output .=studentTournamentResults($mysqlConn, $studentID, true);
 }
 
