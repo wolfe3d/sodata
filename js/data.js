@@ -953,14 +953,15 @@ function tournamentRankReset()
 	});
 }
 
-function calculateScore(eventPlace, eventWeight, tournamentWeight)
+function calculateScore(eventPlace, eventWeight, tournamentWeight, teamsAttended)
 {
 	//formula for scoring here
 	if (eventPlace)
 	{
 		//return eventWeight/((eventPlace)^0.5)*(tournamentWeight/100); //old calcuation
 		//var score = (-(eventPlace^2)/100+100)*(tournamentWeight/100)*(eventWeight/100);
-		var score = tournamentWeight-(eventPlace-1)*(tournamentWeight/eventWeight);
+		//$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/$teamsAttended)))*$eventWeight/100;
+		var score = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100;
 		if (score <=1)
 		{
 			return 1;
@@ -974,6 +975,7 @@ function tournamentScoreCalculate(studentID)
 {
 	//calculate student with this event
 	var tournamentWeight = $("#tournamentWeight").val();
+  var teamsAttended = $("#teamsAttended").val();
 	var scoreTotal = 0;
 	$(".student-"+studentID).each(function(){
 		var score = 0;
@@ -982,7 +984,7 @@ function tournamentScoreCalculate(studentID)
 			var splitStudentCalcID = this.id.split("-");
 			var place = $(this).attr('placement');
 			var eventWeight = $("#eventweight-"+splitStudentCalcID[2]).val();
-			score = calculateScore(place, eventWeight, tournamentWeight);
+			score = calculateScore(place, eventWeight, tournamentWeight, teamsAttended);
 			if (place)
 			{
 				$(this).text(place + "("+format(score)+")");

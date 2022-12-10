@@ -1,6 +1,6 @@
 <?php
 require_once  ("php/functions.php");
-userCheckPrivilege(1);
+userCheckPrivilege(5);
 require_once  ("php/functionstournament.php");
 //calculation of score
 // SUM(eventweighting/eventplacement^3) * tournamentWeight
@@ -19,7 +19,7 @@ $output .="<h2>".getTournamentName($mysqlConn, $tournamentID)."</h2>";
 $output .="<h3>Tournament Teammate Placement and Score</h3>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 //scores are calculated in functionstournament
-$output .="<p class='text-warning'>Current Formula for Score = tournamentWeight-(eventPlace-1)*(tournamentWeight/eventTeams).</p>";
+$output .="<p class='text-warning'>Current Formula for = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100</p>";
 //check to see if this tournament has placements
 if(!checkPlacements($mysqlConn, $tournamentID))
 {
@@ -43,7 +43,8 @@ else
 	//print_r ($students);
 
 	$tournamentWeight = getTournamentWeight($mysqlConn, $tournamentID);
-	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight);
+	$teamsAttended = getTournamentTeamsAttended($mysqlConn, $tournamentID);
+	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight, $teamsAttended);
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";
 	$output .="<form id='addTo' method='post' action='tournamentscoresave.php'><table id='tournamentTable' class='tournament table table-hover'>";
@@ -51,13 +52,17 @@ else
 	{
 		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";
 		$output .="  <input id='tournamentWeight' type='number' class='form-control' min='0' max='999' value='".$tournamentWeight."' style='display: inline-block'/></div>";
+		$output .="<div><label for='teamsAttended' style='display: inline-block'>Teams Attended</label>";
+		$output .="  <input id='teamsAttended' type='number' class='form-control' min='0' max='999' value='".$teamsAttended."' style='display: inline-block'/></div>";
 	}
 	else
 	{
 		$output .="<p>Tournament Weight: $tournamentWeight</p>";
+		$output .="<p>Teams Attended: $teamsAttended</p>";
 	}
-	$output .="<p><input type='checkbox' id='showPoints' name='showPoints' checked><label for='showPoints'>Show Points</label></p>";
 
+	$output .="<p><input type='checkbox' id='showPoints' name='showPoints' checked><label for='showPoints'>Show Points</label></p>";
+		$output .="<p>Event Weighting equal to 100 means all teams participated and the event was run with full rules. Lower event weight indicates that the full rules or full number of teams did not participate.</p>";
 	$output .="<colgroup><col span='2'>";
 	foreach ($events as $i=>$event)
 	{
@@ -65,7 +70,7 @@ else
 	}
 	$output .= "</colgroup><thead><tr>";
 
-	$output .="<th rowspan='1' style='vertical-align:bottom;' colspan='2'><div>Teams participating in event</div></th>";
+	$output .="<th rowspan='1' style='vertical-align:bottom;' colspan='2'><div>Event Weighting</div></th>";
 	//list all the eventweights in the header
 	foreach ($events as $event)
 	{

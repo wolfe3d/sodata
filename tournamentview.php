@@ -166,7 +166,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			$output .="</div></p>";
 		endwhile;
 
-		if(!$row['notCompetition'])
+		if(!$row['notCompetition'] && userHasPrivilege(5))
 		{
 			$output .= $rowTeam['notCompetition'];
 			//there are no results for a team assignment, so this is only shown for a real tournament

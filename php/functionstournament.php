@@ -1,9 +1,9 @@
 <?php
-function calculateScore($eventPlace, $eventWeight, $tournamentWeight)
+function calculateScore($eventPlace, $eventWeight, $tournamentWeight, $teamsAttended)
 {
 	//formula for scoring here
-	//return $eventWeight/(($eventPlace)**0.5)*($tournamentWeight/100); old formula
-	$score = $tournamentWeight-($eventPlace-1)*($tournamentWeight/$eventWeight);
+	//	$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/$teamsAttended)))*$eventWeight/100;
+	$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/($teamsAttended/4))))*$eventWeight/100;
 	if ($score <=1)
 	{
 		return 1;
@@ -92,6 +92,21 @@ function getTournamentWeight($db,$tournamentID)
 	return FALSE;
 }
 
+//get number of teams competing in tournament
+function getTournamentTeamsAttended($db,$tournamentID)
+{
+	$output = "";
+	$query = "SELECT `tournament`.`teamsAttended` FROM `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		if ($row = $result->fetch_assoc()){
+			//set default weightings into the table
+			return $row['teamsAttended'];
+		}
+	}
+	return FALSE;
+}
+
 //get tournament weight
 function getTournamentName($db,$tournamentID)
 {
@@ -107,7 +122,7 @@ function getTournamentName($db,$tournamentID)
 	return FALSE;
 }
 
-function calculateScores(&$students, $tournamentPlacements, $events, $tournamentWeight)
+function calculateScores(&$students, $tournamentPlacements, $events, $tournamentWeight, $teamsAttended)
 {
 	foreach ($students as &$student)
 	{
@@ -138,7 +153,7 @@ function calculateScores(&$students, $tournamentPlacements, $events, $tournament
 				{
 					//score student
 					//$value['score']=$event['weight']/(($value['place'])**0.5)*($tournamentWeight/100)
-					$score=calculateScore($value['place'], $event['weight'], $tournamentWeight);
+					$score=calculateScore($value['place'], $event['weight'], $tournamentWeight, $teamsAttended);
 					$studentEvent = ['tournamenteventID'=>$value['tournamenteventID'],'place'=>$value['place'],'score'=>$score];
 					array_push($student['events'], $studentEvent );
 					$student['score'] += $score; //total score
