@@ -65,6 +65,15 @@ table.tournament input[type="checkbox"]{
 
 
 @media print {
+	#navbarContent{ //should remove header bar, but it does not work
+		display:none;
+	}
+	div.navbar-collapse{ //should remove header bar, but it does not work
+		display:none;
+	}
+	#tournamentTeamCopy{
+		display:none;
+	}
 	table.tournament tbody tr td {
 		border: solid 1px rgba(0, 0, 0, 1);
 	}
