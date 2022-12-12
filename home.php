@@ -76,6 +76,10 @@ if(!empty($_SESSION['userData'])){
 
 	}
 	//Coach Reminders
+	if(userHasPrivilege(5))
+	{
+		$output.="<p><a class='btn btn-info' role='button' href='#tournamentsscore'><span class='bi bi-graph-up'></span> Student Ranking</a></p>";
+	}
 
 }else{
 	$output = '<h3 style="color:red">Some problem occurred, please try again.</h3>';

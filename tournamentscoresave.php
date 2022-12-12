@@ -53,7 +53,7 @@ else
 
 	$tournamentWeight = getTournamentWeight($mysqlConn, $tournamentID);
 	$teamsAttended = getTournamentTeamsAttended($mysqlConn, $tournamentID);
-	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight, $teamsAttended));
+	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight, $teamsAttended);
 	calculateTeamRanking($students);
 
 	foreach ($students as $student)
