@@ -378,7 +378,7 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 	AND `teammateplace`.`studentID` IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
 	AND `teammateplace`.`teamID` = $teamID
 	ORDER BY `student`.`last`, `student`.`first`";
-	//TODO The IN (Select...) Statement fixes not fully removed students from teammateplace. //this should be fixed
+	//The IN (Select...) Statement fixes not fully removed students from teammateplace. This should not happen except when two people (or two windows) are making edits.  If the student is removed from the team while someone adds an event, it will leave a ghost student assigned.
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
@@ -400,7 +400,7 @@ function partnersWithEmails($db,$tournamentEventID, $teamID)
 	WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID
 	AND `teammateplace`.`studentID` IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
 	ORDER BY `student`.`last`, `student`.`first`";
-	//TODO The IN (Select...) Statement fixes not fully removed students from teammateplace. //this should be fixed
+	//The IN (Select...) Statement fixes not fully removed students from teammateplace. This should not happen except when two people (or two windows) are making edits.  If the student is removed from the team while someone adds an event, it will leave a ghost student assigned.
 
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){

@@ -1479,10 +1479,18 @@ function tournamentEventTeammate(inputBtn)
 			else {
 				$("#note").html("<div class='text-success'>"+$("#event-"+splitName[1]).text() +" placed "+place+"</div>"); //add note to show modification
 			}
-
+		}
+		else if(html=='2'){
+			$("#note").html("<div class='text-danger'>Add failed: student is not on the team.</div");
+			inputBtn.prop('checked', false);
+		}
+		else if(html=='3'){
+			$("#note").html("<div class='text-warning'>Add warning: another user has already added this student to this event.</div");
+			//keep button checked
 		}
 		else {
 			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+			inputBtn.prop('checked', false);
 		}
 	});
 
