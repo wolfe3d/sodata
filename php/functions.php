@@ -374,8 +374,9 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 	$output =  "";
 	$query = "SELECT * FROM `teammateplace`
 	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
-	WHERE `tournamenteventID` = $tournamentEventID and `teammateplace`.`teamID` = $teamID AND `student`.`studentID` != $studentID AND `teammateplace`.`studentID`
-	IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID) AND `teammateplace`.`teamID` = $teamID
+	WHERE `tournamenteventID` = $tournamentEventID and `teammateplace`.`teamID` = $teamID AND `student`.`studentID` != $studentID
+	AND `teammateplace`.`studentID` IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
+	AND `teammateplace`.`teamID` = $teamID
 	ORDER BY `student`.`last`, `student`.`first`";
 	//TODO The IN (Select...) Statement fixes not fully removed students from teammateplace. //this should be fixed
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -395,7 +396,12 @@ function partnersWithEmails($db,$tournamentEventID, $teamID)
 {
 	//check partner(s)
 	$output =  "";
-	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID ORDER BY `student`.`last`, `student`.`first`";
+	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
+	WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID
+	AND `teammateplace`.`studentID` IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
+	ORDER BY `student`.`last`, `student`.`first`";
+	//TODO The IN (Select...) Statement fixes not fully removed students from teammateplace. //this should be fixed
+
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
