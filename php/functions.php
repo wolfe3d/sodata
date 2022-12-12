@@ -200,12 +200,11 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))
 		{
 			$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace`
-			INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
 			INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
 			INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
-			INNER JOIN `tournamenttimechosen` ON `teammateplace`.`tournamenteventID` = `tournamenttimechosen`.`tournamenteventID`
+			INNER JOIN `tournamenttimechosen` ON `teammateplace`.`tournamenteventID` = `tournamenttimechosen`.`tournamenteventID` AND `teammateplace`.`teamID` = `tournamenttimechosen`.`teamID`
 			INNER JOIN `timeblock` ON `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
-			WHERE `tournamentevent`.`tournamentID` = $tournamentID AND `student`.`studentID` = $studentID
+			WHERE `tournamentevent`.`tournamentID` = $tournamentID AND `teammateplace`.`studentID` = $studentID
 			ORDER BY `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			if($result && $result->num_rows > 0){
