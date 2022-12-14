@@ -19,17 +19,18 @@ if(empty($studentID))
 {
 	//studentID is null if the place is changed for all students
 }
-//check to make sure student is on the team
-$query = "SELECT `teammateID` FROM `teammate` WHERE `teammate`.`teamID`=$teamID AND `teammate`.`studentID`=$studentID";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-if(!($result && mysqli_num_rows($result)>0))
-{
-	exit ('2'); //If student is not on the team, then the student cannot be added to an event.  This would only appear if someone removes a student, while another user / browser has the event open.
-}
 
 $place = getIfSet($_POST['place'],0);
 $checked = getIfSet($_POST['checked'],0);
 if($checked){
+	//check to make sure student is on the team
+	$query = "SELECT `teammateID` FROM `teammate` WHERE `teammate`.`teamID`=$teamID AND `teammate`.`studentID`=$studentID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(!($result && mysqli_num_rows($result)>0))
+	{
+		exit ('2'); //If student is not on the team, then the student cannot be added to an event.  This would only appear if someone removes a student, while another user / browser has the event open.
+	}
+
  //Check to see if student is already assigned by another user / browser
  $query = "SELECT `teammateplaceID` FROM `teammateplace` WHERE `teamID`=$teamID AND `studentID`=$studentID AND `tournamenteventID`=$tournamenteventID";
  $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
