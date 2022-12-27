@@ -759,9 +759,9 @@ $( "#addTo" ).submit(function( event ) {
 }
 
 
-function tournamentSort(byAttr, isNumber=0)
+function tournamentSort(tableName, byAttr, isNumber=0)
 {
-	var $table=$('#tournamentTable');
+	var $table=$('#'+tableName);
 	var sortBy = $table.attr('sortby');
 	var rows = $table.find('tbody>tr').get();
 	rows.sort(function(a, b) {
@@ -944,7 +944,7 @@ function tournamentRankReset()
 {
 	var $table=$('#tournamentTable');
 	$table.attr('sortby',"score"); //setting this attribute, makes the table sort descending
-	tournamentSort('score', 1);
+	tournamentSort(`tournamentTable`,'score', 1);
 	var rows = $table.find('tbody>tr').get();
 	$.each(rows, function(index, row) {
 		$(row).attr('rank',index+1);  //change rank

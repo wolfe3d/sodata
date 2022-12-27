@@ -8,7 +8,7 @@ function proposeByScore(team)
 {
 	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
 	//Do not allow 2 or more timeblocks for the same event!
-	var timeblocks = [];
+	var thisYearOnly = document.getElementById('thisYear').checked;
 	var request = $.ajax({
 		url: "tournamentteamproposefunctionstimeblocks.php",
 		cache: false,
@@ -19,7 +19,7 @@ function proposeByScore(team)
 
 	request.done(function( html ) {
 		console.log("timeblocksAll");
-		timeblocks = JSON.parse(html);
+		var timeblocks = JSON.parse(html);
 		if(!Array.isArray(timeblocks))
 		{
 			console.error("timeblocks is not an array");
@@ -28,7 +28,7 @@ function proposeByScore(team)
 			url: "tournamentteamproposefunctionstopscore.php",
 			cache: false,
 			method: "POST",
-			data: { myID: team},
+			data: { myID: team, thisYear: thisYearOnly},
 			dataType: "text"
 		});
 
@@ -46,7 +46,7 @@ function proposeByScore(team)
 			console.log(resultsTable);
 			console.log(timeblockTable);
 			console.log(studentTable);
-			printTable("topScore", studentTable, timeblockTable, resultsTable)
+			printTable("topScore", "topScoreTable", studentTable, timeblockTable, resultsTable)
 			//TODO: Print table
 		});
 	});
@@ -58,7 +58,8 @@ function proposeByBruteForce(team)
 {
 	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
 	//Do not allow 2 or more timeblocks for the same event!
-	var timeblocks = [];
+	var thisYearOnly = document.getElementById('thisYear').checked;
+
 	var request = $.ajax({
 		url: "tournamentteamproposefunctionstimeblocks.php",
 		cache: false,
@@ -69,7 +70,7 @@ function proposeByBruteForce(team)
 
 	request.done(function( html ) {
 		console.log("timeblocksAll");
-		timeblocks = JSON.parse(html);
+		var timeblocks = JSON.parse(html);
 		if(!Array.isArray(timeblocks))
 		{
 			console.error("timeblocks is not an array");
@@ -78,7 +79,7 @@ function proposeByBruteForce(team)
 			url: "tournamentteamproposefunctionstopscore.php",
 			cache: false,
 			method: "POST",
-			data: { myID: team},
+			data: { myID: team, thisYear: thisYearOnly},
 			dataType: "text"
 		});
 
@@ -693,8 +694,8 @@ function calculateByBruteForce(studentList, timeblocks, studentTable, timeblockT
 		myTeammateByBruteForce(studentList, i, i, studentList[i], timeblocks, studentTable, timeblockTable, resultsTable)
 		score = calculateScore(resultsTable);
 		events = countEvents(resultsTable);
-		for (let s = 0; s < maxScore.length; s++) {
-			if(events > maxEvents[s] || (events ==maxEvents[s] && score> maxScore[s]))
+	/*for (let s = 0; s < maxScore.length; s++) {
+			if(events > maxEvents[s] || (events == maxEvents[s] && score > maxScore[s]) || (events == maxEvents[s] && score== maxScore[s] && resultsTable.length > resultsTables[s].length))
 			{
 				maxScore[s]=score;
 				maxEvents[s]=events;
@@ -704,13 +705,44 @@ function calculateByBruteForce(studentList, timeblocks, studentTable, timeblockT
 				$("#bruteForce").append("<p>New Max Score["+s+"]="+score+"</p>");
 				break;
 			}
+		}*/
+		if(events > maxEvents[0] || (events == maxEvents[0] && score > maxScore[0]) || (events == maxEvents[0] && score== maxScore[0] && resultsTable.length > resultsTables[0].length))
+		{
+			maxScore[0]=score;
+			maxEvents[0]=events;
+			studentTables[0]=studentTable;
+			timeblockTables[0]=timeblockTable;
+			resultsTables[0]=resultsTable;
+			$("#bruteForce").append("<p>Best Team New Max Score["+0+"]="+score+"</p>");
+		}
+		else if(events > maxEvents[1] || (events == maxEvents[1] && score > maxScore[1]))
+		{
+			maxScore[1]=score;
+			maxEvents[1]=events;
+			studentTables[1]=studentTable;
+			timeblockTables[1]=timeblockTable;
+			resultsTables[1]=resultsTable;
+			$("#bruteForce").append("<p>Filled Event New Max Score["+1+"]="+score+"</p>");
+		}
+		else if(score > maxScore[2])
+		{
+			maxScore[2]=score;
+			maxEvents[2]=events;
+			studentTables[2]=studentTable;
+			timeblockTables[2]=timeblockTable;
+			resultsTables[2]=resultsTable;
+			$("#bruteForce").append("<p>Best Scoring (missing events) New Max Score["+2+"]="+score+"</p>");
+		}
+		else {
+			$("#bruteForce").append("<p>Team ignored="+score+"</p>");
+
 		}
 	}
 	for (let s = 0; s < maxScore.length; s++) {
 		console.log(resultsTables[s]);
 		console.log(timeblockTables[s]);
 		console.log(studentTables[s]);
-		printTable("bruteForce", studentTables[s], timeblockTables[s], resultsTables[s])
+		printTable("bruteForce", "bruteTable"+s, studentTables[s], timeblockTables[s], resultsTables[s])
 		$("#bruteForce").append("<p><a class='btn btn-info' role='button' href='javascript:assign("+s+")'><span class='bi bi-arrow-down-circle'></span> Enter Assingments from this table</a></p>");
 	}
 
@@ -890,11 +922,11 @@ function removeParenthesisText(string)
 	return string.replace("/\([^)]+\)/","");
 }
 
-function printTable(divID, studentTable, timeblockTable, resultsTable)
+function printTable(divID, tableName, studentTable, timeblockTable, resultsTable)
 {
 	let notescore = 0;
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
-	let output ="<table id='tournamentTable-resultsTable' class='tournament table table-hover'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
+	let output ="<table id='"+tableName+"' class='tournament table table-hover'><thead><tr><th rowspan='2' style='vertical-align:bottom;'><div>Students</div></th><th rowspan='3' style='vertical-align:bottom;'>Grade</th>";
 	let border = "";
 	//sort timeblocksdata.sort(function (a, b) {
 	timeblockTable = timeblockTable.sort(function(a, b){
@@ -904,18 +936,29 @@ function printTable(divID, studentTable, timeblockTable, resultsTable)
 	})
 
 	//sort studentTable
-	studentTable=studentTable.sort(function (a, b) {
-		if (a.lastName < b.lastName) {
+	studentTable.sort(function (a, b) {
+		if (a.last < b.last) {
 			return -1;
 		}
-		if (a.lastName > b.lastName) {
+		if (a.last > b.last) {
 			return 1;
+		}
+		if (a.last == b. last)
+		{
+			if (a.first < b.first) {
+				return -1;
+			}
+			if (a.first > b.first) {
+				return 1;
+			}
 		}
 		return 0;
 	});
 
+
+
 	//sort resultsTable
-	resultsTable=resultsTable.sort(function (a, b) {
+	resultsTable.sort(function (a, b) {
 		if (a.event < b.event) {
 			return -1;
 		}
@@ -984,7 +1027,7 @@ function printTable(divID, studentTable, timeblockTable, resultsTable)
 	//print the event under each time
 	output +="<tr>";
 	//put sorting for last and first name in this row
-	output +="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
+	output +="<th><a href='javascript:tournamentSort(`"+tableName+"`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`"+tableName+"`,`studentFirst`)'>First</a></th>";
 
 	//Get events
 	let totalEvents =0;

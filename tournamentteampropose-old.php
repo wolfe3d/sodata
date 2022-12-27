@@ -550,7 +550,7 @@ function printTable($db, $studentTableName, $timeblockTableName, $resultsTableNa
 	//print the event under each time
 	$output .="<tr>";
 	//put sorting for last and first name in this row
-	$output .="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
+	$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></th>";
 
 	//Get events
 	$totalEvents =0;

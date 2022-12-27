@@ -81,14 +81,14 @@ else
 		}
 		$output .= "<th rowspan='1' id='eventweightth-".$event['tournamenteventID']."'>$eventWeight</th>";
 	}
-	$output .="<th rowspan='2'><a href='javascript:tournamentSort(`count`, 1)'># Events</a></th>";
-	$output .="<th rowspan='2'><a href='javascript:tournamentSort(`average`, 1)'>Avg Place</a></th>";
-	$output .="<th rowspan='2'><div><a href='javascript:tournamentSort(`score`, 1)'>Score</a></div><div>(Higher is Better)</div></th>";
-	$output .="<th rowspan='2'><div><a href='javascript:tournamentSort(`rank`, 1)'>Rank</a></div><div>(Lower is Better)</div></th>";
+	$output .="<th rowspan='2'><a href='javascript:tournamentSort(`tournamentTable`,`count`, 1)'># Events</a></th>";
+	$output .="<th rowspan='2'><a href='javascript:tournamentSort(`tournamentTable`,`average`, 1)'>Avg Place</a></th>";
+	$output .="<th rowspan='2'><div><a href='javascript:tournamentSort(`tournamentTable`,`score`, 1)'>Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='2'><div><a href='javascript:tournamentSort(`tournamentTable`,`rank`, 1)'>Rank</a></div><div>(Lower is Better)</div></th>";
 
 	//students header
-	$output .="</tr><tr><th><div>Students</div><div><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></div></th>";
-	$output .="<th><a href='javascript:tournamentSort(`grade`, 1)'>Grade</a></th>";
+	$output .="</tr><tr><th><div>Students</div><div><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></div></th>";
+	$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`grade`, 1)'>Grade</a></th>";
 	//list all the events in the header
 	foreach ($events as $event)
 	{

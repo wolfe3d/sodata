@@ -120,7 +120,7 @@ if(!$mobile)
 		//print the event note under each event
 		$output .="<tr>";
 		//put sorting for last and first name in this row
-		$output .="<th><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></th>";
+		$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></th>";
 
 		foreach ($timeblocks as $i=>$timeblock) {
 			$timeEvents= $timeblock['events'];

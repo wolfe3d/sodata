@@ -156,8 +156,8 @@ function calculateOverallScores($db, &$students, $tournaments)
 	}
 	$output .= "<col span=5></colgroup><thead><tr>";
 
-	$output .="<th><div>Students</div><div><a href='javascript:tournamentSort(`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`studentFirst`)'>First</a></div></th>";
-	$output .="<th><a href='javascript:tournamentSort(`grade`, 1)'>Grade</a></th>";
+	$output .="<th><div>Students</div><div><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></div></th>";
+	$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`grade`, 1)'>Grade</a></th>";
 
 	//list all the tournament names in the header
 	foreach ($tournaments as $tournament)
@@ -166,12 +166,12 @@ function calculateOverallScores($db, &$students, $tournaments)
 	}
 	//$output .="<th rowspan='2'># Events</th>";
 	//$output .="<th rowspan='2'>Avg Place</th>";
-	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`count`, 1)'>Total Tournaments</a></th>";
-	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`averageEvents`, 1)'>Average Events</a></th>";
-	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`averagePlace`, 1)'>Average Place</a></th>";
-	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`averageScore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th>";
-	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`score`, 1)'>Total Score</a></div><div>(Higher is Better)</div></th>";
-	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`rank`, 1)'>Total Rank</a></div><div>(Lower is Better)</div></th>";
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`count`, 1)'>Total Tournaments</a></th>";
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`averageEvents`, 1)'>Average Events</a></th>";
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`averagePlace`, 1)'>Average Place</a></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`averageScore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`score`, 1)'>Total Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`rank`, 1)'>Total Rank</a></div><div>(Lower is Better)</div></th>";
 
 	//students header
 	$output .="</tr></thead><tbody>";

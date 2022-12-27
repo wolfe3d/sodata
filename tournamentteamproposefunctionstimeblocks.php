@@ -4,6 +4,7 @@ userCheckPrivilege(3);
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
+
 if(empty($tournamentID))
 {
 	echo "<div style='color:red'>tournamentID is not set.</div>";

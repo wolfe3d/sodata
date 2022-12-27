@@ -32,9 +32,9 @@ function printTable($db, $events)
 	$notescore = 0;
 	//Run through times and figure out the number of different dates and print columns with colspan of times for that date
 	$output .="<table id='tournamentTable' class='tournament table table-hover'><thead><tr>";
-	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`event`, 0)'>Events</a></div></th>";
-	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`avgplace`, 1)'>Average Place</a></div><div>(Lower is Better)</div></th>";
-	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`avgscore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th></tr></thead>";
+	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`tournamentTable`,`event`, 0)'>Events</a></div></th>";
+	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`tournamentTable`,`avgplace`, 1)'>Average Place</a></div><div>(Lower is Better)</div></th>";
+	$output .= "<th rowspan='1' style='vertical-align:bottom;'><div><a href='javascript:tournamentSort(`tournamentTable`,`avgscore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th></tr></thead>";
 	$output .="<tbody>";
 	//Print events
 	foreach ($events as $i=>$event) {

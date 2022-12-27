@@ -23,7 +23,9 @@ echo "<h2><span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamNam
 
 echo "<p>teamID=$teamID; tournamentID: <span id='tournamentID'>".$rowTeam['tournamentID']."<span></p>";
 ?>
-<p>Use only this year's Data</p>
+<form>
+<p><input type="checkbox" id="thisYear" name="thisYear" value="thisYear" checked><label for="thisYear"> Use only this year's Data</label></p>
+</form>
 <p><a class='btn btn-info' role='button' href='javascript:proposeByScore(<?=$teamID?>)'><span class='bi bi-graph-up'></span> Propose By Top Score Team</a></p>
 <p id="topScore"></p>
 <p><a class='btn btn-info' role='button' href='javascript:proposeByBruteForce(<?=$teamID?>)'><span class='bi bi-graph-up'></span> Propose Brute Force Team</a></p>
