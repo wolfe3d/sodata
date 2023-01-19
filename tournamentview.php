@@ -44,14 +44,18 @@ $output .="<div>";
 
 		if(userHasPrivilege(3))
 		{
+			$output .="<div>";
 			//tournament edit button -> changes hash to tournament-edit-tournamentID
-			if($published)
+			if(userHasPrivilege(5))
 			{
-				$output .="<div><a id='publishBtn' class='btn btn-secondary' role='button' href='javascript:tournamentUnPublish(".$row['tournamentID'].")'><span class='bi bi-cup-hot'></span> Unpublish</a>";
-			}
-			else
-			{
-				$output .="<div><a id='publishBtn' class='btn btn-primary' role='button' href='javascript:tournamentPublish(".$row['tournamentID'].")'><span class='bi bi-cup'></span> Publish</a>";
+				if($published)
+				{
+					$output .="<a id='publishBtn' class='btn btn-secondary' role='button' href='javascript:tournamentUnPublish(".$row['tournamentID'].")'><span class='bi bi-cup-hot'></span> Unpublish</a>";
+				}
+				else
+				{
+					$output .="<a id='publishBtn' class='btn btn-primary' role='button' href='javascript:tournamentPublish(".$row['tournamentID'].")'><span class='bi bi-cup'></span> Publish</a>";
+				}
 			}
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='bi bi-pencil-square'></span> Edit Information</a>";
 			//only show add teams button if there needs to be more teams added
@@ -137,7 +141,7 @@ $output .="<div>";
 		}
 	}
 		$schedule ="";
-		if(userHasPrivilege(3))
+		if(userHasPrivilege(3) && $published)
 		{
 			$output .="<p><div class='btn-group' role='group' aria-label='All Email Group'>";
 			$output .="<a class='btn btn-secondary' role='button' href='#tournament-emails-".$row['tournamentID']."' data-toggle='tooltip' data-placement='top' title='Get all teammate emails'><span class='bi bi-envelope'></span> Teammates</a>";
