@@ -30,7 +30,8 @@ echo "<p>teamID=$teamID; tournamentID: <span id='tournamentID'>".$rowTeam['tourn
 <p id="topScore"></p>
 <p><a class='btn btn-info' role='button' href='javascript:proposeByBruteForce(<?=$teamID?>)'><span class='bi bi-graph-up'></span> Propose Brute Force Team</a></p>
 <p id="bruteForce"></p>
-
+<p><a class='btn btn-info' role='button' href='javascript:proposeByAllForce(<?=$teamID?>)'><span class='bi bi-graph-up'></span> Propose Using All Force Team</a></p>
+<p id="allForce"></p>
 <?php include  ("tournamentteamassign.php");?>
 
 <!--<script src="js/teampropose.js"></script>-->

@@ -33,7 +33,7 @@ function proposeByScore(team)
 		});
 
 		requestScore.done(function( html ) {
-			const teammates = JSON.parse(html);
+			const teammateScores = JSON.parse(html);
 			var resultsTable = [];
 			var timeblockTable = [];
 			var studentTable = [];
@@ -41,7 +41,7 @@ function proposeByScore(team)
 			{
 				console.error("timeblocks is not an array");
 			}
-			calculateByTopScore(teammates, timeblocks, studentTable, timeblockTable, resultsTable)
+			calculateByTopScore(teammateScores, timeblocks, studentTable, timeblockTable, resultsTable)
 			//studentsTable = getUniqueStudents(resultsTable);
 			console.log(resultsTable);
 			console.log(timeblockTable);
@@ -53,7 +53,7 @@ function proposeByScore(team)
 }
 
 
-//use highest scores from students
+//use highest scores from students and rotates from highest to lowest and finds the highest combination
 function proposeByBruteForce(team)
 {
 	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
@@ -84,7 +84,7 @@ function proposeByBruteForce(team)
 		});
 
 		requestScore.done(function( html ) {
-			const teammates = JSON.parse(html);
+			const teammateScores = JSON.parse(html);
 			var resultsTable = [];
 			var timeblockTable = [];
 			var studentTable = [];
@@ -92,7 +92,7 @@ function proposeByBruteForce(team)
 			{
 				console.error("timeblocks is not an array");
 			}
-			calculateByBruteForce(teammates, timeblocks, studentTable, timeblockTable, resultsTable)
+			calculateByBruteForce(teammateScores, timeblocks, studentTable, timeblockTable, resultsTable)
 		});
 
 
@@ -101,6 +101,68 @@ function proposeByBruteForce(team)
 		});
 	});
 }
+
+//use students looks for events from lowest timeblock to highest timeblock, then finds highest scoring team with all events
+function proposeByAllForce(team)
+{
+	//Be aware: same event with same timeblock causes problem; however,there should not be same event with two different times
+	//Do not allow 2 or more timeblocks for the same event!
+	var thisYearOnly = document.getElementById('thisYear').checked;
+
+	var request = $.ajax({
+		url: "tournamentteamproposefunctionstimeblocks.php",
+		cache: false,
+		method: "POST",
+		data: { myID: $("#tournamentID").html()},
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		console.log("timeblocksAll");
+		var timeblocks = JSON.parse(html);
+		if(!Array.isArray(timeblocks))
+		{
+			console.error("timeblocks is not an array");
+		}
+		var requestScore = $.ajax({
+			url: "tournamentteamproposefunctionstopscore.php",
+			cache: false,
+			method: "POST",
+			data: { myID: team, thisYear: thisYearOnly},
+			dataType: "text"
+		});
+
+		requestScore.done(function( html ) {
+			const teammateScores = JSON.parse(html);
+			var resultsTable = [];
+			var timeblockTable = [];
+			var studentTable = [];
+			if(!Array.isArray(timeblocks))
+			{
+				console.error("timeblocks is not an array");
+			}
+			calculateByAllForce(teammateScores, timeblocks, studentTable, timeblockTable, resultsTable)
+		});
+
+
+		requestScore.fail(function( jqXHR, textStatus ) {
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		});
+	});
+}
+
+//copy events from the bruteforce array into the field below
+function assign(s)
+{
+	resultsTables[s].forEach((row)=>{
+		inputBtn = $(".teammateStudent-"+ row['studentID'] + ".event-" + row['eventID'] + " input");
+		if (inputBtn && !inputBtn.is(":checked"))
+		{
+			inputBtn.trigger( "click" );
+		}
+	});
+}
+
 function findStudents(arrayList)
 {
 	let students = [];
@@ -748,17 +810,6 @@ function calculateByBruteForce(studentList, timeblocks, studentTable, timeblockT
 
 }
 
-function assign(s)
-{
-	resultsTables[s].forEach((row)=>{
-		inputBtn = $(".teammateStudent-"+ row['studentID'] + ".event-" + row['eventID'] + " input");
-		if (inputBtn && !inputBtn.is(":checked"))
-		{
-			inputBtn.trigger( "click" );
-		}
-	});
-}
-
 function myTeammateByBruteForce(studentList, i, r, teammate, timeblocks, studentTable, timeblockTable, resultsTable)
 {
 	//console.log(teammate);
@@ -880,24 +931,24 @@ function countEventsinTimeBlock(results, timeblockID)
 }
 
 //finds the events of timeblocks that were assigned
-function findEventsinTimeBlock(results, timeblockID)
+function findEventsinTimeBlock(tableArray, timeblockID)
 {
 	let rows =[];
-	if(Array.isArray(results))
+	if(Array.isArray(tableArray))
 	{
-		results.forEach((result)=>{
-			if (result.timeblockID==timeblockID)
+		tableArray.forEach((event)=>{
+			if (event.timeblockID==timeblockID)
 			{
 				let rowduplicate = 0;
 				rows.forEach((row)=>{
-					if(row.eventID==result.eventID)
+					if(row.eventID==event.eventID)
 					{
 						rowduplicate =1;
 					}
 				});
 				if(!rowduplicate)
 				{
-					rows.push(result);
+					rows.push(event);
 				}
 			}
 		});
@@ -1127,4 +1178,138 @@ output +="</tfoot></table></form>";
 output +="<div>Score = "+notescore+"  (This can only be compared to the same type of table (not to different tables), i.e Average Score cannot be compared to Average Place.</div><br>";
 $("#"+divID).append(output);
 
+}
+
+//get Unique timeblocks in list
+function getUniqueTimeblocks(tableArray)
+{
+	let timeblocks =[];
+	if(Array.isArray(tableArray))
+	{
+		tableArray.forEach((tournamentevent)=>{
+			timeblockAdded = 0;
+			timeblocks.forEach((timeblock)=>{
+				if(timeblock.timeblockID==tournamentevent.timeblockID)
+				{
+					timeblockAdded = 1; //if id alrady added
+				}
+			});
+			if(!timeblockAdded)
+			{
+				//unique id
+				timeblockUnique = {timeblockID: tournamentevent.timeblockID, timeStart: tournamentevent.timeStart, timeEnd: tournamentevent.timeEnd};
+				timeblocks.push(timeblockUnique);
+			}1
+		});
+	}
+	return timeblocks;
+}
+
+
+
+function findStudentIdsInEvent(studentList, eventID)
+{
+	let students =[];
+	if(Array.isArray(studentList))
+	{
+		studentList.forEach((teammate)=>{
+			if (teammate.eventID==eventID)
+			{
+				students.push(teammate.studentID);
+			}
+		});
+	}
+	return students;
+}
+
+
+/**
+ * Generate all combinations of an array.
+ * @param {Array} sourceArray - Array of input elements.
+ * @param {number} comboLength - Desired length of combinations.
+ * @return {Array} Array of combination arrays.
+ */
+ function generateCombinations(sourceArray, comboLength) {
+const sourceLength = sourceArray.length;
+if (comboLength > sourceLength) return [];
+
+const combos = []; // Stores valid combinations as they are generated.
+
+// Accepts a partial combination, an index into sourceArray, 
+// and the number of elements required to be added to create a full-length combination.
+// Called recursively to build combinations, adding subsequent elements at each call depth.
+const makeNextCombos = (workingCombo, currentIndex, remainingCount) => {
+  const oneAwayFromComboLength = remainingCount == 1;
+
+  // For each element that remaines to be added to the working combination.
+  for (let sourceIndex = currentIndex; sourceIndex < sourceLength; sourceIndex++) {
+	// Get next (possibly partial) combination.
+	const next = [ ...workingCombo, sourceArray[sourceIndex] ];
+
+	if (oneAwayFromComboLength) {
+	  // Combo of right length found, save it.
+	  combos.push(next);
+	}
+	else {
+	  // Otherwise go deeper to add more elements to the current partial combination.
+	  makeNextCombos(next, sourceIndex + 1, remainingCount - 1);
+	}
+	  }
+}
+
+makeNextCombos([], 0, comboLength);
+return combos;
+}
+function generateCombinationsWithLess(sourceArray, comboLength)
+{
+	var combi = [];
+	//This will make all combos with the combolength and less
+	for (let i = 1; i < comboLength+1; i++)
+	{
+		combi= combi.concat(generateCombinations(sourceArray,i));
+	}
+	return combi;
+}
+//Calculate students in each timeslot
+function calculateByAllForce(teammateScores, tournamentEvents, studentTable, timeblockTable, resultsTable)
+{
+	var studentList = getUniqueStudents(teammateScores);
+	console.log("totalStudentsInOriginalList="+studentList.length);
+	console.log("totalSeniorsInOriginalList="+countSeniorTotal(studentList));
+	//let myStudents = findStudents(studentList);
+	var maxScore = [0,0,0];
+	var maxEvents = [0,0,0]
+
+	//get list of timeblocks
+
+	//for timeblocks
+	////for events  //also don't assign any students 
+	//////for students  //make sure they have not been assigned to another event in the same timeblock
+	////////for number of teammates
+
+	//combine timeblocks
+	////calculate score for each
+	var results = [];
+	var r = 0;
+	var timeblocks = getUniqueTimeblocks(tournamentEvents);
+	for (let t = 0; t < timeblocks.length; t++) {
+		var timeblockevents = findEventsinTimeBlock(tournamentEvents,timeblocks[t].timeblockID);
+		//console.log(timeblockevents);
+		for (let e = 0; e < timeblockevents.length; e++) {
+			var students = findStudentIdsInEvent(studentList, timeblockevents[e].eventID);
+			var studentCombos = generateCombinationsWithLess(students,timeblockevents[e].numberStudents);
+			studentCombos.push([0]);
+			//console.log(studentCombos);
+			//console.log(studentcombinations);
+			for (let c = 0; c < studentCombos.length; c++) {
+				//add all students in combination to the possible results
+				//make sure to add one student per timeblock per result
+				for (let s = 0; s < studentCombos.length; s++){
+					results[t][e][c].push();//student with score
+				}
+			}
+		}
+	}
+	score = calculateScore(resultsTable);
+	events = countEvents(resultsTable);
 }

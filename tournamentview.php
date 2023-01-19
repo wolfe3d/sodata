@@ -17,7 +17,7 @@ function assignmentMade($db, $teamID)
 $output = "";
 
 $tournamentID = intval($_REQUEST['myID']);
-$query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
+$query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID AND `tournament`.`schoolID` = `schoolID` = " . $_SESSION['userData']['schoolID'];
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))
@@ -36,15 +36,24 @@ $query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID ORDER BY `te
 $resultTeams = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $amountOfCreatedTeams = $resultTeams->num_rows;
 
-	$output .="<div>";
+$output .="<div>";
  if($row)
  {
+	$published = intval($row['published']);
 	 $output .="<div id='myTitle'>".$row['tournamentName']." - " . $row['year'] . "</div>";
 
 		if(userHasPrivilege(3))
 		{
 			//tournament edit button -> changes hash to tournament-edit-tournamentID
-			$output .="<div><a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='bi bi-pencil-square'></span> Edit Information</a>";
+			if($published)
+			{
+				$output .="<div><a id='publishBtn' class='btn btn-secondary' role='button' href='javascript:tournamentUnPublish(".$row['tournamentID'].")'><span class='bi bi-cup-hot'></span> Unpublish</a>";
+			}
+			else
+			{
+				$output .="<div><a id='publishBtn' class='btn btn-primary' role='button' href='javascript:tournamentPublish(".$row['tournamentID'].")'><span class='bi bi-cup'></span> Publish</a>";
+			}
+			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='bi bi-pencil-square'></span> Edit Information</a>";
 			//only show add teams button if there needs to be more teams added
 			if($amountOfCreatedTeams<$numberTeams)
 			{
@@ -147,6 +156,8 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			}
 		}
 
+		if(userHasPrivilege(5) || $published)
+		{
 		while($rowTeam = $resultTeams->fetch_assoc()):
 			$output .="<h2>Team ".$rowTeam['teamName']."</h2>";
 			$output .="<p><div class='btn-group' role='group' aria-label='Team Buttons'>";
@@ -165,6 +176,7 @@ $amountOfCreatedTeams = $resultTeams->num_rows;
 			}
 			$output .="</div></p>";
 		endwhile;
+	}
 
 		if(!$row['notCompetition'] && userHasPrivilege(5))
 		{

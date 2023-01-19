@@ -190,11 +190,24 @@ function tournamentHasThisTeammate($db, $tournamentID, $studentID)
 	return 0;
 }
 
+function tournamentPublished($db, $tournamentID)
+{
+	//Check to see if tournament is published
+	$query = "SELECT `published` from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID ";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && $result->num_rows > 0)
+	{
+		$row=$result->fetch_assoc();
+		return intval($row['published']);
+	}
+	return 0;
+}
+
 function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='Your events and partners')
 {
 	$schedule="";
 	//This query checks to see if there are students on this tournaments
-	if(tournamentHasTeammates($db, $tournamentID))
+	if(tournamentHasTeammates($db, $tournamentID)&& tournamentPublished($db, $tournamentID))
 	{
 		$schedule.="<h4>$heading</h4>";
 		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))

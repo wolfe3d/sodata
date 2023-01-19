@@ -72,7 +72,7 @@ if($row['emailSchool'])
 }
 if($row['phone'])
 {
-	$output .="<div>Phone(".getPhoneString($row['phoneType'])."): ".$row['phone']."</div>";
+	$output .="<div>Phone(".getPhoneString($row['phoneType'])."): ".$row['phone']." <a class='btn btn-secondary btn-sm' role='button' href='tel:".$row['phone']."'><span class='bi bi-telephone'> Call</span></a></div>";
 }
 
 
@@ -92,10 +92,10 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	if($row['parent1Last'])
 	{
 		$output .="<br><h3>Parent(s)</h3>";
-		$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']."</div>";
+		$output .="<div>".$row['parent1First']." ".$row['parent1Last'].", ".$row['parent1Email'].", ".$row['parent1Phone']." <a class='btn btn-secondary btn-sm' role='button' href='tel:".$row['parent1Phone']."'><span class='bi bi-telephone'> Call</span></a></div>";
 		if($row['parent2Last'])
 		{
-			$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']."</div>";
+			$output .="<div>".$row['parent2First']." ".$row['parent2Last'].", ".$row['parent2Email'].", ".$row['parent2Phone']." <a class='btn btn-secondary btn-sm' role='button' href='tel:".$row['parent2Phone']."'><span class='bi bi-telephone'> Call</span></a></div>";
 		}
 	}
 	$output .= "<hr>";

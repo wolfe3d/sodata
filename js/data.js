@@ -846,6 +846,55 @@ function tournamentRemove(myID, tournamentName)
 	}
 }
 
+function tournamentPublish(myID)
+{
+	if(confirm("Are you sure you want to publish the team assignments to students?"))
+	{
+		tournamentPublishToggle(myID);
+	}
+}
+function tournamentUnPublish(myID)
+{
+	if(confirm("Are you sure you want to hide the team assignments to students?"))
+	{
+		tournamentPublishToggle(myID);
+	}
+}
+
+//Toggles publication of tournament assignments to students and toggles button
+function tournamentPublishToggle(myID)
+{
+		var request = $.ajax({
+			url: "tournamentpublish.php",
+			cache: false,
+			method: "POST",
+			data: {myID:myID},
+			dataType: "html"
+		});
+		request.done(function( html ) {
+			$(".text-success").remove(); //remove any old text-success notes
+			if(html=="1")
+			{
+				//published
+				$("#publishBtn").replaceWith("<a id='publishBtn' class='btn btn-secondary' role='button' href='javascript:tournamentUnPublish("+myID+")'><span class='bi bi-cup-hot'></span> Unpublish</a>"); 
+			}
+			else if(html=="2")
+			{
+				//unpublished
+				$("#publishBtn").replaceWith("<a id='publishBtn' class='btn btn-primary' role='button' href='javascript:tournamentPublish("+myID+")'><span class='bi bi-cup'></span> Publish</a>"); 
+			}
+			else
+			{
+				$("#publishBtn").before("<div class='text-danger'>Publication Error:"+html+"</div");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$(".text-success").remove();
+			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+		});
+}
+
 //formats javascript time to have leading zeroes.  For instance 9:00AM is formatted as 09:00AM.
 function appendLeadingZeroes(n){
 	if(n <= 9){
