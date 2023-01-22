@@ -28,6 +28,7 @@ $( window ).resize(function()
 	}
 });
 
+
 //at this point in time, it only causes a reload of a page on resize if it is the teamassign page
 function resizePage(){
 	var splitHash = location.hash.substr(1).split("-");
@@ -86,6 +87,8 @@ function getList(myPage, myData)
 	});
 	request.done(function( html ) {
 		$("#list").html(html);
+		$("#searchDbBtn").prop('disabled', false);
+		$('#modalWait').modal('hide')
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
@@ -237,27 +240,18 @@ function studentPreparePage()
 
 	//if the active checkbox is changed, then the screen will repopulate with the entire science olympiad population.  It does not remember the last clicked search.
 	$('#active').change(function() {
-		getList("studentslist.php", {active:$("#active").is(':checked')?"1":"0"});
+		$('#modalWait').modal('show')
+		$("#searchDbBtn").prop('disabled', true);
+		getList("studentslist.php", $("#searchDb").serialize() );
 	});
-	//when Find by Name is clicked, this initiates the search
-	$("#findStudent").on( "submit", function( event ) {
+	//when Find is clicked, this initiates the search
+	$("#searchDb").on( "submit", function( event ) {
 		event.preventDefault();
+		$('#modalWait').modal('show')
+		$("#searchDbBtn").prop('disabled', true);
 		getList("studentslist.php", $( this ).serialize() );
 	});
-	//when Find by Event is clicked, this initiates the search
-	$("#findByEventPriority").on( "submit", function( event ) {
-		event.preventDefault();
-		getList("studentslist.php", {eventPriority: $("#eventsList").val(),active:$("#active").is(':checked')?"1":"0"});
-	});
-	$("#findByEventCompetition").on( "submit", function( event ) {
-		event.preventDefault();
-		getList("studentslist.php", {eventCompetition: $("#eventsList-1").val(),active:$("#active").is(':checked')?"1":"0"});
-	});
-	//when Find by Course is clicked, this initiates the search
-	$("#findByCourse").on( "submit", function( event ) {
-		event.preventDefault();
-		getList("studentslist.php", {courseList: $("#courseList").val(),active:$("#active").is(':checked')?"1":"0"});
-	});
+
 
 	$( "#addTo" ).submit(function( event ) {
 		event.preventDefault();
@@ -582,8 +576,10 @@ function eventsPreparePage()
 	// validate signup form on keyup and submit
 
 	//when Find by Name is clicked, this initiates the search
-	$("#findEvent").on( "submit", function( event ) {
+	$("#searchDb").on( "submit", function( event ) {
 		event.preventDefault();
+		$('#modalWait').modal('show')
+		$("#searchDbBtn").prop('disabled', true);
 		getList("eventslist.php", $( this ).serialize() );
 	});
 
@@ -719,8 +715,10 @@ function tournamentsPreparePage()
 	// validate signup form on keyup and submit
 
 	//when Find by Name is clicked, this initiates the search
-	$("#findTournament").on( "submit", function( event ) {
+	$("#searchDb").on( "submit", function( event ) {
 		event.preventDefault();
+		$('#modalWait').modal('show')
+		$("#searchDbBtn").prop('disabled', true);
 		getList("tournamentslist.php", $( this ).serialize() );
 	});
 	/*	//Allow person to pick year

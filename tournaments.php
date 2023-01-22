@@ -6,12 +6,12 @@ $row = null;
 <div>
 	<button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='bi bi-search'></span> Find</button> <!-- toggles view of below div -->
 	<div id="searchDiv">
-	<form id="findTournament">
+	<form id="searchDb">
 		<fieldset>
 			<legend>Find Tournament</legend>
 			<p>
-				<label for="tournamentName">Tournament Name</label>
-				<input id="tournamentName" name="tournamentName" type="text">
+				<label for="tournamentSearch">Find</label>
+				<input id="tournamentSearch" name="tournamentSearch" type="text">
 			</p>
 			<p>
 				<label for="year">Tournament Year</label>
@@ -19,7 +19,7 @@ $row = null;
 					 <span style="color:blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-controller'></span> Find Tournament</button>
+				<button id="searchDbBtn" class="btn btn-primary" type="submit"><span class='bi bi-controller'></span> Search</button>
 			</p>
 		</fieldset>
 	</form>

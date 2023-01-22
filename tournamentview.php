@@ -150,14 +150,8 @@ $output .="<div>";
 		}
 		if($studentID)
 		{
-			$schedule.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID);
-			if($schedule != -1){
-				$output .="<h3>My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")</h3>";
-				$output.=$schedule;
-			}
-			else{
-				$output .= "You have not been assigned to events at this tournament.<br><br>";
-			}
+			$heading ="My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")";
+			$output.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID, $heading);
 		}
 
 		if(userHasPrivilege(5) || $published)

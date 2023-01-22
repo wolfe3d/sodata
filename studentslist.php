@@ -4,49 +4,66 @@ userCheckPrivilege(1);
 
 //text output
 $output = "";
-$last = isset($_POST['last'])?$mysqlConn->real_escape_string($_POST['last']):0;
-$first = isset($_POST['first'])?$mysqlConn->real_escape_string($_POST['first']):0;
-$eventPriorityID = isset($_POST['eventPriority'])?intval($_POST['eventPriority']):0;
-$eventCompetitionID = isset($_POST['eventCompetition'])?intval($_POST['eventCompetition']):0;
-$courseID = isset($_POST['courseList'])?intval($_POST['courseList']):0;
+$search = isset($_POST['search'])?$mysqlConn->real_escape_string($_POST['search']):0;
 $active = isset($_POST['active'])?intval($_POST['active']):0;
+
 $year = getCurrentSOYear();
 
-$activeQuery ="";
+$query = "";
+//check to see what is searched for
+$query="SELECT DISTINCT `student`.`studentID` FROM `student`";
+if($search)
+{
+$query .= " INNER JOIN `eventchoice` ON `student`.`studentID`=`eventchoice`.`studentID` 
+INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID`
+INNER JOIN `event` AS `eventChosen` ON `eventyear`.`eventID`=`eventChosen`.`eventID`
+
+INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID`
+INNER JOIN `tournamentevent` ON `tournamentevent`.`tournamenteventID`=`teammateplace`.`tournamenteventID`
+INNER JOIN `event` AS `eventCompeted` ON `tournamentevent`.`eventID`=`eventCompeted`.`eventID`
+
+INNER JOIN `coursecompleted` ON `student`.`studentID`=`coursecompleted`.`studentID`
+INNER JOIN `course` AS `courseTableCompleted` ON `coursecompleted`.`courseID` = `courseTableCompleted`.`courseID`
+
+INNER JOIN `courseenrolled` ON `student`.`studentID`=`courseenrolled`.`studentID` 
+INNER JOIN `course` AS `courseTableEnrolled` ON `courseenrolled`.`courseID` = `courseTableEnrolled`.`courseID`
+
+WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] .
+" AND 
+    (`student`.`last` LIKE '%$search%'
+    OR `student`.`first` LIKE '%$search%'
+    OR `student`.`yearGraduating` LIKE '%$search%'
+    OR `student`.`email` LIKE '%$search%'
+    OR `student`.`emailSchool` LIKE '%$search%'
+    OR `student`.`parent1Last` LIKE '%$search%'
+    OR `student`.`parent1First` LIKE '%$search%'
+    OR `student`.`parent1Email` LIKE '%$search%'
+    OR `student`.`parent1Last` LIKE '%$search%'
+    OR `student`.`parent1First` LIKE '%$search%'
+    OR `student`.`parent1Email` LIKE '%$search%'
+    OR `eventChosen`.`event` LIKE '%$search%'
+	OR `eventCompeted`.`event` LIKE '%$search%'
+    OR `courseTableCompleted`.`course` LIKE '%$search%'
+    OR `courseTableEnrolled`.`course` LIKE '%$search%'
+    )
+";
+}
+else
+{
+	$query.=" WHERE `student`.`schoolID` = " . $_SESSION['userData']['schoolID'];
+}
+
 if($active)
 {
-	$activeQuery = " `student`.`active` = 1 AND ";
-}
-$query = "SELECT * from `student`";
-//check to see what is searched for
-if($last&&$first)
-{
-	$query .= " where $activeQuery `student`.`last` LIKE '%$last%' AND `student`.`first` LIKE '%$first%'";
-}
-else if($last)
-{
-	$query .= " where $activeQuery `student`.`last` LIKE '%$last%'";
-}
-else if($first)
-{
-	$query .= " where $activeQuery `student`.`first` LIKE '%$first%'";
-}
-else if($active && !$courseID && !$eventPriorityID && !$eventCompetitionID)
-{
-	$query .= " where `student`.`active` = 1";
+	$query .= " AND `student`.`active` = 1";
 }
 
-if($eventPriorityID)
+$output .= userHasPrivilege(3)?"<br>" . $query . "<br>":"";
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+$studentIDs ="";
+if($result)
 {
-	//Search for student signed up for event
-	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `eventchoice` ON `student`.`studentID`=`eventchoice`.`studentID` INNER JOIN `eventyear` ON `eventchoice`.`eventyearID`=`eventyear`.`eventyearID` WHERE $activeQuery `eventyear`.`eventID`=$eventPriorityID";
-	if (userHasPrivilege(4))
-	{
-		echo $eventQuery;
-	}
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$studentIDs = "";
 	while ($row = $result->fetch_assoc()):
 		//make array of results
 		if($studentIDs !="")
@@ -55,84 +72,10 @@ if($eventPriorityID)
 		}
 		$studentIDs .= $row['studentID'];
 	endwhile;
-	//output individual students who have signed up for an event
-	if($studentIDs !="")
-	{
-		$query.=" where $activeQuery `student`.`studentID` IN ($studentIDs)";
-		echo userHasPrivilege(3)?$query:"";
-	}
-	else {
-		echo "No one is signed up for this event($eventPriorityID).";
-		return 0;
-	}
 }
 
-if($eventCompetitionID)
-{
-	//Search for student who competed in this event
-	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student`
-	INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID`
-	INNER JOIN `tournamentevent` ON `tournamentevent`.`tournamenteventID`=`teammateplace`.`tournamenteventID`
-	INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID`
-	 WHERE $activeQuery `event`.`eventID`=$eventCompetitionID";
-	if (userHasPrivilege(4))
-	{
-		echo $eventQuery;
-	}
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$studentIDs = "";
-	while ($row = $result->fetch_assoc()):
-		//make array of results
-		if($studentIDs !="")
-		{
-			$studentIDs .=",";
-		}
-		$studentIDs .= $row['studentID'];
-	endwhile;
-	//output individual students who have signed up for an event
-	if($studentIDs !="")
-	{
-		$query.=" where $activeQuery `student`.`studentID` IN ($studentIDs)";
-		echo userHasPrivilege(3)?$query:"";
-	}
-	else {
-		echo "No one has competed in this event($eventCompetitionID).";
-		return 0;
-	}
-}
-
-if($courseID)
-{
-	//Search for student signed up for event
-	//$query = "SELECT DISTINCT `student`.`studentID` from `student` `student` INNER JOIN `eventchoice` t2 ON `student`.`studentID`=t2.`studentID` INNER JOIN `eventyear` t3 ON t2.`eventID`=t3.`eventID` WHERE t3.`event` LIKE '$eventName'";
-	$eventQuery = "SELECT DISTINCT `student`.`studentID` from `student` INNER JOIN `coursecompleted` ON `student`.`studentID`=`coursecompleted`.`studentID` INNER JOIN `courseenrolled` ON `student`.`studentID`=`courseenrolled`.`studentID` WHERE $activeQuery `coursecompleted`.`courseID`=$courseID OR `courseenrolled`.`courseID`=$courseID ";
-	if (userHasPrivilege(4))
-	{
-		echo $eventQuery;
-	}
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$studentIDs="";
-	while ($row = $result->fetch_assoc()):
-		//make array of results
-		if($studentIDs !="")
-		{
-			$studentIDs .=",";
-		}
-		$studentIDs .= $row['studentID'];
-	endwhile;
-	//output individual students who have signed up for an event
-	if($studentIDs !="")
-	{
-		$query.=" where $activeQuery `student`.`studentID` IN ($studentIDs)";
-	}
-	else {
-		echo "No one is signed up for this course with ID=$courseID.";
-		return 0;
-	}
-}
-
-$query .= " ORDER BY `student`.`last`, `student`.`first`";
-$output .= userHasPrivilege(3)?$query:"";
+$query ="SELECT * FROM `student` WHERE `student`.`studentID` IN ($studentIDs) ORDER BY `student`.`last`, `student`.`first`";
+$output .= userHasPrivilege(3)?"<br>" . $query . "<br>":"";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if($result)

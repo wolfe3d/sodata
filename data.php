@@ -177,6 +177,17 @@ userCheckPrivilege(1);
 		<!-- Copyright -->
 	</footer>
 	<!-- Footer -->
+
+	<!-- Modal -->
+	<div class="modal" id="modalWait" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-full" role="document">
+        <div class="modal-content">
+        <img src="images/icanwait.gif" alt="I can wait...">
+        </div>
+    </div>
+	</div>   
+	<!-- Modal -->
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 

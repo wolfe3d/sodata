@@ -6,7 +6,7 @@ userCheckPrivilege(1);
 <button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='bi bi-search'></span> Find</button> <!-- toggles view of below div -->
 
 	<div id="searchDiv">
-	<form id="findEvent">
+	<form id="searchDb">
 		<fieldset>
 			<legend>Find Event by year</legend>
 			<p>
@@ -17,7 +17,7 @@ userCheckPrivilege(1);
 				<?=getDivisionList($mysqlConn,1)?>
 			</p>
 			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-binoculars'></span> Search</button>
+				<button id="searchDbBtn" class="btn btn-primary" type="submit"><span class='bi bi-binoculars'></span> Search</button>
 			</p>
 		</fieldset>
 	</form>

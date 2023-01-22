@@ -4,24 +4,26 @@ userCheckPrivilege(1);
 //text output
 $output = "";
 
-$name = isset($_POST['tournamentName'])?$mysqlConn->real_escape_string($_POST['tournamentName']):"";
+$search = isset($_POST['tournamentSearch'])?$mysqlConn->real_escape_string($_POST['tournamentSearch']):"";
 $year = isset($_POST['year'])?intval($_POST['year']):getCurrentSOYear();
 
 $query = "SELECT * from `tournament`";
 //check to see what is searched for
 $whereAND = "";
-if($name&&$year)
+if($year)
 {
-	$whereAND .= " AND where `tournament`.`tournamentName` LIKE '$name' AND `tournament`.`year` LIKE '$year'";
+	$whereAND .= " AND `tournament`.`year` LIKE '$year'";
 }
-else if($name)
+if($search)
 {
-	$whereAND .= " AND where `tournament`.`tournamentName` LIKE '$name'";
+	$whereAND .= " AND (`tournament`.`tournamentName` LIKE '%$search%' 
+	OR `tournament`.`note` LIKE '%$search%'
+	OR `tournament`.`director` LIKE '%$search%'
+	OR `tournament`.`host` LIKE '%$search%'
+	OR `tournament`.`address` LIKE '%$search%'
+	)";
 }
-else if($year)
-{
-	$whereAND .= " AND `tournament`.`year` LIKE '$year' ";
-}
+
 
 $query .= " WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `tournament`.`dateTournament` DESC";
 $output .=userHasPrivilege(4)?$query:"";

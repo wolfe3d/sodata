@@ -29,59 +29,19 @@ userCheckPrivilege(1);
 	<a class="btn btn-secondary" role="button" href="awards.php"><span class='bi bi-archive'></span> Awards List</a>
 	<?php }?>
 <br><br>
-	<form id="findStudent">
+	<form id="searchDb">
 		<div>
 			<input type="checkbox" id="active" name="active" value="1" class="form-check-input" checked>
 			<label for="active" class="form-check-label">Show only active students</label>
 		</div>
 		<div id="searchDiv">
-		<fieldset>
-			<legend>Find Student By name</legend>
 			<p>
-				<label for="first">Firstname</label>
-				<input id="first" name="first" class="form-control" type="text">
+				<label for="search">Find</label>
+				<input id="search" name="search" class="form-control" type="text">
 			</p>
 			<p>
-				<label for="last">Lastname</label>
-				<input id="last" name="last" class="form-control" type="text">
+				<button id="searchDbBtn" class="btn btn-primary" type="submit"><span class='bi bi-file-earmark-person'></span> Search</button>
 			</p>
-			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-file-earmark-person'></span> Find By Name</button>
-			</p>
-		</fieldset>
-	</form>
-	<form id="findByEventPriority">
-		<fieldset>
-			<legend>Find Students by Event That They Signed Up For</legend>
-			<p>
-				<?=getEventList($mysqlConn, 0,"Event Priority")?>
-			</p>
-			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-flag'></span> Find By Event</button>
-			</p>
-		</fieldset>
-	</form>
-	<form id="findByEventCompetition">
-		<fieldset>
-			<legend>Find Students by Event That They Have Competed In</legend>
-			<p>
-				<?=getEventList($mysqlConn, 1,"Events Competed")?>
-			</p>
-			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-flag'></span> Find By Event</button>
-			</p>
-		</fieldset>
-	</form>
-	<form id="findByCourse">
-		<fieldset>
-			<legend>Find Students by Coursework</legend>
-			<p>
-				<?=getCourseList($mysqlConn)?>
-			</p>
-			<p>
-				<button class="btn btn-primary" type="submit"><span class='bi bi-book'></span> Find By Course</button>
-			</p>
-		</fieldset>
 		</div>
 	</form>
 <div id="list"></div>
