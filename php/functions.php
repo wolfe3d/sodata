@@ -594,7 +594,7 @@ function getCoachesEmails($db, $year)
 //Get Team Emails either students or parents
 function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 {
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1";
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1 AND `schoolID` = " . $_SESSION['userData']['schoolID'];
 	if($teamID){
 		$query.=" AND `team`.`teamID` = $teamID";
 	}
