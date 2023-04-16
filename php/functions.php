@@ -11,6 +11,19 @@ function cleanForJavascript($string)
 	$string = json_encode ($string);  //puts string in quotes for direct placement into javascript function
 	return $string;
 }
+//get ordinal number 1st, 2nd, 3rd, and so on
+function ordinal($n)
+{
+    if($n)
+	{
+	$ends = array('th','st','nd','rd','th','th','th','th','th','th');
+    if ((($n % 100) >= 11) && (($n%100) <= 13))
+        return $n. 'th';
+    else
+        return $n. $ends[$n % 10];
+	}
+    return "Place Not Entered";
+}
 //get all students in a select
 function getAllStudents($db, $active, $studentID)
 {
@@ -149,6 +162,28 @@ function studentTournamentResults($db, $studentID)
 		$output.="</ul></div>";
 	}
 	return $output;
+}
+
+//use student placements to calculate score
+function teamCalculateScoreStr($db, $teamID)
+{
+	$score=teamCalculateScore($db, $teamID);
+	if($score)
+	{
+		return " (".$score."pts)";
+	}
+	return "";
+}
+function teamCalculateScore($db, $teamID)
+{
+	$query = "SELECT DISTINCT `teamID`,`tournamenteventID`,SUM(`place`)as `p` FROM `teammateplace` WHERE `teamID`=$teamID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$row= $result->fetch_assoc();
+		return $row['p'];
+	}
+	return "";
 }
 
 //check to see if tournament has assigned any students to team

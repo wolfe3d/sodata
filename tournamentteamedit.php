@@ -45,6 +45,7 @@ if(empty($row))
 	exit("<div style='color:red'>No team found with ID: $teamID.</div>");
 }
 $teamName = $row['teamName'];
+$place = $row['teamPlace'];
 $tournamentID = $row['tournamentID'];
 $studentList="<div class='scioly'><input type='checkbox' id='toggleInactive' name='toggleInactive' onchange='$(\".inactive\").toggle()' /><label for='toggleInactive'>Show Inactive Students</label></div><br>";
 $query = "SELECT * FROM `student` ORDER BY `last` ASC, `first` ASC";
@@ -78,6 +79,10 @@ if($resultStudent){
 	<p id="teamNamep">
 		<label for="teamName">Team Name</label>
 		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamName',$(this).val(),'teamName','teamName')">
+	</p>
+	<p id="teamPlacement">
+		<label for="teamPlace">Place</label>
+		<input id="teamPlace" name="teamPlace" type="text" value="<?=$place?$place:'0'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamPlace',$(this).val(),'teamPlace','teamPlace')">
 	</p>
 
 	<p id="tournamentTeamp">
