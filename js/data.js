@@ -1539,6 +1539,16 @@ function tournamentEventTeammate(inputBtn)
 			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
 			inputBtn.prop('checked', false);
 		}
+		//recalculate total score
+		var totalPoints = 0;
+		$('.placement').each(function(i,n){
+			var eventPoints = parseInt($(n).val());
+			if(Number.isInteger(eventPoints))
+			{
+				totalPoints += eventPoints;
+			}
+		});
+		$("#teamScore").html(totalPoints);
 	});
 
 	request.fail(function( jqXHR, textStatus ) {

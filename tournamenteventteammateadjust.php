@@ -20,7 +20,7 @@ if(empty($studentID))
 	//studentID is null if the place is changed for all students
 }
 
-$place = getIfSet($_POST['place'],0);
+$place = intval($_POST['place']);
 $checked = getIfSet($_POST['checked'],0);
 if($checked){
 	//check to make sure student is on the team
@@ -45,7 +45,16 @@ if($checked){
 else {
 	if(empty($studentID)){
 		//if $studentID is not set, then this is being called to add place
-		$query = "UPDATE `teammateplace` SET `place` = '$place' WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID';";
+		if ($place)
+		{
+			//sets the placement
+			$query = "UPDATE `teammateplace` SET `place` = '$place' WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID';";
+		}
+		else
+		{
+			//if the placement is 0/null or not an integer set it to null
+			$query = "UPDATE `teammateplace` SET `place` = NULL WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID';";
+		}
 	}
 	else {
 		$query = "DELETE FROM `teammateplace` WHERE `tournamenteventID` = '$tournamenteventID' AND `teamID` = '$teamID' AND `studentID` = '$studentID';";
@@ -54,6 +63,7 @@ else {
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {
+	teamCalculateScore($mysqlConn, $teamID);
 	exit('1');
 }
 else

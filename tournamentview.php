@@ -157,7 +157,12 @@ $output .="<div>";
 		if(userHasPrivilege(5) || $published)
 		{
 		while($rowTeam = $resultTeams->fetch_assoc()):
-			$output .="<h2>Team ".$rowTeam['teamName']." - " . ordinal($rowTeam['teamPlace']).teamCalculateScoreStr($mysqlConn, $rowTeam['teamID'])."</h2>";
+			$output .="<h2>Team ".$rowTeam['teamName'];
+			if ($row["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+	 		{
+				$output .=" - " . ordinal($rowTeam['teamPlace']).teamCalculateScoreStr($mysqlConn, $rowTeam['teamID']);
+			}
+			$output .= "</h2>";
 			$output .="<p><div class='btn-group' role='group' aria-label='Team Buttons'>";
 			if(userHasPrivilege(3))
 			{

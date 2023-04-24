@@ -34,8 +34,6 @@ if(empty($teamID))
 {
 	exit("<div style='color:red'>TeamID is not set.</div>");
 }
-//TODO: Hide getCurrentTimeStamp variable, then use a js script to recheck every x time.
-echo getCurrentTimestamp($mysqlConn);
 
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -80,10 +78,17 @@ if($resultStudent){
 		<label for="teamName">Team Name</label>
 		<input id="teamName" name="teamName" type="text" value="<?=$teamName?$teamName:'A'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamName',$(this).val(),'teamName','teamName')">
 	</p>
+	<?php 
+	
+	if (!$row['notCompetition'] && $row["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+	{
+
+	?>
 	<p id="teamPlacement">
 		<label for="teamPlace">Place</label>
-		<input id="teamPlace" name="teamPlace" type="text" value="<?=$place?$place:'0'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamPlace',$(this).val(),'teamPlace','teamPlace')">
+		<input id="teamPlace" name="teamPlace" type="number" min="0" max="<?=$row['teamsAttended']?>" value="<?=$place?$place:'0'?>" onchange="fieldUpdate('<?=$teamID?>','team','teamPlace',$(this).val(),'teamPlace','teamPlace')">
 	</p>
+	<?php } ?>
 
 	<p id="tournamentTeamp">
 			<?=getTeamList($mysqlConn, $schoolID, $tournamentID, "Select Students from a Previous Tournament")?>

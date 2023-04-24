@@ -167,23 +167,43 @@ function studentTournamentResults($db, $studentID)
 //use student placements to calculate score
 function teamCalculateScoreStr($db, $teamID)
 {
-	$score=teamCalculateScore($db, $teamID);
+	$score=teamScoreReturn($db, $teamID);
 	if($score)
 	{
 		return " (".$score."pts)";
 	}
 	return "";
 }
-function teamCalculateScore($db, $teamID)
+function teamScoreReturn($db, $teamID)
 {
-	$query = "SELECT DISTINCT `teamID`,`tournamenteventID`,SUM(`place`)as `p` FROM `teammateplace` WHERE `teamID`=$teamID";
+	//return saved score from team
+	$query = "SELECT `teamScore` FROM `team` WHERE `teamID`=$teamID";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$row= $result->fetch_assoc();
-		return $row['p'];
+		if (isset($row['teamScore']))
+		{
+			return $row['teamScore'];
+		}
 	}
 	return "";
+}
+function teamCalculateScore($db, $teamID)
+{
+	//calculate score and save it
+	$query = "SELECT DISTINCT `teamID`,`tournamenteventID`,SUM(DISTINCT `place`)as `p` FROM `teammateplace` WHERE `teamID`=$teamID";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$row= $result->fetch_assoc();
+		$score = $row['p'];
+		if ($score>0)
+		{
+			$query = "UPDATE `team` SET `teamScore` = '$score' WHERE `team`.`teamID` = $teamID";
+			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		}
+	}
 }
 
 //check to see if tournament has assigned any students to team

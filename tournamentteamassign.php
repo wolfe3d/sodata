@@ -15,6 +15,7 @@ $mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
 $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `teamID` = $teamID";
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $rowTeam = $resultTeam->fetch_assoc();
+$maxPlace = $rowTeam['teamsAttended'];
 
 if(!$mobile)
 {
@@ -211,10 +212,10 @@ if(!$mobile)
 		$output .="</tr>";
 
 		//if this is a competitive tournament, enter/show placements here.  If this "tournament" is just for diplaying a team assignment, hide this.
-		if(!$rowTeam['notCompetition'])
+		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp($mysqlConn))
 		{
 			//print the place for each event
-			$output .="<tr><td colspan='2'>Place</td>";
+			$output .="<tr class='placementRow'><td colspan='2'>Place</td>";
 			foreach ($timeblocks as $i=>$timeblock) {
 				$timeEvents= $timeblock['events'];
 				if($timeEvents)
@@ -232,7 +233,8 @@ if(!$mobile)
 						$output .= "<td style='$border background-color:".rainbow($i)."'>";
 						$place = isset($rowPlace['place'])?$rowPlace['place']:"";
 						if(userHasPrivilege(3)){
-							$output .= "<div><input id='$placeName' name='$placeName' type='number' min='1' max='999' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/></div>";
+							$maxPlaceDQ= $maxPlace+2;
+							$output .= "<div><input id='$placeName' name='$placeName' class='placement' type='number' min='1' max='$maxPlaceDQ' onchange='javascript:tournamentEventTeammate($(this))' value='$place'/></div>";
 						}
 						else {
 							$output .= $place;
@@ -246,9 +248,22 @@ if(!$mobile)
 				}
 			}
 			$output .="</tr>";
-		}
 
-		$output .="</tfoot></table></form>";
+		}
+		//end table
+		$output .="</tfoot></table>";
+		//allow editing of team placement
+		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+		{
+		$place = $rowTeam["teamPlace"];
+		$score = $rowTeam["teamScore"];
+		$output .= "<p id='teamPlacement'><label for='teamPlace'>Place</label>";
+		$output .= " <input id='teamPlace' name='teamPlace' type='number' min='0' max='$maxPlace' value='$place' onchange=\"fieldUpdate('". $teamID ."','team','teamPlace',$(this).val(),'teamPlace','teamPlace')\"/>";
+		$output .= "</p>";
+		$output .= "<p>Total Score: <span id='teamScore'>$score</span></p>";
+		}
+		//end form
+		$output .="</form>";
 	}
 	else {
 		exit("<div>Set available time blocks first!</div>");
@@ -349,14 +364,13 @@ else {
 </button>
 </div>
 */
-
-if(userHasPrivilege(3)){
-	if($rowTeam['dateTournament']>date("Y-m-d")||$rowTeam['notCompetition']){
+if(userHasPrivilege(3))
+{
+	if($rowTeam["dateTournament"]>getCurrentTimestamp($mysqlConn)){
 		$output .="<div id='tournamentTeamCopy'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
 			"<input class='btn btn-primary' role='button' type='button' onclick='javascript:teamCopyAssignments($teamID)' value='Copy Event Assignments' /><br><br></div>";
 	}
 }
-
 echo $output;
 ?>
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
