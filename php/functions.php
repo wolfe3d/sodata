@@ -192,7 +192,7 @@ function teamScoreReturn($db, $teamID)
 function teamCalculateScore($db, $teamID)
 {
 	//calculate score and save it
-	$query = "SELECT DISTINCT `teamID`,`tournamenteventID`,SUM(DISTINCT `place`)as `p` FROM `teammateplace` WHERE `teamID`=$teamID";
+	$query = "SELECT SUM(te.`place`) as p FROM (SELECT DISTINCT `tournamenteventID`, `place` FROM `teammateplace` WHERE `teamID`=$teamID) te";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
