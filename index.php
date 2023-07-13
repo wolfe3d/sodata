@@ -153,7 +153,7 @@ function checkPage(){
 				<div class="row">
 					<div class="6u">
 						<h3>Dodgen-Walton Division B Science Olympiad Tournament</h3>
-						<h4>November 12, 2022</h4>
+						<h4>November 11, 2023</h4>
 						<div><a href="https://scilympiad.com/dodgen-walton">More Information on our Scilympiad site</a></div>
 						<br><br>
 					</div>
@@ -162,16 +162,21 @@ function checkPage(){
 					<br><br>
 					<div class="6u">
 						<h3>Previous Tournaments</h3>
-						<div>Tournaments were held at Walton 2018, 2019, 2020 (remote), and 2021 (remote).</div>
+						<div>Tournaments were held at Walton 2018, 2019, 2020 (remote), 2021 (remote), and 2022 (both In Person and Satellite).</div>
 						<br><br>
 
-						<h4>2021 Dodgen-Walton Tournament Results</h4>
+						<h4>2022 Dodgen-Walton Tournament Results (2023 National Rules Year)</h4>
+						<div><a href="results/2022/Results_Satellite_2022.xlsx">Satellite Scores</a></div>
+						<div><a href="results/2022/Results_Gold_2022.pdf">In Person Gold Flight</a></div>
+						<div><a href="results/2022/Results_Silver_2022.pdf">In Person Silver Flight</a></div>
+
+						<h4>2021 Dodgen-Walton Tournament Results (2022 National Rules Year)</h4>
 						<div><a href="results/2021/RawScores_2021.xlsx">Raw Scores</a></div>
 						<div><a href="results/2021/Results_2021.xlsx">Overall Scores</a></div>
 						<div><a href="results/2021/Results_Gold_2021.xlsx">Gold Flight</a></div>
 						<div><a href="results/2021/Results_Silver_2021.xlsx">Silver Flight</a></div>
 
-						<h4>2018 Walton/GSMST Division C Science Olympiad Tournament</h4>
+						<h4>2018 Walton/GSMST Division C Science Olympiad Tournament (2019 National Rules Year)</h4>
 						<div><a href="results/2018/2018Ctournamentresults.html">Tournament Results Updated 11/26/18</a></div>
 						<div>This is the final update to the tournament results, including full rankings for Forensics and Protein Modeling.</div>
 
