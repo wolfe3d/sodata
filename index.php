@@ -104,6 +104,9 @@ function checkPage(){
 					<li class="nav-item">
 						<a class="nav-link" id="summercampBtn" href="#summercamp">Summer Camp</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="boosterclubBtn" href="https://www.waltonsciolybooster.org/">Booster Club</a>
+					</li>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item">
@@ -218,7 +221,7 @@ function checkPage(){
 				<div class="row">
 					<div class="12u">
 						<h2>Support</h2>
-						<p>If you are would like to sponsor the team or donate money, please contact <a href="mailto:waltonscienceolympiad@gmail.com">waltonscienceolympiad@gmail.com</a>.</p>
+						<p>If you are would like to sponsor or support the team, please contact the <a href="https://www.waltonsciolybooster.org/">Booster Club</a>.  Thank you!</p>
 					</div>
 				</div>
 			</div>
