@@ -276,15 +276,14 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 			ORDER BY `timeStart`";
 			$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 			if($result && $result->num_rows > 0){
-				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (Local)</th><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
+				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Time (Local)</th><th>Event</th><th>Partners</th></tr></thead><tbody>";
 				while ($row = $result->fetch_assoc()):
 					$schedule.="<tr><td>";
 					if($row['timeStart']){
 						$schedule.="<div>" . date("g:iA",strtotime($row["timeStart"]))."</div><div>".date("g:iA",strtotime($row["timeEnd"]))."</div>";
 					}
 					$schedule.="</td>";
-					$schedule.="<td>".$row['event']."</td>";
-					$schedule.="<td>".$row['note']."</td>";
+					$schedule.="<td><div><strong>".$row['event']."</strong></div><div>".$row['note']."</div></td>";
 					$schedule.="<td>".studentPartnersWithEmails($db,$row['tournamenteventID'], $row['teamID'], $studentID)."</td>";
 					$schedule.="</tr>";
 				endwhile;
@@ -304,36 +303,54 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 	return $schedule;
 }
 
-function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
-{
-	$schedule="";
-	$query = "SELECT DISTINCT `timeblock`.`timeblockID`,`event`.`eventID`, `tournamentevent`.`tournamenteventID`, `event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `tournamenttimechosen`
-	INNER JOIN `tournamentevent` on `tournamenttimechosen`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
-	INNER JOIN `timeblock` on `tournamenttimechosen`.`timeblockID` = `timeblock`.`timeblockID`
-	INNER JOIN  `event` on `tournamentevent`.`eventID` = `event`.`eventID`
-	where `tournamenttimechosen`.`timeblockID` = $timeBlockID AND `tournamenttimechosen`.`teamID`=$teamID
-	order by `event`.`event`";
-	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result && $result->num_rows > 0){
-		$firstRow = 1;
-		while ($row = $result->fetch_assoc()):
-			if($firstRow)
-			{
-				$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
-				$schedule.="<h4>$time</h4>";
-				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Event</th><th>Note</th><th>Partners</th></tr></thead><tbody>";
-				$firstRow = 0;
-			}
-			$schedule.="<tr>";
-			$schedule.="<td>".$row['event']."</td>";
-			$schedule.="<td>".$row['note']."</td>";
-			$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID)."</td>";
-			$schedule.="</tr>";
-		endwhile;
-		$schedule.="</tbody></table>";
 
+//Function to print event's list of students
+function printEmailTable ($db, $query, $eventID, $year, $schoolID)
+{
+	$output="";
+	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$emails[] = NULL;
+	$schoolEmails[]=NULL;
+	$rows = 0;
+	$leaderIDs = getEventLeaderIDs($db, $eventID, $year, $schoolID);
+	if($result)
+	{
+		$rows = $result->num_rows;
+		if ($rows > 0)
+		{
+			$firstRow = 1;
+			while ($row = $result->fetch_assoc()):
+				if($firstRow)
+				{
+					$output.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Name</th><th>Email</th></tr></thead><tbody>";
+					$firstRow = 0;
+				}
+				$output.="<tr>";
+
+				$output.="<td class='student' id='teammate-".$row['studentID']."'><a target='_blank' href='#student-details-".$row['studentID']."'>".$row['last'].", " . $row['first'] ."</a>";
+				if(in_array($row['studentID'],$leaderIDs))
+				{
+					$output .=" *Event Leader";
+				}
+				$output.="</td>";
+				$output.="<td><a href='mailto: ".$row['email']."'>".$row['email']."</a>, <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
+				$output.="</tr>";
+				$emails[] = $row['email'];
+				$schoolEmails[] = $row['emailSchool'];
+			endwhile;
+			if(userHasPrivilege(2))
+			{
+				$output.="<tr>";
+				$output.="<td>Total:$rows</td>";
+				$emailList = implode('; ', $emails);
+				$schoolEmailList= implode('; ', $schoolEmails);
+				$output.="<td><a href='mailto: $emailList'>Personal Emails</a>, <a href='mailto: $schoolEmailList'>School Emails</a>, <a href='mailto: $emailList ; $schoolEmailList'>All Emails</a></td>";
+				$output.="</tr>";
+			}
+			$output.="</tbody></table>";	
+		}
 	}
-	return $schedule;
+	return $output;
 }
 
 //get latest team schedule - also known as the notCompetition Tournament.
@@ -358,53 +375,19 @@ function getLatestTeamTournamentStudent($db, $studentID)
 	return $output;
 }
 
-//get upcoming tournament Information for Students
-function getUpcomingTournamentStudent($db, $userID, $studentID)
+//get tournament IDs and Names for team assignements during year - also known as the notCompetition Tournament.
+function getYearTeamTournaments($db, $schoolID, $year)
 {
-	$date = date('Y-m-d', time());
-	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`
-	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
-	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
-	ORDER BY `dateTournament`";
-	//$query = "SELECT `tournamentName`,`tournament`.`tournamentID`,`dateTournament`,`teamName` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament` WHERE `notCompetition`=1 AND `schoolID` = $schoolID AND `year` >= $year ORDER BY `dateTournament` DESC";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = '';
+	$output = "";
+	$ids = array();
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output = '<hr><h2>Upcoming Tournaments</h2>';
-		while ($row = $result->fetch_assoc()):
-			$output.="<div id=\"".$row['tournamentName']."\">";
-			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
-			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
-			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID);
-			$output.="</div>";
-		endwhile;
+		$row = $result->fetch_assoc();
+		$ids[]=["id"=>$row['tournamentID'],"name"=>$row['tournamentName']];
 	}
-	return $output;
-}
-
-//get upcoming tournament Information for Coaches
-function getUpcomingTournamentCoach($db, $schoolID)
-{
-	$date = date('Y-m-d', time());
-	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
-	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament`
-	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0
-	ORDER BY `dateTournament`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = '';
-	if($result && mysqli_num_rows($result)>0)
-	{
-		$output = '<h2>Upcoming Tournaments</h2><ul>';
-		while ($row = $result->fetch_assoc()):
-			$output.="<li id=\"".$row['tournamentName']."\">";
-			$output.= "<a class='btn btn-primary btn-sm' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> ".$row['tournamentName']."</a>";
-			$output .= " - " . $row['dateTournament'];
-			$output.="</li>";
-		endwhile;
-		$output .= '</ul>';
-	}
-	return $output;
+	return $ids;
 }
 
 //find partners for an event in a tournament
@@ -668,7 +651,6 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 	return $emails. getCoachesEmails($db, NULL);
 }
 
-
 //Return officer leader email list
 function getOfficerEmails($db, $year)
 {
@@ -692,7 +674,7 @@ function getLeaderEmails($db, $year)
 	}
 
 	//Return event leader email list
-	function getEventEmails($db, $tournamentID, $tournamentName, $eventID, $year)
+	/*function getEventEmails($db, $tournamentID, $tournamentName, $eventID, $year)
 	{
 		$output = "<h3>$tournamentName</h3>";
 		$schoolID = $_SESSION['userData']['schoolID'];
@@ -726,6 +708,7 @@ function getLeaderEmails($db, $year)
 		endwhile;
 		return $output;
 		}
+*/
 
 	//Return all active students or parents
 	function getStudentEmails($db, $year, $parents=false)
@@ -1022,11 +1005,10 @@ function getEventLeaderIDs($db, $eventID, $year, $schoolID)
 	}
 	$query = "SELECT `student`.`studentID`, `first`, `last`, `year` from `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID`  WHERE `schoolID` = $schoolID AND `eventleader`.`eventID` = $eventID $yearWhere";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = [];
-	$leaderNumber = 0;
+	$output = array();
 	if($result && $result->num_rows>0){
 		while ($row = $result->fetch_assoc()):
-			array_push($output, $row['studentID']);
+			$output[]= $row['studentID'];
 		endwhile;
 	}
 	return $output;

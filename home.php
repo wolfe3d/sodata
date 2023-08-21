@@ -3,8 +3,56 @@ require_once("php/functions.php");
 userCheckPrivilege(1);
 $output = "";
 $userID = $_SESSION['userData']['userID'];
-$currentYear = getCurrentSOYear();
-$fallRosterDate = strval(getCurrentSOYear()-1)."-08-01";
+
+//get upcoming tournament Information for Students
+function getUpcomingTournamentStudent($db, $userID, $studentID)
+{
+	$date = date('Y-m-d', time());
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`
+	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
+	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
+	ORDER BY `dateTournament`";
+	//$query = "SELECT `tournamentName`,`tournament`.`tournamentID`,`dateTournament`,`teamName` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = '';
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output = '<hr><h2>Upcoming Tournaments</h2>';
+		while ($row = $result->fetch_assoc()):
+			$output.="<div id=\"".$row['tournamentName']."\">";
+			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
+			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
+			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID);
+			$output.="</div>";
+		endwhile;
+	}
+	return $output;
+}
+//get upcoming tournament Information for Coaches
+function getUpcomingTournamentCoach($db, $schoolID)
+{
+	$date = date('Y-m-d', time());
+	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament`
+	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0
+	ORDER BY `dateTournament`";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = '';
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output = '<h2>Upcoming Tournaments</h2><ul>';
+		while ($row = $result->fetch_assoc()):
+			$output.="<li id=\"".$row['tournamentName']."\">";
+			$output.= "<a class='btn btn-primary btn-sm' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> ".$row['tournamentName']."</a>";
+			$output .= " - " . $row['dateTournament'];
+			$output.="</li>";
+		endwhile;
+		$output .= '</ul>';
+	}
+	return $output;
+}
+
+
 if(!empty($_SESSION['userData'])){
 	$studentID = NULL;
 	$coachID = NULL;

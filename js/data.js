@@ -697,10 +697,18 @@ function touramentCarouselToggle()
 		if($('input[name="btnradio"]:checked').val()=='time')
 		{
 			$('#studentCarousel').hide();
+			$('#eventCarousel').hide();
 			$('#timeCarousel').show();
+		}
+		else if($('input[name="btnradio"]:checked').val()=='event')
+		{
+			$('#studentCarousel').hide();
+			$('#timeCarousel').hide();
+			$('#eventCarousel').show();
 		}
 		else {
 			$('#timeCarousel').hide();
+			$('#eventCarousel').hide();
 			$('#studentCarousel').show();
 		}
 	});

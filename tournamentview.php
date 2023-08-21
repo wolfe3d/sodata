@@ -1,6 +1,7 @@
 <?php
 require_once("php/functions.php");
 userCheckPrivilege(1);
+$schoolID =$_SESSION['userData']['schoolID'] ;
 
 
 function assignmentMade($db, $teamID)
@@ -68,6 +69,7 @@ $output .="<div>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
 			$output .="</div><br>";
 		}
+
 		if(!$row['notCompetition'])
 		{
 		if($row['websiteHost'])
@@ -179,7 +181,9 @@ $output .="<div>";
 			}
 			$output .="</div></p>";
 		endwhile;
-	}
+		$output .="<div><a class='btn btn-primary' role='button' href='#tournament-allassign-".$row['tournamentID']."'><span class='bi bi-people-fill'></span> All Teams</a></div><br>";
+		}
+
 
 		if(!$row['notCompetition'] && userHasPrivilege(5))
 		{

@@ -47,8 +47,6 @@ function getEventLeader($db, $eventID, $year, $schoolID)
 	$output = "";
 	$leaderNumber = 0;
 	if($result && $result->num_rows>0){
-		$output .=" <a class='btn btn-warning' role='button' href='#eventleader-addform-$year-event=$eventID' data-toggle='tooltip' data-placement='top' title='Add Event Leader'><span class='bi bi-plus-circle'></span> Add Leader</a>";
-
 		$output .= "<div>Event Leader: ";
 		while ($row = $result->fetch_assoc()):
 			$output .="<span id='eventleader-".$row['eventleaderID']."'>";
@@ -117,17 +115,19 @@ if($result&& $result->num_rows>0)
 
 		//check for permissions to create edit an event btn
 		$output .="<div class='btn-group' role='group' aria-label='Event Buttons'>"; //start button group
+		$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Members'><span class='bi bi-envelope'></span></a>";
+
 		if(userHasPrivilege(3) )
 		{
 			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Edit'><span class='bi bi-pencil-square'></span></a>";
 		}
-		if(userHasPrivilege(2))
-		{
-			$output .=" <a class='btn btn-primary' role='button' href='#event-emails-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Get emails'><span class='bi bi-envelope'></span></a>";
-		}
 		if(userHasPrivilege(3) )
 		{
 			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Analysis'><span class='bi bi-pie-chart-fill'></span></a>";
+		}
+		if(userHasPrivilege(4) )
+		{
+			$output .=" <a class='btn btn-warning' role='button' href='#eventleader-addform-$year-event=".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Add Event Leader'><span class='bi bi-plus-circle'></span></a>";
 		}
 		$output .="</div>"; //end button group
 
