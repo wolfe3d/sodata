@@ -342,9 +342,9 @@ function printEmailTable ($db, $query, $eventID, $year, $schoolID)
 			{
 				$output.="<tr>";
 				$output.="<td>Total:$rows</td>";
-				$emailList = implode('; ', $emails);
-				$schoolEmailList= implode('; ', $schoolEmails);
-				$output.="<td><a href='mailto: $emailList'>Personal Emails</a>, <a href='mailto: $schoolEmailList'>School Emails</a>, <a href='mailto: $emailList ; $schoolEmailList'>All Emails</a></td>";
+				$emailList = implode(';', $emails);
+				$schoolEmailList= implode(';', $schoolEmails);
+				$output.="<td><a href='mailto:$emailList'>Personal Emails</a>, <a href='mailto:$schoolEmailList'>School Emails</a>, <a href='mailto:$emailList;$schoolEmailList'>All Emails</a></td>";
 				$output.="</tr>";
 			}
 			$output.="</tbody></table>";	
