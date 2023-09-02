@@ -2,7 +2,7 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 
-userCheckPrivilege(1);
+userCheckPrivilege(3);
 $schoolID = $_SESSION['userData']['schoolID'];
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
@@ -15,7 +15,7 @@ if($studentID)
 }
 $query = "SELECT `student`.`userID`,`student`.`email`,`student`.`emailSchool`,`student`.`last`, `student`.`first`
 FROM `student`
-WHERE `student`.`active` AND `student`.`userID` != 9
+WHERE `student`.`active` AND `student`.`userID` != 9 AND `student`.`schoolID` = $schoolID
 ORDER BY `student`.`last`, `student`.`first`";
 $result = $mysqlConn->query($query);
 $emails[] = NULL;
@@ -37,7 +37,7 @@ while ($row = $result->fetch_assoc()) {
     $emails[] = $row['email'];
 	$schoolEmails[] = $row['emailSchool'];
 }
-if(userHasPrivilege(2))
+if(userHasPrivilege(3))
 {
     $output.="<tr>";
 	$output.="<td>Total</td>";
