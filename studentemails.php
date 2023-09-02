@@ -43,7 +43,7 @@ if(userHasPrivilege(2))
 	$output.="<td>Total</td>";
 	$emailList = implode(';', $emails);
 	$schoolEmailList= implode(';', $schoolEmails);
-  // Replace links with buttons to copy to clipboard
+    // Replace links with buttons to copy to clipboard
 
 	// $output.="<td><a href='mailto:$emailList'>Personal Emails</a>, <a href='mailto:$schoolEmailList'>School Emails</a>, <a href='mailto:$emailList;$schoolEmailList'>All Emails</a></td>";
 	// $output.="</tr>";
@@ -52,8 +52,8 @@ if(userHasPrivilege(2))
 echo $output;
 ?>
 
-    <td><p><button class='btn btn-primary' onclick="copyToClipboard('<?php echo $emailList ?>')" type='button'> Copy student emails</button></p></td>
-    <td><p><button class='btn btn-primary' onclick="copyToClipboard('<?php echo $schoolEmailList ?>')" type='button'> Copy school emails</button></p></td>
+    <td><p><button class='btn btn-primary' onclick="copyToClipboard('<?php echo $emailList ?>')" type='button'><span class="bi bi-clipboard-plus"></span> Copy student emails</button></p></td>
+    <td><p><button class='btn btn-primary' onclick="copyToClipboard('<?php echo $schoolEmailList ?>')" type='button'><span class="bi bi-clipboard-plus"></span> Copy school emails</button></p></td>
 </tr>
 </tbody></table>
 
