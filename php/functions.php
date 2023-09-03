@@ -978,12 +978,11 @@ function getEventLeaderPosition($db,$studentID,$year)
 	return $output;
 }
 
-//get Current Event Leader Position
-function getEventLeaderPositionPrevious($db,$studentID)
+//get Previous Event Leader Position
+function getEventLeaderPositionPrevious($db,$studentID,$year)
 {
 	$output = "";
-	$year = date("m")>4 ? date("Y")+1 : date("Y");
-	$query = "SELECT `year`, `event` FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
+	$query = "SELECT `event`,`eventleader`.`year` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
