@@ -20,6 +20,9 @@ userCheckPrivilege(1);
 	<!--Output student emails -->
 	<a class="btn btn-secondary" role="button" href="#student-emails-<?=getCurrentSOYear();?>"><span class='bi bi-envelope'></span> Get Emails</a>
 
+	<!--Output student emails -->
+	<a class="btn btn-secondary" role="button" href="#alumni"><span class='bi bi-envelope'></span> Get Alumni</a>
+
 	<?php }?>
 	<?php if(userHasPrivilege(4))
 	{ ?>

@@ -18,8 +18,9 @@ WHERE `student`.`yearGraduating` < $year AND `student`.`schoolID` = $schoolID
 ORDER BY `student`.`yearGraduating`, `student`.`last`, `student`.`first`";
 $result = $mysqlConn->query($query);
 
-// Header
-$output="<p id='query'>$query</p>";
+// Get alumni emails button
+$output = "<a class='btn btn-secondary' role='button' href='#alumni-emails'><span class='bi bi-envelope'></span> Get Alumni Emails</a>";
+$output .= "<p id='query'>$query</p>";
 $output .= "<div id='list'></div>";
 
 while ($row = $result->fetch_assoc()) {
