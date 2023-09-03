@@ -136,6 +136,9 @@ userCheckPrivilege(1);
 					<li class="nav-item">
 						<a class="nav-link" id="leaderBtn" href="#leaders">Leaders</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="alumniBtn" href="#alumni">Alumni</a>
+					</li>
 					<?php if (userHasPrivilege(4)){?>
 						<li class="nav-item">
 							<a class="nav-link" id="userBtn" href="#users">Users</a>
