@@ -632,7 +632,10 @@ function getCoachesEmails($db, $year)
 //Get Team Emails either students or parents
 function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 {
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` FROM `teammate` inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` where `active` = 1 AND `schoolID` = " . $_SESSION['userData']['schoolID'];
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` 
+	FROM `teammate` 
+	inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` 
+	where `active` = 1 AND `schoolID` = " . $_SESSION['userData']['schoolID'];
 	if($teamID){
 		$query.=" AND `team`.`teamID` = $teamID";
 	}
@@ -640,15 +643,34 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents=false)
 		$query.=" AND `tournamentID` = $tournamentID";
 	}
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$emails = "";
-	if(!$parents){
-		$emails = getEmailList($result);
+	// Header
+	$output = "<h2>Team Emails</h2>";
+	// Create a table for student emails
+	$output .= "<table id='emails' class='table table-hover table-striped'>";
+	$output .= "<thead class='table-dark'><tr><th>Name</th><th>Email</th><th>School Email</th></tr></thead><tbody>";
+
+	while ($row = $result->fetch_assoc()) {
+		$output .= "<tr>";
+		$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
+		$output .= "<td><a href='mailto: ".$row['email']."'>".$row['email']."</a></td>";
+		$output .= "<td><a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
+		$output .= "</tr>";
+
+		$emails[] = $row['email'];
+		$schoolEmails[] = $row['emailSchool'];
 	}
-	else
+	if(userHasPrivilege(3))
 	{
-		$emails = getEmailParentList($result);
+		$output.="<tr>";
+		$output.="<td>Total</td>";
+		$emailList = implode(';', $emails);
+		$schoolEmailList= implode(';', $schoolEmails);
 	}
-	return $emails. getCoachesEmails($db, NULL);
+	// Copy email buttons
+	$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
+	$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $schoolEmailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy school emails</button></p></td>";
+	$output .= "</tr></tbody></table>";
+	return $output;
 }
 
 //Return officer leader email list
