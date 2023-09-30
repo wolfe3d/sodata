@@ -683,8 +683,16 @@ function teamCopyAssignments(thisTeamID)
 		});
 
 }
-
-
+// Copies selected text to user's clipboard
+function copyToClipboard(text) {
+	var input = document.createElement('textarea');
+	input.value = text;
+	document.body.appendChild(input);
+	input.select();
+	document.execCommand('copy');
+	document.body.removeChild(input);
+	alert("Copied to clipboard!");
+} 
 
 ///////////////////
 ///Tournament functions
