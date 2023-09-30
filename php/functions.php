@@ -956,7 +956,7 @@ function getCurrentSOYear()
 //get Current Officer Position
 function getOfficerPosition($db,$studentID)
 {
-	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$year = getCurrentSOYear();
 	$query = "SELECT `position` FROM `officer` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
@@ -971,7 +971,7 @@ function getOfficerPosition($db,$studentID)
 function getOfficerPositionPrevious($db,$studentID)
 {
 	$output = "";
-	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$year = getCurrentSOYear();
 	$query = "SELECT `year`, `position` FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
 	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
@@ -983,11 +983,12 @@ function getOfficerPositionPrevious($db,$studentID)
 	}
 	return $output;
 }
-//get Current Event Leader Position
-function getEventLeaderPosition($db,$studentID,$year)
+
+//get Event Leader Position
+function getEventLeaderPosition($db,$studentID)
 {
 	$output = "";
-	$year = date("m")>4 ? date("Y")+1 : date("Y");
+	$year = getCurrentSOYear();
 	$query = "SELECT `event` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
@@ -1004,7 +1005,7 @@ function getEventLeaderPosition($db,$studentID,$year)
 function getEventLeaderPositionPrevious($db,$studentID,$year)
 {
 	$output = "";
-	$year = getCurrentSOYear();
+	$year = getIfSet($year,getCurrentSOYear());
 	$query = "SELECT `event`,`eventleader`.`year` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)

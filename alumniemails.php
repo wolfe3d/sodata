@@ -14,7 +14,7 @@ if($studentID)
 
 $query = "SELECT `student`.`studentID`, `student`.`first`, `student`.`last`, `student`.`yearGraduating`, `student`.`schoolID`, `student`.`phoneType`, `student`.`phone`, `student`.`email`
 FROM `student`
-WHERE `student`.`yearGraduating` < $year AND `student`.`schoolID` = $schoolID
+WHERE `student`.`yearGraduating` < $year AND `student`.`goodStanding` = 1 AND `student`.`schoolID` = $schoolID
 ORDER BY `student`.`yearGraduating`, `student`.`last`, `student`.`first`";
 $result = $mysqlConn->query($query);
 $students = [];
@@ -52,7 +52,7 @@ echo $output;
     <td><p><button class='btn btn-primary' onclick="copyToClipboard('<?php echo $emailList ?>')" type='button'><span class="bi bi-clipboard-plus"></span> Copy student emails</button></p></td>
 </tr>
 </tbody></table>
-
+<p>Note: This list only shows students in good standings that may be interested in contributing once they have graduated.</p>
 <script>
     function copyToClipboard(text) {
         var input = document.createElement('textarea');

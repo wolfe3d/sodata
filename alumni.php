@@ -2,8 +2,8 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-
 $schoolID = $_SESSION['userData']['schoolID'];
+
 $year = getCurrentSOYear();
 $studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
 $studentIDWhere = "";
@@ -11,6 +11,7 @@ if($studentID)
 {
 	$studentIDWhere ="AND `student`.`studentID` != $studentID";
 }
+
 
 $query = "SELECT `student`.`studentID`, `student`.`first`, `student`.`last`, `student`.`yearGraduating`, `student`.`schoolID`, `student`.`phoneType`, `student`.`phone`, `student`.`email`
 FROM `student`

@@ -20,6 +20,13 @@ if ($editing)
 	<p>
 		<input id="active" name="active" class="form-check-input" type="checkbox" <?=$row['active']==1?"checked":""?>><label for="active">Active</label>
 	</p>
+	<p>
+		<label for="goodStanding">Good Standing</label>
+		<select id="goodStanding" name="goodStanding" class="form-select" value="<?=$row['goodStanding']?>">
+			<option value='1' <?=getSelected(1,$row['goodStanding'])?>>true</option>
+			<option value='0' <?=getSelected(0,$row['goodStanding'])?>>false</option>
+		</select>	
+	</p>
 	<?php
 } ?>
 <p>
