@@ -438,8 +438,8 @@ else {
 		while ($row = $result->fetch_assoc()):
 			$output .="<div>";
 			$output .="<h3>".$row['event']."</h3>";
-			$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
-			$output.="<div>$time</div>";
+			$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("l, F j, Y",strtotime($row["timeStart"])) ;
+			$output.="<div><small class='text-muted'>$time</small></div>";
 			$output .="<div>".$row['note']."</div>";
 			$output .=eventTournamentSchedule($mysqlConn, $schoolID, $teamID, $rowTeam['year'], $row['tournamenteventID'], $row['eventID']);
 			$output .="</div>";

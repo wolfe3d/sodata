@@ -280,7 +280,9 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 				while ($row = $result->fetch_assoc()):
 					$schedule.="<tr><td>";
 					if($row['timeStart']){
-						$schedule.="<div>" . date("g:iA",strtotime($row["timeStart"]))."</div><div>".date("g:iA",strtotime($row["timeEnd"]))."</div>";
+						$schedule.="<div><small class='text-muted'>" . date("D, M. j",strtotime($row["timeStart"])). "</small></div><div>" . 
+						date("g:iA",strtotime($row["timeStart"]))."</div><div>".
+						date("g:iA",strtotime($row["timeEnd"]))."</div>";
 					}
 					$schedule.="</td>";
 					$schedule.="<td><div><strong>".$row['event']."</strong></div><div>".$row['note']."</div></td>";
