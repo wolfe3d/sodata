@@ -27,7 +27,7 @@ function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
 		while ($row = $result->fetch_assoc()):
 			if($firstRow)
 			{
-				$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
+				$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("l, F j, Y",strtotime($row["timeStart"])) ;
 				$schedule.="<h4>$time</h4>";
 				$schedule.="<table class='table table-hover table-striped'><thead class='table-dark'><tr><th>Event</th><th>Partners</th></tr></thead><tbody>";
 				$firstRow = 0;
@@ -439,7 +439,7 @@ else {
 			$output .="<div>";
 			$output .="<h3>".$row['event']."</h3>";
 			$time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("l, F j, Y",strtotime($row["timeStart"])) ;
-			$output.="<div><small class='text-muted'>$time</small></div>";
+			$output.="<div class='text-muted'>$time</div>";
 			$output .="<div>".$row['note']."</div>";
 			$output .=eventTournamentSchedule($mysqlConn, $schoolID, $teamID, $rowTeam['year'], $row['tournamenteventID'], $row['eventID']);
 			$output .="</div>";

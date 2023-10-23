@@ -83,7 +83,7 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	{
 		$output .="<div>Previous Positions: $officerPosPrev</div>";
 	}
-	$eventLeaderPosPrev = getEventLeaderPositionPrevious($mysqlConn,$studentID);
+	$eventLeaderPosPrev = getEventLeaderPositionPrevious($mysqlConn,$studentID,"");
 	if($eventLeaderPosPrev)
 	{
 		$output .="<div>Previous Event(s) Lead: $eventLeaderPosPrev</div>";
