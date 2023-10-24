@@ -672,7 +672,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$emailList = implode(';', $emails);
 		}
 		// Copy email buttons
-		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
+		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy parent emails</button></p></td>";
 		$output .= "</tr></tbody></table>";
 	}
 	else {
@@ -689,8 +689,8 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$output .= "<td><a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
 			$output .= "</tr>";
 
-			$emails[] = $row['email'];
-			$schoolEmails[] = $row['emailSchool'];
+			$emails[] = $row['parent1Email'];
+			$emails[] = $row['parent2Email'];
 		}
 		if(userHasPrivilege(3))
 		{
