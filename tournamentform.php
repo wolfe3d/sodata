@@ -68,7 +68,7 @@
 </p>
 <p>
 	<label for="directorPhone">Director's Phone (Format: 555-555-5555)</label><?php //https://www.html5pattern.com/Phones ?>
-	<input id="directorPhone" name="directorPhone" class="form-control" placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" value="<?=$row['addressBilling']?>">
+	<input id="directorPhone" name="directorPhone" class="form-control" placeholder="555-555-5555" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" value="<?=$row['directorPhone']?>">
 </p>
 <p>
 	<label for="addressBilling">Address Billing</label>
