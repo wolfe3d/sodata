@@ -662,8 +662,8 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$output .= "<td><a href='mailto: ".$row['parent2Email']."'>".$row['parent2Email']."</a></td>";
 			$output .= "</tr>";
 
-			$emails[] = $row['email'];
-			$schoolEmails[] = $row['emailSchool'];
+			$emails[] = $row['parent1Email'];
+			$emails[] = $row['parent2Email'];
 		}
 		if(userHasPrivilege(3))
 		{
@@ -689,18 +689,18 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$output .= "<td><a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
 			$output .= "</tr>";
 
-			$emails[] = $row['parent1Email'];
-			$emails[] = $row['parent2Email'];
+			$emails[] = $row['email'];
+			$schoolEmails[] = $row['emailSchool'];
 		}
 		if(userHasPrivilege(3))
 		{
 			$output.="<tr>";
 			$output.="<td>Total</td>";
-			$emailList = implode(';', $emails);
+			$studentEmailList = implode(';', $emails);
 			$schoolEmailList= implode(';', $schoolEmails);
 		}
 		// Copy email buttons
-		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
+		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $studentEmailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
 		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $schoolEmailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy school emails</button></p></td>";
 		$output .= "</tr></tbody></table>";
 	}
