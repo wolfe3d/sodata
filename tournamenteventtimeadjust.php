@@ -22,6 +22,16 @@ if(empty($timeblockID))
 {
 	exit("<div style='color:red'>timeblockID is not set.</div>");
 }
+$teamID = NULL;
+if($table=="tournamenttimechosen")
+	{
+		//Users should be able to remove a time chosen to pick another time.
+		$teamID = intval($_POST['teamID']);
+		if(empty($teamID))
+		{
+			exit("<div style='color:red'>Team is not set.</div>");
+		}
+}
 $checked = intval($_POST['checked']);
 if($checked)
 {
@@ -31,11 +41,6 @@ if($checked)
 	}
 	else if($table=="tournamenttimechosen")
 	{
-		$teamID = intval($_POST['teamID']);
-		if(empty($teamID))
-		{
-			exit("<div style='color:red'>Team is not set.</div>");
-		}
 		$query = "INSERT INTO `$table` (`tournamenteventID`, `timeblockID`,`teamID`) VALUES ('$tournamenteventID', '$timeblockID','$teamID');";
 	}
 	else{
@@ -54,12 +59,7 @@ else {
 	}
 	else if($table=="tournamenttimechosen")
 	{
-		//Users should be able to remove a time chosen to pick another time.
-		$teamID = intval($_POST['teamID']);
-		if(empty($teamID))
-		{
-			exit("<div style='color:red'>Team is not set.</div>");
-		}
+		//Users remove a time chosen to pick another time.
 		$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID' AND `teamID` = '$teamID';";
 	}
 		
