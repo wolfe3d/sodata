@@ -50,12 +50,19 @@ else {
 		{
 			exit("There is a timeblock chosen for a team for this event.  You must unselect the time before removing the event.");
 		}
+		$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
 	}
 	else if($table=="tournamenttimechosen")
 	{
 		//Users should be able to remove a time chosen to pick another time.
+		$teamID = intval($_POST['teamID']);
+		if(empty($teamID))
+		{
+			exit("<div style='color:red'>Team is not set.</div>");
+		}
+		$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID' AND `teamID` = '$teamID';";
 	}
-		$query = "DELETE FROM `$table` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
+		
 }
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
