@@ -1,0 +1,31 @@
+<?php
+require_once("php/functions.php");
+userCheckPrivilege(4);
+
+$teamID = intval($_REQUEST['myID']);
+$query = "SELECT `team`.`locked` from `team` WHERE `team`.`teamID` = $teamID";
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+if(empty($result))
+{
+	echo "Query Tournament Schedule Lock Failed.";
+	exit("2");
+}
+
+$row = $result->fetch_assoc();
+// the team is locked
+if($row['locked'] == 1)
+{
+    // change locked to 0 - unlocked
+    $query = "UPDATE `team` SET `locked` = '0' WHERE `team`.`teamID` = $teamID";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    exit("0"); // unlocked
+}
+// the team is unlocked
+else if($row['locked'] == 0) {
+    // change locked to 1 - locked
+    $query = "UPDATE `team` SET `locked` = '1' WHERE `team`.`teamID` = $teamID";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    exit("1"); // locked
+}
+?>

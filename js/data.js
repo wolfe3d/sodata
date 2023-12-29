@@ -1162,6 +1162,54 @@ function tournamentEventTimeChange(myID)
 	});
 }
 
+function tournamentTeamLock(myID)
+{
+	if(confirm("Lock team assignments?"))
+	{
+		tournamentTeamLockToggle(myID);
+	}
+}
+function tournamentTeamUnLock(myID)
+{
+	if(confirm("Unlock team assignments?"))
+	{
+		tournamentTeamLockToggle(myID);
+	}
+}
+
+function tournamentTeamLockToggle(myID) {
+	var request = $.ajax({
+		url: "tournamentschedulelock.php",
+		cache: false,
+		method: "POST",
+		data: {myID:myID},
+		dataType: "html"
+	});
+	request.done(function( html ) {
+		$(".text-success").remove();
+		if(html=="1")
+		{
+			//locked
+			$("#lockBtn").replaceWith("<a id='lockBtn' class='btn btn-secondary' role='button' href='javascript:tournamentTeamUnLock("+myID+")'><span class='bi bi-unlock'></span> Unlock</a>"); 
+		}
+		else if(html=="0")
+		{
+			//unlocked
+			$("#lockBtn").replaceWith("<a id='lockBtn' class='btn btn-secondary' role='button' href='javascript:tournamentTeamLock("+myID+")'><span class='bi bi-lock'></span> Lock</a>"); 
+		}
+		else
+		{
+			$("#lockBtn").before("<div class='text-danger'>Error:"+html+"</div");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		$(".text-success").remove();
+		$("#tournament-teamassign-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+	});
+}
+
+
 function toggleAdd()
 {
 	$('#addTo').toggle();

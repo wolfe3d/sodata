@@ -10,6 +10,12 @@ if(empty($teamID))
 	exit();
 }
 $mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
+//Get info about schedule lock
+$query = "SELECT `team`.`locked` from `team` WHERE `team`.`teamID` = $teamID";
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+
+$row = $result->fetch_assoc();
+$locked = $row["locked"];
 
 //Get timeBlock Tournament Schedule
 function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
@@ -262,7 +268,13 @@ if(!$mobile)
 							//$timeEvent['eventTotal'] +=$checked?1:0;  //done in javascript
 							//$studentTotal +=$checked?1:0;  //done in javascript
 							if(userHasPrivilege(3)){
-								$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
+								if(!$locked) {
+									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
+								}
+								else if($locked) {
+									//To make checkboxes not grayed out: style='pointer-events: none;'
+									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked disabled>";
+								}
 							}
 							else {
 								$output .=$checked?"<span class='bi bi-check'></span>":"";
@@ -480,6 +492,19 @@ if(userHasPrivilege(3))
 	if($rowTeam["dateTournament"]>getCurrentTimestamp($mysqlConn)){
 		$output .="<div id='tournamentTeamCopy'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
 			"<input class='btn btn-primary' role='button' type='button' onclick='javascript:teamCopyAssignments($teamID)' value='Copy Event Assignments' /><br><br></div>";
+	}
+}
+if(userHasPrivilege(4))
+{
+	// team assignments are locked
+	if($locked == 1)
+	{
+		$output .="<button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamUnLock($teamID); location.reload();'><span class='bi bi-unlock'></span> Unlock</button>";
+	}
+	// team assignments are unlocked
+	else if($locked == 0)
+	{
+		$output .="<button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamLock($teamID); location.reload();'><span class='bi bi-lock'></span> Lock</button>";
 	}
 }
 echo $output;
