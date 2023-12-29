@@ -10,12 +10,6 @@ if(empty($teamID))
 	exit();
 }
 $mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
-//Get info about schedule lock
-$query = "SELECT `team`.`locked` from `team` WHERE `team`.`teamID` = $teamID";
-$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-
-$row = $result->fetch_assoc();
-$locked = $row["locked"];
 
 //Get timeBlock Tournament Schedule
 function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID)
@@ -112,6 +106,7 @@ $query = "SELECT * FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=
 $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 $rowTeam = $resultTeam->fetch_assoc();
 $maxPlace = $rowTeam['teamsAttended'];
+//Get info about schedule lock
 
 if(!$mobile)
 {
@@ -122,7 +117,7 @@ if(!$mobile)
 	$output .="<h2>";
 	if(mysqli_num_rows($result))
 	{
-		if(userHasPrivilege(3)){
+		if(userHasPrivilege(3)&&!$rowTeam["locked"]){
 			if($rowTeam['dateTournament']>date("Y-m-d")||$rowTeam['notCompetition']){
 				$output .="Adjust Teammate Assignments";
 			}
@@ -267,14 +262,18 @@ if(!$mobile)
 							$checked = mysqli_num_rows($resultTeammateplace)?" checked ":"";
 							//$timeEvent['eventTotal'] +=$checked?1:0;  //done in javascript
 							//$studentTotal +=$checked?1:0;  //done in javascript
-							if(userHasPrivilege(3)){
-								if(!$locked) {
+
+							if(userHasPrivilege(4)){
+								if(!$rowTeam["locked"]) {
 									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 								}
-								else if($locked) {
+								else if($rowTeam["locked"]) {
 									//To make checkboxes not grayed out: style='pointer-events: none;'
 									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked disabled>";
 								}
+							}
+							else if(userHasPrivilege(3)&&!$rowTeam["locked"]){
+								$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 							}
 							else {
 								$output .=$checked?"<span class='bi bi-check'></span>":"";
@@ -487,7 +486,7 @@ else {
 </button>
 </div>
 */
-if(userHasPrivilege(3))
+if(userHasPrivilege(3) & !$rowTeam["locked"])
 {
 	if($rowTeam["dateTournament"]>getCurrentTimestamp($mysqlConn)){
 		$output .="<div id='tournamentTeamCopy'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
@@ -496,15 +495,15 @@ if(userHasPrivilege(3))
 }
 if(userHasPrivilege(4))
 {
-	// team assignments are locked
-	if($locked == 1)
+	if($rowTeam["locked"])
 	{
-		$output .="<button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamUnLock($teamID); location.reload();'><span class='bi bi-unlock'></span> Unlock</button>";
+		// team assignments are locked
+		$output .="<p><button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamUnLock($teamID); location.reload();'><span class='bi bi-unlock'></span> Unlock</button></p>";
 	}
-	// team assignments are unlocked
-	else if($locked == 0)
+	else 
 	{
-		$output .="<button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamLock($teamID); location.reload();'><span class='bi bi-lock'></span> Lock</button>";
+		// team assignments are unlocked
+		$output .="<p><button id='lockBtn' class='btn btn-secondary' role='button' type='button' onclick='javascript:tournamentTeamLock($teamID); location.reload();'><span class='bi bi-lock'></span> Lock</button></p>";
 	}
 }
 echo $output;

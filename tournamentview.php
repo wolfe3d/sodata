@@ -168,12 +168,19 @@ $output .="<div>";
 			$output .="<p><div class='btn-group' role='group' aria-label='Team Buttons'>";
 			if(userHasPrivilege(3))
 			{
-				$output .="<a class='btn btn-primary' role='button' href='#tournament-teamedit-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Edit Team ".$rowTeam['teamName'] ."'><span class='bi bi-pencil-square'></span> Edit</a>";
-				if(!assignmentMade($mysqlConn, $rowTeam['teamID'])||userHasPrivilege(4))
+				if(userHasPrivilege(4)||!$rowTeam['locked'])
 				{
+					$output .="<a class='btn btn-primary' role='button' href='#tournament-teamedit-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Edit Team ".$rowTeam['teamName'] ."'><span class='bi bi-pencil-square'></span> Edit</a>";
+					if(!assignmentMade($mysqlConn, $rowTeam['teamID'])&&userHasPrivilege(4))
+					{
 						$output .=" <a class='btn btn-info' role='button' href='#tournament-teampropose-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Possible team assignments'><span class='bi bi-tornado'></span> Propose</a>";
+					}
+					$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Assign events to team ".$rowTeam['teamName'] ."'><span class='bi bi-clipboard-plus'></span> Assign</a>";
 				}
-				$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Assign events to team ".$rowTeam['teamName'] ."'><span class='bi bi-clipboard-plus'></span> Assign</a>";
+				else
+				{
+					$output .=" <a class='btn btn-primary' role='button' href='#tournament-teamassign-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='View events to team ".$rowTeam['teamName'] ."'><span class='bi bi-clipboard-plus'></span> View</a>";
+				}
 				$output .=" <a class='btn btn-secondary' role='button' href='#team-emails-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Get team ".$rowTeam['teamName'] ." emails'><span class='bi bi-envelope'></span> Email</a>";
 			}
 			else {

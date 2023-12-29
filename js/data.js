@@ -1162,6 +1162,7 @@ function tournamentEventTimeChange(myID)
 	});
 }
 
+
 function tournamentTeamLock(myID)
 {
 	if(confirm("Lock team assignments?"))
@@ -1179,7 +1180,7 @@ function tournamentTeamUnLock(myID)
 
 function tournamentTeamLockToggle(myID) {
 	var request = $.ajax({
-		url: "tournamentschedulelock.php",
+		url: "tournamentteamlock.php",
 		cache: false,
 		method: "POST",
 		data: {myID:myID},
@@ -1192,7 +1193,7 @@ function tournamentTeamLockToggle(myID) {
 			//locked
 			$("#lockBtn").replaceWith("<a id='lockBtn' class='btn btn-secondary' role='button' href='javascript:tournamentTeamUnLock("+myID+")'><span class='bi bi-unlock'></span> Unlock</a>"); 
 		}
-		else if(html=="0")
+		else if(html=="2")
 		{
 			//unlocked
 			$("#lockBtn").replaceWith("<a id='lockBtn' class='btn btn-secondary' role='button' href='javascript:tournamentTeamLock("+myID+")'><span class='bi bi-lock'></span> Lock</a>"); 
@@ -1208,7 +1209,6 @@ function tournamentTeamLockToggle(myID) {
 		$("#tournament-teamassign-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
 	});
 }
-
 
 function toggleAdd()
 {
