@@ -103,6 +103,12 @@ if (userHasPrivilege(4))
 		<div id="addcourseenrolledDiv"></div>
 		<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','courseenrolled')">Add Course Enrolled</a>
 	</fieldset>
+	<fieldset>
+		<legend>Awards</legend>
+		<div id="awards"><?= studentAwards($mysqlConn, $row['studentID'])?></div>
+		<div id="addAwardDiv"></div>
+		<a id="addAward" class="addAdwardBtn" href="#student-award-<?=$row['studentID']?>">Add Award</a>
+	</fieldset>
 	<?php
 }?>
 <fieldset>
