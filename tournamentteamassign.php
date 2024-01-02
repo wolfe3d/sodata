@@ -197,7 +197,7 @@ if(!$mobile)
 			{
 				foreach ($timeEvents as $timeEvent) {
 					$border = isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span>".$timeEvent['event']."</span></th>";
+					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'><span><a href='#event-analysis-".$timeEvent['eventID']."'>".$timeEvent['event']."</a></span></th>";
 					$totalEvents +=1;
 				}
 			}
