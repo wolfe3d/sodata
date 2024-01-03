@@ -68,7 +68,7 @@ while ($row = $result->fetch_assoc()):
 			//check to see if the student is assigned to the a team or a fill in
 			if ($teamRoster && !onTeamEvent($mysqlConn, $teamRoster, $studentID, $eventID)) //TODO change tournament ID here to this year's team
 			{
-				$output.= "<div class='warning'>This student is not currently assinged to this event in the Team Roster.</div>";
+				$output.= "<div class='alert alert-warning'>This student is not currently assigned to this event in the Team Roster.</div>";
 			}
 			$output.= "<ul>";
 			$totalPlace = 0;
