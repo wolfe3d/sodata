@@ -805,7 +805,7 @@ function calculateByBruteForce(studentList, timeblocks, studentTable, timeblockT
 		console.log(timeblockTables[s]);
 		console.log(studentTables[s]);
 		printTable("bruteForce", "bruteTable"+s, studentTables[s], timeblockTables[s], resultsTables[s])
-		$("#bruteForce").append("<p><a class='btn btn-info' role='button' href='javascript:assign("+s+")'><span class='bi bi-arrow-down-circle'></span> Enter Assingments from this table</a></p>");
+		$("#bruteForce").append("<p><a class='btn btn-info' role='button' href='javascript:assign("+s+")'><span class='bi bi-arrow-down-circle'></span> Enter Assignments from this table</a></p>");
 	}
 
 }

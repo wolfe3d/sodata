@@ -308,7 +308,7 @@ function reassignStudent($db, $eventID, $timeblocks, $studentTableName, $timeblo
 		//find available timeblock and then add to output
 		$foundslot = 0;
 
-		//New set of timeblocks for everyone already assinged
+		//New set of timeblocks for everyone already assigned
 		$neweventTimeblocks = [];
 		foreach ($eventTimeblocks as $timeblock)
 		{
