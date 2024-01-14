@@ -344,8 +344,8 @@ function printEmailTable ($db, $query, $eventID, $year, $schoolID)
 			{
 				$output.="<tr>";
 				$output.="<td>Total:$rows</td>";
-				$emailList = implode(';', $emails);
-				$schoolEmailList= implode(';', $schoolEmails);
+				$emailList = implode(';', array_filter($emails)); //array_filter removes null values
+				$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
 				$output.="<td><a href='mailto:$emailList'>Personal Emails</a>, <a href='mailto:$schoolEmailList'>School Emails</a>, <a href='mailto:$emailList;$schoolEmailList'>All Emails</a></td>";
 				$output.="</tr>";
 			}
@@ -669,7 +669,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 		{
 			$output.="<tr>";
 			$output.="<td>Total</td>";
-			$emailList = implode(';', $emails);
+			$emailList = implode(';', array_filter($emails)); //array_filter removes null values
 		}
 		// Copy email buttons
 		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy parent emails</button></p></td>";
@@ -696,8 +696,8 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 		{
 			$output.="<tr>";
 			$output.="<td>Total</td>";
-			$studentEmailList = implode(';', $emails);
-			$schoolEmailList= implode(';', $schoolEmails);
+			$studentEmailList = implode(';', array_filter($emails)); //array_filter removes null values
+			$schoolEmailList= implode(';', array_filter(($schoolEmails)); //array_filter removes null values
 		}
 		// Copy email buttons
 		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $studentEmailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
