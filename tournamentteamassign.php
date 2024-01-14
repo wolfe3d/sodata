@@ -90,8 +90,8 @@ function eventTournamentSchedule($db, $schoolID, $teamID, $year, $tournamenteven
 				/*if(userHasPrivilege(2))
 				{
 					$output.="<tr>";
-					$emailList = implode('; ', $emails);
-					$schoolEmailList= implode('; ', $schoolEmails);
+					$emailList = implode(';', array_filter($emails)); //array_filter removes null values
+					$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
 					$output.="<td colspan='2'><a href='mailto: $emailList'>Personal Emails</a>, <a href='mailto: $schoolEmailList'>School Emails</a>, <a href='mailto: $emailList ; $schoolEmailList'>All Emails</a></td>";
 					$output.="</tr>";
 				}*/

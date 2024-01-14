@@ -44,8 +44,8 @@ if(userHasPrivilege(3))
 {
     $output.="<tr>";
 	$output.="<td>Total</td>";
-	$emailList = implode(';', $emails);
-	$schoolEmailList= implode(';', $schoolEmails);
+	$emailList = implode(';', array_filter($emails)); //array_filter removes null values
+	$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
 }
 $output .= "<td></td>";
 $output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";

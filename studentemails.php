@@ -41,8 +41,8 @@ if(userHasPrivilege(3))
 {
     $output.="<tr>";
 	$output.="<td>Total</td>";
-	$emailList = implode(';', $emails);
-	$schoolEmailList= implode(';', $schoolEmails);
+	$emailList = implode(';', array_filter($emails)); //array_filter removes null values
+	$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
     // Replace links with buttons to copy to clipboard
 
 	// $output.="<td><a href='mailto:$emailList'>Personal Emails</a>, <a href='mailto:$schoolEmailList'>School Emails</a>, <a href='mailto:$emailList;$schoolEmailList'>All Emails</a></td>";

@@ -27,10 +27,10 @@ if ($result = $mysqlConn->query($query) or error_log("\n<br />Warning: query fai
       //printf("Type:     %d\n\n", $finfo->type);
 	endwhile;
 	fputcsv($fp,$fieldsarr);
-	//$fields = implode (",", $fieldsarr);
+	//$fields = implode (",", array_filter($fieldsarr)); //array_filter removes null values
 	//echo $fields;
 	while ($row = $result->fetch_row()):
-		//$rowtext =implode (",", $row);
+		//$rowtext =implode (",", array_filter($row)); //array_filter removes null values
 		fputcsv($fp,$row);
 		 //echo $rowtext;
 	endwhile;
