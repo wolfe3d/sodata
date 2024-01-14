@@ -697,7 +697,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$output.="<tr>";
 			$output.="<td>Total</td>";
 			$studentEmailList = implode(';', array_filter($emails)); //array_filter removes null values
-			$schoolEmailList= implode(';', array_filter(($schoolEmails)); //array_filter removes null values
+			$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
 		}
 		// Copy email buttons
 		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $studentEmailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy student emails</button></p></td>";
