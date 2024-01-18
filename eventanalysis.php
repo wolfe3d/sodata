@@ -49,50 +49,79 @@ $teamRoster = getTeamRoster($mysqlConn, $schoolID);
 $studentID = 0;
 $totalPlace = 0;
 $totalScore = 0;
-$totalEvents = 0;
+$totalTournaments = 0;
+$students = [];
 while ($row = $result->fetch_assoc()):
 		if ($studentID !=$row['studentID'])
 		{
+			//print out last student
 			if($studentID)
 			{
 				$output.= "</ul>";
 			}
-			if ($totalEvents > 0 )
+			if ($totalTournaments > 0 )
 			{
 				$output .= "<div>Total Score: ".$totalScore."</div>";
-				$output .= "<div>Average Score: ".$totalScore/$totalEvents."</div>";
-				$output .= "<div>Average place: ".$totalPlace/$totalEvents."</div><br><br>";
+				$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
+				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+
+				$students[$studentID]['scoreTotal']=$totalScore;
+				$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
+				$students[$studentID]['placeAvg']=$totalPlace/$totalTournaments;
+				$students[$studentID]['tournamentTotal']=$totalTournaments;
 			}
+			//start next student
 			$studentID = $row['studentID'];
+			$students[$studentID]['last'] = $row['last'];
+			$students[$studentID]['first'] = $row['first'];
+
 			$output.= "<h3>".$row['first'] . " " . $row['last']."</h3>";
 			//check to see if the student is assigned to the a team or a fill in
-			if ($teamRoster && !onTeamEvent($mysqlConn, $teamRoster, $studentID, $eventID)) //TODO change tournament ID here to this year's team
+			if ($teamRoster && !onTeamEvent($mysqlConn, $teamRoster, $studentID, $eventID)) 
 			{
 				$output.= "<div class='alert alert-warning'>This student is not currently assigned to this event in the Team Roster.</div>";
 			}
 			$output.= "<ul>";
 			$totalPlace = 0;
 			$totalScore = 0;
-			$totalEvents = 0;
+			$totalTournaments = 0;
 		}
     if($row['email']){
         $output.="<li>".$row['tournamentName'] . " (" . $row['year'] .") " . $row['place']."</li>";
 				$totalPlace += $row['place'];
 				$totalScore += $row['score'];
-				$totalEvents += 1;
+				$totalTournaments += 1;
     }
 endwhile;
 
-if ($totalEvents > 0 )
+//finish last student
+if ($totalTournaments > 0 )
 {
 	$output.= "</ul>";
 	$output .= "<div>Total Score: ".$totalScore."</div>";
-	$output .= "<div>Average Score: ".$totalScore/$totalEvents."</div>";
-	$output .= "<div>Average place: ".$totalPlace/$totalEvents."</div><br><br>";
+	$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
+	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+
+	$students[$studentID]['tournamentTotal']=$totalTournaments;
+	$students[$studentID]['scoreTotal']=$totalScore;
+	$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
+	$students[$studentID]['placeAvg']=$totalPlace/$totalTournaments;
 }
+
+// get the total column to sort it by that
+$totals = array_column($students, 'scoreTotal');
+array_multisort($totals,SORT_DESC,$students);
+$output .="<h2>Summary</h2>";
+$output .="<table class='table'><thead class='thead-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
+$output .="<tbody>";
+
+foreach ($students as &$student) {
+    $output .="<tr scope='row'><td>".$student['last'].", ".$student['first']."</td><td>".$student['tournamentTotal']."</td><td>".$student['scoreTotal']."</td><td>".$student['scoreAvg']."</td><td>".$student['placeAvg']."</td></tr>";
+}
+$output .="</tbody></table>";
 
 //TODO: make a table instead
 //TODO: Add the option to change the year
-$output.= "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
+$output.= "<br><p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 echo $output;
 ?>
