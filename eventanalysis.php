@@ -112,7 +112,7 @@ if ($totalTournaments > 0 )
 $totals = array_column($students, 'scoreTotal');
 array_multisort($totals,SORT_DESC,$students);
 $output .="<h2>Summary</h2>";
-$output .="<table class='table table-striped'><thead class='thead-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
+$output .="<table class='table table-striped table-hover'><thead class='table-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
 $output .="<tbody>";
 
 foreach ($students as &$student) {
