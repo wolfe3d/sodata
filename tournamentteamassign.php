@@ -114,7 +114,7 @@ if(!$mobile)
 	//Get tournament times
 	$query = "SELECT * FROM `timeblock` WHERE `tournamentID` = ".$rowTeam['tournamentID']." ORDER BY `timeStart`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output .="<h2>";
+	$output .="<h2 class='noPrint'>";
 	if(mysqli_num_rows($result))
 	{
 		if(userHasPrivilege(3)&&!$rowTeam["locked"]){
@@ -220,7 +220,7 @@ if(!$mobile)
 			{
 				foreach ($timeEvents as $timeEvent) {
 					$border = isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],(userHasPrivilege(3)))."</th>";
+					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],10,(userHasPrivilege(3)))."</th>";
 				}
 			}
 			else {
@@ -486,10 +486,12 @@ else {
 </button>
 </div>
 */
+$output .="<div class='noPrint'>";
+
 if(userHasPrivilege(3) & !$rowTeam["locked"])
 {
 	if($rowTeam["dateTournament"]>getCurrentTimestamp($mysqlConn)){
-		$output .="<div id='tournamentTeamCopy'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
+		$output .="<div>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
 			"<input class='btn btn-primary' role='button' type='button' onclick='javascript:teamCopyAssignments($teamID)' value='Copy Event Assignments' /><br><br></div>";
 	}
 }
@@ -509,3 +511,4 @@ if(userHasPrivilege(4))
 echo $output;
 ?>
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
+</div>
