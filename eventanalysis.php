@@ -110,7 +110,9 @@ if ($totalTournaments > 0 )
 
 // get the total column to sort it by that
 $totals = array_column($students, 'scoreTotal');
-array_multisort($totals,SORT_DESC,$students);
+$tournamentNumber = array_column($students, 'tournamentTotal');
+$placeAvg = array_column($students, 'placeAvg');
+array_multisort($totals,SORT_DESC,$placeAvg, SORT_ASC, $students);
 $output .="<h2>Summary</h2>";
 $output .="<table class='table table-striped table-hover'><thead class='table-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
 $output .="<tbody>";
