@@ -72,6 +72,7 @@ while ($row = $result->fetch_assoc()):
 			}
 			//start next student
 			$studentID = $row['studentID'];
+			$students[$studentID]['studentID'] = $row['studentID'];
 			$students[$studentID]['last'] = $row['last'];
 			$students[$studentID]['first'] = $row['first'];
 
@@ -116,13 +117,22 @@ array_multisort($totals,SORT_DESC,$placeAvg, SORT_ASC, $students);
 $output .="<h2>Summary</h2>";
 $output .="<table class='table table-striped table-hover'><thead class='table-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
 $output .="<tbody>";
-
+$studentNotOnEvent = 0;
 foreach ($students as &$student) {
-    $output .="<tr><th scope='row'>".$student['last'].", ".$student['first']."</th><td>".$student['tournamentTotal']."</td><td>".$student['scoreTotal']."</td><td>".$student['scoreAvg']."</td><td>".$student['placeAvg']."</td></tr>";
+	$onEvent = "";
+	if (!onTeamEvent($mysqlConn, $teamRoster, $student['studentID'], $eventID))
+	{
+		$studentNotOnEvent = 1;
+		$onEvent ="*";
+	}
+	
+    $output .="<tr><th scope='row'>".$student['last'].", ".$student['first']."$onEvent</th><td>".$student['tournamentTotal']."</td><td>".$student['scoreTotal']."</td><td>".$student['scoreAvg']."</td><td>".$student['placeAvg']."</td></tr>";
 }
 $output .="</tbody></table>";
-
-//TODO: make a table instead
+if ($studentNotOnEvent)
+{
+	$output.= "<div class='alert alert-warning'>*This student is not currently assigned to this event in the Team Roster.  They filled in or were previously assigned.</div>";
+}
 //TODO: Add the option to change the year
 $output.= "<br><p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 echo $output;
