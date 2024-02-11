@@ -203,7 +203,7 @@ if(!$mobile)
 			{
 				foreach ($timeEvents as $timeEvent) {
 					$border = isset($timeblock['border'])?$timeblock['border']:"";
-					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],(userHasPrivilege(3)))."</th>";
+					$output .= "<th id='event-".$timeEvent['tournamenteventID']."' style='".$border."background-color:".rainbow($i)."'>".eventNote($timeEvent['tournamenteventID'],$timeEvent['note'],10,(userHasPrivilege(3)))."</th>";
 				}
 			}
 			else {

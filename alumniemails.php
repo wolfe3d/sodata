@@ -43,7 +43,7 @@ while ($row = $result->fetch_assoc()) {
 if(userHasPrivilege(3))
 {
     $output.="<tr>";
-	$emailList = implode(';', $emails);
+	$emailList = implode(';', array_filter($emails)); //array_filter removes null values
 }
 echo $output;
 ?>
