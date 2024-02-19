@@ -192,12 +192,33 @@ $output .="<div>";
 		}
 
 
-		if(!$row['notCompetition'] && userHasPrivilege(5))
+		if(!$row['notCompetition'])
 		{
-			$output .= $rowTeam['notCompetition'];
-			//there are no results for a team assignment, so this is only shown for a real tournament
+			$tournamentNameNoSpace = str_replace(' ', '', $row['tournamentName']);	// remove spaces for file name
+			$scoreFileName = $tournamentID."-".$schoolID."-".$tournamentNameNoSpace."-".$row['year'];	// file id format: tournamentID-schoolID-tournamentName-year
+
+			$fileNameSearch = $row['fileName'];
 			$output .="<h2>Tournament Results</h2>";
-			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'  data-toggle='tooltip' data-placement='top' title='View scores for teammates'><span class='bi bi-chart-line'></span> Scores</a></p>";
+			if(userHasPrivilege(1))		// display full scores to all team members
+			{
+				// onclick=\"fileDownload('$scoreFileName');\"
+				$output .="<p><a class='btn btn-dark'  href='uploads/$fileNameSearch'  data-toggle='tooltip' data-placement='top' title='View full scores'><span class='bi bi-chart-line'></span> Full Scores</a></p>";
+			}
+			if(userHasPrivilege(4))		// upload full scores to website
+			{	
+				$output .="<p><form id='uploadFile' method='post' enctype='multipart/form-data'>";
+				$output .="<input class='btn btn-secondary' type='submit' name='submit' value='Upload Full Scoresheet'>";
+				$output.= "<input type='file' name='file' id='file' accept='application/pdf,application/vnd.ms-excel',application/vnd.openxmlformats-officedocument.spreadsheetml.sheet>";
+				$output .="<input type='hidden' name='fileid' value=".$scoreFileName.">";	
+				$output .="<input type='hidden' name='tournamentID' value=$tournamentID".">";
+				$output.= "</form></p>";
+			}
+			if(userHasPrivilege(5))
+			{
+				$output .= $rowTeam['notCompetition'];
+				//there are no results for a team assignment, so this is only shown for a real tournament
+				$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'  data-toggle='tooltip' data-placement='top' title='View scores for teammates'><span class='bi bi-chart-line'></span> Scores</a></p>";
+			}
 		}
 	}
 	$output .="</div>";
@@ -210,4 +231,31 @@ echo $output;
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+$(document).ready(function(){
+    $('#uploadFile').on('submit', function(e){
+        e.preventDefault();
+        var formData = new FormData($(this)[0]);
+
+        $.ajax({
+            url: 'tournamentscoreupload.php',
+            type: 'POST',
+            data: formData,
+            async: true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response){
+				console.log(response);
+                if(response == "1"){
+                    alert("File uploaded successfully.");
+                } else {
+                    alert("Error: " + response);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.log('Error:', textStatus, errorThrown);
+            }
+        });
+    });
+});
 </script>
