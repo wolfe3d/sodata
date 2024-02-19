@@ -208,7 +208,7 @@ $output .="<div>";
 			{	
 				$output .="<p><form id='uploadFile' method='post' enctype='multipart/form-data'>";
 				$output .="<input class='btn btn-secondary' type='submit' name='submit' value='Upload Full Scoresheet'>";
-				$output.= "<input type='file' name='file' id='file' accept='application/pdf,application/vnd.ms-excel',application/vnd.openxmlformats-officedocument.spreadsheetml.sheet>";
+				$output.= "<input type='file' name='file' id='file' accept='application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'>";
 				$output .="<input type='hidden' name='fileid' value=".$scoreFileName.">";	
 				$output .="<input type='hidden' name='tournamentID' value=$tournamentID".">";
 				$output.= "</form></p>";
