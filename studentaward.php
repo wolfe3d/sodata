@@ -13,6 +13,8 @@ function getStudentsTournamentList($db, $studentID, $schoolID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="<div id='tournamentDiv'><label for='tournament'>Tournaments</label> ";
 	$output .="<select class='form-select' id='tournament' name='tournament' required>";
+	$output .= "<option value='0'>Not Associated With Tournament</option>";
+
 	if($result && mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
@@ -33,13 +35,13 @@ function getStudentsTournamentList($db, $studentID, $schoolID)
 		<label for="awardDate">Award Date</label>
 		<input id="awardDate" name="awardDate" class="form-control" type="date" value="">
 	
-		<label for="tournamentList">Tournament (Can be blank)</label>
-
 		<p id="tournaments">
 			<?=getStudentsTournamentList($mysqlConn, $studentID, $schoolID)?>
 		</p>
 
 		<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
+		<button class="btn btn-primary" onclick='addToSubmit("todo.php")' type="button"><span class='bi bi-save'></span> Save</button>
+
 	</fieldset>
 </form>
 

@@ -637,9 +637,9 @@ function getCoachesEmails($db, $year)
 //Get Team Emails either students or parents
 function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 {
-	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool`,`tournamentID` 
-		FROM `teammate` 
-		inner join `student` on `teammate`.`studentID` = `student`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` 
+	$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` 
+		FROM `student` 
+		inner join `teammate` on `student`.`studentID` = `teammate`.`studentID` inner join `team` on `teammate`.`teamID` = `team`.`teamID` 
 		where `active` = 1 AND `schoolID` = " . $_SESSION['userData']['schoolID'];
 	if($teamID){
 		$query.=" AND `team`.`teamID` = $teamID";
@@ -647,6 +647,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 	if($tournamentID){
 		$query.=" AND `tournamentID` = $tournamentID";
 	}
+	$query.=" Order by `last`, `first`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($parents){
@@ -654,13 +655,15 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 		$output = "<h2>Parent Emails</h2>";
 		// Create a table for parent emails
 		$output .= "<table id='emails' class='table table-hover table-striped'>";
-		$output .= "<thead class='table-dark'><tr><th>Name</th><th>Email</th></tr></thead><tbody>";
+		$output .= "<thead class='table-dark'><tr><th>Teammate</th><th>Parent</th><th>Email</th></tr></thead><tbody>";
 
 		while ($row = $result->fetch_assoc()) {
 			$output .= "<tr>";
-			$output .= "<td>" . $row["parent1First"] . " " . $row["parent1Last"] . "</td>";
+			$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
+			$output .= "<td>" . $row["parent1First"] . " " . $row["parent1Last"] ."</td>";
 			$output .= "<td><a href='mailto: ".$row['parent1Email']."'>".$row['parent1Email']."</a></td>";
 			$output .= "</tr><tr>";
+			$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
 			$output .= "<td>" . $row["parent2First"] . " " . $row["parent2Last"] . "</td>";
 			$output .= "<td><a href='mailto: ".$row['parent2Email']."'>".$row['parent2Email']."</a></td>";
 			$output .= "</tr>";
@@ -675,7 +678,7 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$emailList = implode(';', array_filter($emails)); //array_filter removes null values
 		}
 		// Copy email buttons
-		$output .= "<td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy parent emails</button></p></td>";
+		$output .= "<td></td><td><p><button class='btn btn-primary' onclick='copyToClipboard(\"" . $emailList . "\")' type='button'><span class='bi bi-clipboard-plus'></span> Copy parent emails</button></p></td>";
 		$output .= "</tr></tbody></table>";
 	}
 	else {
