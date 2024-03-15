@@ -17,7 +17,7 @@ while ($row = $result->fetch_assoc()):
 		{
 			$events .= "</ul>";
 		}
-		$events .= "<h2>Division ".$row['divisionID']."</h2><ul>";
+		$events .= "<h2>Division ".$row['divisionID']."</h2><ul id='eventsforyear'>";
 	}
 	$events .= "<li id='eventyear-".$row["eventyearID"]."'><span class='event'><strong>".$row["event"]."</strong> - ". getEventString($row["type"]) ."</span> <button class='btn btn-danger btn-sm' type='button' onclick='eventYearRemove(".$row["eventyearID"].")'><span class='bi bi-trash'></span> Remove</button></li>";
 	$eventDivision=$row['divisionID'];

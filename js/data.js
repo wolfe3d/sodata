@@ -253,7 +253,7 @@ function studentPreparePage()
 	});
 
 
-	$( "#addTo" ).submit(function( event ) {
+	$( "#addTo").submit(function( event ) {
 		event.preventDefault();
 		var request = $.ajax({
 			url: "studentadd.php",
@@ -583,7 +583,7 @@ function eventsPreparePage()
 		getList("eventslist.php", $( this ).serialize() );
 	});
 
-	$( "#addTo" ).submit(function( event ) {
+	$( "#addTo").submit(function( event ) {
 		event.preventDefault();
 		var request = $.ajax({
 			url: "eventadd.php",
@@ -601,7 +601,7 @@ function eventsPreparePage()
 			}
 			else
 			{
-				$("#addTo").append("<div class='text-success' class='error'>"+html+"</div>");
+				$("#addTo").append("<div class='text-danger'>"+html+"</div>");
 			}
 		});
 
@@ -920,7 +920,7 @@ function appendLeadingZeroes(n){
 
 function tournamentTimeAdd(myID)
 {
-	$( "#addTo" ).submit(function( event ) {
+	$( "#addTo").submit(function( event ) {
 		event.preventDefault();
 		var request = $.ajax({
 			url: $("#addTo").attr('action'),
@@ -961,7 +961,7 @@ function tournamentTimeAdd(myID)
 
 function tournamentEventAdd(myID)
 {
-	$( "#addTo" ).submit(function( event ) {
+	$( "#addTo").submit(function( event ) {
 		event.preventDefault();
 		var request = $.ajax({
 			url: $("#addTo").attr('action'),
@@ -975,7 +975,7 @@ function tournamentEventAdd(myID)
 			$(".text-success .text-warning .text-danger").remove(); //removes any old update notices
 			if(html>0)
 			{
-				loadpage(['tournament','events',27]); //refresh page to show added event
+				loadpage(['tournament','events',myID]); //refresh page to show added event
 			}
 			else
 			{

@@ -13,7 +13,7 @@ if(empty($year)||empty($eventID))
 }
 
 //Check to see if event is already added
-$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year` = $year AND `eventyear`.`eventID` = $eventID AND `eventyear`.`divisionID` = $divisionID";
+$query = "SELECT * FROM `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`=`event`.`eventID` WHERE `year` = '$year' AND `eventyear`.`eventID` = '$eventID' AND `eventyear`.`divisionID` = '$divisionID'";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result && mysqli_num_rows($result)>0)
 {
