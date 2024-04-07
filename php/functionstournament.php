@@ -215,4 +215,27 @@ function tournamentTimeChosenAllEmpty($db, $tournamenteventID)
 	}
 	return true;
 }
+
+function tallyPlacements($place, $tally)
+{
+	if($place>0&&$place<7)
+	{
+		$tally[$place-1] +=1;
+	}
+	return $tally;
+}
+function tallyPlacementsPrint($tallyPlaces)
+{
+	$output = "<h2>Placement Tally</h2>";
+	$output .= "<table id='tally' class='table table-hover table-striped'>";
+	$output .= "<thead class='table-dark'><tr><th>Place</th><th>Team Members</th></tr></thead><tbody>";
+	//TODO: Add column for number of events earning a placement
+	for ($n = 0; $n < count($tallyPlaces); $n++)
+	{
+		$place = ordinal($n+1);
+		$output .= "<tr><td>" . $place . "</td><td>".$tallyPlaces[$n]."</td></tr>";
+	}
+	$output .= "</tbody></table>";
+	return $output;
+}
 ?>
