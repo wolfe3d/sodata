@@ -35,9 +35,12 @@ function printResults($db,$query,$student)
 }
 
 /*get coaches first*/
+if(userHasPrivilege(5))
+{
 $output = "<h3>Coaches</h3>";
 $query = "SELECT * from `user` INNER JOIN `coach` ON `user`.`userID`=`coach`.`userID` INNER JOIN `school` ON `coach`.`schoolID`=`school`.`schoolID` $where ORDER BY `user`.`userID`";
 $output .= printResults($mysqlConn, $query,0);
+}
 
 /*get students*/
 $output .= "<h3>Students</h3>";
