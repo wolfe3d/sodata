@@ -117,9 +117,11 @@ if(!empty($_SESSION['userData'])){
 		}
 		//show all previous results for this student
 		$myTournamentResults = studentTournamentResults($mysqlConn, $studentID, true);
+		$myAwards = studentAwards($mysqlConn, $studentID);
+
 		if($myTournamentResults)
 		{
-			$output .= "<hr><h2>My Results</h2>" . $myTournamentResults;
+			$output .= "<hr><h2>My Results</h2>" . $myAwards . $myTournamentResults;
 		}
 
 	}

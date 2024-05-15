@@ -105,9 +105,7 @@ if (userHasPrivilege(4))
 	</fieldset>
 	<fieldset>
 		<legend>Awards</legend>
-		<div id="awards"><?= studentAwards($mysqlConn, $row['studentID'])?></div>
-		<div id="addAwardDiv"></div>
-		<a id="addAward" class="addAdwardBtn" href="#student-award-<?=$row['studentID']?>">Add Award</a>
+		<div id="awards"><?= getAwards($mysqlConn, $row['studentID'])?></div>
 	</fieldset>
 	<?php
 }?>

@@ -153,7 +153,7 @@ function studentTournamentResults($db, $studentID)
 	$output = "";
 	if($result && mysqli_num_rows($result)>0)
 	{
-		$output .="<hr><h3>Results</h3><ul>";
+		$output .="<h3>Results</h3><ul>";
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id='".$row['tournamentName']."'>";
 			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament'];
@@ -1125,19 +1125,35 @@ function getCourses($db, $studentID, $tableName)
 }
 
 //find student's awards
-function studentAwards($db, $studentID)
+function getAwards($db, $studentID)
 {
 	$myOutput = "";
-	$query = "SELECT * FROM `award` WHERE `studentID`=$studentID ORDER BY `dateAwarded` ASC";// where `field` = $fieldId";
+	$query = "SELECT * FROM `award` WHERE `studentID`=$studentID ORDER BY `awardDate` ASC";// where `field` = $fieldId";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)
 	{
-		$myOutput .="<h3>Awards</h3>";
 		while ($row = $result->fetch_assoc()):
-			$myOutput .= "<div id='award-" . $row['awardID'] . "'>" . $row['dateAwarded'] . " <strong>" . $row['awardName']   . "</strong> ". $row['note'] ."</div>";
+			$myOutput .= "<div id='award-" . $row['awardID'] . "'><span class='award'>" . $row['awardDate'] . " <strong>" . $row['awardName']   . "</strong> ". $row['note'] ."</span><a href=\"javascript:studentAwardEdit('" . $row["awardID"] . "')\">Edit</a></div>";
 		endwhile;
 	}
 	return $myOutput;
+}
+
+//find student's courses enrolled but not yet completed
+function studentAwards($db, $studentID)
+{
+	$output = "";
+	$query = "SELECT * FROM `award` WHERE `studentID`=$studentID ORDER BY `awardDate` ASC";// where `field` = $fieldId";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output .="<h3>Awards</h3><ul>";
+		while ($row = $result->fetch_assoc()):
+			$output .= "<li id='award-" . $row['awardID'] . "'>" . $row['awardDate'] . " - <strong>" . $row['awardName'] . "</strong></li>";
+		endwhile;
+		$output .= "</ul>";
+	}
+	return $output;
 }
 
 //get tournament

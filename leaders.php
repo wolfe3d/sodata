@@ -64,11 +64,11 @@ if($result)
 		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
-			$output .="<div>Google Email:".$row['email']."</div>";
+			$output .="<div>Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
 		}
 		if($row['emailSchool'])
 		{
-			$output .="<div>School Email:".$row['emailSchool']."</div>";
+			$output .="<div>School Email: <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></div>";
 		}
 		if($row['phone'])
 		{
@@ -108,11 +108,11 @@ if($result)
 		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
-			$output .="<div>Google Email:".$row['email']."</div>";
+			$output .="<div>Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
 		}
 		if($row['emailSchool'])
 		{
-			$output .="<div>School Email:".$row['emailSchool']."</div>";
+			$output .="<div>School Email: <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></div>";
 		}
 		if($row['phone'])
 		{

@@ -2,9 +2,10 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
 
-$studentID = intval($_POST['myID']);
+$awardID = getIfSet(intval($_REQUEST['myID']?? null));
 $schoolID = $_SESSION['userData']['schoolID'];
 
+//check to make editing from student's own school occurs later
 
 //get all the tournaments that the student has competed in
 function getStudentsTournamentList($db, $studentID, $schoolID)
@@ -24,27 +25,54 @@ function getStudentsTournamentList($db, $studentID, $schoolID)
 	$output.="</select></div>";
 	return $output;
 }
+
+$date = date('Y-m-d');
+$row = NULL; 
+$action = "javascript:addToSubmit('studentawardadd.php')";
+
+if($awardID)
+{
+	//search for award and check to make sure the person is editing someone from their own school
+	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `awardID`=$awardID AND `schoolID`=" . $_SESSION['userData']['schoolID'];// where `field` = $fieldId";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if(mysqli_num_rows($result)>0)
+	{
+		$row = $result->fetch_assoc();
+		$action = "";
+		$date = $row['awardDate'];
+	}
+}
 ?>
 
-<form id="addTo" method="post" action="">
+<form id="addTo" method="post" action="<?=$action?>">
 	<fieldset>
-		<legend>Add Award</legend>
-		<label for="awardName">Name of Award</label>
-		<input id="awardName" name="awardName" class="form-control" type="text" value="">
-	
-		<label for="awardDate">Award Date</label>
-		<input id="awardDate" name="awardDate" class="form-control" type="date" value="">
-	
-		<p id="tournaments">
-			<?=getStudentsTournamentList($mysqlConn, $studentID, $schoolID)?>
+		<p>
+			<label for="student">Student</label>
+			<?=getAllStudents($mysqlConn,1, $row['studentID'])?>
 		</p>
-
-		<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
-		<button class="btn btn-primary" onclick='addToSubmit("todo.php")' type="button"><span class='bi bi-save'></span> Save</button>
+		<p>
+			<label for="awardName">Name of Award</label>
+			<input id="awardName" name="awardName" class="form-control" type="text" value="<?=$row['awardName']?>">
+		</p>
+		<p>
+			<label for="awardDate">Award Date</label>
+			<input id="awardDate" name="awardDate" class="form-control" type="date" value="<?=$date?>">
+		</p>
+		<p>
+			<label for="note">Note</label>
+			<input id="note" name="note" class="form-control" type="text" value="<?=$row['note']?>">
+		</p>
+		<!--
+		<p id="tournaments">
+			<?//=getStudentsTournamentList($mysqlConn, $studentID, $schoolID)?>
+		</p>
+-->
+		<p>
+			<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
+			<?php 	if(!$awardID){ ?>
+				<button class='btn btn-primary' type='submit'><span class='bi bi-plus-circle'></span> Add</button>
+			<?php } ?>
+		</p>
 
 	</fieldset>
 </form>
-
-<?php
-	studentAwards($mysqlConn, $studentID);
-?>

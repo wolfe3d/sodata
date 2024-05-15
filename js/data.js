@@ -137,6 +137,9 @@ function loadpage(myPage){
 				if(typepage=="edit"){
 					studentEditPrepare(myID);
 				}
+				else if(typepage=="award"){
+					studentAwardPrepare(myID);
+				}
 				break;
 
 				case 'score':
@@ -338,6 +341,24 @@ function studentEditPrepare(myID)
 		});
 	});
 }
+function studentAwardPrepare(myID)
+{
+	if(myID)
+	{
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+				fieldUpdate(myID,'award',this.id,this.value,this.id,this.id);
+		});
+	});
+	}
+}
+function studentAwardRemove(myID)
+{
+	if(confirm("Are you sure you want to delete the award, called " + $("#award"+"-"+myID +" .award").text() +"?"))
+	{
+		rowRemove(myID,"award");
+	}
+}
 function studentEventAddChoice(studentID)
 {
 	//adds the event choice selection
@@ -472,6 +493,38 @@ function studentCourseCompleted(value, courseName)
 	});
 }
 
+/*
+function studentAwardAdd(student)
+{
+	// validate signup form on keyup and submit
+	var request = $.ajax({
+		url: "studentawardadd.php",
+		cache: false,
+		method: "POST",
+		data: { studentID: student},
+		dataType: "text"
+	});
+
+	request.done(function( html ) {
+		$(".text-success").remove(); //removes any old update notices
+		var myAwardID = parseInt(html);
+		if(!isNaN(myAwardID))//checks to see if a number is returned
+		{
+			//returns the current update
+			$("#awards").append("<div id='award-" + myAwardID + "'><input id='awardName-"+myAwardID+"' name='awardName' class='form-control' type='text' value=''></div>");
+			$("#award-" + myAwardID).append(" <a href=\"javascript:studentCourseRemove('" + myAwardID + "')\">Remove</a> <span class='text-success'>Award added.</span>");
+		}
+		else
+		{
+			$("#awards").append("<span class='text-danger'>Error while attempting to add a award. Please, report details to site admin.</span>");
+		}
+	});
+
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+	});
+}
+*/
 function fieldUpdate(myID,table,field,value,domID,messageID)
 {
 	// validate field before submitting
@@ -773,7 +826,7 @@ $( "#addTo" ).submit(function( event ) {
 }
 
 
-function tournamentSort(tableName, byAttr, isNumber=0)
+function studentCourse(tableName, byAttr, isNumber=0)
 {
 	var $table=$('#'+tableName);
 	var sortBy = $table.attr('sortby');
