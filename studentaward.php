@@ -48,7 +48,7 @@ if($awardID)
 	<fieldset>
 		<p>
 			<label for="student">Student</label>
-			<?=getAllStudents($mysqlConn,1, $row['studentID'])?>
+			<?=getAllStudents($mysqlConn,0, $row['studentID'])?>
 		</p>
 		<p>
 			<label for="awardName">Name of Award</label>
