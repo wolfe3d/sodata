@@ -32,11 +32,11 @@ $( "#addTo" ).submit(function( event ) {
 		if(html>0)
 		{
 			//add event to list
-			loadpage('eventyear','edit',$( "#year" ).val()); //TODO: Rewrite this code.  This code puts extra strain on network and server(Db calls and page gen).
+			$("#eventsforyear").append("<li id='eventyear-"+$("#year").val()+"'><span class='event'><strong>"+$("#eventsList option:selected" ).text()+"</strong></span> <button class='btn btn-danger btn-sm' type='button' onclick='eventYearRemove("+html+")'><span class='bi bi-trash'></span> Remove</button></li>");
 		}
 		else
 		{
-			$("#eventsP").append("<div class='text-success' class='error'>"+html+"</div>");
+			$("#addTo").append("<div class='text-danger'>"+html+"</div>");
 		}
 	});
 

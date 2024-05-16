@@ -21,9 +21,7 @@ if (isset($_SESSION['token'])) {
 	<meta property="og:image" content="images/waltoncthulu1200.png" />
 
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
-	<script src="js/jquery-3.6.0.min.js"></script>
-	<script src="js/jquery.validate.min.js"></script>
-	<script src="js/additional-methods.min.js"></script> <!--Additional Methods are also for jquery validate-->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<!--<script src="js/jquery.modal.min.js"></script> Modal plugin https://github.com/kylefox/jquery-modal-->
 	<link rel="stylesheet" href="css/wolfestyle.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -136,8 +134,8 @@ function checkPage(){
 		<div class="container">
 			<div class="row">
 				<div class="12u">
-					<p>Walton Science Olympiad meets on Tuesdays at 3:30PM in Mr. Taylor's classroom (Room 414).  If you have never been on a Science Olympiad team, go to <a href="https://www.soinc.org/info/about-science-olympiad">National Science Olympiad Website</a> to learn more. </p>
-					<p>If it is later than September 1, you may still be able to join, but you must contact the coaches using the email below.</p>
+					<p>Walton Science Olympiad meets on Tuesdays at 3:30PM in Mr. Wolfe's classroom (Room 402).  If you have never been on a Science Olympiad team, go to <a href="https://www.soinc.org/info/about-science-olympiad">National Science Olympiad Website</a> to learn more. </p>
+					<p>Usually, students at the end of each year and new students join after club fair.  If it is later than September 1, you may still be able to join, but you must contact the coaches using the email below.</p>
 					<p>The Walton Science Olympiad team has been competing each year since 1994. Persistence and determination are what define us. We passionately study for our test events, and we enthusiastically design and collaborate for our build events. Teamwork is what unifies us.</p>
 					<p>Here at Walton Science Olympiad, science is not the only focus in our program. Ingenuity, teamwork, and creativity are also integral components of the Science Olympiad team. The friendships and connections you forge with others over similar scientific interests will be meaningful and lasting. The new information you learn could even be applicable to your daily life. Walton Science Olympiad is much more than just pure science. It is about the curiosity that sparks motivation and the motivation that spurs ingenuity. It is about the bonding experience with your peers and your teachers. It is about collaborating with like-minds on subject topics you are passionate about while simultaneously learning about science.</p>
 					<p>For more information about our team, please send an email to <a href="mailto:waltonscienceolympiad@gmail.com">waltonscienceolympiad@gmail.com</a>.<p>
@@ -155,7 +153,7 @@ function checkPage(){
 				<div class="row">
 					<div class="6u">
 						<h3>Dodgen-Walton Division B Science Olympiad Tournament</h3>
-						<h4>November 11, 2023</h4>
+						<h4>November 16, 2024</h4>
 						<div><a href="https://scilympiad.com/dodgen-walton">More Information on our Scilympiad site</a></div>
 						<br><br>
 					</div>
@@ -164,8 +162,11 @@ function checkPage(){
 					<br><br>
 					<div class="6u">
 						<h3>Previous Tournaments</h3>
-						<div>Tournaments were held at Walton 2018, 2019, 2020 (remote), 2021 (remote), and 2022 (both In Person and Satellite).</div>
+						<div>Tournaments were held at Walton 2018 (in person), 2019 (in person), 2020 (remote), 2021 (remote), 2022 and 2023 (both In Person and Satellite).</div>
 						<br><br>
+
+						<h4>2023 Dodgen-Walton Tournament Results (2024 National Rules Year)</h4>
+						<div><a href="">Posted Soon</a></div>
 
 						<h4>2022 Dodgen-Walton Tournament Results (2023 National Rules Year)</h4>
 						<div><a href="results/2022/Results_Satellite_2022.xlsx">Satellite Scores</a></div>
@@ -206,7 +207,8 @@ function checkPage(){
 				<div class="row">
 					<div class="12u">
 						<h2>Contact</h2>
-						<h3>Coaches:</h3><p>Wes Taylor & Doug Wolfe</p>
+						<p><strong>Head Coach:</strong> Doug Wolfe</p>
+						<p><strong>Assistant Coaches:</strong> Wes Taylor and Matt Curtis</p>
 						<h3>Email:</h3><p><a href="mailto:waltonscienceolympiad@gmail.com">waltonscienceolympiad@gmail.com</a></p>
 
 					</div>

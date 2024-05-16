@@ -88,10 +88,7 @@ if($result)
 		{
 			$output .="<a class='btn btn-primary' role='button' href='#student-details-".$row['studentID']."'><span class='bi bi-journal'></span> Details</a> ";
 		}
-		if(userHasPrivilege(4)) //||$_SESSION['userData']['id']==$row['userID']) //Users cannot edit their own information
-		{
-			$output .="<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>";
-		}
+		$output .=userHasPrivilege(4)?"<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>":"";
 		$output .= userHasPrivilege(5)?" <a class='btn btn-danger btn-sm' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
 		$output .= "</div>";
 		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);

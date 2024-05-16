@@ -1,7 +1,7 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(4);
-
+$output = "";
 $where = "WHERE `school`.`schoolID`=".$_SESSION['userData']['schoolID'];
 if(userHasPrivilege(5))
 {
@@ -16,18 +16,21 @@ function printResults($db,$query,$student)
 	if($result && mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
-			$output.="<div class='d-flex'>";
-			$output.="<div class='p-2'>".$row['userID'] ."</div>";
-			$output.="<div class='p-2'>".$row['email'] ."</div>";
-			$output.="<div class='p-2'>".$row['privilege'] ."</div>";
-			$output.="<div class='p-2'>Email Name: ".$row['last_name'] . ", " . $row['first_name'] ."</div>";
-			if($student)
-			{
-				$output.="<div class='p-2'>Student/Coach Name: " .$row['last'] . ", " . $row['first'] ."</div>";
-				$output.="<div class='p-2'>" . $row['schoolName'] ."</div>";
+			if(userHasPrivilege(intval($row['privilege']))) //here is a double check to make sure the user cannot attempt to impersonate a person with a higher privilege
+			{	
+				$output.="<div class='d-flex'>";
+				$output.="<div class='p-2'>".$row['userID'] ."</div>";
+				$output.="<div class='p-2'>".$row['email'] ."</div>";
+				$output.="<div class='p-2'>".$row['privilege'] ."</div>";
+				$output.="<div class='p-2'>Email Name: ".$row['last_name'] . ", " . $row['first_name'] ."</div>";
+				if($student)
+				{
+					$output.="<div class='p-2'>Student/Coach Name: " .$row['last'] . ", " . $row['first'] ."</div>";
+					$output.="<div class='p-2'>" . $row['schoolName'] ."</div>";
+				}
+				$output.="<div class='ml-auto p-2'><a class='btn btn-dark btn-sm' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='bi bi-file-earmark-person'></span> Impersonate</a></div>";
+				$output.="</div>";
 			}
-			$output.="<div class='ml-auto p-2'><a class='btn btn-dark btn-sm' role='button' href='impersonate.php?userID=".$row['userID']."'><span class='bi bi-file-earmark-person'></span> Impersonate</a></div>";
-			$output.="</div>";
 		endwhile;
 	}
 	$output.="</div>";
@@ -35,9 +38,12 @@ function printResults($db,$query,$student)
 }
 
 /*get coaches first*/
+if(userHasPrivilege(5))
+{
 $output = "<h3>Coaches</h3>";
 $query = "SELECT * from `user` INNER JOIN `coach` ON `user`.`userID`=`coach`.`userID` INNER JOIN `school` ON `coach`.`schoolID`=`school`.`schoolID` $where ORDER BY `user`.`userID`";
 $output .= printResults($mysqlConn, $query,0);
+}
 
 /*get students*/
 $output .= "<h3>Students</h3>";

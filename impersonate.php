@@ -14,22 +14,23 @@ $users="<ul class='list-group'>";
 if($result && mysqli_num_rows($result)>0)
 {
 	$userData = $result->fetch_assoc();
+	if(userHasPrivilege(intval($userData['privilege']))) //here is another check to make sure the user cannot attempt to impersonate a person with a higher privilege
+	{
+		// Include User library file
+		require_once 'php/user.php';
+		// Initialize User class
+		$user = new User($mysqlConn);
+		$userType = $user->checkUserType($userID, $userData['email'], true);
+		//added to be able to use in session
+		$userData['schoolID'] = $userType[0];
+		$userData['type'] = $userType[1];
+		$userData['active'] = $userType[2];
 
-
-	// Include User library file
-	require_once 'php/user.php';
-	// Initialize User class
-	$user = new User($mysqlConn);
-	$userType = $user->checkUserType($userID, $userData['email'], true);
-	//added to be able to use in session
-	$userData['schoolID'] = $userType[0];
-	$userData['type'] = $userType[1];
-	$userData['active'] = $userType[2];
-
-	// Storing user data in the session
-	$_SESSION['userData'] = $userData;
-	//sets variable to use in data.php so that we know we are impersonating
-	$impersonate = 1;
-	require_once ("data.php");
+		// Storing user data in the session
+		$_SESSION['userData'] = $userData;
+		//sets variable to use in data.php so that we know we are impersonating
+		$impersonate = 1;
+		require_once ("data.php");
+	}
 }
 ?>

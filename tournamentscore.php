@@ -2,6 +2,7 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(5);
 require_once  ("php/functionstournament.php");
+
 //calculation of score
 // SUM(eventweighting/eventplacement^3) * tournamentWeight
 //With this method number of events is weighted.
@@ -41,6 +42,7 @@ else
 	//print_r ($events);
 	$students = getStudents($mysqlConn, $tournamentID);
 	//print_r ($students);
+	$tallyPlaces = [0,0,0,0,0,0];
 
 	$tournamentWeight = getTournamentWeight($mysqlConn, $tournamentID);
 	$teamsAttended = getTournamentTeamsAttended($mysqlConn, $tournamentID);
@@ -116,6 +118,7 @@ else
 				if ($studentEvent['tournamenteventID']==$event['tournamenteventID'])
 				{
 					$placement = $studentEvent['place'];
+					$tallyPlaces = tallyPlacements($placement,$tallyPlaces); //add placement for each student
 					$score = $studentEvent['score'];
 					$scoreprint = $score ? "(".number_format($score,2).")":"";
 					break;
@@ -127,6 +130,10 @@ else
 	}
 	$output .= "</tbody><table>";
 
+	// Create a table for tally of places
+	$output .= tallyPlacementsPrint($tallyPlaces);
+
+	// Save function
 	$output .= "<p>" . $returnBtn;
 	if(userHasPrivilege(4))
 	{
