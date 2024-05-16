@@ -265,15 +265,15 @@ if(!$mobile)
 
 							if(userHasPrivilege(4)){
 								if(!$rowTeam["locked"]) {
-									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
+									$output .= "<input type='checkbox'  class='form-check-input' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 								}
 								else if($rowTeam["locked"]) {
 									//To make checkboxes not grayed out: style='pointer-events: none;'
-									$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked disabled>";
+									$output .= "<input type='checkbox' class='form-check-input' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked disabled>";
 								}
 							}
 							else if(userHasPrivilege(3)&&!$rowTeam["locked"]){
-								$output .= "<input type='checkbox' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
+								$output .= "<input type='checkbox' class='form-check-input' onchange='javascript:tournamentEventTeammate($(this))' id='$checkbox' name='$checkbox' value='' data-timeblock='".$timeblock['timeblockID']."' $checked>";
 							}
 							else {
 								$output .=$checked?"<span class='bi bi-check'></span>":"";
