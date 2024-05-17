@@ -73,7 +73,7 @@ function eventTournamentScheduleAll($db, $schoolID, $tournamentID, $year, $tourn
 					}
 					$output.="<tr>";
                     $output .="<td>".$row['teamName']."</td>";
-                    $output.="<td>".partnersWithEmails($db,$tournamenteventID, $row['teamID'], $year)."</td>";
+                    $output.="<td>".partnersWithEmails($db,$tournamenteventID, $row['teamID'], $year, $eventID)."</td>";
                     $time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
                     $output.="<td>$time</td>";
                     $output.="</tr>";

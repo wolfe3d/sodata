@@ -546,7 +546,7 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID, 
 }
 
 //find partners for an event in a tournament and returns Emails with line breaks
-function partnersWithEmails($db,$tournamentEventID, $teamID, $year)
+function partnersWithEmails($db,$tournamentEventID, $teamID, $year, $eventID=NULL)
 {
 	//check partner(s)
 	$output =  "";
@@ -562,8 +562,9 @@ function partnersWithEmails($db,$tournamentEventID, $teamID, $year)
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
 			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a>".
-			getOfficerLink($db,  $row['studentID'], $year).
-			" <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
+			getOfficerLink($db, $row['studentID'], $year);
+			$output.=$eventID?getEventLeaderThisEvent($db, $row['studentID'], $year, $eventID):"";
+			$output.=" <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
 		endwhile;
 	}
 	else {

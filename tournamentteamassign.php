@@ -34,9 +34,9 @@ function timeBlockTournamentSchedule($db, $tournamentID, $timeBlockID, $teamID, 
 			}
 			$schedule.="<tr>";
 			$schedule.="<td><div><strong>".$row['event']."</strong>".
-			getEventLeaderOnTeam($db, $teamID, $year, $row['eventID']).
+			//getEventLeaderOnTeam($db, $teamID, $year, $row['eventID']).
 			"</div><div>".$row['note']."</div></td>";
-			$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID, $year)."</td>";
+			$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $teamID, $year, $row['eventID'])."</td>";
 			$schedule.="</tr>";
 		endwhile;
 		$schedule.="</tbody></table>";
