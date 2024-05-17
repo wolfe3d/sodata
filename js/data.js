@@ -1742,10 +1742,10 @@ function tournamentCalculateTimeblock(studentID)
 		}
 		if (studentAssigned >1){
 			//print errors
-			$("#teammate-"+studentID).append("<span class='text-success error'>***</span>");
-			$("#teammate-"+studentID+" .text-success")	.hover(
+			$("#teammate-"+studentID).append("<span class='text-danger'>***</span>");
+			$("#teammate-"+studentID+" .text-danger")	.hover(
 				function() {
-					$( this ).append( $( "<div class='error'> More than one event in timeBlock: "+$("#"+timeblockID).text()+"</div>" ) );
+					$( this ).append( $( "<div class='text-danger'> More than one event in timeBlock: "+$("#"+timeblockID).text()+"</div>" ) );
 				}, function() {
 					$( this ).find( "div" ).last().remove();
 				}

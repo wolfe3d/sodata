@@ -83,6 +83,101 @@ function getStudentName($db, $studentID)
 	return 0;
 }
 
+//get officer abbreviation
+function getOfficerAbbr($position)
+{
+	switch ($position) {
+		case "Captain":
+			return "C";
+		case "Vice-Captain":
+			return "VC";
+		case "Lead Developer":
+			return "Dev";
+		case "Database Manager":
+			return "DB";
+		case "Team Coordinator":
+			return "TC";
+		case "Build It Boss":
+			return "B";
+		case "Testing Coordinator":
+			return "Test";
+		case "Secretary":
+			return "S";
+	}
+}
+
+//find if the student is an officer and create a short information link
+function getOfficerLink($db, $studentID, $year)
+{
+	$query = "SELECT `position` from `officer` where `studentID` = $studentID AND `year` = $year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		if($row = $result->fetch_assoc())
+		{
+			return " <small><span class='badge bg-success' title='".$row['position']."'>".getOfficerAbbr($row['position'])."</span></small>";
+		}
+	}
+	return "";	
+}
+
+//find if the student is an event leader and create a short information link
+function getEventLeaderLink($db, $studentID, $year)
+{
+	$query = "SELECT `event` from `eventleader` 
+	INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` where `studentID` = $studentID AND `year` = $year";
+	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		if($row = $result->fetch_assoc())
+		{
+			return " <small><span class='badge bg-info' title='".$row['event']." - Event Leader'>EL</span></small>";
+		}
+	}
+	return "";	
+}
+
+//find if this student is the event leader of the event
+function getEventLeaderThisEvent($db, $studentID, $year, $eventID)
+{
+	if($eventID)
+	{
+		$query = "SELECT `event` from `eventleader` 
+		INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` where `studentID` = $studentID AND `year` = $year AND `eventleader`.`eventID` = $eventID";
+		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result)
+		{
+			if($row = $result->fetch_assoc())
+			{
+				return " <small><span class='badge bg-info' title='".$row['event']." - Event Leader'>EL</span></small>";
+			}
+		}
+	}
+	return "";	
+}
+
+//find if this student is the event leader of the event
+function getEventLeaderOnTeam($db, $teamID, $year, $eventID)
+{
+	if($eventID)
+	{
+		$query = "SELECT `event`,`last`,`first` from `eventleader` 
+		INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
+		INNER JOIN `teammate` ON `eventleader`.`studentID`=`teammate`.`studentID`
+		INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+		 where `teamID` = $teamID AND `year` = $year AND `eventleader`.`eventID` = $eventID";
+		$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result)
+		{
+			if($row = $result->fetch_assoc())
+			{
+				return " <small><span class='badge bg-info' title='".$row['first']." ".$row['last']." - Event Leader'>EL</span></small>";
+			}
+		}
+	}
+	return "";	
+}
+
 //get Name of the students school
 function getCurrentSchoolName($db, $schoolID)
 {
@@ -261,7 +356,7 @@ function tournamentPublished($db, $tournamentID)
 	return 0;
 }
 
-function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='Your events and partners')
+function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='Your events and partners', $year)
 {
 	$schedule="";
 	//This query checks to see if there are students on this tournaments
@@ -270,7 +365,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 		$schedule.="<h4>$heading</h4>";
 		if($teamName = tournamentHasThisTeammate($db, $tournamentID, $studentID))
 		{
-			$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace`
+			$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `teammateplace`.`teamID`,`event`.`event`,`event`.`eventID`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd` FROM `teammateplace`			
 			INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
 			INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
 			INNER JOIN `tournamenttimechosen` ON `teammateplace`.`tournamenteventID` = `tournamenttimechosen`.`tournamenteventID` AND `teammateplace`.`teamID` = `tournamenttimechosen`.`teamID`
@@ -289,7 +384,7 @@ function studentTournamentSchedule($db, $tournamentID, $studentID, $heading='You
 					}
 					$schedule.="</td>";
 					$schedule.="<td><div><strong>".$row['event']."</strong></div><div>".$row['note']."</div></td>";
-					$schedule.="<td>".studentPartnersWithEmails($db,$row['tournamenteventID'], $row['teamID'], $studentID)."</td>";
+					$schedule.="<td>".studentPartnersWithEmails($db,$row['tournamenteventID'], $row['teamID'], $studentID, $year, $row['eventID']).	"</td>";
 					$schedule.="</tr>";
 				endwhile;
 				$schedule.="</tbody></table>";
@@ -424,7 +519,7 @@ function studentPartners($db,$tournamentEventID, $teamID, $studentID)
 }
 
 //find partners for an event in a tournament and returns Emails with line breaks
-function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
+function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID, $year, $eventID)
 {
 	//check partner(s)
 	$output =  "";
@@ -438,7 +533,10 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
-			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a> <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
+			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a>".
+			getOfficerLink($db, $row['studentID'], $year).
+			getEventLeaderThisEvent($db, $row['studentID'], $year, $eventID).
+			" <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
 		endwhile;
 	}
 	else {
@@ -448,20 +546,24 @@ function studentPartnersWithEmails($db,$tournamentEventID, $teamID, $studentID)
 }
 
 //find partners for an event in a tournament and returns Emails with line breaks
-function partnersWithEmails($db,$tournamentEventID, $teamID)
+function partnersWithEmails($db,$tournamentEventID, $teamID, $year)
 {
 	//check partner(s)
 	$output =  "";
-	$query = "SELECT * FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
+	$query = "SELECT * FROM `teammateplace` 
+	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
 	WHERE `tournamenteventID` = $tournamentEventID and `teamID` = $teamID
-	AND `teammateplace`.`studentID` IN (SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
+	AND `teammateplace`.`studentID` IN 
+	(SELECT `studentID` FROM `teammate` WHERE `teammate`.`teamID` = $teamID)
 	ORDER BY `student`.`last`, `student`.`first`";
 	//The IN (Select...) Statement fixes not fully removed students from teammateplace. This should not happen except when two people (or two windows) are making edits.  If the student is removed from the team while someone adds an event, it will leave a ghost student assigned.
 
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 		while ($row = $result->fetch_assoc()):
-			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a> <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
+			$output.= "<a href='#student-details-".$row['studentID']."'>" . $row['first']." ".$row['last']."</a>".
+			getOfficerLink($db,  $row['studentID'], $year).
+			" <br>"; //removed email <a href='mailto:".$row['email']."'>".$row['email']."</a>
 		endwhile;
 	}
 	else {

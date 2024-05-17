@@ -22,7 +22,7 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
 			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
-			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID);
+			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID, "");
 			$output.="</div>";
 		endwhile;
 	}
