@@ -153,7 +153,7 @@ $output .="<div>";
 		if($studentID)
 		{
 			$heading ="My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")";
-			$output.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID, $heading);
+			$output.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID, $heading, $row['year']);
 		}
 
 		if(userHasPrivilege(5) || $published)
