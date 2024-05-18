@@ -677,24 +677,27 @@ function eventEdit(myID)
 function eventAttendanceAddStudent(myID) {
 	var selectedID = document.getElementById("studentID").value;
 	var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
+	var firstLast = selectedName.split(', ');
+	var formattedName = firstLast[1] + ' ' + firstLast[0];
+
 	if(selectedID.length === 0)
 	{
 		alert("If you would like to add a student, please select a student to add to the event attendance list.");
 		return;
 	}
 	//check if the new student was already added before
-	if(document.getElementsByName('attendance-' + selectedID).length > 0) 
+	if(document.getElementsByName('attendance-').length > 0) 
 	{
-        alert('Student already exists in this meeting!' + selectedID);
+        alert('Student already exists in this meeting!');
         return;
     }
 	else
 	{
 		//create a new div with student information
-		if(confirm("Add student: " + selectedName + "? ID: " + selectedID))
+		if(confirm("Add student: " + formattedName + "?"))
 		{
 			var newStudent = `<div>
-					<h3>${selectedName}</h3>
+					<h3>${formattedName} (Extra)</h3>
 					<label for="attendance-${selectedID}">Present</label>
 					<p><input type="radio" name="attendance-${selectedID}" value="1"></p>
 					<label for="attendance-${selectedID}">Absent - Unexcused</label>

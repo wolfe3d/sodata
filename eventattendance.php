@@ -55,7 +55,8 @@ function getEventAttendanceTable($db, $schoolID, $eventID)
 	INNER JOIN `event` USING (`eventID`) 
 	INNER JOIN `teammateplace` USING (`tournamenteventID`) 
 	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`schoolID`=$schoolID AND `student`.`active` = 1 AND `tournamentevent`.`eventID`= $eventID AND `tournament`.`notCompetition` = 1";
+	WHERE `student`.`schoolID`=$schoolID AND `student`.`active` = 1 AND `tournamentevent`.`eventID`= $eventID AND `tournament`.`notCompetition` = 1
+	ORDER BY `student`.`last`,`student`.`first`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
