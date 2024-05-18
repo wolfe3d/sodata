@@ -68,10 +68,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 
         if (!$result) {
             error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error . ". At file: " . __FILE__ . " by " . $_SERVER['REMOTE_ADDR']);
+            return(0);
         }
-        echo $query;
-        echo $result;
+        //echo $query;
+        //echo $result;
     }
     //echo $mysqlConn->insert_id;
 }
-echo("Success!");
+//echo("Success!");
+return(1);
