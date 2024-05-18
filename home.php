@@ -8,7 +8,7 @@ $userID = $_SESSION['userData']['userID'];
 function getUpcomingTournamentStudent($db, $userID, $studentID)
 {
 	$date = date('Y-m-d', time());
-	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`
+	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`, `tournament`.`year`
 	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
 	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
 	ORDER BY `dateTournament`";
@@ -22,7 +22,7 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
 			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
-			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID, "");
+			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID, "", $row['year']);
 			$output.="</div>";
 		endwhile;
 	}
