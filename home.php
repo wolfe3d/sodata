@@ -7,7 +7,7 @@ $userID = $_SESSION['userData']['userID'];
 //get upcoming tournament Information for Students
 function getUpcomingTournamentStudent($db, $userID, $studentID)
 {
-	$date = date('Y-m-d', time());
+	$date = date('Ymd', time());
 	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`, `tournament`.`year`
 	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
 	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
@@ -31,11 +31,10 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 //get upcoming tournament Information for Coaches
 function getUpcomingTournamentCoach($db, $schoolID)
 {
-	$date = date('Y-m-d', time());
+	$date = date('Ymd', time());
 	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
 	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament`
-	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' AND `notCompetition` = 0
-	ORDER BY `dateTournament`";
+	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' ORDER BY `dateTournament`";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
 	if($result && mysqli_num_rows($result)>0)
