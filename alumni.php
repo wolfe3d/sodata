@@ -51,7 +51,7 @@ while ($row = $result->fetch_assoc()) {
     $output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])."</div>";
 	if($row['email'])
 	{
-		$output .="<div>Google Email: <a href='mailto: ".$row['email']."'>".$row['email']."</a></div>";
+		$output .="<div>Google Email: <a href='mailto:".$row['email']."'>".$row['email']."</a></div>";
 	}
 	if($row['phone'])
 	{

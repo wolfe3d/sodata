@@ -32,8 +32,8 @@ while ($row = $result->fetch_assoc()) {
     $output .= "<tr>";
     $output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
     $output .= "<td>" . $row["event"] . "</td>";
-    $output .= "<td><a href='mailto: ".$row['email']."'>".$row['email']."</a></td>";
-    $output .= "<td><a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
+    $output .= "<td><a href='mailto:".$row['email']."'>".$row['email']."</a></td>";
+    $output .= "<td><a href='mailto:".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
     $output .= "</tr>";
 
     $emails[] = $row['email'];

@@ -87,7 +87,7 @@ function eventTournamentSchedule($db, $schoolID, $teamID, $tournamenteventID, $e
 					$output.="<tr>";
 					$emailList = implode(';', array_filter($emails)); //array_filter removes null values
 					$schoolEmailList= implode(';', array_filter($schoolEmails)); //array_filter removes null values
-					$output.="<td colspan='2'><a href='mailto: $emailList'>Personal Emails</a>, <a href='mailto: $schoolEmailList'>School Emails</a>, <a href='mailto: $emailList ; $schoolEmailList'>All Emails</a></td>";
+					$output.="<td colspan='2'><a href='mailto:$emailList'>Personal Emails</a>, <a href='mailto:$schoolEmailList'>School Emails</a>, <a href='mailto:$emailList ; $schoolEmailList'>All Emails</a></td>";
 					$output.="</tr>";
 				}*/
 				$output.="</tbody></table>";	
