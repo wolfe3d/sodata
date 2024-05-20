@@ -33,7 +33,7 @@ while ($row = $result->fetch_assoc()) {
 		$output .="<tr><td>".$row['yearGraduating']."</td>";
 	}
     $output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
-    $output .= "<td><a href='mailto: ".$row['email']."'>".$row['email']."</a></td>";
+    $output .= "<td><a href='mailto:".$row['email']."'>".$row['email']."</a></td>";
     $output .= "</tr>";
 
     $emails[] = $row['email'];

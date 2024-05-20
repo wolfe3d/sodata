@@ -433,7 +433,7 @@ function printEmailTable ($db, $query, $eventID, $year, $schoolID)
 					$output .=" *Event Leader";
 				}
 				$output.="</td>";
-				$output.="<td><a href='mailto: ".$row['email']."'>".$row['email']."</a>, <a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
+				$output.="<td><a href='mailto:".$row['email']."'>".$row['email']."</a>, <a href='mailto:".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
 				$output.="</tr>";
 				$emails[] = $row['email'];
 				$schoolEmails[] = $row['emailSchool'];
@@ -764,11 +764,11 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 			$output .= "<tr>";
 			$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
 			$output .= "<td>" . $row["parent1First"] . " " . $row["parent1Last"] ."</td>";
-			$output .= "<td><a href='mailto: ".$row['parent1Email']."'>".$row['parent1Email']."</a></td>";
+			$output .= "<td><a href='mailto:".$row['parent1Email']."'>".$row['parent1Email']."</a></td>";
 			$output .= "</tr><tr>";
 			$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
 			$output .= "<td>" . $row["parent2First"] . " " . $row["parent2Last"] . "</td>";
-			$output .= "<td><a href='mailto: ".$row['parent2Email']."'>".$row['parent2Email']."</a></td>";
+			$output .= "<td><a href='mailto:".$row['parent2Email']."'>".$row['parent2Email']."</a></td>";
 			$output .= "</tr>";
 
 			$emails[] = $row['parent1Email'];
@@ -794,8 +794,8 @@ function getTeamEmails($db, $teamID=NULL, $tournamentID=NULL, $parents)
 		while ($row = $result->fetch_assoc()) {
 			$output .= "<tr>";
 			$output .= "<td>" . $row["first"] . " " . $row["last"] . "</td>";
-			$output .= "<td><a href='mailto: ".$row['email']."'>".$row['email']."</a></td>";
-			$output .= "<td><a href='mailto: ".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
+			$output .= "<td><a href='mailto:".$row['email']."'>".$row['email']."</a></td>";
+			$output .= "<td><a href='mailto:".$row['emailSchool']."'>".$row['emailSchool']."</a></td>";
 			$output .= "</tr>";
 
 			$emails[] = $row['email'];
