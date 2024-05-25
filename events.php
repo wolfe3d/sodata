@@ -34,6 +34,12 @@ userCheckPrivilege(1);
 	</form>
 	<a class='btn btn-secondary' role='button' href='#eventyear-edit-<?=getCurrentSOYear();?>'><span class='bi bi-pencil-square'></span> Edit Year</a>
 	<a class='btn btn-secondary' role='button' href='#events-analysis-<?=getCurrentSOYear();?>'><span class='bi bi-pie-chart'></span> Analysis</a>
+	
+<?php 
+	} 
+	if(userHasPrivilege(2)) {
+?>
+	<a class='btn btn-secondary' role='button' href='#event-attendance-<?=getCurrentSOYear();?>'><span class='bi bi-people-fill'></span> Attendance</a>
 <?php } ?>
 
 <div id="list"></div>
