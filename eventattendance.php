@@ -88,11 +88,13 @@ function getEventLeadingID($db, $studentID)
 	$year = getCurrentSOYear();
 	$query = "SELECT `eventleader`.`eventID` FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID` WHERE `student`.`studentID` = $studentID AND `year` = $year";
 	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	
 	if($result)
 	{
 		$row = $result->fetch_assoc();
+		return $row['eventID'];
 	}
-	return $row['eventID'];
+	return "";
 }
 $eventID = getEventLeadingID($mysqlConn, $studentID);
 $event = getEventLeaderPosition($mysqlConn, $studentID);
@@ -162,4 +164,77 @@ $action = "javascript:addToSubmit('eventattendanceadd.php')";
 			event.preventDefault();
 		}
 	}, false);
+
+	//Adds an additional student to the meeting attendance page
+function eventAttendanceAddStudent(myID) {
+	var selectedID = document.getElementById("studentID").value;
+	var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
+	var firstLast = selectedName.split(', ');
+	var formattedName = firstLast[1] + ' ' + firstLast[0];
+
+	if(selectedID.length === 0)
+	{
+		alert("If you would like to add a student, please select a student to add to the event attendance list.");
+		return;
+	}
+	//check if the new student was already added before
+	if(document.getElementsByName('attendance-').length > 0) 
+	{
+        alert('Student already exists in this meeting!');
+        return;
+    }
+	else
+	{
+		//create a new div with student information
+		if(confirm("Add student: " + formattedName + "?"))
+		{
+			var newStudent = `<div>
+					<h3>${formattedName} (Extra)</h3>
+					<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${selectedID}" id="attendance-${selectedID}-P" value="1" checked>
+					<label class="form-check-label" for="attendance-${selectedID}-P">P</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${selectedID}" id="attendance-${selectedID}-AU" value="0">
+					<label class="form-check-label" for="attendance-${selectedID}-AU">AU</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${selectedID}" id="attendance-${selectedID}-AE" value="-1">
+					<label class="form-check-label" for="attendance-${selectedID}-AE">AE</label>
+				</div>
+				<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${selectedID}" id="engagement-${selectedID}-0" value="0">
+					<label class="form-check-label" for="engagement-${selectedID}-0">0</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${selectedID}" id="engagement-${selectedID}-1" value="1">
+					<label class="form-check-label" for="engagement-${selectedID}-1">1</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${selectedID}" id="engagement-${selectedID}-2" value="2" checked>
+					<label class="form-check-label" for="engagement-${selectedID}-2">2</label>
+				</div>				
+
+				<label class="form-label" for="homework-${selectedID}">Homework: 0 for not submitted, 1 for partially incomplete, 2 for fully complete</label>				
+				<p>Homework: 0 for not submitted, 1 for partially incomplete, 2 for fully complete</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${selectedID}" id="homework-${selectedID}-0" value="0">
+					<label class="form-check-label" for="homework-${selectedID}-0">0</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${selectedID}" id="homework-${selectedID}-1" value="1">
+					<label class="form-check-label" for="homework-${selectedID}-1">1</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${selectedID}" id="homework-${selectedID}-2" value="2" checked>
+					<label class="form-check-label" for="homework-${selectedID}-2">2</label>
+				</div>	
+
+				<hr>`;
+			document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+		}
+	}
+}
 </script>

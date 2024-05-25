@@ -673,48 +673,6 @@ function eventEdit(myID)
 	});
 }
 
-//Adds an additional student to the meeting attendance page
-function eventAttendanceAddStudent(myID) {
-	var selectedID = document.getElementById("studentID").value;
-	var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
-	var firstLast = selectedName.split(', ');
-	var formattedName = firstLast[1] + ' ' + firstLast[0];
-
-	if(selectedID.length === 0)
-	{
-		alert("If you would like to add a student, please select a student to add to the event attendance list.");
-		return;
-	}
-	//check if the new student was already added before
-	if(document.getElementsByName('attendance-').length > 0) 
-	{
-        alert('Student already exists in this meeting!');
-        return;
-    }
-	else
-	{
-		//create a new div with student information
-		if(confirm("Add student: " + formattedName + "?"))
-		{
-			var newStudent = `<div>
-					<h3>${formattedName} (Extra)</h3>
-					<label for="attendance-${selectedID}">Present</label>
-					<p><input type="radio" name="attendance-${selectedID}" value="1"></p>
-					<label for="attendance-${selectedID}">Absent - Unexcused</label>
-					<p><input type="radio" name="attendance-${selectedID}" value="0"></p>
-					<label for="attendance-${selectedID}">Absent - Excused</label>
-					<p><input type="radio" name="attendance-${selectedID}" value="-1" checked></p>
-				</div><div>
-				<label for="engagement-${selectedID}">Engagement - 1 for least, 3 for most</label>
-				<p><input type="range" name="engagement-${selectedID}" min="1" max="3" value="3"></p>
-				<label for="homework-${selectedID}">Homework - 1 for incomplete, 3 for fully complete</label>
-				<p><input type="range" name="homework-${selectedID}" min="1" max="3" value="3"></p></div>
-				<hr>`;
-			document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
-		}
-	}
-}
-
 ///////////////////
 ///Team functions
 //////////////////
