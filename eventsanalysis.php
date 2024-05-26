@@ -1,13 +1,14 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-
+$schoolID = $_SESSION['userData']['schoolID'];
 $output = "";
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 $year =  $year?$year:getCurrentSOYear(); //if 0 is sent, it will be fixed here
 
-function getEventResults($db, $SOyear)
+function getEventResults($SOyear)
 {
+	global $mysqlConn, $schoolID;
 	$SOyear = getIfSet($SOyear, getCurrentSOYear()); //this should not be null, but I included this just in case.
 
 	$rows = [];
@@ -19,14 +20,14 @@ function getEventResults($db, $SOyear)
     ON x.`eventID`= y.`eventID`
     WHERE `eventyear`.`year` = '$SOyear'
 	ORDER BY `event`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
 	endwhile;
 	return $rows;
 }
 
-function printTable($db, $events)
+function printTable($events)
 {
 	$output = "";
 	$notescore = 0;
@@ -49,8 +50,8 @@ function printTable($db, $events)
 
 echo "<h2><span id='myTitle'>Event Analysis - $year</span></h2><div id='note'></div>";
 
-$events = getEventResults($mysqlConn,$year);
-printTable($mysqlConn, $events);
+$events = getEventResults($year);
+printTable($events);
 
 ?>
 <br>

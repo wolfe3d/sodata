@@ -1,12 +1,12 @@
 <?php
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
-
 userCheckPrivilege(3);
 $schoolID = $_SESSION['userData']['schoolID'];
+
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 
 if($studentID)

@@ -51,7 +51,7 @@ else {
 	//check to see if a tournamenttimechosen has used this available time
 	if($table=="tournamenttimeavailable")
 	{
-		if(!tournamentTimeChosenEmpty($mysqlConn, $tournamenteventID, $timeblockID))
+		if(!tournamentTimeChosenEmpty($tournamenteventID, $timeblockID))
 		{
 			exit("There is a timeblock chosen for a team for this event.  You must unselect the time before removing the event.");
 		}

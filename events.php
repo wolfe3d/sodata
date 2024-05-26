@@ -1,6 +1,7 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
+$schoolID = $_SESSION['userData']['schoolID'];
 ?>
 <div>
 <button class="btn btn-secondary" type="button" onclick="javascript:toggleSearch()"><span class='bi bi-search'></span> Find</button> <!-- toggles view of below div -->
@@ -11,10 +12,10 @@ userCheckPrivilege(1);
 			<legend>Find Event by year</legend>
 			<p>
 				<label for="year">Year</label>
-				<?=getSOYears("",1)?>
+				<?=getSOYears("",1, $schoolID)?>
 			</p>
 			<p>
-				<?=getDivisionList($mysqlConn,1)?>
+				<?=getDivisionList(1)?>
 			</p>
 			<p>
 				<button id="searchDbBtn" class="btn btn-primary" type="submit"><span class='bi bi-binoculars'></span> Search</button>

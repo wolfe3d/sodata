@@ -1,11 +1,10 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-
 $myID = intval($_POST['myID']);
-$year = getCurrentSOYear();
 $schoolID = $_SESSION['userData']['schoolID'];
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$year = getCurrentSOYear();
+$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 if($studentID)
 {
@@ -13,10 +12,11 @@ if($studentID)
 }
 
 //get all the tournaments that the student has competed in
-function getStudentsTournamentList($db, $studentID, $schoolID)
+function getStudentsTournamentList($studentID)
 {
+	global $mysqlConn, $schoolID;
 	$query = "SELECT `tournament`.`tournamentID`,`teamName`,`tournamentName`,`dateTournament` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID`  WHERE `student`.`schoolID`=$schoolID AND `student`.`studentID`=$studentID ORDER BY `dateTournament` DESC, `teamName`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="<div id='tournamentDiv'><label for='tournament'>Tournaments</label> ";
 	$output .="<select class='form-select' id='tournament' name='tournament' required>";
 	if($result && mysqli_num_rows($result)>0)
@@ -29,12 +29,13 @@ function getStudentsTournamentList($db, $studentID, $schoolID)
 	return $output;
 }
 
-function getAttendanceTypes($db)
+function getAttendanceTypes()
 {
+	global $mysqlConn;
 	//$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
 	$output = "<select class='form-select' id='meetingType' name='meetingType' required>";
 	$query = "SELECT `meetingtype`.`meetingTypeName`, `meetingtype`.`meetingTypeID` FROM `meetingtype`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc())
 	{
 		$name = $row['meetingTypeName'];
@@ -46,8 +47,9 @@ function getAttendanceTypes($db)
 }
 
 //Repurposed function from eventemails.php - get names of all students on an event and creates attendance table
-function getEventAttendanceTable($db, $schoolID, $eventID)
+function getEventAttendanceTable($eventID)
 {
+	global $mysqlConn, $schoolID;
 	$output = "";
 	$year = getCurrentSOYear();
 	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournament` 
@@ -57,7 +59,7 @@ function getEventAttendanceTable($db, $schoolID, $eventID)
 	INNER JOIN `student` USING (`studentID`) 
 	WHERE `student`.`schoolID`=$schoolID AND `student`.`active` = 1 AND `tournamentevent`.`eventID`= $eventID AND `tournament`.`notCompetition` = 1
 	ORDER BY `student`.`last`,`student`.`first`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		$output.="<div id='studentAttendance'>";
@@ -83,11 +85,12 @@ function getEventAttendanceTable($db, $schoolID, $eventID)
 	}
 	return $output;
 }
-function getEventLeadingID($db, $studentID)
+function getEventLeadingID($studentID)
 {
+	global $mysqlConn;
 	$year = getCurrentSOYear();
 	$query = "SELECT `eventleader`.`eventID` FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID` WHERE `student`.`studentID` = $studentID AND `year` = $year";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	
 	if($result)
 	{
@@ -96,8 +99,8 @@ function getEventLeadingID($db, $studentID)
 	}
 	return "";
 }
-$eventID = getEventLeadingID($mysqlConn, $studentID);
-$event = getEventLeaderPosition($mysqlConn, $studentID);
+$eventID = getEventLeadingID($studentID);
+$event = getEventLeaderPosition($studentID);
 $date = date('Y-m-d');
 $row = NULL; 
 $action = "javascript:addToSubmit('eventattendanceadd.php')";
@@ -106,7 +109,7 @@ $action = "javascript:addToSubmit('eventattendanceadd.php')";
 <form id="addTo" method="post" action="<?=$action?>">
 
 	<label for="meetingType">Meeting Type</label>
-	<?=getAttendanceTypes($mysqlConn)?>
+	<?=getAttendanceTypes()?>
 
 	<label for="meetingName">Event Name</label>
 	<br>
@@ -126,10 +129,10 @@ $action = "javascript:addToSubmit('eventattendanceadd.php')";
 
 	<br>
 	<label for="studentAttendance"></label>
-	<?=getEventAttendanceTable($mysqlConn, $schoolID, $eventID)?>
+	<?=getEventAttendanceTable($schoolID, $eventID)?>
 
 	<label for="student"></label>
-	<?=getAllStudents($mysqlConn,1, $row['studentID'])?>
+	<?=getAllStudents(1, $row['studentID'])?>
 	<button class="btn btn-warning" type="button" onclick="javascript:eventAttendanceAddStudent('<?=$myID?>')"><span class='bi bi-plus-circle'> Add Student</button>
 	
 	<br>

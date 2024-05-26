@@ -11,7 +11,7 @@ if(!isset($row))
 	$row = NULL;
 }
 ?>
-<h3><?=getCurrentSchoolName($mysqlConn, $schoolID)?></h3>
+<h3><?=getCurrentSchoolName($schoolID)?></h3>
 <?php
 if ($editing)
 {
@@ -93,19 +93,19 @@ if (userHasPrivilege(4))
 	</fieldset>
 	<fieldset>
 		<legend>Courses Completed</legend>
-		<div id="coursecompleted"><?= getCourses($mysqlConn, $row['studentID'], "coursecompleted")?></div>
+		<div id="coursecompleted"><?= getCourses($row['studentID'], "coursecompleted")?></div>
 		<div id="addcoursecompletedDiv"></div>
 		<a id="addcoursecompleted" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','coursecompleted')">Add Course Completed</a>
 	</fieldset>
 	<fieldset>
 		<legend>Courses Enrolled (but not completed)</legend>
-		<div id="courseenrolled"><?= getCourses($mysqlConn, $row['studentID'], "courseenrolled")?></div>
+		<div id="courseenrolled"><?= getCourses($row['studentID'], "courseenrolled")?></div>
 		<div id="addcourseenrolledDiv"></div>
 		<a id="addcourseenrolled" class="addCourseBtn" href="javascript:studentCourseAddChoice('<?=$row['studentID']?>','courseenrolled')">Add Course Enrolled</a>
 	</fieldset>
 	<fieldset>
 		<legend>Awards</legend>
-		<div id="awards"><?= getAwards($mysqlConn, $row['studentID'])?></div>
+		<div id="awards"><?= getAwards($row['studentID'])?></div>
 	</fieldset>
 	<?php
 }?>

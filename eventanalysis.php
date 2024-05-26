@@ -4,11 +4,12 @@ require_once  ("php/functions.php");
 userCheckPrivilege(2);
 $schoolID = $_SESSION['userData']['schoolID'];
 
-function getTeamRoster($db, $schoolID)
+function getTeamRoster()
 {
+	global $mysqlConn, $schoolID;
 	//finds the last team used for making a roster (ie notcompetition)
 	$query = "SELECT `tournamentID` FROM `tournament` WHERE `notCompetition` = 1 AND `schoolID`= $schoolID ORDER BY `tournament`.`dateTournament` DESC";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		if ($result->num_rows>0)
@@ -21,10 +22,11 @@ function getTeamRoster($db, $schoolID)
 }
 
 //check to see if the student is signed up for this event on the team or if they filled in
-function onTeamEvent($db, $tournamentID, $studentID, $eventID)
+function onTeamEvent($tournamentID, $studentID, $eventID)
 {
+	global $mysqlConn;
 	$query = "SELECT `student`.`studentID` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `eventID` = $eventID and `tournament`.`tournamentID` = '$tournamentID' and `student`.`studentID` = $studentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		if ($result->num_rows>0)
@@ -36,8 +38,8 @@ function onTeamEvent($db, $tournamentID, $studentID, $eventID)
 }
 
 $eventID = intval($_POST['myID']);
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
-$output = "<h2>".getEventName($mysqlConn,$eventID)." Analysis</h2>";
+$studentID = getStudentID($_SESSION['userData']['userID']);
+$output = "<h2>".getEventName($eventID)." Analysis</h2>";
 
 $output .="<div><a class='btn btn-primary' role='button' href='#event-emails-$eventID' data-toggle='tooltip' data-placement='top' title='Get emails'><span class='bi bi-envelope'> Get Emails</span></a><div>";
 //TODO: ORDER BY Average Score, highest ->lowest
@@ -45,7 +47,7 @@ $output .="<div><a class='btn btn-primary' role='button' href='#event-emails-$ev
 $query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= $schoolID AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`notCompetition`=0 AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last`, `first`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
-$teamRoster = getTeamRoster($mysqlConn, $schoolID);
+$teamRoster = getTeamRoster();
 $studentID = 0;
 $totalPlace = 0;
 $totalScore = 0;
@@ -78,7 +80,7 @@ while ($row = $result->fetch_assoc()):
 
 			$output.= "<h3>".$row['first'] . " " . $row['last']."</h3>";
 			//check to see if the student is assigned to the a team or a fill in
-			if ($teamRoster && !onTeamEvent($mysqlConn, $teamRoster, $studentID, $eventID)) 
+			if ($teamRoster && !onTeamEvent($teamRoster, $studentID, $eventID)) 
 			{
 				$output.= "<div class='alert alert-warning'>This student is not currently assigned to this event in the Team Roster.</div>";
 			}
@@ -120,7 +122,7 @@ $output .="<tbody>";
 $studentNotOnEvent = 0;
 foreach ($students as &$student) {
 	$onEvent = "";
-	if (!onTeamEvent($mysqlConn, $teamRoster, $student['studentID'], $eventID))
+	if (!onTeamEvent($teamRoster, $student['studentID'], $eventID))
 	{
 		$studentNotOnEvent = 1;
 		$onEvent ="*";

@@ -10,7 +10,7 @@ if(empty($tournamenteventID))
 	exit("<div style='color:red'>tournamenteventID is not set.</div>");
 }
 
-if(!tournamentTimeChosenAllEmpty($mysqlConn, $tournamenteventID))
+if(!tournamentTimeChosenAllEmpty($tournamenteventID))
 {
 	exit("There is a timeblock chosen for a team for this event.  You must unselect the time before removing the event.");
 }

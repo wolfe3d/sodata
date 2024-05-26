@@ -4,10 +4,11 @@ userCheckPrivilege(1);
 $schoolID =$_SESSION['userData']['schoolID'] ;
 
 
-function assignmentMade($db, $teamID)
+function assignmentMade($teamID)
 {
+	global $mysqlConn;
 	$query = "SELECT * from `teammateplace` WHERE `teammateplace`.`teamID` = $teamID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(empty($result))
 	{
 		return 0;
@@ -30,7 +31,7 @@ if(empty($result))
 $row = $result->fetch_assoc();
 $numberTeams = $row["numberTeams"];
 $userID = $_SESSION['userData']['userID'];
-$studentID = getStudentID($mysqlConn,$userID);
+$studentID = getStudentID($userID);
 
 //Get number of teams created
 $query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID ORDER BY `teamName`";
@@ -152,17 +153,17 @@ $output .="<div>";
 		}
 		if($studentID)
 		{
-			$heading ="My Schedule (Team ".getStudentTeam($mysqlConn, $tournamentID, $studentID).")";
-			$output.=studentTournamentSchedule($mysqlConn, $tournamentID, $studentID, $heading, $row['year']);
+			$heading ="My Schedule (Team ".getStudentTeam($tournamentID, $studentID).")";
+			$output.=studentTournamentSchedule($tournamentID, $studentID, $heading, $row['year']);
 		}
 
 		if(userHasPrivilege(5) || $published)
 		{
 		while($rowTeam = $resultTeams->fetch_assoc()):
 			$output .="<h2>Team ".$rowTeam['teamName'];
-			if ($row["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+			if ($row["dateTournament"]<=getCurrentTimestamp())
 	 		{
-				$output .=" - " . ordinal($rowTeam['teamPlace']).teamCalculateScoreStr($mysqlConn, $rowTeam['teamID']);
+				$output .=" - " . ordinal($rowTeam['teamPlace']).teamCalculateScoreStr($rowTeam['teamID']);
 			}
 			$output .= "</h2>";
 			$output .="<p><div class='btn-group' role='group' aria-label='Team Buttons'>";
@@ -171,7 +172,7 @@ $output .="<div>";
 				if(userHasPrivilege(4)||!$rowTeam['locked'])
 				{
 					$output .="<a class='btn btn-primary' role='button' href='#tournament-teamedit-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Edit Team ".$rowTeam['teamName'] ."'><span class='bi bi-pencil-square'></span> Edit</a>";
-					if(!assignmentMade($mysqlConn, $rowTeam['teamID'])&&userHasPrivilege(4))
+					if(!assignmentMade($rowTeam['teamID'])&&userHasPrivilege(4))
 					{
 						$output .=" <a class='btn btn-info' role='button' href='#tournament-teampropose-".$rowTeam['teamID']."' data-toggle='tooltip' data-placement='top' title='Possible team assignments'><span class='bi bi-tornado'></span> Propose</a>";
 					}

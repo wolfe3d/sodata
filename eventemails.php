@@ -5,7 +5,7 @@ userCheckPrivilege(1);
 $schoolID = $_SESSION['userData']['schoolID'];
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 if($studentID)
 {
@@ -13,7 +13,7 @@ if($studentID)
 }
 
 //Use Tournament ID to Find Student List
-function getEventStudentListTournament($db, $schoolID, $year, $tournamentID, $eventID)
+function getEventStudentListTournament($year, $tournamentID, $eventID)
 {
 	$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournamentevent`
 	INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
@@ -21,12 +21,13 @@ function getEventStudentListTournament($db, $schoolID, $year, $tournamentID, $ev
 	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
 	WHERE `tournamentevent`.`tournamentID`=$tournamentID AND `tournamentevent`.`eventID`=$eventID
 	ORDER BY `student`.`last`, `student`.`first`";
-	return printEmailTable($db, $query, $eventID, $year, $schoolID);
+	return printEmailTable($query, $eventID, $year);
 }
 
 //Print All students that have competed in an event by this year, exclude graduated students
-function getEventStudentListAllCompetitors($db, $schoolID, $eventID)
+function getEventStudentListAllCompetitors($eventID)
 {
+	global $schoolID;
 	$year = getCurrentSOYear();
 	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournament` 
 	INNER JOIN `tournamentevent` USING (`tournamentID`) 
@@ -34,27 +35,38 @@ function getEventStudentListAllCompetitors($db, $schoolID, $eventID)
 	INNER JOIN `teammateplace` USING (`tournamenteventID`) 
 	INNER JOIN `student` USING (`studentID`) 
 	WHERE `student`.`schoolID`=$schoolID AND `student`.`active` = 1 AND `tournamentevent`.`eventID`=$eventID AND `tournament`.`notCompetition`=0 AND `student`.`yearGraduating` <= $year";
-	return printEmailTable($db, $query, $eventID, $year, $schoolID);
+	return printEmailTable($query, $eventID, $year);
 }
 
+//get latest team schedule - also known as the notCompetition Tournament.
+function getLatestTournamentNCSchoolID($year)
+{
+	global $mysqlConn, $schoolID;
+	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament`
+	WHERE `tournament`.`schoolID`= $schoolID AND `tournament`.`year` = $year AND `notCompetition`=1 AND `published`=1
+	ORDER BY `dateTournament` DESC";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output = $result->fetch_assoc();
+	}
+	return $output;
+}
 
-$eventName = getEventName($mysqlConn,$eventID);
+$eventName = getEventName($eventID);
 $output="<h2>$eventName</h2>";
 
 //Find Roster tournaments (not competitions)
-$tournamentIDs=getYearTeamTournaments($mysqlConn, $schoolID, $year);
-if($tournamentIDs)
+$tournament=getLatestTournamentNCSchoolID($schoolID, $year);
+if($tournament)
 {
-    //print each noncompetition tournament event members
-	for ($i=0; $i<count($tournamentIDs); $i++)
-	{
-		$output .= "<h3>". $tournamentIDs[$i]["name"] ."</h3>";
-		$output .= getEventStudentListTournament($mysqlConn,$schoolID, $year, $tournamentIDs[$i]["id"],$eventID);
-	}
+    $output .= "<h3>". $tournament["tournamentName"] ."</h3>";
+	$output .= getEventStudentListTournament($year, $tournament['tournamentID'],$eventID);
 }
 
 //Print all students who have competed even those not assigned to the event
-$allcompetitors = getEventStudentListAllCompetitors($mysqlConn, $schoolID, $eventID);
+$allcompetitors = getEventStudentListAllCompetitors($eventID);
 if($allcompetitors)
 {
     $output .= "<h3>All Active Students that have Competed in this Event</h3>";

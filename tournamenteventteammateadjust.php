@@ -63,7 +63,7 @@ else {
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {
-	teamCalculateScore($mysqlConn, $teamID);
+	teamCalculateScore($teamID);
 	exit('1');
 }
 else

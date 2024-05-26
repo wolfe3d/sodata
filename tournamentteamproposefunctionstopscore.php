@@ -1,6 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
+$schoolID = $_SESSION['userData']['schoolID'];
 
 $output = "";
 $teamID = intval($_POST['myID']);
@@ -15,8 +16,9 @@ if(empty($teamID))
 
 
 //find students and order by best score for event (not average best score)
-function makeStudentArrayTopScore($db, $thisYear, $teamID)
+function makeStudentArrayTopScore($thisYear, $teamID, $schoolID)
 {
+	global $mysqlConn;
 	$whereClause = "";
 	if($thisYear)
 	{
@@ -36,11 +38,11 @@ function makeStudentArrayTopScore($db, $thisYear, $teamID)
 		AND `score` IS NOT NULL
 		GROUP BY `teammate`.`studentID`,`tournamentevent`.`eventID`
 		ORDER BY note DESC";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	while($row = $result->fetch_assoc()):
 		array_push($rows, $row);
 	endwhile;
 	return $rows;
 }
 
-print json_encode(makeStudentArrayTopScore($mysqlConn, $thisYear, $teamID));
+print json_encode(makeStudentArrayTopScore($thisYear, $teamID, $schoolID));

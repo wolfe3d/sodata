@@ -92,7 +92,7 @@ echo $output;
 <br>
 <div id='myTitle'><?=$tournamentRow['tournamentName']?> - <?=$tournamentRow['year']?></div>
 
-<p><?=getEventList($mysqlConn, 0,"Add Other Events")?></p>
+<p><?=getEventList(0,"Add Other Events")?></p>
 <p><button class='btn btn-primary' type='button' onclick='javascript:tournamentEventsAdd(<?=$tournamentID?>)'><span class='bi bi-plus-circle'></span> Add</button></p>
 
 <p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>

@@ -7,7 +7,7 @@ userCheckPrivilege(3);
 $schoolID = $_SESSION['userData']['schoolID'];
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 
 if($studentID)

@@ -9,18 +9,20 @@ $schoolID = $_SESSION['userData']['schoolID'];
 	*Error if over 15 students OR over 7 seniors
 */
 
-function assignedToTeam($db, $teamID, $studentID)
+function assignedToTeam($teamID, $studentID)
 {
+	global $mysqlConn;
 	//$query = "SELECT * FROM `teammate` INNER JOIN `team` ON `teammate`.`teamID`=`team`.`teamID` WHERE `teammate`.`teamID` = $teamID";
 	$query = "SELECT * FROM `teammate` WHERE `teamID` =  $teamID AND `studentID` = $studentID" ;
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	return mysqli_num_rows($result);
 }
-function assignedToOtherTeam($db, $tournamentID, $studentID)
+function assignedToOtherTeam($tournamentID, $studentID)
 {
+	global $mysqlConn;
 	//$query = "SELECT * FROM `teammate` INNER JOIN `team` ON `teammate`.`teamID`=`team`.`teamID` WHERE `teammate`.`teamID` = $teamID";
 	$query = "SELECT * FROM `teammate` INNER JOIN `team` ON `teammate`.`teamID`=`team`.`teamID` WHERE `team`.`tournamentID` =  $tournamentID AND `studentID` = $studentID" ;
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$row = $result->fetch_assoc();
 	if(empty($row))
 	{
@@ -55,12 +57,12 @@ if($resultStudent){
 		//$query = "SELECT * FROM `teammate` WHERE `teamID` =  $teamID AND `studentID` = ".$rowStudent['studentID'] ;
 		//$resultTeammate= $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		//if there is a result then make box checked, if not do not check box.
-		$checked = assignedToTeam($mysqlConn, $teamID, $rowStudent['studentID'])?" checked ":"";
+		$checked = assignedToTeam($teamID, $rowStudent['studentID'])?" checked ":"";
 		$assigned = "";
 		$disabled = "";
 		if (!$checked)
 		{
-			$assigned = assignedToOtherTeam($mysqlConn, $tournamentID, $rowStudent['studentID']);
+			$assigned = assignedToOtherTeam($tournamentID, $rowStudent['studentID']);
 			if($assigned)
 			{
 				$disabled = " disabled='disabled' ";
@@ -80,7 +82,7 @@ if($resultStudent){
 	</p>
 	<?php 
 	
-	if (!$row['notCompetition'] && $row["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+	if (!$row['notCompetition'] && $row["dateTournament"]<=getCurrentTimestamp())
 	{
 
 	?>
@@ -91,7 +93,7 @@ if($resultStudent){
 	<?php } ?>
 
 	<p id="tournamentTeamp">
-			<?=getTeamList($mysqlConn, $schoolID, $tournamentID, "Select Students from a Previous Tournament")?>
+			<?=getTeamList($tournamentID, "Select Students from a Previous Tournament")?>
 		<input class="btn btn-primary" role="button" type="button" onclick="javascript:teamCopy(<?=$teamID?>)" value="Copy Team" />
 	</p>
 

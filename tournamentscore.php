@@ -16,13 +16,13 @@ if(empty($tournamentID))
 	echo "<div style='color:red'>teamID is not set.</div>";
 	exit();
 }
-$output .="<h2>".getTournamentName($mysqlConn, $tournamentID)."</h2>";
+$output .="<h2>".getTournamentName($tournamentID)."</h2>";
 $output .="<h3>Tournament Teammate Placement and Score</h3>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 //scores are calculated in functionstournament
 $output .="<p class='text-warning'>Current Formula for = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100</p>";
 //check to see if this tournament has placements
-if(!checkPlacements($mysqlConn, $tournamentID))
+if(!checkPlacements($tournamentID))
 {
 	if(userHasPrivilege(3))
 	{
@@ -36,16 +36,16 @@ if(!checkPlacements($mysqlConn, $tournamentID))
 }
 else
 {
-	$tournamentPlacements = getPlacements($mysqlConn, $tournamentID);
+	$tournamentPlacements = getPlacements($tournamentID);
 	//print_r ($tournamentPlacements);
-	$events = getEvents($mysqlConn, $tournamentID);
+	$events = getEvents($tournamentID);
 	//print_r ($events);
-	$students = getStudents($mysqlConn, $tournamentID);
+	$students = getStudents($tournamentID);
 	//print_r ($students);
 	$tallyPlaces = [0,0,0,0,0,0];
 
-	$tournamentWeight = getTournamentWeight($mysqlConn, $tournamentID);
-	$teamsAttended = getTournamentTeamsAttended($mysqlConn, $tournamentID);
+	$tournamentWeight = getTournamentWeight($tournamentID);
+	$teamsAttended = getTournamentTeamsAttended($tournamentID);
 	calculateScores($students, $tournamentPlacements, $events, $tournamentWeight, $teamsAttended);
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";

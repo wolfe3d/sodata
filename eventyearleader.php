@@ -24,7 +24,7 @@ if($result){
 <form id="addLeader" method="post" action="eventyearleaderadd.php" class="modal">
 <h2><?=$prefix?> Leader to <span id="eventName"><?=$row['event']?> in <span id="year"><?=$row['year']?></span></h2>
 	<div id="students">
-		<?=getAllStudents($mysqlConn,1,$row['studentID'])?>
+		<?=getAllStudents(1,$row['studentID'])?>
 	</div>
 	<br>
 	<div>

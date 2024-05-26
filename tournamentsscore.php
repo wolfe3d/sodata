@@ -21,27 +21,28 @@ $returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.histo
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 
-function getAllStudentsParticipated($db, $year)
+function getAllStudentsParticipated($year)
 {
-//Inactive students are not shown.  Students who are marked active, but students who have not competed are shown.
-$students=[];
-$schoolID = $_SESSION['userData']['schoolID'];
-$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=".$year." AND `student`.`active`=1 AND `student`.`schoolID`=".$schoolID;
-$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-if($result->num_rows){
-	while ($row = $result->fetch_assoc()):
-		array_push($students, $row);
-	endwhile;
-	return $students;
-}
-return FALSE;
+	global $mysqlConn, $schoolID;
+	//Inactive students are not shown.  Students who are marked active, but students who have not competed are shown.
+	$students=[];
+	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=".$year." AND `student`.`active`=1 AND `student`.`schoolID`=$schoolID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		while ($row = $result->fetch_assoc()):
+			array_push($students, $row);
+		endwhile;
+		return $students;
+	}
+	return FALSE;
 }
 
-function checkScores($db,$tournamentID)
+function checkScores($tournamentID)
 {
+	global $mysqlConn;
 	//Get teammateplace
 	$query = "SELECT `score`.`tournamentID` FROM `score` WHERE `score`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		//echo "number of rows". $resultTournament->num_rows;
 		return TRUE;
@@ -49,12 +50,13 @@ function checkScores($db,$tournamentID)
 	return FALSE;
 }
 
-function getScores($db,$tournamentID)
+function getScores($tournamentID)
 {
+	global $mysqlConn;
 	//Get teammateplace
 	$scores = [];
 	$query = "SELECT * FROM `score` WHERE `score`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
 				array_push($scores, $row);
@@ -64,12 +66,13 @@ function getScores($db,$tournamentID)
 	return FALSE;
 }
 
-function getPlaces($db,$tournamentID)
+function getPlaces($tournamentID)
 {
+	global $mysqlConn;
 	//Get teammateplace
 	$places = [];
 	$query = "SELECT * FROM `teammateplace` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` WHERE `team`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
 				array_push($places, $row);
@@ -80,15 +83,16 @@ function getPlaces($db,$tournamentID)
 }
 
 //get tournaments
-function getTournaments($db, $year)
+function getTournaments($year)
 {
+	global $mysqlConn;
 	$tournaments = [];
 	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament` WHERE `tournament`.`year`=$year ORDER BY `dateTournament`";
-	$resultTournament = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultTournament = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
-			if(checkScores($db, $row['tournamentID']))
+			if(checkScores($row['tournamentID']))
 			{
 				array_push($tournaments, $row);
 			}
@@ -99,8 +103,9 @@ function getTournaments($db, $year)
 }
 
 //get tournaments
-function calculateOverallScores($db, &$students, $tournaments)
+function calculateOverallScores(&$students, $tournaments)
 {
+	global $mysqlConn;
 	foreach ($students as &$student)
 	{
 			$totalScore = 0;
@@ -112,7 +117,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 			foreach ($tournaments as $tournament)
 			{
 				$scoreStudent = "";
-				$scores = getScores($db, $tournament['tournamentID']);
+				$scores = getScores($tournament['tournamentID']);
 				$numEvents = 0;
 				foreach ($scores as $score)
 				{
@@ -126,7 +131,7 @@ function calculateOverallScores($db, &$students, $tournaments)
 						$totalEvents +=	$numEvents;
 					}
 				}
-				$teammateplaces = getPlaces($db, $tournament['tournamentID']);
+				$teammateplaces = getPlaces($tournament['tournamentID']);
 				foreach ($teammateplaces as $place)
 				{
 					if ($place['studentID']==$student['studentID']&&$tournament['tournamentID']==$place['tournamentID'])
@@ -163,15 +168,15 @@ function calculateOverallScores($db, &$students, $tournaments)
 			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 		}
 }
-	$students = getAllStudentsParticipated($mysqlConn, $year);
+	$students = getAllStudentsParticipated($year);
 	if (!$students)
 	{
 		exit ("No scores recorded for year $year");
 	}
 	//print_r ($tournamentPlacements);
-	$tournaments = getTournaments($mysqlConn, $year);
+	$tournaments = getTournaments($year);
 	//print_r ($events);
-	calculateOverallScores($mysqlConn, $students, $tournaments);
+	calculateOverallScores($students, $tournaments);
 	calculateTeamRanking($students);
 
 	$output .="<table id='tournamentTable' class='tournament table table-hover'>";

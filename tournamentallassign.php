@@ -12,8 +12,9 @@ if(empty($tournamentID))
 $mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
 
 //Get timeBlock Tournament Schedule for all Teams
-function timeBlockTournamentScheduleAll($db, $tournamentID, $timeBlockID, $year)
+function timeBlockTournamentScheduleAll($tournamentID, $timeBlockID, $year)
 {
+	global $mysqlConn;
 	$schedule="";
 	$query = "SELECT DISTINCT `timeblock`.`timeblockID`,`event`.`eventID`, `tournamentevent`.`tournamenteventID`, `event`.`eventID`, `event`.`event`,`tournamentevent`.`note`,`timeblock`.`timeStart`,`timeblock`.`timeEnd`,`team`.`teamID`, `team`.`teamName` FROM `tournamenttimechosen`
 	INNER JOIN `tournamentevent` on `tournamenttimechosen`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
@@ -22,7 +23,7 @@ function timeBlockTournamentScheduleAll($db, $tournamentID, $timeBlockID, $year)
     INNER JOIN `team` on `tournamenttimechosen`.`teamID` = `team`.`teamID`
 	where `tournamenttimechosen`.`timeblockID` = $timeBlockID
 	order by `event`.`event`, `team`.`teamName`";
-	$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && $result->num_rows > 0){
 		$firstRow = 1;
 		while ($row = $result->fetch_assoc()):
@@ -37,7 +38,7 @@ function timeBlockTournamentScheduleAll($db, $tournamentID, $timeBlockID, $year)
 			$schedule.="<td><div><strong>".$row['event']."</strong>".
 			"</div><div>".$row['note']."</div></td>";
             $schedule.="<td>".$row['teamName']."</td>";
-			$schedule.="<td>".partnersWithEmails($db,$row['tournamenteventID'], $row['teamID'], $year)."</td>";
+			$schedule.="<td>".partnersWithEmails($row['tournamenteventID'], $row['teamID'], $year)."</td>";
 			$schedule.="</tr>";
 		endwhile;
 		$schedule.="</tbody></table>";
@@ -47,8 +48,9 @@ function timeBlockTournamentScheduleAll($db, $tournamentID, $timeBlockID, $year)
 }
 
 //Find the list of Events for the All teams at the tournament
-function eventTournamentScheduleAll($db, $schoolID, $tournamentID, $year, $tournamenteventID, $eventID)
+function eventTournamentScheduleAll($tournamentID, $year, $tournamenteventID, $eventID)
 {
+	global $mysqlConn, $schoolID;
 	$query = "SELECT `team`.`teamID`, `team`.`teamName`,`timeblock`.`timeStart`, `timeblock`.`timeEnd` FROM `tournamentevent`
 	INNER JOIN `tournament` ON `tournamentevent`.`tournamentID`=`tournament`.`tournamentID`
     INNER JOIN `team` ON `tournament`.`tournamentID`=`team`.`tournamentID`
@@ -57,8 +59,8 @@ function eventTournamentScheduleAll($db, $schoolID, $tournamentID, $year, $tourn
 	WHERE `tournament`.`tournamentID` = $tournamentID AND `tournamentevent`.`tournamenteventID`= $tournamenteventID
 	ORDER BY `team`.`teamName`";
 		$output="";
-		$result = $db->query($query) or print("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-        $leaderIDs = getEventLeaderIDs($db, $eventID, $year, $schoolID);
+		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+        $leaderIDs = getEventLeaderIDs($eventID, $year);
 		if($result)
 		{
 			$rows = $result->num_rows;
@@ -73,7 +75,7 @@ function eventTournamentScheduleAll($db, $schoolID, $tournamentID, $year, $tourn
 					}
 					$output.="<tr>";
                     $output .="<td>".$row['teamName']."</td>";
-                    $output.="<td>".partnersWithEmails($db,$tournamenteventID, $row['teamID'], $year, $eventID)."</td>";
+                    $output.="<td>".partnersWithEmails($tournamenteventID, $row['teamID'], $year, $eventID)."</td>";
                     $time = date("g:iA",strtotime($row["timeStart"]))." - ".date("g:iA",strtotime($row["timeEnd"])) . ", " . date("F j, Y",strtotime($row["timeStart"])) ;
                     $output.="<td>$time</td>";
                     $output.="</tr>";
@@ -287,7 +289,7 @@ if(!$mobile)
 		$output .="</tr>";
 
 		//if this is a competitive tournament, enter/show placements here.  If this "tournament" is just for diplaying a team assignment, hide this.
-		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp())
 		{
 			//print the place for each event
 			$output .="<tr class='placementRow'><td colspan='2'>Place</td>";
@@ -328,7 +330,7 @@ if(!$mobile)
 		//end table
 		$output .="</tfoot></table>";
 		//allow editing of team placement
-		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp($mysqlConn))
+		if(!$rowTeam['notCompetition'] && $rowTeam["dateTournament"]<=getCurrentTimestamp())
 		{
 		$place = $rowTeam["teamPlace"];
 		$score = $rowTeam["teamScore"];
@@ -381,7 +383,7 @@ else {
 			$output .="<div>";
 			$heading = $row['last'] . ", " . $row['first'] . " (Team " . $row['teamName'] .")";
 			//$output .= "<div>" . $heading . "</div>";
-			$output .=studentTournamentSchedule($mysqlConn, $tournamentID, $row['studentID'], $heading, $rowTournament['year']);
+			$output .=studentTournamentSchedule($tournamentID, $row['studentID'], $heading, $rowTournament['year']);
 			$output .="</div>";
 		endwhile;
 		$output .="</div>";
@@ -400,10 +402,10 @@ else {
 		while ($row = $result->fetch_assoc()):
 			$output .="<div>";
 			//$output .=$row['timeStart'];
-			$output .=timeBlockTournamentScheduleAll($mysqlConn, $tournamentID, $row['timeblockID'], $row['year']);
+			$output .=timeBlockTournamentScheduleAll($tournamentID, $row['timeblockID'], $row['year']);
 
 			//$heading = $row['last'] . ", " . $row['first'];
-			//$output .=studentTournamentSchedule($mysqlConn, $rowTeam['tournamentID'], $row['studentID'], $heading);
+			//$output .=studentTournamentSchedule($rowTeam['tournamentID'], $row['studentID'], $heading);
 			$output .="</div>";
 		endwhile;
 		$output .="</div>";
@@ -423,7 +425,7 @@ else {
 			$output .="<div>";
 			$output .="<h3>".$row['event']."</h3>";
 			$output .="<div>".$row['note']."</div>";
-			$output .=eventTournamentScheduleAll($mysqlConn, $schoolID, $tournamentID, $rowTournament['year'], $row['tournamenteventID'], $row['eventID']);
+			$output .=eventTournamentScheduleAll($tournamentID, $rowTournament['year'], $row['tournamenteventID'], $row['eventID']);
 			$output .="</div>";
 		endwhile;
 		$output .="</div>";
@@ -433,8 +435,8 @@ else {
 /*
 if(userHasPrivilege(3))
 {
-	if($rowTeam["dateTournament"]>getCurrentTimestamp($mysqlConn)){
-		$output .="<div id='tournamentTeamCopy'>".getTeamList($mysqlConn, $schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
+	if($rowTeam["dateTournament"]>getCurrentTimestamp()){
+		$output .="<div id='tournamentTeamCopy'>".getTeamList($schoolID, $rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
 			"<input class='btn btn-primary' role='button' type='button' onclick='javascript:teamCopyAssignments($teamID)' value='Copy Event Assignments' /><br><br></div>";
 	}
 }*/

@@ -1,6 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(1);
+$schoolID = $_SESSION['userData']['schoolID'];
 
 //text output
 $output = "";
@@ -91,12 +92,12 @@ if($result)
 		$output .=userHasPrivilege(4)?"<a class='btn btn-warning' role='button' href='#student-edit-".$row['studentID']."'><span class='bi bi-pencil-square'></span> Edit</a>":"";
 		$output .= userHasPrivilege(5)?" <a class='btn btn-danger btn-sm' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
 		$output .= "</div>";
-		$officerPos = getOfficerPosition($mysqlConn,$row['studentID']);
+		$officerPos = getOfficerPosition($row['studentID']);
 		if($officerPos)
 		{
 			$output .="<h4>Officer: $officerPos</h4>";
 		}
-		$eventLeaderPos = getEventLeaderPosition($mysqlConn,$row['studentID'],$year);
+		$eventLeaderPos = getEventLeaderPosition($row['studentID'],$year);
 		if($eventLeaderPos)
 		{
 			$output .="<h4>Leading Event(s): $eventLeaderPos</h4>";

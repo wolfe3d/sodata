@@ -1,6 +1,8 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
+$schoolID = $_SESSION['userData']['schoolID'];
+
 //text output
 $output = "";
 

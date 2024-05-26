@@ -1,4 +1,6 @@
 <?php
+require_once  ("../connectsodb.php");
+
 function calculateScore($eventPlace, $eventWeight, $tournamentWeight, $teamsAttended)
 {
 	//formula for scoring here
@@ -12,11 +14,12 @@ function calculateScore($eventPlace, $eventWeight, $tournamentWeight, $teamsAtte
 }
 
 //finds if placements have been added, so that a score may be calculated
-function checkPlacements($db,$tournamentID)
+function checkPlacements($tournamentID)
 {
+	global $mysqlConn;
 	//Get teammateplace
 	$query = "SELECT `teammateplace`.`studentID` FROM `teammateplace` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` WHERE `team`.`tournamentID` = $tournamentID AND `teammateplace`.`place` IS NOT NULL";
-	$resultTournament = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$resultTournament = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($resultTournament->num_rows){
 		//echo "number of rows". $resultTournament->num_rows;
 		return TRUE;
@@ -24,12 +27,13 @@ function checkPlacements($db,$tournamentID)
 	return FALSE;
 }
 //get the student placements from this tournament
-function getPlacements($db,$tournamentID)
+function getPlacements($tournamentID)
 {
+	global $mysqlConn;
 	$placements = [];
 	//Get teammateplace
 	$query = "SELECT DISTINCT `teammateplace`.`studentID`, `student`.`last`, `student`.`first`, `teammateplace`.`place`, `team`.`teamName`, `event`.`event`, `tournamentevent`.`tournamenteventID` FROM `teammateplace` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID`=`tournamentevent`.`tournamenteventID` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `team`.`tournamentID` = $tournamentID AND `teammateplace`.`place` IS NOT NULL ORDER BY `student`.`last`, `student`.`first`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
 			array_push($placements, $row);
@@ -40,11 +44,12 @@ function getPlacements($db,$tournamentID)
 }
 
 //get students who competed in this tournament
-function getStudents($db,$tournamentID)
+function getStudents($tournamentID)
 {
+	global $mysqlConn;
 	$output = [];
 	$query = "SELECT DISTINCT `student`.`studentID`,`student`.`yearGraduating`,`student`.`last`, `student`.`first`  FROM `student` INNER JOIN `teammateplace` ON `teammateplace`.`studentID`=`student`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID` WHERE `team`.`tournamentID` = $tournamentID ORDER BY `student`.`last`, `student`.`first`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
 			array_push($output, $row);
@@ -55,18 +60,19 @@ function getStudents($db,$tournamentID)
 }
 
 //get events for this tournament
-function getEvents($db,$tournamentID)
+function getEvents($tournamentID)
 {
+	global $mysqlConn;
 	$output = [];
 	$query = "SELECT DISTINCT `tournamentevent`.`tournamenteventID`, `tournamentevent`.`weight`, `event`.`event` FROM `tournamentevent` INNER JOIN `event` ON `tournamentevent`.`eventID`=`event`.`eventID` WHERE `tournamentevent`.`tournamentID` = $tournamentID ORDER BY `event`.`event`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
 			//set default weightings into the table
 			if (!$row['weight'])
 			{
 				$query = "UPDATE `tournamentevent` SET `weight` = '".$row['weightingDefault']."' WHERE `tournamentevent`.`tournamenteventID` = ".$row['tournamenteventID'];
-				$resultI = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+				$resultI = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 				$row['weight']=$row['weightingDefault'];
 			}
 			//push the event
@@ -78,11 +84,12 @@ function getEvents($db,$tournamentID)
 }
 
 //get tournament weight
-function getTournamentWeight($db,$tournamentID)
+function getTournamentWeight($tournamentID)
 {
+	global $mysqlConn;
 	$output = "";
 	$query = "SELECT `tournament`.`weight` FROM `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		if ($row = $result->fetch_assoc()){
 			//set default weightings into the table
@@ -93,11 +100,12 @@ function getTournamentWeight($db,$tournamentID)
 }
 
 //get number of teams competing in tournament
-function getTournamentTeamsAttended($db,$tournamentID)
+function getTournamentTeamsAttended($tournamentID)
 {
+	global $mysqlConn;
 	$output = "";
 	$query = "SELECT `tournament`.`teamsAttended` FROM `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		if ($row = $result->fetch_assoc()){
 			//set default weightings into the table
@@ -108,11 +116,12 @@ function getTournamentTeamsAttended($db,$tournamentID)
 }
 
 //get tournament weight
-function getTournamentName($db,$tournamentID)
+function getTournamentName($tournamentID)
 {
+	global $mysqlConn;
 	$output = "";
 	$query = "SELECT `tournament`.`tournamentName` FROM `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		if ($row = $result->fetch_assoc()){
 			//set default weightings into the table
@@ -192,10 +201,11 @@ function calculateTeamRanking(&$students)
 	}
 }
 
-function tournamentTimeChosenEmpty($db, $tournamenteventID,$timeblockID)
+function tournamentTimeChosenEmpty($tournamenteventID,$timeblockID)
 {
+	global $mysqlConn;
 	$query = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` = '$tournamenteventID' AND `timeblockID` = '$timeblockID';";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($result && $result->num_rows > 0)
 	{
@@ -204,10 +214,11 @@ function tournamentTimeChosenEmpty($db, $tournamenteventID,$timeblockID)
 	return true;
 }
 
-function tournamentTimeChosenAllEmpty($db, $tournamenteventID)
+function tournamentTimeChosenAllEmpty($tournamenteventID)
 {
+	global $mysqlConn;
 	$query = "SELECT * FROM `tournamenttimechosen` WHERE `tournamenteventID` = '$tournamenteventID';";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($result && $result->num_rows > 0)
 	{

@@ -1,6 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
+$schoolID = $_SESSION['userData']['schoolID'];
 
 $year = intval($_POST['myID']);
 if(empty($year))
@@ -11,11 +12,11 @@ if(empty($year))
 <form id="addTo" method="post" action="javascript:addToSubmit('officeradd.php')">
 	<p>
 		<label for="year">Year</label>
-		<?=getSOYears($year)?>
+		<?=getSOYears($year, 0, $schoolID)?>
 	</p>
 	<p id="eventsP">
 		<label for="student">Student</label>
-		<?=getAllStudents($mysqlConn,1, NULL)?>
+		<?=getAllStudents(1, NULL)?>
 	</p>
 	<p>
 		<label for="position">Assign Position</label>

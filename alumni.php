@@ -5,7 +5,7 @@ userCheckPrivilege(3);
 $schoolID = $_SESSION['userData']['schoolID'];
 
 $year = getCurrentSOYear();
-$studentID = getStudentID($mysqlConn, $_SESSION['userData']['userID']);
+$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 if($studentID)
 {
@@ -38,12 +38,12 @@ while ($row = $result->fetch_assoc()) {
     }
     $output .= userHasPrivilege(5)?" <a class='btn btn-danger btn-sm' role='button' href='javascript:studentRemove(" . $row['studentID'] . ",\"" . $row['first']." ".$row['last'] . "\")'><span class='bi bi-eraser'></span> Remove</a>":"";
     $output .= "</div>";
-    $officerPos = getOfficerPositionPrevious($mysqlConn,$row['studentID']);
+    $officerPos = getOfficerPositionPrevious($row['studentID']);
     if($officerPos)
     {
         $output .="<h4>Officer: $officerPos</h4>";
     }
-    $eventLeaderPos = getEventLeaderPositionPrevious($mysqlConn,$row['studentID'],$row['yearGraduating']);
+    $eventLeaderPos = getEventLeaderPositionPrevious($row['studentID'],$row['yearGraduating']);
     if($eventLeaderPos)
     {
         $output .="<h4>Led Event(s): $eventLeaderPos</h4>";

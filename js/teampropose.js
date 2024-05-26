@@ -256,7 +256,7 @@ function getStudentGrade(yearGraduating, monthGraduating=6)
 }
 
 //finds the unique number of seniors in the list
-function countSeniorTotal(studentList)
+function countSeniorTotal(studentList, $schoolID)
 {
 	let studentIDs =[];
 	let thisYear = "";
@@ -638,7 +638,7 @@ function myTeammateByTopScore(teammate, i, timeblocks, studentTable, timeblockTa
 
 	if((totalStudents < 15 && (!isSenior || totalSeniors < 7 )) || studentAssigned)
 	{
-		console.log("...attempting to add event: " + teammate.event + ".");//+ getEventName($db,$teammate['eventID']) + ".");
+		console.log("...attempting to add event: " + teammate.event + ".");//+ getEventName($teammate['eventID']) + ".");
 		//get number of students assigned to this event
 		let countAssigned = countStudentsInEvent(resultsTable,teammate.eventID);
 		//check to see if this person has already been assigned to this event
@@ -828,7 +828,7 @@ function myTeammateByBruteForce(studentList, i, r, teammate, timeblocks, student
 
 	if((totalStudents < 15 && (!isSenior || totalSeniors < 7 )) || studentAssigned)
 	{
-		//console.log("...attempting to add event: " + teammate.event + ".");//+ getEventName($db,$teammate['eventID']) + ".");
+		//console.log("...attempting to add event: " + teammate.event + ".");//+ getEventName($teammate['eventID']) + ".");
 		//get number of students assigned to this event
 		let countAssigned = countStudentsInEvent(resultsTable,teammate.eventID);
 		//check to see if this person has already been assigned to this event
@@ -1148,29 +1148,6 @@ function printTable(divID, tableName, studentTable, timeblockTable, resultsTable
 //print the total signed up for each event
 let errorSeniors = totalSeniors > 7 ? "<span class='error'>Too many</span>":"";
 output +="</tbody><tfoot><tr><td><strong>"+studentTable.length+"</strong> Total Teammates</td><td><strong>"+totalSeniors+"</strong> Seniors "+errorSeniors+"</td>";
-/*
-foreach ($timeblocks as $i=>$timeblock) {
-$timeEvents = $timeblock['eventNumber'];
-$queryEvents = "SELECT DISTINCT `event`.`eventID`, `event`, `tournamenteventID`,`numberStudents` FROM `$resultsTableName` INNER JOIN `event` ON `$resultsTableName`.`eventID`=`event`.`eventID` WHERE `timeblockID`= ".$timeblock['timeblockID']." ORDER BY `event` ASC";
-$resultEvents = $db->query($queryEvents) or error_log("\n<br />Warning: query failed:$queryEvents. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-while ($rowEvent = $resultEvents->fetch_assoc()):
-//put a border around each color
-if($timeEvents == $timeblock['eventNumber'])
-{
-$border = "border-left:2px solid black; ";
-}
-else
-{
-$border = "";
-}
-$timeEvents -=1;
-$countEvent = tempResultEventTotal($db,$resultsTableName,$rowEvent['eventID']);
-$class = $rowEvent['numberStudents']>$countEvent?"warning":"";
-$warningText = $rowEvent['numberStudents']>$countEvent?"***Too Few":"";
-$output .= "<td data-eventmax='".$rowEvent['numberStudents']."' class='$class' id='eventtotal-".$rowEvent['tournamenteventID']."' style='$border background-color:".rainbow($i)."'>$countEvent $warningText</td>";
-endwhile;
-}
-*/
 output +="</tr>";
 
 output +="</tfoot></table></form>";

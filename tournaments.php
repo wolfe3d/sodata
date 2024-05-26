@@ -1,6 +1,7 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
+$schoolID = $_SESSION['userData']['schoolID'];
 $row = null;
 ?>
 <div>
@@ -15,7 +16,7 @@ $row = null;
 			</p>
 			<p>
 				<label for="year">Tournament Year</label>
-				<?=getSOYears("",1)?>
+				<?=getSOYears("",1, $schoolID)?>
 					 <span style="color:blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>

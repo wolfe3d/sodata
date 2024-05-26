@@ -4,10 +4,11 @@ require_once  ("php/functions.php");
 userCheckPrivilege(3);
 
 
-function getTeamStudentIDs($db, $teamID)
+function getTeamStudentIDs($teamID)
 {
+	global $mysqlConn;
 	$query = "SELECT `studentID` FROM `team` INNER JOIN `teammate` ON `team`.`teamID`=`teammate`.`teamID` WHERE `team`.`teamID`= $teamID";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$studentIDs = [];
@@ -22,5 +23,5 @@ function getTeamStudentIDs($db, $teamID)
 }
 
 $teamID = intval($_POST['myID']);
-echo json_encode(getTeamStudentIDs($mysqlConn, $teamID));
+echo json_encode(getTeamStudentIDs($teamID));
 ?>

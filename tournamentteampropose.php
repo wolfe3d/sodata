@@ -16,8 +16,8 @@ $resultTeam = $mysqlConn->query($query) or error_log("\n<br />Warning: query fai
 $rowTeam = $resultTeam->fetch_assoc();
 
 
-//$timeblocks = makeTimeArray($mysqlConn, $rowTeam['tournamentID']);
-//$events = getEventsTable($mysqlConn);
+//$timeblocks = makeTimeArray($rowTeam['tournamentID']);
+//$events = getEventsTable();
 
 echo "<h2><span id='myTitle'>".$rowTeam['tournamentName'].": ".$rowTeam['teamName']."</span></h2><div id='note'></div>";
 

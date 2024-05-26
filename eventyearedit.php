@@ -1,6 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(5);
+$schoolID = $_SESSION['userData']['schoolID'];
 
 $year = getIfSet($_REQUEST['myID'],getCurrentSOYear());
 $query = "SELECT * from `eventyear` INNER JOIN `event` ON `eventyear`.`eventID`= `event`.`eventID` WHERE `eventyear`.`year` LIKE '$year' ORDER BY `eventyear`.`divisionID`, `event`.`event`";
@@ -29,17 +30,17 @@ $events .= "</ul>";
 <form id="addTo" method="post" action="eventyearadd.php">
 	<p>
 		<label for="year">Year</label>
-		<?=getSOYears($year)?>
+		<?=getSOYears($year, 0, $schoolID)?>
 	</p>
 	<div id="eventsP">
 		<?=$events?>
 	</div>
 	<hr>
 	<p>
-		<?=getDivisionList($mysqlConn, 0,"Division")?>
+		<?=getDivisionList(0,"Division")?>
 	</p>
 	<p>
-		<?=getEventList($mysqlConn, 0,"Events")?>
+		<?=getEventList(0,"Events")?>
 	</p>
 </p>
 	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>

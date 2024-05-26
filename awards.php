@@ -2,11 +2,12 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
 
-function allAwards($db)
+function allAwards()
 {
+	global $mysqlConn;
 	$output = "";
 	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " ORDER BY `awardDate` DESC, `last`, `first`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
@@ -23,7 +24,7 @@ function allAwards($db)
         <a class="btn btn-primary" role="button" href="#student-award"><span class='bi bi-plus-circle'></span> Add Award</a>
 	</p>
 <?php
-echo allAwards($mysqlConn);
+echo allAwards();
 ?>
 	<p>
 		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>

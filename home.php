@@ -5,15 +5,16 @@ $output = "";
 $userID = $_SESSION['userData']['userID'];
 
 //get upcoming tournament Information for Students
-function getUpcomingTournamentStudent($db, $userID, $studentID)
+function getUpcomingTournamentStudent($userID, $studentID)
 {
+	global $mysqlConn;
 	$date = date('Ymd', time());
 	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament`,`tournament`.`schoolID`, `tournament`.`year`
 	FROM `student` INNER JOIN `tournament` ON `tournament`.`schoolID` = `student`.`schoolID`
 	WHERE `studentID` = $studentID AND `dateTournament` >= '$date' AND `notCompetition` = 0
 	ORDER BY `dateTournament`";
 	//$query = "SELECT `tournamentName`,`tournament`.`tournamentID`,`dateTournament`,`teamName` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID` = `team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `userID` = $userID AND `dateTournament` >= '$date' AND `notCompetition` = 0 ORDER BY `dateTournament`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
 	if($result && mysqli_num_rows($result)>0)
 	{
@@ -22,20 +23,21 @@ function getUpcomingTournamentStudent($db, $userID, $studentID)
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
 			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
-			$output.=studentTournamentSchedule($db, $row['tournamentID'], $studentID, "", $row['year']);
+			$output.=studentTournamentSchedule($row['tournamentID'], $studentID, "", $row['year']);
 			$output.="</div>";
 		endwhile;
 	}
 	return $output;
 }
 //get upcoming tournament Information for Coaches
-function getUpcomingTournamentCoach($db, $schoolID)
+function getUpcomingTournamentCoach()
 {
+	global $mysqlConn, $schoolID;
 	$date = date('Ymd', time());
 	//fallRosterDate should be changed to a part of the table that indicated that this is a roster (not a tournament)
 	$query = "SELECT `tournamentName`,`tournamentID`,`dateTournament` FROM `tournament`
 	WHERE `schoolID` = $schoolID AND `dateTournament` >= '$date' ORDER BY `dateTournament`";
-	$result = $db->query($query) or error_log("\n<br />Warning: query failed:$query. " . $db->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = '';
 	if($result && mysqli_num_rows($result)>0)
 	{
@@ -57,11 +59,11 @@ if(!empty($_SESSION['userData'])){
 	$coachID = NULL;
 	if($_SESSION['userData']['type'] =='student')
 	{
-		$studentID = getStudentID($mysqlConn, $userID);
+		$studentID = getStudentID($userID);
 	}
 	else if ($_SESSION['userData']['type'] )
 	{
-		$coachID = getCoachID($mysqlConn, $userID);
+		$coachID = getCoachID($userID);
 	}
 	$output .= '<p>You are logged in to Walton Science Olympiad Team Website!</p>';
 
@@ -69,12 +71,12 @@ if(!empty($_SESSION['userData'])){
 	$output .= '<div>';
 	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
 
-	$output .= getCarousel($mysqlConn, $_SESSION['userData']['schoolID']);
+	$output .= getCarousel();
 	if(userHasPrivilege(4))
 	{
 		$output .= "<p><a type='button' class='btn btn-primary' href='#home-edit'><span class='bi bi-edit'></span> Edit Carousel</button></a></p>";
 	}
-	$output .= getInfo($mysqlConn, $_SESSION['userData']['schoolID']);
+	$output .= getInfo();
 	if(userHasPrivilege(4))
 	{
 		$output .= "<p><a type='button' class='btn btn-primary' href='#news-edit'><span class='bi bi-edit'></span> Edit News</button></a></p>";
@@ -86,7 +88,7 @@ if(!empty($_SESSION['userData'])){
 
 	if($studentID)
 	{
-		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($mysqlConn, $studentID)."</p>";
+		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($studentID)."</p>";
 	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Your Information</a></p>";
 
 	}
@@ -97,26 +99,26 @@ if(!empty($_SESSION['userData'])){
 	$tournament = "";
 	if($studentID)
 	{
-		$tournament =	getUpcomingTournamentStudent($mysqlConn, $userID, $studentID);
+		$tournament =	getUpcomingTournamentStudent($userID, $studentID);
 	}
 	else if($coachID){
-		$tournament =	getUpcomingTournamentCoach($mysqlConn, $_SESSION['userData']['schoolID']);
+		$tournament =	getUpcomingTournamentCoach();
 	}
 	$output .= $tournament;
 
 	if($studentID)
 	{
 		//Get latest team assignments
-		$myEvents = getLatestTeamTournamentStudent($mysqlConn, $studentID);
+		$myEvents = getLatestTeamTournamentStudent($studentID);
 		//show student's event priority
-		//$myEvents .= studentEventPriority($mysqlConn, $studentID);
+		//$myEvents .= studentEventPriority($studentID);
 		if($myEvents)
 		{
 			$output .= "<hr><h2>My Events</h2>" . $myEvents;
 		}
 		//show all previous results for this student
-		$myTournamentResults = studentTournamentResults($mysqlConn, $studentID, true);
-		$myAwards = studentAwards($mysqlConn, $studentID);
+		$myTournamentResults = studentTournamentResults($studentID, true);
+		$myAwards = studentAwards($studentID);
 
 		if($myTournamentResults)
 		{
