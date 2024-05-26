@@ -5,7 +5,6 @@ userCheckPrivilege(2);
 $first = $mysqlConn->real_escape_string($_POST['first']);
 $last = $mysqlConn->real_escape_string($_POST['last']);
 $yearGraduating = intval($_POST['yearGraduating']);
-$schoolID = $_SESSION['userData']['schoolID'];
 $studentschoolID = $mysqlConn->real_escape_string($_POST['studentschoolID']);
 $scilympiadID = $mysqlConn->real_escape_string($_POST['scilympiadID']);
 $email = $mysqlConn->real_escape_string($_POST['email']);

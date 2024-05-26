@@ -2,12 +2,10 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(1);
-$schoolID = $_SESSION['userData']['schoolID'];
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
-$studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
-if($studentID)
+if(isset($studentID))
 {
 	$studentIDWhere ="AND `student`.`studentID` != $studentID";
 }
@@ -24,17 +22,16 @@ function getEventStudentListTournament($year, $tournamentID, $eventID)
 	return printEmailTable($query, $eventID, $year);
 }
 
-//Print All students that have competed in an event by this year, exclude graduated students
-function getEventStudentListAllCompetitors($eventID)
+//Print All students that have competed in an event, exclude graduated students
+function getEventStudentListAllCompetitors($eventID, $year)
 {
 	global $schoolID;
-	$year = getCurrentSOYear();
 	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournament` 
 	INNER JOIN `tournamentevent` USING (`tournamentID`) 
 	INNER JOIN `event` USING (`eventID`) 
 	INNER JOIN `teammateplace` USING (`tournamenteventID`) 
 	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`schoolID`=$schoolID AND `student`.`active` = 1 AND `tournamentevent`.`eventID`=$eventID AND `tournament`.`notCompetition`=0 AND `student`.`yearGraduating` <= $year";
+	WHERE `student`.`schoolID`=$schoolID AND `student`.`active`=1 AND `tournamentevent`.`eventID`=$eventID AND `tournament`.`notCompetition`=0 AND `student`.`yearGraduating`>= $year";
 	return printEmailTable($query, $eventID, $year);
 }
 
@@ -58,7 +55,7 @@ $eventName = getEventName($eventID);
 $output="<h2>$eventName</h2>";
 
 //Find Roster tournaments (not competitions)
-$tournament=getLatestTournamentNCSchoolID($schoolID, $year);
+$tournament=getLatestTournamentNCSchoolID($year);
 if($tournament)
 {
     $output .= "<h3>". $tournament["tournamentName"] ."</h3>";
@@ -66,7 +63,7 @@ if($tournament)
 }
 
 //Print all students who have competed even those not assigned to the event
-$allcompetitors = getEventStudentListAllCompetitors($eventID);
+$allcompetitors = getEventStudentListAllCompetitors($eventID, $year);
 if($allcompetitors)
 {
     $output .= "<h3>All Active Students that have Competed in this Event</h3>";

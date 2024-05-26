@@ -2,7 +2,6 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
 
-$schoolID = intval($_SESSION['userData']['schoolID']);
 $slideNumber = intval($_POST['slideOrder']);
 if($schoolID)
 	{

@@ -205,12 +205,12 @@ function getCurrentSchoolName($schoolID)
 function getCurrentSchoolDivision()
 {
 	global $mysqlConn, $schoolID;
-	$query = "SELECT `division` from `school` WHERE `schoolID` = $schoolID";
+	$query = "SELECT `divisionID` from `school` WHERE `schoolID` = $schoolID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		$row = $result->fetch_assoc();
-		return $row['division'];
+		return $row['divisionID'];
 	}
 	return 0;
 }
@@ -1098,7 +1098,7 @@ function getEventListYear($number,$label, $year, $select)
 }
 
 //Get all Science Olympiad years from 1982 to current year+1
-function getSOYears($myYear,$all=0, $schoolID)
+function getSOYears($myYear,$all=0)
 {
 	$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
 	$output = "<select class='form-select' id='year' name='year' required>";

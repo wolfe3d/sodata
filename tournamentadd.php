@@ -3,7 +3,6 @@ require_once  ("php/functions.php");
 userCheckPrivilege(1);
 
 $name = $mysqlConn->real_escape_string($_POST['tournamentName']);
-$schoolID = $_SESSION['userData']['schoolID'];
 $host = $mysqlConn->real_escape_string($_POST['host']);
 $dateTournament = $mysqlConn->real_escape_string($_POST['dateTournament']);
 $dateRegistration = $mysqlConn->real_escape_string($_POST['dateRegistration']);

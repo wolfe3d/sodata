@@ -24,7 +24,7 @@
 </p>
 <p>
 	<label for="year">Competition Year (National Rules Year)</label>
-	<?=getSOYears($row['year']?$row['year']:getCurrentSOYear())?>
+	<?=getSOYears($row['year']?$row['year']:getCurrentSOYear(),0)?>
 </p>
 <p>
 	<label for="type">Type of Competition</label>

@@ -16,7 +16,7 @@ $row = null;
 			</p>
 			<p>
 				<label for="year">Tournament Year</label>
-				<?=getSOYears("",1, $schoolID)?>
+				<?=getSOYears("",1)?>
 					 <span style="color:blue">This is the end of the school year that the tournament took place.  It may be the year after the tournament date.</span>
 			</p>
 			<p>

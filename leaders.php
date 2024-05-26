@@ -1,11 +1,10 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(1);
-$schoolID = $_SESSION['userData']['schoolID'];
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 
 //text output
-$output = "<div>" . getSOYears($year, 0, $schoolID) . "</div>";
+$output = "<div>" . getSOYears($year, 0) . "</div>";
 $output .= "<br></br><h2>Coaches</h2><div>";
 
 $query = "SELECT * FROM `coach` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];

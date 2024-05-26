@@ -12,7 +12,7 @@ $schoolID = $_SESSION['userData']['schoolID'];
 			<legend>Find Event by year</legend>
 			<p>
 				<label for="year">Year</label>
-				<?=getSOYears("",1, $schoolID)?>
+				<?=getSOYears("",1)?>
 			</p>
 			<p>
 				<?=getDivisionList(1)?>

@@ -2,7 +2,6 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
 $studentID = 1; //TODO: CHange me
-$schoolID = $_SESSION['userData']['schoolID'];
 
 $editing = true;
 if(!isset($row))

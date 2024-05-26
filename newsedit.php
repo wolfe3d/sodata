@@ -2,7 +2,6 @@
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
 $output = "<div id='note'></div>";
-$schoolID = $_SESSION['userData']['schoolID'];
 //Search for slides
 $query = "SELECT * FROM `news` WHERE `schoolID` = $schoolID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");

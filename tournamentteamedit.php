@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-$schoolID = $_SESSION['userData']['schoolID'];
 /*Warnings for senior count and team cound is all handled in javascript
 	*count number of students
 	*count number of seniors

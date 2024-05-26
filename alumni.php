@@ -2,7 +2,6 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-$schoolID = $_SESSION['userData']['schoolID'];
 
 $year = getCurrentSOYear();
 $studentID = getStudentID($_SESSION['userData']['userID']);

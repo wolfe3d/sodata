@@ -2,7 +2,6 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-$schoolID = $_SESSION['userData']['schoolID'];
 
 function getTeamRoster()
 {

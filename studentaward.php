@@ -3,7 +3,6 @@ require_once  ("php/functions.php");
 userCheckPrivilege(3);
 
 $awardID = getIfSet(intval($_REQUEST['myID']?? null));
-$schoolID = $_SESSION['userData']['schoolID'];
 
 //check to make editing from student's own school occurs later
 

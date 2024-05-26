@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(4);
-$schoolID = $_SESSION['userData']['schoolID'];
 $year = intval($_POST['myID']);
 $eventID = intval($_POST['event']);
 if(empty($year))
@@ -12,7 +11,7 @@ if(empty($year))
 <form id="addTo" method="post" action="javascript:addToSubmit('eventleaderadd.php')">
 	<p>
 		<label for="year">Year</label>
-		<?=getSOYears($year, 0, $schoolID)?>
+		<?=getSOYears($year, 0)?>
 	</p>
 	<p id="eventsP">
 		<label for="student">Student</label>

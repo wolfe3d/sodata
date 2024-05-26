@@ -4,7 +4,6 @@ require_once  ("php/functions.php");
 
 
 userCheckPrivilege(3);
-$schoolID = $_SESSION['userData']['schoolID'];
 $eventID = intval($_POST['myID']);
 $year = getCurrentSOYear();
 $studentID = getStudentID($_SESSION['userData']['userID']);

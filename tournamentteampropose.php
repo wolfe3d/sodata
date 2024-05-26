@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-$schoolID =$_SESSION['userData']['schoolID'] ;
 
 $output = "";
 $teamID = intval($_POST['myID']);

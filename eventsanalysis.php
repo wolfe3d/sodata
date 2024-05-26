@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-$schoolID = $_SESSION['userData']['schoolID'];
 $output = "";
 $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 $year =  $year?$year:getCurrentSOYear(); //if 0 is sent, it will be fixed here
