@@ -103,6 +103,7 @@ function getOfficerAbbr($position)
 		case "Team Coordinator":
 			return "TC";
 		case "Build It Boss":
+		case "Build-It Boss";
 			return "B";
 		case "Testing Coordinator":
 			return "Test";
