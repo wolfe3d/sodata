@@ -96,7 +96,7 @@ function getOfficerAbbr($position)
 			return "C";
 		case "Vice-Captain":
 			return "VC";
-		case "Lead Developer":
+		case "Lead Web Developer":
 			return "Dev";
 		case "Database Manager":
 			return "DB";
