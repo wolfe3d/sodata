@@ -1232,6 +1232,7 @@ function getEventLeaderIDs($eventID, $year)
 //get student's grade from the their graduation years
 function getStudentGrade($yearGraduating, $monthGraduating=6)
 {
+	/*
 	if (date("m")>$monthGraduating)
 	{
 		return 12-($yearGraduating-date("Y")-1);
@@ -1239,7 +1240,9 @@ function getStudentGrade($yearGraduating, $monthGraduating=6)
 	else
 	{
 		return 12-($yearGraduating-date("Y"));
-	}
+	}*/
+	//use CurrentSOYear to determine seniors
+	return 12-($yearGraduating-$getCurrentSOYear());
 }
 
 //for option htmls
