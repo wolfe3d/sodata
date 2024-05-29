@@ -1243,7 +1243,7 @@ function getStudentGrade($yearGraduating, $monthGraduating=6)
 		return 12-($yearGraduating-date("Y"));
 	}*/
 	//use CurrentSOYear to determine seniors
-	return 12-($yearGraduating-$getCurrentSOYear());
+	return 12-($yearGraduating-getCurrentSOYear());
 }
 
 //for option htmls
