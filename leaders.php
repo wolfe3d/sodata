@@ -60,7 +60,7 @@ if($result)
 		{
 			$output .="<a class='btn btn-danger btn-sm' role='button' href='javascript:officerRemove(\"".$row['officerID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
-		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
+		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'], $year)." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
 			$output .="<div>Email: <a href='mailto:".$row['email']."'>".$row['email']."</a></div>";
@@ -104,7 +104,7 @@ if($result)
 		{
 			$output .="<a class='btn btn-danger btn-sm' role='button' href='javascript:leaderRemove(\"".$row['eventleaderID']."\",\"$leaderName\")''><span class='bi bi-eraser'></span> Remove</a>";
 		}
-		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
+		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'], $year)." (".$row['yearGraduating'].")</div>";
 		if($row['email'])
 		{
 			$output .="<div>Email: <a href='mailto:".$row['email']."'>".$row['email']."</a></div>";

@@ -1231,7 +1231,7 @@ function getEventLeaderIDs($eventID, $year)
 }
 
 //get student's grade from their graduation years
-function getStudentGrade($yearGraduating, $monthGraduating=6)
+function getStudentGrade($yearGraduating, $requestedYear=0)
 {
 	/*
 	if (date("m")>$monthGraduating)
@@ -1243,7 +1243,13 @@ function getStudentGrade($yearGraduating, $monthGraduating=6)
 		return 12-($yearGraduating-date("Y"));
 	}*/
 	//use CurrentSOYear to determine seniors
-	return 12-($yearGraduating-getCurrentSOYear());
+	$currentSOYear = getCurrentSOYear();
+	if(!$requestedYear)
+	{
+		$requestedYear=$currentSOYear;
+	}
+	//12(Top grade) - difference from graduation year - difference from requested year (used when going to old tournament/year)
+	return 12-($yearGraduating-$currentSOYear)-($currentSOYear-$requestedYear);
 }
 
 //for option htmls

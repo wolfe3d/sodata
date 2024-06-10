@@ -102,7 +102,7 @@ else
 	//list all the students and their events and score
 	foreach ($students as $student)
 	{
-		$grade = getStudentGrade($student['yearGraduating']);
+		$grade = getStudentGrade($student['yearGraduating'], $year);
 		$averagePlace = $student['avgPlace']?number_format($student['avgPlace'],2):"";
 		$totalScore = $student['score']?number_format($student['score'],2):0;
 		$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' average='$averagePlace' score='$totalScore' rank='".$student['rank']."'>";

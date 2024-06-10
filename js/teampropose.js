@@ -242,6 +242,7 @@ function getUniqueStudents(studentList)
 }
 
 //get student's grade from the their graduation years
+//TODO: Should be updated with database year
 function getStudentGrade(yearGraduating, monthGraduating=6)
 {
 	const d = new Date();

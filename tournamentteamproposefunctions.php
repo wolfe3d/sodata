@@ -606,7 +606,7 @@ function printTable($studentTableName, $timeblockTableName, $resultsTableName)
 			$output .="<tr studentLast=".removeParenthesisText($rowStudent['last'])."  studentFirst=".removeParenthesisText($rowStudent['first']).">";
 
 			//find student Grade
-			$studentGrade = getStudentGrade($rowStudent['yearGraduating']);
+			$studentGrade = getStudentGrade($rowStudent['yearGraduating'], $year);
 			$totalSeniors += $studentGrade==12 ? 1:0;
 			//output student column
 			$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a></td><td>$studentGrade</td>";

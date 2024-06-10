@@ -151,13 +151,14 @@ $action = "javascript:addToSubmit('eventattendanceadd.php')";
 	<p value="<?=$date?>" ><u><?=$date?></u></p>
 	<input id="meetingDate" name="meetingDate" type="date" value="<?=$date?>" hidden>
 
-	<label for="meetingTimeIn">Meeting Time In</label>
-	<input id="meetingTimeIn" name="meetingTimeIn" type="time">
-	<br>
-	<label for="meetingTimeOut">Meeting Time Out</label>
-	<input id="meetingTimeOut" name="meetingTimeOut" type="time">
-
-	<br>
+	<p>
+		<label for="meetingTimeIn">Meeting Time In</label>
+		<input id="meetingTimeIn" name="meetingTimeIn" type="time">
+	</p>
+	<p>
+		<label for="meetingTimeOut">Meeting Time Out</label>
+		<input id="meetingTimeOut" name="meetingTimeOut" type="time">
+	</p>
 	<?=getEventAttendanceTable($schoolID, $eventID)?>
 
 	<?=getAllStudents(1, $row['studentID'])?>

@@ -72,7 +72,7 @@ function eventTournamentSchedule($schoolID, $teamID, $tournamenteventID, $eventI
 						$firstRow = 0;
 					}
 					$output.="<tr>";
-					$studentGrade=getStudentGrade($row['yearGraduating']);
+					$studentGrade=getStudentGrade($row['yearGraduating'], $year);
 					$output.="<td class='student' id='teammate-".$row['studentID']."'><a target='_blank' href='#student-details-".$row['studentID']."'>".
 					$row['last'].", " . $row['first'] ."</a>".
 					getEventLeaderThisEvent($row['studentID'], $year, $eventID).
@@ -239,7 +239,7 @@ if(!$mobile)
 				$output .="<tr studentLast=".removeParenthesisText($rowStudent['last'])."  studentFirst=".removeParenthesisText($rowStudent['first']).">";
 
 				//find student Grade
-				$studentGrade = getStudentGrade($rowStudent['yearGraduating']);
+				$studentGrade = getStudentGrade($rowStudent['yearGraduating'], $rowTeam['year']);
 				$totalSeniors += $studentGrade==12 ? 1:0;
 				//output student column
 				$output .="<td class='student' id='teammate-".$rowStudent['studentID']."'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ."</a>".

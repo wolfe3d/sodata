@@ -176,6 +176,13 @@ function loadpage(myPage){
 					});
 				});
 				break;
+				case 'tournamentsscore':
+					$.when( $("#year") ).done(function( x ) {
+						$("#year").change(function(){
+							window.location.hash = '#tournamentsscore--'+ $("#year option:selected").text();
+						});
+					});
+					break;
 
 				case 'tournaments':
 				if(!typepage){

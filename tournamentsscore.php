@@ -9,7 +9,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 //$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first` FROM `student` WHERE `student`.`active`";
 
 
-//get all students active for selected year
+//get all students who have not graduated for selected year
 //add students that are active and have not graduated, but do not show up on tournament
 //go through score table
 //include check boxes to include score.
@@ -17,16 +17,26 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 
 
 $returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
-
+//text output
+$output = "<div>" . getSOYears($year, 0) . "</div>";
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
 
 function getAllStudentsParticipated($year)
 {
 	global $mysqlConn, $schoolID;
-	//Inactive students are not shown.  Students who are marked active, but students who have not competed are shown.
+	//Inactive students are shown during this school year, but will be shown for other years.  Students who have not graduated, but students who have not competed are shown.
 	$students=[];
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` WHERE `tournament`.`year`=".$year." AND `student`.`active`=1 AND `student`.`schoolID`=$schoolID";
+	$studentYearQuery = "`student`.`active`=1";
+	if ($year!=getCurrentSOYear())
+	{
+		$studentYearQuery = "`student`.`yearGraduating`>= $year";
+	}
+	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`yearGraduating`, `student`.`last`, `student`.`first` FROM `student` 
+	INNER JOIN `teammateplace` ON `student`.`studentID`=`teammateplace`.`studentID` 
+	INNER JOIN `team` ON `teammateplace`.`teamID`=`team`.`teamID` 
+	INNER JOIN `tournament` ON `team`.`tournamentID` = `tournament`.`tournamentID` 
+	WHERE `tournament`.`year`=$year AND $studentYearQuery AND `student`.`schoolID`=$schoolID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
@@ -214,7 +224,7 @@ function calculateOverallScores(&$students, $tournaments)
 	$tallyPlaces = [0,0,0,0,0,0];
 	foreach ($students as $student)
 	{
-			$grade = getStudentGrade($student['yearGraduating']);
+			$grade = getStudentGrade($student['yearGraduating'], $year);
 			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' averageEvents='".$student['averageEvents']."' score='".$student['score']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
 			$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last']. ", " . $student['first'] . "</a></td>";
 			$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
