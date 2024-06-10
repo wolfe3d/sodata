@@ -1230,7 +1230,7 @@ function getEventLeaderIDs($eventID, $year)
 	return $output;
 }
 
-//get student's grade from the their graduation years
+//get student's grade from their graduation years
 function getStudentGrade($yearGraduating, $monthGraduating=6)
 {
 	/*
