@@ -35,6 +35,22 @@ function onTeamEvent($tournamentID, $studentID, $eventID)
 	}
 	return FALSE;
 }
+// Find number of meetings that a student has attended for an event
+function numberOfMeetings($studentID, $eventID)
+{
+	global $mysqlConn;
+	$query = "SELECT * FROM `meeting` INNER JOIN `meetingattendance` ON `meeting`.`eventID` = $eventID AND `meetingattendance`.`meetingID` = `meeting`.`meetingID`";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$count = 0;
+	while($row = $result -> fetch_assoc()):
+		// value of 1 for attendance indicates student was present
+		if($row['studentID'] == $studentID AND $row['attendance'] == 1)
+		{
+			$count += 1;
+		}
+	endwhile;
+	return $count;
+}
 
 $eventID = intval($_POST['myID']);
 $studentID = getStudentID($_SESSION['userData']['userID']);
@@ -50,7 +66,7 @@ $output .= "<div id='meetingList'><br>";
 while($row = $result -> fetch_assoc()):
 	if($row['meetingTypeID'] == 1)
 	{
-		// event meeting
+		// check if eventID matches meeting's eventID
 		if($row['eventID'] == $eventID)
 		{
 			$output .= "<h3>".$row['meetingDate']."</h3>";
@@ -93,7 +109,8 @@ while ($row = $result->fetch_assoc()):
 			{
 				$output .= "<div>Total Score: ".$totalScore."</div>";
 				$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
-				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
+				$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
 
 				$students[$studentID]['scoreTotal']=$totalScore;
 				$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
@@ -131,7 +148,8 @@ if ($totalTournaments > 0 )
 	$output.= "</ul>";
 	$output .= "<div>Total Score: ".$totalScore."</div>";
 	$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
-	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
+	$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
 
 	$students[$studentID]['tournamentTotal']=$totalTournaments;
 	$students[$studentID]['scoreTotal']=$totalScore;
