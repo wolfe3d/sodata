@@ -101,7 +101,7 @@ function getEventsByStudent($tournamentID, $studentID)
 	INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
 	INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` WHERE `tournamentID` = $tournamentID 
 	AND `student`.`studentID` = $studentID
-	ORDER BY `event`.`event`";
+	ORDER BY `event`.`event` DESC";
 	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output = "";
 	if ($result && mysqli_num_rows($result)>0)
@@ -109,11 +109,7 @@ function getEventsByStudent($tournamentID, $studentID)
 		$output = "<ul>";
 		while ($row = $result->fetch_assoc()):
 			//show results
-			$output.="<li>".$row['event'].$row['eventID'];
-			$output.="<ul>";
-			$output.= getEventMeetings($row['eventID']);
-			$output.="</ul>";
-			$output.="</li>";
+			$output.="<li>".$row['event']."<ul>".getEventMeetings($row['eventID'])."</ul></li>";
 		endwhile;
 		$output .= "</ul>";
 	}
