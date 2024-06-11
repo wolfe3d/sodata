@@ -189,7 +189,8 @@ $row = NULL;
 		if(confirm('Are you sure you want to submit your meeting attendance?'))
 		{
 			alert('Meeting attendance submitted!');
-			window.history.back();
+			var eventID = document.getElementById("meetingName").value;
+			window.location.href = `#event-analysis-${eventID}`;
 		}
 		else {
 			event.preventDefault();
