@@ -133,10 +133,9 @@ $eventID = getEventLeadingID($studentID);
 $event = getEventLeaderPosition($studentID);
 $date = date('Y-m-d');
 $row = NULL; 
-$action = "javascript:addToSubmit('eventattendanceadd.php')";
 ?>
 
-<form id="addTo" method="post" action="<?=$action?>">
+<form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
 
 	<label for="meetingType">Meeting Type</label>
 	<?=getAttendanceTypes()?>
