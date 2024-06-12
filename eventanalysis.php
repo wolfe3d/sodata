@@ -35,12 +35,57 @@ function onTeamEvent($tournamentID, $studentID, $eventID)
 	}
 	return FALSE;
 }
+// Find number of meetings that a student has attended for an event
+function numberOfMeetings($studentID, $eventID)
+{
+	global $mysqlConn;
+	$query = "SELECT * FROM `meeting` INNER JOIN `meetingattendance` ON `meeting`.`eventID` = $eventID AND `meetingattendance`.`meetingID` = `meeting`.`meetingID`";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$count = 0;
+	while($row = $result -> fetch_assoc()):
+		// value of 1 for attendance indicates student was present
+		if($row['studentID'] == $studentID AND $row['attendance'] == 1)
+		{
+			$count += 1;
+		}
+	endwhile;
+	return $count;
+}
 
 $eventID = intval($_POST['myID']);
 $studentID = getStudentID($_SESSION['userData']['userID']);
 $output = "<h2>".getEventName($eventID)." Analysis</h2>";
 
 $output .="<div><a class='btn btn-primary' role='button' href='#event-emails-$eventID' data-toggle='tooltip' data-placement='top' title='Get emails'><span class='bi bi-envelope'> Get Emails</span></a><div>";
+
+$query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$output .= "<hr><h2 id='meetings'>Meetings</h2>";
+//$output .= "<table class='table table-striped table-hover table-condensed'>";
+$output .= "<div id='meetingList'><br>";
+while($row = $result -> fetch_assoc()):
+	if($row['meetingTypeID'] == 1)
+	{
+		// check if eventID matches meeting's eventID
+		if($row['eventID'] == $eventID)
+		{
+			$output .= "<h3>".$row['meetingDate']."</h3>";
+			if(userHasPrivilege(2) && (strtotime('-1 day') < strtotime($row['meetingDate'])))
+			{
+				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#event-meeting-edit-".$row['meetingID']."'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+			}
+			//$output .= "<ul><li>ID: ".$row['meetingID']."</li>";
+			$output .= "<li>Time In: ".$row['meetingTimeIn']."</li>";
+			$output .= "<li>Time Out: ".$row['meetingTimeOut']."</li>";
+			$output .= "<li>Description: ".$row['meetingDescription']."</li>";
+			$output .= "<li>Homework: ".$row['meetingHW']."</li></ul>";
+		}
+	}
+	
+endwhile;
+$output .= "</div>";
+
+$output .= "<hr>";
 //TODO: ORDER BY Average Score, highest ->lowest
 //Maybe: Put in table, note if student is listed in a team (notCompetition)
 $query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= $schoolID AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`notCompetition`=0 AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last`, `first`";
@@ -64,7 +109,8 @@ while ($row = $result->fetch_assoc()):
 			{
 				$output .= "<div>Total Score: ".$totalScore."</div>";
 				$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
-				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
+				$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
 
 				$students[$studentID]['scoreTotal']=$totalScore;
 				$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
@@ -102,7 +148,8 @@ if ($totalTournaments > 0 )
 	$output.= "</ul>";
 	$output .= "<div>Total Score: ".$totalScore."</div>";
 	$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
-	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div><br><br>";
+	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
+	$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
 
 	$students[$studentID]['tournamentTotal']=$totalTournaments;
 	$students[$studentID]['scoreTotal']=$totalScore;
