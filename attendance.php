@@ -1,8 +1,7 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-$myID = intval($_POST['myID']);
-$year = getCurrentSOYear();
+$year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 $studentID = getStudentID($_SESSION['userData']['userID']);
 $studentIDWhere = "";
 if($studentID)
@@ -161,7 +160,7 @@ $row = NULL;
 	<?=getEventAttendanceTable($schoolID, $eventID)?>
 
 	<?=getAllStudents(1, $row['studentID'])?>
-	<button class="btn btn-warning" type="button" onclick="javascript:eventAttendanceAddStudent('<?=$myID?>')"><span class='bi bi-plus-circle'> Add Student</button>
+	<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
 	
 	<br>
 	<label for="desc">Meeting Description</label>
@@ -197,7 +196,7 @@ $row = NULL;
 	}, false);
 
 	//Adds an additional student to the meeting attendance page
-function eventAttendanceAddStudent(myID) {
+function attendanceAddStudent() {
 	var studentID = document.getElementById("studentID").value;
 	var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
 	var firstLast = selectedName.split(', ');

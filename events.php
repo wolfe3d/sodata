@@ -40,7 +40,7 @@ $schoolID = $_SESSION['userData']['schoolID'];
 	} 
 	if(userHasPrivilege(2)) {
 ?>
-	<a class='btn btn-secondary' role='button' href='#event-attendance-<?=getCurrentSOYear();?>'><span class='bi bi-people-fill'></span> Attendance</a>
+	<a class='btn btn-secondary' role='button' href='#attendance'><span class='bi bi-people-fill'></span> Attendance</a>
 <?php } ?>
 
 <div id="list"></div>
