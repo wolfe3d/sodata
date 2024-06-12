@@ -1,7 +1,20 @@
 <?php
 header("Content-Type: text/plain");
+//get functions required
 require_once  ("php/functions.php");
+//initial access check for event leaders or higher
 userCheckPrivilege(2);
+
+//get variables
+$eventID = intval($_POST['myID']);
+$studentID = getStudentID($_SESSION['userData']['userID']);
+$year = getCurrentSOYear();
+
+//Only allow event leaders of their event to view the analysis or any officer
+if(!userHasPrivilege(3) && !getEventLeaderThisEvent($studentID, $year, $eventID))
+{
+	exit("User does not have privilege to view this event's analysis page!");
+}
 
 function getTeamRoster()
 {
@@ -52,10 +65,7 @@ function numberOfMeetings($studentID, $eventID)
 	return $count;
 }
 
-$eventID = intval($_POST['myID']);
-$studentID = getStudentID($_SESSION['userData']['userID']);
 $output = "<h2>".getEventName($eventID)." Analysis</h2>";
-
 $output .="<div><a class='btn btn-primary' role='button' href='#event-emails-$eventID' data-toggle='tooltip' data-placement='top' title='Get emails'><span class='bi bi-envelope'> Get Emails</span></a><div>";
 
 $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
