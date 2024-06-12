@@ -123,7 +123,7 @@ if($result&& $result->num_rows>0)
 		{
 			$output .="<a class='btn btn-primary' role='button' href='#event-edit-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Edit'><span class='bi bi-pencil-square'></span></a>";
 		}
-		if(userHasPrivilege(3) )
+		if(userHasPrivilege(3) || getEventLeaderThisEvent(getStudentID($_SESSION['userData']['userID']),$year,$row['eventID']))
 		{
 			$output .=" <a class='btn btn-primary' role='button' href='#event-analysis-".$row['eventID']."' data-toggle='tooltip' data-placement='top' title='Analysis'><span class='bi bi-pie-chart-fill'></span></a>";
 		}
