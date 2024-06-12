@@ -95,9 +95,9 @@ function getEventAttendanceTable($eventID)
 				<label class='form-check-label' for='engagement-${studentID}-2'>2</label>
 			</div>				
 	
-			<p>Homework: 0 for not submitted, 1 for partially incomplete, 2 for fully complete</p>
+			<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-0' value='0'>
+				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-0' value='0' checked>
 				<label class='form-check-label' for='homework-${studentID}-0'>0</label>
 			</div>
 			<div class='form-check form-check-inline'>
@@ -105,7 +105,7 @@ function getEventAttendanceTable($eventID)
 				<label class='form-check-label' for='homework-${studentID}-1'>1</label>
 			</div>
 			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2' checked>
+				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2'>
 				<label class='form-check-label' for='homework-${studentID}-2'>2</label>
 			</div>	
 	
@@ -248,9 +248,9 @@ function attendanceAddStudent() {
 					<label class="form-check-label" for="engagement-${studentID}-2">2</label>
 				</div>				
 
-				<p>Homework: 0 for not submitted, 1 for partially incomplete, 2 for fully complete</p>
+				<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0">
+					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
 					<label class="form-check-label" for="homework-${studentID}-0">0</label>
 				</div>
 				<div class="form-check form-check-inline">
@@ -258,7 +258,7 @@ function attendanceAddStudent() {
 					<label class="form-check-label" for="homework-${studentID}-1">1</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2" checked>
+					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
 					<label class="form-check-label" for="homework-${studentID}-2">2</label>
 				</div>	
 
