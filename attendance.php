@@ -40,8 +40,20 @@ function getAttendanceTypes()
 	{
 		$name = $row['meetingTypeName'];
 		$id = $row['meetingTypeID'];
-		$output .="<option value='$id' >$name";
-		$output .="</option>";
+		// Event Meeting Attendance - Event Leaders
+		if($id == 1 && userHasPrivilege(2))
+		{
+			$output .="<option value='$id' >$name";
+			$output .="</option>";
+		}
+		// ID: 2 | General Meeting Attendance - Secretary and Captain
+		// ID: 3 | Officer Meeting Attendance - Secretary and Captain
+		// ID: 4 | Event Leader Attendance - Secretary and Captain
+		else if(($id == 2 || $id == 3 || $id == 4) && (userHasPrivilege(3)))
+		{
+			$output .="<option value='$id' >$name";
+			$output .="</option>";
+		}
 	}
 	$output .="</select>";
 	return $output;
@@ -269,9 +281,9 @@ $row = NULL;
 	<label for="meetingType">Meeting Type</label>
 	<?=getAttendanceTypes()?>
 
-	<label id="meetingNameLabel" for="meetingName">Event Name</label>
+	<label hidden id="meetingNameLabel" for="meetingName">Event Name</label>
 	<br>
-	<p id="meetingNameDisplay" value="<?=$eventID?>" ><u><?=$event?></u></p>
+	<p hidden id="meetingNameDisplay" value="<?=$eventID?>" ><u><?=$event?></u></p>
 	<input id="meetingName" name="meetingName" class="form-control" type="text" value="<?=$eventID?>" hidden>
 
 	<label for="meetingDate">Meeting Date</label>
@@ -436,7 +448,6 @@ $row = NULL;
 			document.getElementById('meetingNameDisplay').hidden = true;
 			document.getElementById('meetingNameLabel').hidden = true;
 			document.getElementById('meetingName').value = 0;
-		}
 		}
 	}
 </script>
