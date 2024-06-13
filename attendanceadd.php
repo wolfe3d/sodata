@@ -12,12 +12,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     $meetingTimeOut = htmlspecialchars($_POST['meetingTimeOut']);
     $meetingDescription = htmlspecialchars($_POST['desc']);
     $meetingHW = htmlspecialchars($_POST['meetingHW']);
-    //var_dump($meetingName, $meetingDate, $meetingTimeIn, $meetingTimeOut, $meetingDescription, $meetingHW);
+
     $query = "INSERT INTO `meeting` (`meetingTypeID`, `eventID`, `meetingDate`, `meetingTimeIn`, `meetingTimeOut`, `meetingDescription`, `meetingHW`) 
               VALUES ('$meetingType', '$eventID', '$meetingDate', '$meetingTimeIn', '$meetingTimeOut', '$meetingDescription', '$meetingHW') ";
     $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     $meetingID = $mysqlConn->insert_id;
-
     // Handle meeting attendance for each student
     $studentData = [];
     foreach ($_POST as $key => $value) {
@@ -70,10 +69,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
             error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error . ". At file: " . __FILE__ . " by " . $_SERVER['REMOTE_ADDR']);
             return(0);
         }
-        //echo $query;
-        //echo $result;
     }
-    //echo $mysqlConn->insert_id;
 }
-//echo("Success!");
 return(1);
