@@ -31,14 +31,17 @@ function getAttendanceTypes()
 {
 	global $mysqlConn;
 	//$myYear = isset($myYear) ? $myYear : getCurrentSOYear();
-	$output = "<select class='form-select' id='meetingType' name='meetingType' required>";
+	$output = "<select class='form-select' id='meetingType' name='meetingType' onchange='showAttendanceTable()' required>";
 	$query = "SELECT `meetingtype`.`meetingTypeName`, `meetingtype`.`meetingTypeID` FROM `meetingtype`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	// Add default blank option
+	$output .= "<option disabled selected value='0'>Select an option</option>";
 	while($row = $result->fetch_assoc())
 	{
 		$name = $row['meetingTypeName'];
 		$id = $row['meetingTypeID'];
-		$output .="<option value='$id' >$name</option>";
+		$output .="<option value='$id' >$name";
+		$output .="</option>";
 	}
 	$output .="</select>";
 	return $output;
@@ -60,7 +63,7 @@ function getEventAttendanceTable($eventID)
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
-		$output.="<div id='studentAttendance'>";
+		$output.="<div>";
 		while ($row = $result->fetch_assoc())
 		{
 			//show student name
@@ -108,10 +111,132 @@ function getEventAttendanceTable($eventID)
 				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2'>
 				<label class='form-check-label' for='homework-${studentID}-2'>2</label>
 			</div>	
-	
+			</div>
 			<hr>";
 			}
 	}
+	$output .= "</div>";
+	return $output;
+}
+function getGeneralAttendanceTable()
+{
+	global $mysqlConn, $schoolID;
+	$output = "";
+	$year = getCurrentSOYear();
+	$query = "SELECT * FROM `student` 
+	WHERE `student`.`active` = 1 AND `schoolID` = ". $_SESSION['userData']['schoolID']. " ORDER BY `last`,`first` ASC";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$output.="<div>";
+		while ($row = $result->fetch_assoc())
+		{
+			//show student name
+			$formattedName = $row['first']." ".$row['last'];
+			$studentID = $row['studentID'];	
+			$output .= "<div>
+				<h3>${formattedName}</h3>
+				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
+				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
+				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
+				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
+			</div>
+			</div>
+			<hr>";
+			}
+	}
+	$output .= "</div>";
+	return $output;
+}
+function getOfficerAttendanceTable()
+{
+	global $mysqlConn, $schoolID;
+	$output = "";
+	$year = getCurrentSOYear();
+	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `officer`.`position`
+	FROM `officer` 
+	INNER JOIN `student` USING (`studentID`) 
+	WHERE `student`.`active` = 1 AND `officer`.`year` = $year
+	ORDER BY `officer`.`officerID` ASC";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$output.="<div>";
+		while ($row = $result->fetch_assoc())
+		{
+			//show student name
+			$formattedName = $row['first']." ".$row['last']." - ".$row['position'];
+			$studentID = $row['studentID'];	
+			$output .= "<div>
+				<h3>${formattedName}</h3>
+				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
+				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
+				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
+				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
+			</div>
+			</div>
+			<hr>";
+			}
+	}
+	$output .= "</div>";
+	return $output;
+}
+function getEventLeaderAttendanceTable()
+{
+	global $mysqlConn, $schoolID;
+	$output = "";
+	$year = getCurrentSOYear();
+	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event`
+	FROM `eventleader` 
+	INNER JOIN `student` USING (`studentID`) 
+	INNER JOIN `event` USING(`eventID`)
+	WHERE `student`.`active` = 1 AND `eventleader`.`year` = $year
+	ORDER BY `event`.`event` ASC";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result)
+	{
+		$output.="<div>";
+		while ($row = $result->fetch_assoc())
+		{
+			//show student name
+			$formattedName = $row['first']." ".$row['last']." - ".$row['event'];
+			$studentID = $row['studentID'];	
+			$output .= "<div>
+				<h3>${formattedName}</h3>
+				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
+				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
+				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
+				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
+			</div>
+			</div>
+			<hr>";
+			}
+	}
+	$output .= "</div>";
 	return $output;
 }
 function getEventLeadingID($studentID)
@@ -128,8 +253,13 @@ function getEventLeadingID($studentID)
 	}
 	return "";
 }
+
 $eventID = getEventLeadingID($studentID);
 $event = getEventLeaderPosition($studentID);
+$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));
+$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());
+$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
+$eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
 $date = date('Y-m-d');
 $row = NULL; 
 ?>
@@ -139,9 +269,9 @@ $row = NULL;
 	<label for="meetingType">Meeting Type</label>
 	<?=getAttendanceTypes()?>
 
-	<label for="meetingName">Event Name</label>
+	<label id="meetingNameLabel" for="meetingName">Event Name</label>
 	<br>
-	<p value="<?=$eventID?>" ><u><?=$event?></u></p>
+	<p id="meetingNameDisplay" value="<?=$eventID?>" ><u><?=$event?></u></p>
 	<input id="meetingName" name="meetingName" class="form-control" type="text" value="<?=$eventID?>" hidden>
 
 	<label for="meetingDate">Meeting Date</label>
@@ -151,13 +281,14 @@ $row = NULL;
 
 	<p>
 		<label for="meetingTimeIn">Meeting Time In</label>
-		<input id="meetingTimeIn" name="meetingTimeIn" type="time">
+		<input id="meetingTimeIn" name="meetingTimeIn" type="time" required>
 	</p>
 	<p>
 		<label for="meetingTimeOut">Meeting Time Out</label>
-		<input id="meetingTimeOut" name="meetingTimeOut" type="time">
+		<input id="meetingTimeOut" name="meetingTimeOut" type="time" required>
 	</p>
-	<?=getEventAttendanceTable($eventID)?>
+
+	<div id="attendanceContainer"></div>
 
 	<?=getAllStudents(1, $row['studentID'])?>
 	<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
@@ -197,74 +328,115 @@ $row = NULL;
 	}, false);
 
 	//Adds an additional student to the meeting attendance page
-function attendanceAddStudent() {
-	var studentID = document.getElementById("studentID").value;
-	var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
-	var firstLast = selectedName.split(', ');
-	var formattedName = firstLast[1] + ' ' + firstLast[0];
+	function attendanceAddStudent() {
+		var studentID = document.getElementById("studentID").value;
+		var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
+		var firstLast = selectedName.split(', ');
+		var formattedName = firstLast[1] + ' ' + firstLast[0];
 
-	if(studentID.length === 0)
-	{
-		alert("If you would like to add a student, please select a student to add to the event attendance list.");
-		return;
-	}
-	//check if the new student was already added before
-	if(document.getElementsByName('attendance-').length > 0) 
-	{
-        alert('Student already exists in this meeting!');
-        return;
-    }
-	else
-	{
-		//create a new div with student information
-		if(confirm("Add student: " + formattedName + "?"))
+		if(studentID.length === 0)
 		{
-			var newStudent = `<div>
-					<h3>${formattedName} (Extra)</h3>
-					<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
-					<label class="form-check-label" for="attendance-${studentID}-P">P</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="0">
-					<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
-					<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
-				</div>
-				<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
-					<label class="form-check-label" for="engagement-${studentID}-0">0</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1">
-					<label class="form-check-label" for="engagement-${studentID}-1">1</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
-					<label class="form-check-label" for="engagement-${studentID}-2">2</label>
-				</div>				
+			alert("If you would like to add a student, please select a student to add to the event attendance list.");
+			return;
+		}
+		//check if the new student was already added before
+		if(document.getElementsByName('attendance-').length > 0) 
+		{
+			alert('Student already exists in this meeting!');
+			return;
+		}
+		else
+		{
+			//create a new div with student information
+			if(confirm("Add student: " + formattedName + "?"))
+			{
+				var newStudent = `<div>
+						<h3>${formattedName} (Extra)</h3>
+						<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
+						<label class="form-check-label" for="attendance-${studentID}-P">P</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="0">
+						<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
+						<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
+					</div>
+					<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
+						<label class="form-check-label" for="engagement-${studentID}-0">0</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1">
+						<label class="form-check-label" for="engagement-${studentID}-1">1</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
+						<label class="form-check-label" for="engagement-${studentID}-2">2</label>
+					</div>				
 
-				<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
-					<label class="form-check-label" for="homework-${studentID}-0">0</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1">
-					<label class="form-check-label" for="homework-${studentID}-1">1</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
-					<label class="form-check-label" for="homework-${studentID}-2">2</label>
-				</div>	
+					<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
+						<label class="form-check-label" for="homework-${studentID}-0">0</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1">
+						<label class="form-check-label" for="homework-${studentID}-1">1</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
+						<label class="form-check-label" for="homework-${studentID}-2">2</label>
+					</div>	
 
-				<hr>`;
-			document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+					<hr>`;
+				document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+			}
 		}
 	}
-}
+
+	function showAttendanceTable() {
+		var eventAttendanceTable = <?=$attendanceTableHTML?>;
+		var generalAttendanceTable = <?=$generalAttendanceTableHTML?>;
+		var officerAttendanceTable = <?=$officerAttendanceTableHTML?>;
+		var eventLeaderAttendanceTable = <?=$eventLeaderAttendanceTableHTML?>;
+		var eventID = '<?=$eventID?>';
+		var meetingType = document.getElementById('meetingType').value;
+		if(meetingType == 1)
+		{
+			// show event attendance table with all students in event
+			document.getElementById('attendanceContainer').innerHTML = eventAttendanceTable;
+			document.getElementById('meetingNameDisplay').hidden = false;
+			document.getElementById('meetingNameLabel').hidden = false;
+		}
+		// General Meeting
+		if(meetingType == 2)
+		{
+			document.getElementById('attendanceContainer').innerHTML = generalAttendanceTable;
+			document.getElementById('meetingNameDisplay').hidden = true;
+			document.getElementById('meetingNameLabel').hidden = true;
+			document.getElementById('meetingName').value = 0;
+		}
+		// Officer Meeting
+		if(meetingType == 3)
+		{
+			document.getElementById('attendanceContainer').innerHTML = officerAttendanceTable;
+			document.getElementById('meetingNameDisplay').hidden = true;
+			document.getElementById('meetingNameLabel').hidden = true;
+			document.getElementById('meetingName').value = 0;
+		}
+		// Event Leader Meeting
+		if(meetingType == 4)
+		{
+			document.getElementById('attendanceContainer').innerHTML = eventLeaderAttendanceTable;
+			document.getElementById('meetingNameDisplay').hidden = true;
+			document.getElementById('meetingNameLabel').hidden = true;
+			document.getElementById('meetingName').value = 0;
+		}
+		}
+	}
 </script>
