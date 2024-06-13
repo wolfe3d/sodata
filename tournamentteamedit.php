@@ -68,7 +68,10 @@ if($resultStudent){
 			}
 		}
 		$hidden = $rowStudent['active']?"":"class='inactive' style='display: none;'";
-		$studentList .= "<div $hidden class='scioly'><input type='checkbox' data-studentgrade='".getStudentGrade($rowStudent['yearGraduating'], $year)."' onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked $disabled><label for='$checkbox'><a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ." - " . getStudentGrade($rowStudent['yearGraduating'], $year) ."</a> $assigned</label></div>";
+		$studentGrade = getStudentGrade($rowStudent['yearGraduating'], $row['year']);
+		$studentList .= "<div $hidden class='scioly'><input type='checkbox' data-studentgrade='$studentGrade'
+		 onchange='javascript:tournamentTeammate($(this))' id='$checkbox' name='$checkbox' value='' $checked $disabled><label for='$checkbox'>
+		<a target='_blank' href='#student-details-".$rowStudent['studentID']."'>".$rowStudent['last'].", " . $rowStudent['first'] ." - $studentGrade</a> $assigned</label></div>";
 	endwhile;
 }
 ?>
