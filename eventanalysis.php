@@ -9,9 +9,12 @@ userCheckPrivilege(2);
 $eventID = intval($_POST['myID']);
 $studentID = getStudentID($_SESSION['userData']['userID']);
 $year = getCurrentSOYear();
-
 //Only allow event leaders of their event to view the analysis or any officer
-if(!userHasPrivilege(3) && !getEventLeaderThisEvent($studentID, $year, $eventID))
+if(userHasPrivilege(3) || getEventLeaderThisEvent($studentID, $year, $eventID))
+{
+	//user is allowed to continue
+}
+else
 {
 	exit("User does not have privilege to view this event's analysis page!");
 }
