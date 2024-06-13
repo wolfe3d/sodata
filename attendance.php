@@ -332,7 +332,12 @@ $row = NULL;
 		{
 			alert('Meeting attendance submitted!');
 			var eventID = document.getElementById("meetingName").value;
-			window.location.href = `#event-analysis-${eventID}`;
+			if(document.getElementById('meetingType').value == 1)
+			{
+				window.location.href = `#event-analysis-${eventID}`;
+			} else {
+				window.location.href = `#leaders`;
+			}
 		}
 		else {
 			event.preventDefault();

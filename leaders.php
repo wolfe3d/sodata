@@ -52,7 +52,7 @@ if($result)
 	}
 	if(userHasPrivilege(3))
 	{
-		$output .= " <a class='btn btn-primary' role='button' href='#attendance'><span class='bi bi-people'></span> Officer Meeting Attendance</a>";
+		$output .= " <a class='btn btn-primary' role='button' href='#attendance'><span class='bi bi-people'></span> Officer Meeting or General Meeting Attendance</a>";
 	}
 		$output .='</div><div>';
 	while ($row = $result->fetch_assoc()):
