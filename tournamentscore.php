@@ -51,21 +51,16 @@ else
 	calculateTeamRanking($students);
 	//$output .="<div><span id='notification'></span></div>";
 	$output .="<form id='addTo' method='post' action='tournamentscoresave.php'><table id='tournamentTable' class='tournament table table-hover'>";
+	$output .="<p>Tournament Weight: $tournamentWeight</p>";
+	$output .="<p>Teams Attended: $teamsAttended</p>";
 	if(userHasPrivilege(4))
 	{
-		$output .="<div><label for='tournamentWeight' style='display: inline-block'>Tournament Weight</label>";
-		$output .="  <input id='tournamentWeight' type='number' class='form-control' min='0' max='999' value='".$tournamentWeight."' style='display: inline-block'/></div>";
-		$output .="<div><label for='teamsAttended' style='display: inline-block'>Teams Attended</label>";
-		$output .="  <input id='teamsAttended' type='number' class='form-control' min='0' max='999' value='".$teamsAttended."' style='display: inline-block'/></div>";
-	}
-	else
-	{
-		$output .="<p>Tournament Weight: $tournamentWeight</p>";
-		$output .="<p>Teams Attended: $teamsAttended</p>";
+		$output .="<ul><li>Edit tournament weight and teams attended on the Tournament Edit Information Page</li>";
+		$output .="<li>Event Weighting equal to 100 means all teams participated and the event was run with full rules. 
+		Lower event weight indicates that the full rules or full number of teams did not participate.</li></ul>";
 	}
 
 	$output .="<p><input type='checkbox' id='showPoints' name='showPoints' checked><label for='showPoints'>Show Points</label></p>";
-		$output .="<p>Event Weighting equal to 100 means all teams participated and the event was run with full rules. Lower event weight indicates that the full rules or full number of teams did not participate.</p>";
 	$output .="<colgroup><col span='2'>";
 	foreach ($events as $i=>$event)
 	{
