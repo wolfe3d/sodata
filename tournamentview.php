@@ -70,7 +70,7 @@ $output .="<div>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
 		}
 
-		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d"))
+		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d") && isset($row['duosmium']))
 		{
 			//there are no results for a team assignment, so this is only shown for a real tournament
 			$output .=" <a class='btn btn-primary' role='button' href='".$row['duosmium']."'><span class='bi bi-trophy'></span> Results</a>";
