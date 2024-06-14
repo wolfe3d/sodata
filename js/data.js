@@ -333,9 +333,6 @@ function studentEditPrepare(myID)
 			if (this.id == 'active'){
 				fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
 			}
-			else if (this.id == 'paidDues'){
-				fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
-			}
 			else if(this.id == 'privilege'){ //user privilege is defined in the user table
 				fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id);
 			}

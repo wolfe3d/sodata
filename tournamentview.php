@@ -44,9 +44,9 @@ $output .="<div>";
 	$published = intval($row['published']);
 	 $output .="<div id='myTitle'>".$row['tournamentName']." - " . $row['year'] . "</div>";
 
+	 	$output .="<div class='btn-group' role='group' aria-label='Top Buttons'>";
 		if(userHasPrivilege(3))
 		{
-			$output .="<div>";
 			//tournament edit button -> changes hash to tournament-edit-tournamentID
 			if(userHasPrivilege(5))
 			{
@@ -68,8 +68,14 @@ $output .="<div>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-times-".$row['tournamentID']."'><span class='bi bi-clock-history'></span> Time Blocks</a>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-events-".$row['tournamentID']."'><span class='bi bi-puzzle'></span> Events</a>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
-			$output .="</div><br>";
 		}
+
+		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d"))
+		{
+			//there are no results for a team assignment, so this is only shown for a real tournament
+			$output .=" <a class='btn btn-primary' role='button' href='".$row['duosmium']."'><span class='bi bi-trophy'></span> Results</a>";
+		}
+		$output .="</div>";
 
 		if(!$row['notCompetition'])
 		{

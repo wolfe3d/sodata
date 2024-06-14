@@ -71,9 +71,10 @@ function getEvents($tournamentID)
 			//set default weightings into the table
 			if (!$row['weight'])
 			{
-				$query = "UPDATE `tournamentevent` SET `weight` = '".$row['weightingDefault']."' WHERE `tournamentevent`.`tournamenteventID` = ".$row['tournamenteventID'];
+				$weightDefault = isset($row['weightingDefault'])?$row['weightingDefault']:100;
+				$query = "UPDATE `tournamentevent` SET `weight` = $weightDefault WHERE `tournamentevent`.`tournamenteventID` = ".$row['tournamenteventID'];
 				$resultI = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-				$row['weight']=$row['weightingDefault'];
+				$row['weight']=$weightDefault;
 			}
 			//push the event
 			array_push($output, $row);
@@ -94,6 +95,22 @@ function getTournamentWeight($tournamentID)
 		if ($row = $result->fetch_assoc()){
 			//set default weightings into the table
 			return $row['weight'];
+		}
+	}
+	return FALSE;
+}
+
+//get tournament weight
+function getTournamentYear($tournamentID)
+{
+	global $mysqlConn;
+	$output = "";
+	$query = "SELECT `tournament`.`year` FROM `tournament` WHERE `tournament`.`tournamentID` = $tournamentID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		if ($row = $result->fetch_assoc()){
+			//set default weightings into the table
+			return $row['year'];
 		}
 	}
 	return FALSE;

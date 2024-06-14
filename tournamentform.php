@@ -74,3 +74,8 @@
 	<label for="addressBilling">Address Billing</label>
 	<input id="addressBilling" name="addressBilling" class="form-control" type="text" value="<?=$row['addressBilling']?>">
 </p>
+<p>
+	<label for="duosmium">Duosmium Link</label>
+	<input id="duosmium" name="duosmium" class="form-control" type="text" value="<?=$row['duosmium']?>">
+</p>
+

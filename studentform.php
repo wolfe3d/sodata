@@ -36,19 +36,6 @@ if ($editing)
 	<label for="last">Lastname</label>
 	<input id="last" name="last" class="form-control" type="text" value="<?=$row['last']?>" required>
 </p>
-<?php
-if (userHasPrivilege(4))
-{
-	?>
-	<p>
-		<input id="paidDues" name="paidDues" class="form-check-input" type="checkbox" <?=$row['paidDues']==1?"checked":""?>><label for="paidDues">Dues Paid</label>
-
-		<label for="paidDuesDate">on Date</label>
-		<input id="paidDuesDate" name="paidDuesDate" class="form-control" type="date" value="<?=$row['paidDuesDate']?>">
-	</p>
-	<?php
-}
-?>
 <p>
 	<label for="yearGraduating">Year Graduating</label>
 	<input id="yearGraduating" name="yearGraduating" class="form-control" type="text" min="1982" value="<?=$row['yearGraduating']?>" required>

@@ -9,6 +9,7 @@ require_once  ("php/functionstournament.php");
 
 $output = "";
 $tournamentID = intval($_POST['myID']);
+$year = getTournamentYear($tournamentID);
 $returnBtn = "<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>";
 
 if(empty($tournamentID))
