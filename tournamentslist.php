@@ -37,13 +37,12 @@ if($result)
 	while ($row = $result->fetch_assoc()):
 		$myTitle = $row['tournamentName']." - ".$row['year'];
 		$output .="<div id='tournament-".$row['tournamentID']."'><hr><h2>".$myTitle."</h2>"; //start tournament output
-		$output .="<p><div class='btn-group' role='group' aria-label='Tournament Buttons'>";
+		$output .="<div class='btn-group' role='group' aria-label='Tournament Buttons'>";
 		$output .="<a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-journal'></span> Details</a>";
 		$output .=isset($row['resultsLink'])?"<a class='btn btn-primary' target='_blank' role='button' href='".$row['resultsLink']."'><span class='bi bi-trophy'></span> Results</a>":"";
 		$output .=userHasPrivilege(5)&&!$row['notCompetition']&&$row['dateTournament']<=date('Y-m-d')?"<a class='btn btn-primary' role='button' href='#tournament-score-".$row['tournamentID']."'><span class='bi bi-bar-chart'></span> Scores</a>":"";
 		$output .="</div>";
 		$output .=userHasPrivilege(5)&&!$row['published']?" <a class='btn btn-danger btn-sm' role='button' href='javascript:tournamentRemove(".$row['tournamentID'].",\"".$myTitle."\")'><span class='bi bi-eraser'></span> Remove</a>":"";
-		$output .="</p>";
 
 
 		if($row['websiteHost'])
