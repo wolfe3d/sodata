@@ -70,10 +70,10 @@ $output .="<div>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-eventtime-".$row['tournamentID']."'><span class='bi bi-clock'></span> Choose Times</a>";
 		}
 
-		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d") && isset($row['duosmium']))
+		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d") && isset($row['resultsLink']))
 		{
 			//there are no results for a team assignment, so this is only shown for a real tournament
-			$output .=" <a class='btn btn-primary' role='button' href='".$row['duosmium']."'><span class='bi bi-trophy'></span> Results</a>";
+			$output .=" <a class='btn btn-primary' role='button' href='".$row['resultsLink']."'><span class='bi bi-trophy'></span> Results</a>";
 		}
 		$output .="</div>";
 
@@ -199,12 +199,12 @@ $output .="<div>";
 		}
 
 
-		if(!$row['notCompetition'] && userHasPrivilege(5))
+		if(!$row['notCompetition'] && userHasPrivilege(5)&&$row['dateTournament']<=date('Y-m-d'))
 		{
 			$output .= $rowTeam['notCompetition'];
 			//there are no results for a team assignment, so this is only shown for a real tournament
 			$output .="<h2>Tournament Results</h2>";
-			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'  data-toggle='tooltip' data-placement='top' title='View scores for teammates'><span class='bi bi-chart-line'></span> Scores</a></p>";
+			$output .="<p><a class='btn btn-dark' role='button' href='#tournament-score-$tournamentID'  data-toggle='tooltip' data-placement='top' title='View scores for teammates'><span class='bi bi-bar-chart'></span> Scores</a></p>";
 		}
 	}
 	$output .="</div>";
