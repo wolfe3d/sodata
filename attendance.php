@@ -279,12 +279,13 @@ $row = NULL;
 
 	<div id="attendanceContainer"></div>
 	<p>
+		<div>Select a single student</div>
 		<?=getAllStudents(1, $row['studentID'])?>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
 	</p>
 
 	<p>
-		<?=getTeamList(0, "Select Students from a Team")?>
+		<?=getTeamList(0, "Select All students from a Team")?>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddTeam()"><span class='bi bi-plus-circle'> Add Team</button>
 	</p>
 	<p>
