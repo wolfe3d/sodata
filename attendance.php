@@ -356,7 +356,7 @@ $row = NULL;
 			return;
 		}
 		//check if the new student was already added before
-		if(document.getElementsByName('attendance-').length > 0) 
+		if(document.getElementsByName('attendance-'+studentID).length > 0) 
 		{
 			alert('Student already exists in this meeting!');
 			return;
@@ -421,18 +421,20 @@ $row = NULL;
 		var generalAttendanceTable = <?=$generalAttendanceTableHTML?>;
 		document.getElementById('attendanceContainer').innerHTML = generalAttendanceTable;
 	}
+
 	//TODO: Adds a team to the meeting attendance page
 	function attendanceAddTeam() {
-		var studentID = document.getElementById("studentID").value;
-		var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
-		var firstLast = selectedName.split(', ');
-		var formattedName = firstLast[1] + ' ' + firstLast[0];
+		var team = $("#team").value;
+		var selectedName = document.getElementById("team").options[document.getElementById("team").selectedIndex].text;
 
-		if(studentID.length === 0)
+		if(team.length === 0)
 		{
-			alert("If you would like to add a student, please select a student to add to the event attendance list.");
+			alert("If you would like to add a team, please select a team above.");
 			return;
 		}
+		//TODO
+		//Get list of student ids and names
+		//Do the following for each
 		//check if the new student was already added before
 		if(document.getElementsByName('attendance-').length > 0) 
 		{
@@ -442,7 +444,7 @@ $row = NULL;
 		else
 		{
 			//create a new div with student information
-			if(confirm("Add student: " + formattedName + "?"))
+			if(confirm("Add team: " + formattedName + "?"))
 			{
 				var newStudent = `<div>
 						<h3>${formattedName} (Extra)</h3>
