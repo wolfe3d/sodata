@@ -1027,7 +1027,7 @@ function getTeamList($excludeTournament,$labelName='Team')
 	if($result && mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
-			$output .= "<option value='".$row['teamID']."'>" .$row['year'] . ":" . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
+			$output .= "<option value='".$row['teamID']."'>" .$row['year'] . ": " . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
 		endwhile;
 	}
 	$output.="</select></div>";
