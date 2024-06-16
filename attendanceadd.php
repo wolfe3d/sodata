@@ -10,7 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     $eventID = htmlspecialchars($_POST['meetingName']);
     $meetingTimeIn = htmlspecialchars($_POST['meetingTimeIn']);
     $meetingTimeOut = htmlspecialchars($_POST['meetingTimeOut']);
-    $meetingDescription = htmlspecialchars($_POST['desc']);
+    $meetingDescription = htmlspecialchars($_POST['meetingDesc']);
     $meetingHW = htmlspecialchars($_POST['meetingHW']);
 
     $query = "INSERT INTO `meeting` (`meetingTypeID`, `eventID`, `meetingDate`, `meetingTimeIn`, `meetingTimeOut`, `meetingDescription`, `meetingHW`) 
@@ -25,15 +25,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
         if (strpos($key, 'attendance-') === 0) {
             $studentID = substr($key, strlen('attendance-'));
             //attendance value will be 1 for present, 0 for absent excused, -1 for absent unexcused
-            $attendance = $value;
+            $attendance = intval($value); //intval ensures that only an integer can be passed as a value (no sql query)
         }
         elseif (strpos($key, 'engagement-') === 0) {
             $studentID = substr($key, strlen('engagement-'));
-            $engagement = $value;
+            $engagement = intval($value);
         }
         elseif (strpos($key, 'homework-') === 0) {
             $studentID = substr($key, strlen('homework-'));
-            $homework = $value;
+            $homework = intval($value);
         }
         if ($studentID !== null) {
             if (!isset($studentData[$studentID])) {

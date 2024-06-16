@@ -1020,14 +1020,14 @@ function getDivisionList($all=0)
 function getTeamList($excludeTournament,$labelName='Team')
 {
 	global $mysqlConn, $schoolID;
-	$query = "SELECT `teamID`,`teamName`,`tournamentName`,`dateTournament` FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `schoolID`= $schoolID AND NOT `tournament`.`tournamentID`= $excludeTournament ORDER BY `dateTournament` DESC, `teamName`";
+	$query = "SELECT `teamID`,`teamName`,`tournamentName`,`dateTournament`,`year` FROM `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `schoolID`= $schoolID AND NOT `tournament`.`tournamentID`= $excludeTournament ORDER BY `dateTournament` DESC, `teamName`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$output ="<div id='teamsListDiv'><label for='team'>$labelName</label> ";
 	$output .="<select class='form-select' id='team' name='team' required>";
 	if($result && mysqli_num_rows($result)>0)
 	{
 		while ($row = $result->fetch_assoc()):
-			$output .= "<option value='".$row['teamID']."'>" . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
+			$output .= "<option value='".$row['teamID']."'>" .$row['year'] . ":" . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
 		endwhile;
 	}
 	$output.="</select></div>";

@@ -59,6 +59,58 @@ function getAttendanceTypes()
 	return $output;
 }
 
+function inputAttendance($studentID)
+{
+	$output = "<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
+				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
+				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
+				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
+			</div>";
+	return $output;
+}
+function inputEngagement($studentID)
+{
+	$output = "<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-0' value='0'>
+				<label class='form-check-label' for='engagement-${studentID}-0'>0</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-1' value='1'>
+				<label class='form-check-label' for='engagement-${studentID}-1'>1</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-2' value='2' checked>
+				<label class='form-check-label' for='engagement-${studentID}-2'>2</label>
+			</div>";
+	return $output;
+}
+function inputHomework($studentID)
+{
+	$output = "<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-0' value='0' checked>
+				<label class='form-check-label' for='homework-${studentID}-0'>0</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='homework-${studentID}'' id='homework-${studentID}-1' value='1'>
+				<label class='form-check-label' for='homework-${studentID}-1'>1</label>
+			</div>
+			<div class='form-check form-check-inline'>
+				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2'>
+				<label class='form-check-label' for='homework-${studentID}-2'>2</label>
+			</div>";
+	return $output;
+}
+
 //Repurposed function from eventemails.php - get names of all students on an event and creates attendance table
 function getEventAttendanceTable($eventID)
 {
@@ -81,51 +133,12 @@ function getEventAttendanceTable($eventID)
 			//show student name
 			$formattedName = $row['first']." ".$row['last'];
 			$studentID = $row['studentID'];	
-			$output .= "<div>
-				<h3>${formattedName}</h3>
-				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
-			</div>
-			<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-0' value='0'>
-				<label class='form-check-label' for='engagement-${studentID}-0'>0</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-1' value='1'>
-				<label class='form-check-label' for='engagement-${studentID}-1'>1</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-2' value='2' checked>
-				<label class='form-check-label' for='engagement-${studentID}-2'>2</label>
-			</div>				
-	
-			<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-0' value='0' checked>
-				<label class='form-check-label' for='homework-${studentID}-0'>0</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}'' id='homework-${studentID}-1' value='1'>
-				<label class='form-check-label' for='homework-${studentID}-1'>1</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2'>
-				<label class='form-check-label' for='homework-${studentID}-2'>2</label>
-			</div>	
-			</div>
-			<hr>";
-			}
+			$output .= "<h3>${formattedName}</h3>";
+			$output .= inputAttendance($studentID);
+			$output .= inputEngagement($studentID);
+			$output .= inputHomework($studentID);
+			$output.="<hr>";
+		}
 	}
 	$output .= "</div>";
 	return $output;
@@ -146,24 +159,10 @@ function getGeneralAttendanceTable()
 			//show student name
 			$formattedName = $row['first']." ".$row['last'];
 			$studentID = $row['studentID'];	
-			$output .= "<div>
-				<h3>${formattedName}</h3>
-				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
-			</div>
-			</div>
-			<hr>";
-			}
+			$output .= "<h3>${formattedName}</h3>";
+			$output .= inputAttendance($studentID);
+			$output .= "<hr>";
+		}
 	}
 	$output .= "</div>";
 	return $output;
@@ -187,23 +186,9 @@ function getOfficerAttendanceTable()
 			//show student name
 			$formattedName = $row['first']." ".$row['last']." - ".$row['position'];
 			$studentID = $row['studentID'];	
-			$output .= "<div>
-				<h3>${formattedName}</h3>
-				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
-			</div>
-			</div>
-			<hr>";
+			$output .= "<h3>${formattedName}</h3>";
+			$output .= inputAttendance($studentID);
+			$output .= "<hr>";
 			}
 	}
 	$output .= "</div>";
@@ -229,24 +214,10 @@ function getEventLeaderAttendanceTable()
 			//show student name
 			$formattedName = $row['first']." ".$row['last']." - ".$row['event'];
 			$studentID = $row['studentID'];	
-			$output .= "<div>
-				<h3>${formattedName}</h3>
-				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
-			</div>
-			</div>
-			<hr>";
-			}
+			$output .= "<h3>${formattedName}</h3>";
+			$output .= inputAttendance($studentID);
+			$output .= "<hr>";
+		}
 	}
 	$output .= "</div>";
 	return $output;
@@ -300,31 +271,59 @@ $row = NULL;
 		<input id="meetingTimeOut" name="meetingTimeOut" type="time" required>
 	</p>
 
-	<div id="attendanceContainer"></div>
-
-	<?=getAllStudents(1, $row['studentID'])?>
-	<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
-	
-	<br>
-	<label for="desc">Meeting Description</label>
-	<textarea id="desc" name="desc" class="form-control" type="text"></textarea>
+	<label for="meetingDesc">Meeting Description</label>
+	<textarea id="meetingDesc" name="meetingDesc" class="form-control" type="text"></textarea>
 
 	<label for="meetingHW">Meeting Homework</label>
 	<textarea id="meetingHW" name="meetingHW" class="form-control" type="text"></textarea>
+
+	<div id="attendanceContainer"></div>
+	<p>
+		<?=getAllStudents(1, $row['studentID'])?>
+		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
+	</p>
+
+	<p>
+		<?=getTeamList(0, "Select Students from a Team")?>
+		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddTeam()"><span class='bi bi-plus-circle'> Add Team</button>
+	</p>
+	<p>
+		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddAll()"><span class='bi bi-plus-circle'> Add All Teammates</button>
+	</p>
+	<br>
+
 
 	<button class='btn btn-primary' type="submit">Submit</button>
 </form>
 <p>
 	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
 </p>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
+
 <script defer>
+	
+	function loadSummerNoteButtons()
+	{
+		//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
+		let buttons = $('.note-editor button[data-toggle="dropdown"]');
+		buttons.each((key, value)=>{
+			$(value).attr('data-bs-toggle', 'dropdown');
+		})
+	}
+
 	function removeAttribute() {
 		var selectElement = document.getElementById('studentID');
 		if (selectElement) {
 			selectElement.removeAttribute('required');
 		}
 	}
-	window.onload = removeAttribute();
+	$(document).ready(function() {
+		removeAttribute();
+		$('#meetingHW').summernote({focus: true});
+		$('#meetingDesc').summernote({focus: true});
+		loadSummerNoteButtons();
+	});
 
 	var form = document.getElementById('addTo');
 	form.addEventListener('submit', function() {
@@ -416,9 +415,86 @@ $row = NULL;
 		}
 	}
 
+	//adds everyone from the team
+	function attendanceAddAll()
+	{
+		var generalAttendanceTable = <?=$generalAttendanceTableHTML?>;
+		document.getElementById('attendanceContainer').innerHTML = generalAttendanceTable;
+	}
+	//TODO: Adds a team to the meeting attendance page
+	function attendanceAddTeam() {
+		var studentID = document.getElementById("studentID").value;
+		var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
+		var firstLast = selectedName.split(', ');
+		var formattedName = firstLast[1] + ' ' + firstLast[0];
+
+		if(studentID.length === 0)
+		{
+			alert("If you would like to add a student, please select a student to add to the event attendance list.");
+			return;
+		}
+		//check if the new student was already added before
+		if(document.getElementsByName('attendance-').length > 0) 
+		{
+			alert('Student already exists in this meeting!');
+			return;
+		}
+		else
+		{
+			//create a new div with student information
+			if(confirm("Add student: " + formattedName + "?"))
+			{
+				var newStudent = `<div>
+						<h3>${formattedName} (Extra)</h3>
+						<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
+						<label class="form-check-label" for="attendance-${studentID}-P">P</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="0">
+						<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
+						<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
+					</div>
+					<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
+						<label class="form-check-label" for="engagement-${studentID}-0">0</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1">
+						<label class="form-check-label" for="engagement-${studentID}-1">1</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
+						<label class="form-check-label" for="engagement-${studentID}-2">2</label>
+					</div>				
+
+					<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
+						<label class="form-check-label" for="homework-${studentID}-0">0</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1">
+						<label class="form-check-label" for="homework-${studentID}-1">1</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
+						<label class="form-check-label" for="homework-${studentID}-2">2</label>
+					</div>	
+
+					<hr>`;
+				document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+			}
+		}
+	}
+
 	function showAttendanceTable() {
 		var eventAttendanceTable = <?=$attendanceTableHTML?>;
-		var generalAttendanceTable = <?=$generalAttendanceTableHTML?>;
 		var officerAttendanceTable = <?=$officerAttendanceTableHTML?>;
 		var eventLeaderAttendanceTable = <?=$eventLeaderAttendanceTableHTML?>;
 		var eventID = '<?=$eventID?>';
@@ -433,7 +509,7 @@ $row = NULL;
 		// General Meeting
 		if(meetingType == 2)
 		{
-			document.getElementById('attendanceContainer').innerHTML = generalAttendanceTable;
+			document.getElementById('attendanceContainer').innerHTML = "";//generalAttendanceTable;
 			document.getElementById('meetingNameDisplay').hidden = true;
 			document.getElementById('meetingNameLabel').hidden = true;
 			document.getElementById('meetingName').value = 0;
