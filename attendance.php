@@ -111,6 +111,7 @@ function inputHomework($studentID)
 	return $output;
 }
 
+
 //Repurposed function from eventemails.php - get names of all students on an event and creates attendance table
 function getEventAttendanceTable($eventID)
 {
@@ -242,8 +243,8 @@ function getEventLeadingID($studentID)
 
 $eventID = getEventLeadingID($studentID);
 $event = getEventLeaderPosition($studentID);
-$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded
-$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());
+$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded, copy studentscopylist.php and modify it
+$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());//TODO see officercopylist.php and eventleadercopylist.php
 //$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
 $eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
 $date = date('Y-m-d');
@@ -486,6 +487,15 @@ $row = NULL;
 		request.fail(function( jqXHR, textStatus ) {
 			$("#infoAddTeam").append("Add Team Error");
 		});
+	}
+
+	//Adds a event team to the meeting attendance page
+	function attendanceAddEvent() {
+//TODO: make this like the function above
+	}
+	//Add officers to the meeting attendance page
+	function attendanceAddOfficers() {
+//TODO: make this like the function above
 	}
 
 	function showAttendanceTable() {
