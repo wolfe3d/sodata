@@ -143,6 +143,8 @@ function getEventAttendanceTable($eventID)
 	$output .= "</div>";
 	return $output;
 }
+/*
+//this function loads a lot of student information in the page and it may not be used.  This decreases page load speed.
 function getGeneralAttendanceTable()
 {
 	global $mysqlConn, $schoolID;
@@ -167,6 +169,7 @@ function getGeneralAttendanceTable()
 	$output .= "</div>";
 	return $output;
 }
+	*/
 function getOfficerAttendanceTable()
 {
 	global $mysqlConn, $schoolID;
@@ -239,9 +242,9 @@ function getEventLeadingID($studentID)
 
 $eventID = getEventLeadingID($studentID);
 $event = getEventLeaderPosition($studentID);
-$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));
+$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded
 $officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());
-$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
+//$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
 $eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
 $date = date('Y-m-d');
 $row = NULL; 
@@ -281,15 +284,18 @@ $row = NULL;
 	<p>
 		<div>Select a single student</div>
 		<?=getAllStudents(1, $row['studentID'])?>
-		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudent()"><span class='bi bi-plus-circle'> Add Student</button>
+		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudentSelected()"><span class='bi bi-plus-circle'> Add Student</button>
+		<div id="infoAddStudent"></div>
 	</p>
 
 	<p>
 		<?=getTeamList(0, "Select All students from a Team")?>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddTeam()"><span class='bi bi-plus-circle'> Add Team</button>
+		<div id="infoAddTeam"></div>
 	</p>
 	<p>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddAll()"><span class='bi bi-plus-circle'> Add All Teammates</button>
+		<div id="infoAddAll"></div>
 	</p>
 	<br>
 
@@ -344,17 +350,14 @@ $row = NULL;
 		}
 	}, false);
 
-	//Adds an additional student to the meeting attendance page
-	function attendanceAddStudent() {
+	function attendanceAddStudentSelected() {
 		var studentID = document.getElementById("studentID").value;
 		var selectedName = document.getElementById("studentID").options[document.getElementById("studentID").selectedIndex].text;
-		var firstLast = selectedName.split(', ');
-		var formattedName = firstLast[1] + ' ' + firstLast[0];
-
+		var studentName = selectedName.split(', ');
 		if(studentID.length === 0)
 		{
 			alert("If you would like to add a student, please select a student to add to the event attendance list.");
-			return;
+			return 0;
 		}
 		//check if the new student was already added before
 		if(document.getElementsByName('attendance-'+studentID).length > 0) 
@@ -362,13 +365,35 @@ $row = NULL;
 			alert('Student already exists in this meeting!');
 			return;
 		}
+		if(attendanceAddStudent(studentID, studentName[0], studentName[1]))
+		{
+			$("#infoAddStudent").append("<div class='text-success'>Added "+studentName[0]+" "+studentName[1]+"</div>");
+		}
+	}
+
+	//Adds an additional student to the meeting attendance page
+	function attendanceAddStudent(studentID, last, first) {
+		var formattedName = first + ' ' + last;
+		if(studentID.length === 0)
+		{
+			//ignore this student - this may be called as part of adding everyone
+			return 0;
+		}
+
+		//check if the new student was already added before
+		if(document.getElementsByName('attendance-'+studentID).length > 0) 
+		{
+			//ignore this student - this may be called as part of adding a team
+			return 0;
+		}
 		else
 		{
 			//create a new div with student information
-			if(confirm("Add student: " + formattedName + "?"))
-			{
+			//if(confirm("Add student: " + formattedName + "?"))
+			//{
+				var meetingType = $("#meetingType option:selected").val();
 				var newStudent = `<div>
-						<h3>${formattedName} (Extra)</h3>
+						<h3>${formattedName} </h3>
 						<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
@@ -381,8 +406,11 @@ $row = NULL;
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
 						<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
-					</div>
-					<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+					</div>`;
+					
+					if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding engagement to other meeting types
+					{
+						newStudent +=`<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
 						<label class="form-check-label" for="engagement-${studentID}-0">0</label>
@@ -394,9 +422,11 @@ $row = NULL;
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
 						<label class="form-check-label" for="engagement-${studentID}-2">2</label>
-					</div>				
-
-					<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
+					</div>`;
+					}
+					if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding homework to other meeting types
+					{
+						newStudent +=`<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
 						<label class="form-check-label" for="homework-${studentID}-0">0</label>
@@ -408,92 +438,54 @@ $row = NULL;
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
 						<label class="form-check-label" for="homework-${studentID}-2">2</label>
-					</div>	
-
-					<hr>`;
-				document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
-			}
+					</div>`;
+					}
+					newStudent += "<hr>";
+				//document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+				$("#attendanceContainer").append(newStudent);
+				return 1;
+			//}
 		}
 	}
 
 	//adds everyone from the team
 	function attendanceAddAll()
 	{
-		var generalAttendanceTable = <?=$generalAttendanceTableHTML?>;
-		document.getElementById('attendanceContainer').innerHTML = generalAttendanceTable;
+		$("#studentID > option").each(function() 
+		{
+			var studentID = this.value;
+			var studentName = this.text.split(', ');
+			attendanceAddStudent(studentID, studentName[0], studentName[1]);
+		}
+		);
+		$("#infoAddAll").append("<div class='text-success'>Added all students</div>");
 	}
 
-	//TODO: Adds a team to the meeting attendance page
+
+	//Adds a team to the meeting attendance page
 	function attendanceAddTeam() {
-		var team = $("#team").value;
-		var selectedName = document.getElementById("team").options[document.getElementById("team").selectedIndex].text;
+		//copied most code from function teamCopy(thisTeamID)
+		var team = $("#team option:selected").val();
+		//get student list on team
+		var request = $.ajax({
+			url: "teamcopylist.php",
+			cache: false,
+			method: "POST",
+			data: {myID:team},
+			dataType: "json"
+		});
 
-		if(team.length === 0)
-		{
-			alert("If you would like to add a team, please select a team above.");
-			return;
-		}
-		//TODO
-		//Get list of student ids and names
-		//Do the following for each
-		//check if the new student was already added before
-		if(document.getElementsByName('attendance-').length > 0) 
-		{
-			alert('Student already exists in this meeting!');
-			return;
-		}
-		else
-		{
-			//create a new div with student information
-			if(confirm("Add team: " + formattedName + "?"))
-			{
-				var newStudent = `<div>
-						<h3>${formattedName} (Extra)</h3>
-						<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
-						<label class="form-check-label" for="attendance-${studentID}-P">P</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="0">
-						<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
-						<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
-					</div>
-					<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
-						<label class="form-check-label" for="engagement-${studentID}-0">0</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1">
-						<label class="form-check-label" for="engagement-${studentID}-1">1</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
-						<label class="form-check-label" for="engagement-${studentID}-2">2</label>
-					</div>				
+		request.done(function( data ) {
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+			});
+			$("#infoAddTeam").append("<div class='text-success'>Added students from "+$("#team option:selected").text()+"</div>");
+		});
 
-					<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
-						<label class="form-check-label" for="homework-${studentID}-0">0</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1">
-						<label class="form-check-label" for="homework-${studentID}-1">1</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
-						<label class="form-check-label" for="homework-${studentID}-2">2</label>
-					</div>	
-
-					<hr>`;
-				document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
-			}
-		}
+		request.fail(function( jqXHR, textStatus ) {
+			$("#infoAddTeam").append("Add Team Error");
+		});
 	}
 
 	function showAttendanceTable() {

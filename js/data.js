@@ -696,7 +696,7 @@ function teamCopy(thisTeamID)
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				inputBtn = $("#teammate-"+ thisTeamID + "-" + val);
+				inputBtn = $("#teammate-"+ thisTeamID + "-" + val["studentID"]);
 				if (!inputBtn.is(":checked"))
 				{
 					inputBtn.trigger( "click" );
