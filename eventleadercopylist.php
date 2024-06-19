@@ -7,7 +7,7 @@ userCheckPrivilege(2);
 function getEventLeaders($schoolID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT DISTINCT `first`, `last`, `event`.`eventID`, `event`.`event`
+	$query = "SELECT DISTINCT `first`, `last`, `student`.`studentID`, `event`.`event`
 	FROM `eventleader` 
 	INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` 
 	INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
@@ -19,7 +19,7 @@ function getEventLeaders($schoolID, $year)
 	{
 		$students = [];
 		while ($row = $result->fetch_assoc()):
-			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"]], "event"=>$row["event"]];
+			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"], "event"=>$row["event"]];
 			array_push($students, $student);
 		endwhile;
 		return $students;

@@ -17,7 +17,7 @@ function getAttendanceTypes()
 	$query = "SELECT `meetingtype`.`meetingTypeName`, `meetingtype`.`meetingTypeID` FROM `meetingtype`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed: $query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	// Add default blank option
-	$output .= "<option disabled selected value='0'>Select an option</option>";
+	//$output .= "<option disabled selected value='0'>Select an option</option>";//not necessary
 	while($row = $result->fetch_assoc())
 	{
 		$name = $row['meetingTypeName'];
@@ -41,205 +41,20 @@ function getAttendanceTypes()
 	return $output;
 }
 
-function inputAttendance($studentID)
-{
-	$output = "<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
-			</div>";
-	return $output;
-}
-function inputEngagement($studentID)
-{
-	$output = "<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-0' value='0'>
-				<label class='form-check-label' for='engagement-${studentID}-0'>0</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-1' value='1'>
-				<label class='form-check-label' for='engagement-${studentID}-1'>1</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='engagement-${studentID}' id='engagement-${studentID}-2' value='2' checked>
-				<label class='form-check-label' for='engagement-${studentID}-2'>2</label>
-			</div>";
-	return $output;
-}
-function inputHomework($studentID)
-{
-	$output = "<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-0' value='0' checked>
-				<label class='form-check-label' for='homework-${studentID}-0'>0</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}'' id='homework-${studentID}-1' value='1'>
-				<label class='form-check-label' for='homework-${studentID}-1'>1</label>
-			</div>
-			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='homework-${studentID}' id='homework-${studentID}-2' value='2'>
-				<label class='form-check-label' for='homework-${studentID}-2'>2</label>
-			</div>";
-	return $output;
-}
-
-
-//Repurposed function from eventemails.php - get names of all students on an event and creates attendance table
-function getEventAttendanceTable($eventID)
-{
-	global $mysqlConn, $schoolID;
-	$output = "";
-	$year = getCurrentSOYear();
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournament` 
-	INNER JOIN `tournamentevent` USING (`tournamentID`) 
-	INNER JOIN `event` USING (`eventID`) 
-	INNER JOIN `teammateplace` USING (`tournamenteventID`) 
-	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`active` = 1 AND `tournamentevent`.`eventID`= $eventID AND `tournament`.`notCompetition` = 1
-	ORDER BY `student`.`last`,`student`.`first`";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
-	{
-		$output.="<div>";
-		while ($row = $result->fetch_assoc())
-		{
-			//show student name
-			$formattedName = $row['first']." ".$row['last'];
-			$studentID = $row['studentID'];	
-			$output .= "<h3>${formattedName}</h3>";
-			$output .= inputAttendance($studentID);
-			$output .= inputEngagement($studentID);
-			$output .= inputHomework($studentID);
-			$output.="<hr>";
-		}
-	}
-	$output .= "</div>";
-	return $output;
-}
-/*
-//this function loads a lot of student information in the page and it may not be used.  This decreases page load speed.
-function getGeneralAttendanceTable()
-{
-	global $mysqlConn, $schoolID;
-	$output = "";
-	$year = getCurrentSOYear();
-	$query = "SELECT * FROM `student` 
-	WHERE `student`.`active` = 1 AND `schoolID` = ". $_SESSION['userData']['schoolID']. " ORDER BY `last`,`first` ASC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
-	{
-		$output.="<div>";
-		while ($row = $result->fetch_assoc())
-		{
-			//show student name
-			$formattedName = $row['first']." ".$row['last'];
-			$studentID = $row['studentID'];	
-			$output .= "<h3>${formattedName}</h3>";
-			$output .= inputAttendance($studentID);
-			$output .= "<hr>";
-		}
-	}
-	$output .= "</div>";
-	return $output;
-}
-	*/
-/*function getOfficerAttendanceTable()
-{
-	global $mysqlConn, $schoolID;
-	$output = "";
-	$year = getCurrentSOYear();
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `officer`.`position`
-	FROM `officer` 
-	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`active` = 1 AND `officer`.`year` = $year
-	ORDER BY `officer`.`officerID` ASC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
-	{
-		$output.="<div>";
-		while ($row = $result->fetch_assoc())
-		{
-			//show student name
-			$formattedName = $row['first']." ".$row['last']." - ".$row['position'];
-			$studentID = $row['studentID'];	
-			$output .= "<h3>${formattedName}</h3>";
-			$output .= inputAttendance($studentID);
-			$output .= "<hr>";
-			}
-	}
-	$output .= "</div>";
-	return $output;
-}*/
-function getEventLeaderAttendanceTable()
-{
-	global $mysqlConn, $schoolID;
-	$output = "";
-	$year = getCurrentSOYear();
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event`
-	FROM `eventleader` 
-	INNER JOIN `student` USING (`studentID`) 
-	INNER JOIN `event` USING(`eventID`)
-	WHERE `student`.`active` = 1 AND `eventleader`.`year` = $year
-	ORDER BY `event`.`event` ASC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	if($result)
-	{
-		$output.="<div>";
-		while ($row = $result->fetch_assoc())
-		{
-			//show student name
-			$formattedName = $row['first']." ".$row['last']." - ".$row['event'];
-			$studentID = $row['studentID'];	
-			$output .= "<h3>${formattedName}</h3>";
-			$output .= inputAttendance($studentID);
-			$output .= "<hr>";
-		}
-	}
-	$output .= "</div>";
-	return $output;
-}
-function getEventLeadingID($studentID)
-{
-	global $mysqlConn;
-	$year = getCurrentSOYear();
-	$query = "SELECT `eventleader`.`eventID` FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID` = `student`.`studentID` WHERE `student`.`studentID` = $studentID AND `year` = $year";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	
-	if($result)
-	{
-		$row = $result->fetch_assoc();
-		return $row['eventID'];
-	}
-	return "";
-}
-$eventID = 0;//TODO Fix, see below
 $eventList = "";
-//TODO: Change getEventLeadingID to output array as student may lead more than one event, make this a choice
 if(userHasPrivilege(4))
 {
+	//show all events for this year for high privilege
 	$eventList= getEventListYear(0,"Event List", $year, null);
 }
 elseif(userHasPrivilege(2))
 {
+	//show only leading events for officer and event leader
 	$events = getEventLeaderPosition($studentID);
 	$eventList = getEventsList($events,0,"Event List",0);
-	//$eventID = getEventLeadingID($studentID);
 }
 $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
-//$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded, copy studentcopylist.php and modify it
-//$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());//moved to use officercopylist.php
-//$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
-//$eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
+
 $date = date('Y-m-d');
 $row = NULL; 
 ?>
@@ -316,6 +131,9 @@ $row = NULL;
 		$('#meetingDesc').summernote({focus: true});
 		loadSummerNoteButtons();
 		showAttendanceTable();
+		$("#eventsList").on( "change", function (e) {
+			attendanceAddEvent();
+		});
 	});
 
 	var form = document.getElementById('addTo');
@@ -351,15 +169,16 @@ $row = NULL;
 			alert('Student already exists in this meeting!');
 			return;
 		}
-		if(attendanceAddStudent(studentID, studentName[0], studentName[1]))
+		if(attendanceAddStudent(studentID, studentName[0], studentName[1]),"")
 		{
 			$("#info").append("<div class='text-success'>Added "+studentName[0]+" "+studentName[1]+"</div>");
 		}
 	}
 
 	//Adds an additional student to the meeting attendance page
-	function attendanceAddStudent(studentID, last, first) {
+	function attendanceAddStudent(studentID, last, first, info) {
 		var formattedName = first + ' ' + last;
+		formattedName += info!=null?" - " + info:"";
 		if(studentID.length === 0)
 		{
 			//ignore this student - this may be called as part of adding everyone
@@ -441,7 +260,7 @@ $row = NULL;
 		{
 			var studentID = this.value;
 			var studentName = this.text.split(', ');
-			attendanceAddStudent(studentID, studentName[0], studentName[1]);
+			attendanceAddStudent(studentID, studentName[0], studentName[1], "");
 		}
 		);
 		$("#info").append("<div class='text-success'>Added all students</div>");
@@ -457,14 +276,14 @@ $row = NULL;
 			url: "teamcopylist.php",
 			cache: false,
 			method: "POST",
-			data: {myID:team},
+			data: {'team':team},
 			dataType: "json"
 		});
 
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+				attendanceAddStudent(val["studentID"], val["last"], val["first"],"");
 			});
 			$("#info").append("<div class='text-success'>Added students from "+$("#team option:selected").text()+"</div>");
 		});
@@ -475,10 +294,11 @@ $row = NULL;
 	}
 
 	//Adds a event team to the meeting attendance page
-	//TODO: Work on this
 	function attendanceAddEvent() {
 		//get selected eventID
-		var eventID = $("#eventList option:selected").val();
+		var eventID = $("#eventsList option:selected").val();
+		//clear attendance table
+		document.getElementById('attendanceContainer').innerHTML = "";
 		//get student list on team
 		var request = $.ajax({
 			url: "eventcopylist.php",
@@ -491,7 +311,7 @@ $row = NULL;
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+				attendanceAddStudent(val["studentID"], val["last"], val["first"],"");
 			});
 			$("#info").append("<div class='text-success'>Added event member</div>");
 		});
@@ -516,7 +336,7 @@ $row = NULL;
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+				attendanceAddStudent(val["studentID"], val["last"], val["first"], val["position"]);
 			});
 			$("#info").append("<div class='text-success'>Added officers</div>");
 		});
@@ -541,7 +361,7 @@ $row = NULL;
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+				attendanceAddStudent(val["studentID"], val["last"], val["first"], val["event"]);
 			});
 			$("#info").append("<div class='text-success'>Added event leaders</div>");
 		});
@@ -557,7 +377,6 @@ $row = NULL;
 		if(meetingType == 1)
 		{
 			// show event attendance table with all students in event
-			document.getElementById('attendanceContainer').innerHTML = eventAttendanceTable;
 			document.getElementById('eventsListDiv').hidden = false;
 			$("#eventsListDiv").val($("#eventsListDiv option:first").val());
 			attendanceAddEvent();
@@ -577,9 +396,10 @@ $row = NULL;
 		}
 		else if(meetingType == 4) // Event Leader Meeting
 		{
-			document.getElementById('attendanceContainer').innerHTML = eventLeaderAttendanceTable;
+			document.getElementById('attendanceContainer').innerHTML = "";
 			document.getElementById('eventsListDiv').hidden = true;
 			$("#eventsListDiv").val("");
+			attendanceAddEventLeaders();
 		}
 		else
 		{

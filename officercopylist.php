@@ -6,7 +6,7 @@ userCheckPrivilege(2);
 function getOfficers($schoolID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT DISTINCT `student`.`first`, `student`.`last`, `student`.`studentID`
+	$query = "SELECT DISTINCT `student`.`first`, `student`.`last`, `student`.`studentID`, `officer`.`position`
 	FROM `officer` 
 	INNER JOIN `student` USING (`studentID`) 
 	WHERE `student`.`active` AND `student`.`schoolID` = $schoolID AND `year`= $year
@@ -16,7 +16,7 @@ function getOfficers($schoolID, $year)
 	{
 		$students = [];
 		while ($row = $result->fetch_assoc()):
-			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"]];
+			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"], "position"=>$row["position"]];
 			array_push($students, $student);
 		endwhile;
 		return $students;

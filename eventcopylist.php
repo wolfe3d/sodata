@@ -2,16 +2,11 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-//TODO: Fix me
 
-function getEventMembers($eventID, $schoolID, $year)
+function getEventStudentListTournament($tournamentID, $eventID)
 {
 	global $mysqlConn;
-    //TODO: Fix query
-
-	function getEventStudentListTournament($tournamentID, $eventID)
-{
-	$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `event`.`event` FROM `tournamentevent`
+	$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first` FROM `tournamentevent`
 	INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
 	INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID`
 	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID`
@@ -32,9 +27,9 @@ function getEventMembers($eventID, $schoolID, $year)
 		return 0;
 	}
 }
-$eventID = intval($_POST['myID']);
+$eventID = intval($_POST['eventID']);
 $schoolID = $_SESSION['userData']['schoolID'];
 $year = getCurrentSOYear();
 $tournamentID = getLatestTournamentNCSchoolID($year)['tournamentID'];
-echo json_encode(getEventStudentListTournament($tounamentID, $eventID);
+echo json_encode(getEventStudentListTournament($tournamentID, $eventID));
 ?>

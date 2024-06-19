@@ -4,17 +4,16 @@ require_once("php/functions.php");
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
     // variables for meeting table
-    $meetingName = htmlspecialchars($_POST['meetingName']);
-    $meetingDate = htmlspecialchars($_POST['meetingDate']);
-    $meetingType = filter_input(INPUT_POST, "meetingType", FILTER_VALIDATE_INT);
-    $eventID = htmlspecialchars($_POST['meetingName']);
-    $meetingTimeIn = htmlspecialchars($_POST['meetingTimeIn']);
-    $meetingTimeOut = htmlspecialchars($_POST['meetingTimeOut']);
-    $meetingDescription = htmlspecialchars($_POST['meetingDesc']);
-    $meetingHW = htmlspecialchars($_POST['meetingHW']);
+    $meetingDate = $mysqlConn->real_escape_string($_POST['meetingDate']);
+    $meetingTypeID = intval($_POST["meetingType"]);
+    $eventID = intval($_POST['eventsList']);
+    $meetingTimeIn = $mysqlConn->real_escape_string($_POST['meetingTimeIn']);
+    $meetingTimeOut = $mysqlConn->real_escape_string($_POST['meetingTimeOut']);
+    $meetingDescription = $mysqlConn->real_escape_string($_POST['meetingDesc']);
+    $meetingHW = $mysqlConn->real_escape_string($_POST['meetingHW']);
 
     $query = "INSERT INTO `meeting` (`meetingTypeID`, `eventID`, `meetingDate`, `meetingTimeIn`, `meetingTimeOut`, `meetingDescription`, `meetingHW`) 
-              VALUES ('$meetingType', '$eventID', '$meetingDate', '$meetingTimeIn', '$meetingTimeOut', '$meetingDescription', '$meetingHW') ";
+              VALUES ('$meetingTypeID', '$eventID', '$meetingDate', '$meetingTimeIn', '$meetingTimeOut', '$meetingDescription', '$meetingHW') ";
     $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     $meetingID = $mysqlConn->insert_id;
     // Handle meeting attendance for each student
