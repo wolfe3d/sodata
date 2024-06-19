@@ -17,7 +17,7 @@ if($officerPos)
 {
 	$output .="<h3>Officer: $officerPos</h3>";
 }
-$eventLeaderPos = getEventLeaderPosition(getCurrentSOYear());
+$eventLeaderPos = getEventLeaderPosition(getCurrentSOYear())['event'];
 if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";

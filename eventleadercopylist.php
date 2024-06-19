@@ -4,25 +4,22 @@ require_once  ("php/functions.php");
 userCheckPrivilege(2);
 //TODO: Fix me
 
-function getStudents($eventID)
+function getEventLeaders($schoolID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first` FROM `tournament` 
-	INNER JOIN `tournamentevent` USING (`tournamentID`) 
-	INNER JOIN `event` USING (`eventID`) 
-	INNER JOIN `teammateplace` USING (`tournamenteventID`) 
-	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`active` = 1 AND `tournamentevent`.`eventID`= $eventID 
-    AND `tournament`.`notCompetition` = 1
-    AND `student`.`schoolID` = $_SESSION['userData']['schoolID'];
-	ORDER BY `student`.`last`,`student`.`first`";
+	$query = "SELECT DISTINCT `first`, `last`, `event`.`eventID`, `event`.`event`
+	FROM `eventleader` 
+	INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` 
+	INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
+	WHERE `student`.`active` AND `student`.`schoolID` = $schoolID AND `year`=$year
+	ORDER BY `student`.`last`, `student`.`first`";
 
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$students = [];
 		while ($row = $result->fetch_assoc()):
-			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"]];
+			$student = ["studentID"=>$row["studentID"],"last"=>$row["last"],"first"=>$row["first"]], "event"=>$row["event"]];
 			array_push($students, $student);
 		endwhile;
 		return $students;
@@ -31,6 +28,7 @@ function getStudents($eventID)
 		return 0;
 	}
 }
-$eventID = intval($_POST['myID']);
-echo json_encode(getStudents($eventID));
+$schoolID = $_SESSION['userData']['schoolID'];
+$year = getCurrentSOYear();
+echo json_encode(getEventLeaders($schoolID, $year));
 ?>

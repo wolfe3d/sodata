@@ -39,7 +39,7 @@ $events .= "</ul>";
 		<?=getDivisionList(0,"Division")?>
 	</p>
 	<p>
-		<?=getEventList(0,"Events")?>
+		<?=getEventListAll(0,"Events")?>
 	</p>
 </p>
 	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>

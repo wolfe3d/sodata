@@ -310,13 +310,13 @@ function studentRemove(myID, studentName)
 				$("#student-" + myID).remove(); //remove element
 			}
 			else {
-				$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+html+"</div");
+				$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+html+"</div>");
 			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".text-success").remove();
-			$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+textStatus+"</div");
+			$("#student-" + myID).before("<div class='text-danger'>Removal Error: "+textStatus+"</div>");
 		});
 	}
 }
@@ -736,7 +736,7 @@ function teamCopyAssignments(thisTeamID)
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
-			$("#mainContainer").append("Removal Error");
+			$("#mainContainer").append("<div class='text-danger'>Removal Error:"+html+"</div>");
 		});
 
 }
@@ -824,7 +824,7 @@ $( "#addTo" ).submit(function( event ) {
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").html("Removal Error");
+		$("#mainContainer").html("<div class='text-danger'>Removal Error:"+html+"</div>");
 	});
 });
 }
@@ -906,13 +906,13 @@ function tournamentRemove(myID, tournamentName)
 				$("#tournament-" + myID).remove(); //remove element
 			}
 			else {
-				$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
+				$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div>");
 			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".text-success").remove();
-			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div>");
 		});
 	}
 }
@@ -956,13 +956,13 @@ function tournamentPublishToggle(myID)
 			}
 			else
 			{
-				$("#publishBtn").before("<div class='text-danger'>Publication Error:"+html+"</div");
+				$("#publishBtn").before("<div class='text-danger'>Publication Error:"+html+"</div>");
 			}
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
 			$(".text-success").remove();
-			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+			$("#tournament-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div>");
 		});
 }
 
@@ -1257,13 +1257,13 @@ function tournamentTeamLockToggle(myID) {
 		}
 		else
 		{
-			$("#lockBtn").before("<div class='text-danger'>Error:"+html+"</div");
+			$("#lockBtn").before("<div class='text-danger'>Error:"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
 		$(".text-success").remove();
-		$("#tournament-teamassign-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div");
+		$("#tournament-teamassign-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div>");
 	});
 }
 
@@ -1385,13 +1385,13 @@ function rowRemove(myID,table)
 		}
 		else {
 			$(".text-success").remove();
-			$("#" + table + "-" + myID).before("<div class='text-warning'>Removal Error:"+html+"</div");
+			$("#" + table + "-" + myID).before("<div class='text-warning'>Removal Error:"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
 		$(".text-success").remove();
-		$("#" + table + "-" + myID).before("<div class='text-danger'>Request failed:"+textStatus+"</div");
+		$("#" + table + "-" + myID).before("<div class='text-danger'>Request failed:"+textStatus+"</div>");
 	});
 }
 function tournamentEventRemove(myID,myName)
@@ -1421,7 +1421,7 @@ function tournamentEventRemove(myID,myName)
 						rowRemove(myID,"tournamentevent");
 					}
 					else {
-						$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+						$("#note").html("<div class='text-danger'>Change Error:"+html+"</div>");
 						inputBtn.prop('checked', checked?0:1);
 					}
 				});
@@ -1473,7 +1473,7 @@ function tournamentEventTimeSet(inputBtn)
 			$("#note").html("<div class='text-success'>Time "+modified+" for "+$("#tournamenteventname-"+splitName[1]).text()+" " +$("#timeblock-"+splitName[2]).text()+"</div>"); //add note to show modification
 		}
 		else {
-			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div>");
 			inputBtn.prop('checked', checked?0:1);
 		}
 	});
@@ -1558,13 +1558,13 @@ function tournamentTeammate(inputBtn)
 			inputBtn.prop('checked', false);
 		}
 		else {
-			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div>");
 		}
 		tournamentTeamEditCheckErrors();
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-success' class='error'>Change Error:"+textStatus+"</div>");
 	});
 }
 
@@ -1649,15 +1649,15 @@ function tournamentEventTeammate(inputBtn)
 			}
 		}
 		else if(html=='2'){
-			$("#note").html("<div class='text-danger'>Add failed: student is not on the team.</div");
+			$("#note").html("<div class='text-danger'>Add failed: student is not on the team.</div>");
 			inputBtn.prop('checked', false);
 		}
 		else if(html=='3'){
-			$("#note").html("<div class='text-warning'>Add warning: another user has already added this student to this event.</div");
+			$("#note").html("<div class='text-warning'>Add warning: another user has already added this student to this event.</div>");
 			//keep button checked
 		}
 		else {
-			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+html+"</div>");
 			inputBtn.prop('checked', false);
 		}
 		//recalculate total score
@@ -1673,7 +1673,7 @@ function tournamentEventTeammate(inputBtn)
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 	});
 }
 
@@ -1815,12 +1815,12 @@ function leaderRemoveRow(myID,table, myName)
 			$("#" + table + "-" + myID).remove();  //remove buttons in list
 		}
 		else {
-			$("#" + table + "-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div");
+			$("#" + table + "-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
 		$(".text-success").remove();
-		$("#" + table + "-" + myID).before("<div class='text-danger' class='error'>Request failed:"+textStatus+"</div");
+		$("#" + table + "-" + myID).before("<div class='text-danger' class='error'>Request failed:"+textStatus+"</div>");
 	});
 }

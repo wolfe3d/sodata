@@ -35,22 +35,6 @@ function getEventStudentListAllCompetitors($eventID, $year)
 	return printEmailTable($query, $eventID, $year);
 }
 
-//get latest team schedule - also known as the notCompetition Tournament.
-function getLatestTournamentNCSchoolID($year)
-{
-	global $mysqlConn, $schoolID;
-	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament`
-	WHERE `tournament`.`schoolID`= $schoolID AND `tournament`.`year` = $year AND `notCompetition`=1 AND `published`=1
-	ORDER BY `dateTournament` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if($result && mysqli_num_rows($result)>0)
-	{
-		$output = $result->fetch_assoc();
-	}
-	return $output;
-}
-
 $eventName = getEventName($eventID);
 $output="<h2>$eventName</h2>";
 

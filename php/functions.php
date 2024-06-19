@@ -47,6 +47,22 @@ function getAllStudents($active, $studentID)
 	return $myOutput;
 }
 
+//get latest team schedule - also known as the notCompetition Tournament.
+function getLatestTournamentNCSchoolID($year)
+{
+	global $mysqlConn, $schoolID;
+	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament`
+	WHERE `tournament`.`schoolID`= $schoolID AND `tournament`.`year` = $year AND `notCompetition`=1 AND `published`=1
+	ORDER BY `dateTournament` DESC";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
+	if($result && mysqli_num_rows($result)>0)
+	{
+		$output = $result->fetch_assoc();
+	}
+	return $output;
+}
+
 //get student ID of user
 function getStudentID($userID)
 {
@@ -1035,26 +1051,40 @@ function getTeamList($excludeTournament,$labelName='Team')
 }
 
 //get list of events
-function getEventList($number=0,$label)
+function getEventListAll($number=0,$label)
 {
 	global $mysqlConn;
-	$name = $number>0?"eventsList-$number":"eventsList";
-	$query = "SELECT * FROM `event` ORDER BY `event` ASC";
+	$events = array();
+	$query = "SELECT `eventID`,`event`,`type` FROM `event`";
 	$resultEventsList = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
-	$events .="<select class='form-select' id='$name' name='$name' required>";
-	$events .="<option></option>";
 	if($resultEventsList)
 	{
 		while ($row = $resultEventsList->fetch_assoc()):
 			$event = htmlspecialchars($mysqlConn->real_escape_string($row['event']));
 			$type = getEventString($row['type']);
-			$events .= "<option value='".$row['eventID']."'>$event - $type</option>";
+			$events[] = ['eventID'=>$row['eventID'], 'event'=>$event,'type'=>$type];
 		endwhile;
 	}
-	$events.="</select></div>";
-	return $events;
+	return getEventsList($events, $number, $label,null);
 }
+
+//get List of events
+function getEventsList($events,$number=0,$label, $select=null)
+{
+	//$events = getEventLeaderPosition($studentID);
+	$name = $number>0?"eventsList-$number":"eventsList";
+	$output ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
+	$output .="<select class='form-select' id='$name' name='$name' required>";
+	$output .=$select==0?"":"<option></option>";
+	foreach ($events as $event)
+	{
+		$selected = $event['eventID']==$select?"selected":"";
+		$output .= "<option value='".$event['eventID']."' $selected>" .$event['event'] . "-".$event['type']."</option>";
+	}
+	$output.="</select></div>";
+	return $output;
+}
+
 
 //get list of courses
 function getCourseList()
@@ -1080,22 +1110,18 @@ function getEventListYear($number,$label, $year, $select)
 {
 	global $mysqlConn;
 	$year = intval($year);
+	$events = array();
 	$query = "SELECT DISTINCT `event`.`eventID`,`event`.`event`,`event`.`type` FROM `event` INNER JOIN `eventyear` ON `event`.`eventID`=`eventyear`.`eventID` WHERE `eventyear`.`year`=$year ORDER BY `event` ASC";
 	$resultEventsList = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$events ="<div id='eventsListDiv'><label for='eventsList'>$label</label> ";
-	$events .="<select class='form-select' id='eventsList-$number' name='eventsList' required>";
-	$events .="<option></option>";
 	if($resultEventsList)
 	{
 		while ($row = $resultEventsList->fetch_assoc()):
 			$event = htmlspecialchars($mysqlConn->real_escape_string($row['event']));
 			$type = getEventString($row['type']);
-			$selected = $row['eventID']==$select?"selected":"";
-			$events .= "<option value='".$row['eventID']."' $selected>$event - $type</option>";
+			$events[] = ['eventID'=>$row['eventID'], 'event'=>$event,'type'=>$type];
 		endwhile;
 	}
-	$events.="</select></div>";
-	return $events;
+	return getEventsList($events, $number, $label, $select);
 }
 
 //Get all Science Olympiad years from 1982 to current year+1
@@ -1178,15 +1204,16 @@ function getOfficerPositionPrevious($studentID)
 function getEventLeaderPosition($studentID)
 {
 	global $mysqlConn, $schoolID;
-	$output = "";
+	$output = [];
 	$year = getCurrentSOYear();
-	$query = "SELECT `event` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
+	$query = "SELECT `event`.`event`, `event`.`eventID`,`event`.`type` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`=$year";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		while ($row = $result->fetch_assoc()):
-			$output .= $output ? ", ":"";
-			$output .= $row['event'];
+			$event = htmlspecialchars($mysqlConn->real_escape_string($row['event']));
+			$type = getEventString($row['type']);
+			$output[] = ['eventID'=>$row['eventID'], 'event'=>$event, 'type'=>$type];
 		endwhile;
 	}
 	return $output;

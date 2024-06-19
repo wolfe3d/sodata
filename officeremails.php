@@ -15,8 +15,8 @@ if($studentID)
 }
 $query = "SELECT DISTINCT `first`, `last`, `email`, `emailSchool`, `officer`.`position`, `officer`.`officerID`
 FROM `officer` 
-INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` 
-WHERE `student`.`active` AND `student`.`userID` != 9 AND `student`.`schoolID` = $schoolID AND `year`=$year
+INNER JOIN `student` USING (`studentID`) 
+WHERE `student`.`active` $studentIDWhere AND `student`.`schoolID` = $schoolID AND `year`=$year
 ORDER BY `officer`.`officerID`";
 $result = $mysqlConn->query($query);
 $emails[] = NULL;

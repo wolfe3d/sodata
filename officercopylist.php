@@ -2,17 +2,15 @@
 header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
-//TODO: Fix me
 
-function getStudents($schoolID)
+function getOfficers($schoolID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT DISTINCT `student`.`studentID`, `student`.`last`, `student`.`first`, `student`.`email`, `student`.`emailSchool`, `officer`.`position`
+	$query = "SELECT DISTINCT `student`.`first`, `student`.`last`, `student`.`studentID`
 	FROM `officer` 
 	INNER JOIN `student` USING (`studentID`) 
-	WHERE `student`.`active` = 1 AND `officer`.`year` = $year
-    AND `student`.`schoolID` = $_SESSION['userData']['schoolID'];
-	ORDER BY `officer`.`officerID` ASC";
+	WHERE `student`.`active` AND `student`.`schoolID` = $schoolID AND `year`= $year
+	ORDER BY `officer`.`officerID`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
@@ -28,6 +26,7 @@ function getStudents($schoolID)
 	}
 }
 
-$eventID = intval($_POST['myID']);
-echo json_encode(getStudents($eventID));
+$schoolID = $_SESSION['userData']['schoolID'];
+$year = getCurrentSOYear();
+echo json_encode(getOfficers($schoolID, $year));
 ?>

@@ -15,7 +15,7 @@ $query = "SELECT DISTINCT `first`, `last`, `email`, `emailSchool`, `event`.`even
 FROM `eventleader` 
 INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` 
 INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
-WHERE `student`.`active` AND `student`.`userID` != 9 AND `student`.`schoolID` = $schoolID AND `year`=$year
+WHERE `student`.`active` $studentIDWhere AND `student`.`schoolID` = $schoolID AND `year`=$year
 ORDER BY `student`.`last`, `student`.`first`";
 $result = $mysqlConn->query($query);
 $emails[] = NULL;

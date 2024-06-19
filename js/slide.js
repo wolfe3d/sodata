@@ -23,12 +23,12 @@ function slideAdd(slideOrder)
 
 		}
 		else {
-			$("#note").html("<div class='text-warning'>Change Error:"+html+"</div");
+			$("#note").html("<div class='text-warning'>Change Error:"+html+"</div>");
 		}
 	});
 
 	request.fail(function( jqXHR, textStatus ) {
-		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+		$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 	});
 }
 function slidePreviewImage(slideID)
@@ -72,7 +72,7 @@ function slideSave(slideID)
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
-			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 		});
 	}
 
@@ -126,7 +126,7 @@ var saveText = function() {
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
-			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 		});
 	}
 };

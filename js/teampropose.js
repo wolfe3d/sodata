@@ -97,7 +97,7 @@ function proposeByBruteForce(team)
 
 
 		requestScore.fail(function( jqXHR, textStatus ) {
-			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 		});
 	});
 }
@@ -146,7 +146,7 @@ function proposeByAllForce(team)
 
 
 		requestScore.fail(function( jqXHR, textStatus ) {
-			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div");
+			$("#note").html("<div class='text-danger'>Change Error:"+textStatus+"</div>");
 		});
 	});
 }

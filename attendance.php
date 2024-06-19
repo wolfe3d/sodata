@@ -9,24 +9,6 @@ if($studentID)
 	$studentIDWhere ="AND `student`.`studentID` != $studentID";
 }
 
-//get all the tournaments that the student has competed in
-function getStudentsTournamentList($studentID)
-{
-	global $mysqlConn, $schoolID;
-	$query = "SELECT `tournament`.`tournamentID`,`teamName`,`tournamentName`,`dateTournament` FROM `student` INNER JOIN `teammate` ON `student`.`studentID`=`teammate`.`studentID` INNER JOIN `team` ON `teammate`.`teamID`=`team`.`teamID` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID`  WHERE `student`.`schoolID`=$schoolID AND `student`.`studentID`=$studentID ORDER BY `dateTournament` DESC, `teamName`";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output ="<div id='tournamentDiv'><label for='tournament'>Tournaments</label> ";
-	$output .="<select class='form-select' id='tournament' name='tournament' required>";
-	if($result && mysqli_num_rows($result)>0)
-	{
-		while ($row = $result->fetch_assoc()):
-			$output .= "<option value='".$row['tournamentID']."'>" . $row['tournamentName'] . " - ". $row['teamName'] ." (" . $row['dateTournament']  .")</option>";
-		endwhile;
-	}
-	$output.="</select></div>";
-	return $output;
-}
-
 function getAttendanceTypes()
 {
 	global $mysqlConn;
@@ -171,7 +153,7 @@ function getGeneralAttendanceTable()
 	return $output;
 }
 	*/
-function getOfficerAttendanceTable()
+/*function getOfficerAttendanceTable()
 {
 	global $mysqlConn, $schoolID;
 	$output = "";
@@ -197,7 +179,7 @@ function getOfficerAttendanceTable()
 	}
 	$output .= "</div>";
 	return $output;
-}
+}*/
 function getEventLeaderAttendanceTable()
 {
 	global $mysqlConn, $schoolID;
@@ -240,26 +222,34 @@ function getEventLeadingID($studentID)
 	}
 	return "";
 }
-
-$eventID = getEventLeadingID($studentID);
-$event = getEventLeaderPosition($studentID);
-$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded, copy studentscopylist.php and modify it
-$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());//TODO see officercopylist.php and eventleadercopylist.php
+$eventID = 0;//TODO Fix, see below
+$eventList = "";
+//TODO: Change getEventLeadingID to output array as student may lead more than one event, make this a choice
+if(userHasPrivilege(4))
+{
+	$eventList= getEventListYear(0,"Event List", $year, null);
+}
+elseif(userHasPrivilege(2))
+{
+	$events = getEventLeaderPosition($studentID);
+	$eventList = getEventsList($events,0,"Event List",0);
+	//$eventID = getEventLeadingID($studentID);
+}
+$event = 0;//getEventLeaderPosition($studentID)[0]['event'];
+//$attendanceTableHTML = json_encode(getEventAttendanceTable($eventID));//TODO  move this to a function into load as teams and all team is now loaded, copy studentcopylist.php and modify it
+//$officerAttendanceTableHTML = json_encode(getOfficerAttendanceTable());//moved to use officercopylist.php
 //$generalAttendanceTableHTML = json_encode(getGeneralAttendanceTable());
-$eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
+//$eventLeaderAttendanceTableHTML = json_encode(getEventLeaderAttendanceTable());
 $date = date('Y-m-d');
 $row = NULL; 
 ?>
 
 <form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
-
+<div id="info"></div>
 	<label for="meetingType">Meeting Type</label>
 	<?=getAttendanceTypes()?>
 
-	<label hidden id="meetingNameLabel" for="meetingName">Event Name</label>
-	<br>
-	<p hidden id="meetingNameDisplay" value="<?=$eventID?>" ><u><?=$event?></u></p>
-	<input id="meetingName" name="meetingName" class="form-control" type="text" value="<?=$eventID?>" hidden>
+	<?=$eventList?>
 
 	<label for="meetingDate">Meeting Date</label>
 	<br>
@@ -286,26 +276,20 @@ $row = NULL;
 		<div>Select a single student</div>
 		<?=getAllStudents(1, $row['studentID'])?>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddStudentSelected()"><span class='bi bi-plus-circle'> Add Student</button>
-		<div id="infoAddStudent"></div>
 	</p>
 
 	<p>
 		<?=getTeamList(0, "Select All students from a Team")?>
+		<div>
 		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddTeam()"><span class='bi bi-plus-circle'> Add Team</button>
-		<div id="infoAddTeam"></div>
+		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddAll()"><span class='bi bi-plus-circle'> Add All Teammates</button>
+		</div>
 	</p>
 	<p>
-		<button class="btn btn-warning" type="button" onclick="javascript:attendanceAddAll()"><span class='bi bi-plus-circle'> Add All Teammates</button>
-		<div id="infoAddAll"></div>
+		<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
+		<button class='btn btn-primary' type="submit">Submit</button>
 	</p>
-	<br>
-
-
-	<button class='btn btn-primary' type="submit">Submit</button>
 </form>
-<p>
-	<button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button>
-</p>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
 <script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 
@@ -331,6 +315,7 @@ $row = NULL;
 		$('#meetingHW').summernote({focus: true});
 		$('#meetingDesc').summernote({focus: true});
 		loadSummerNoteButtons();
+		showAttendanceTable();
 	});
 
 	var form = document.getElementById('addTo');
@@ -338,7 +323,7 @@ $row = NULL;
 		if(confirm('Are you sure you want to submit your meeting attendance?'))
 		{
 			alert('Meeting attendance submitted!');
-			var eventID = document.getElementById("meetingName").value;
+			var eventID = document.getElementById("eventsList").value;
 			if(document.getElementById('meetingType').value == 1)
 			{
 				window.location.href = `#event-analysis-${eventID}`;
@@ -368,7 +353,7 @@ $row = NULL;
 		}
 		if(attendanceAddStudent(studentID, studentName[0], studentName[1]))
 		{
-			$("#infoAddStudent").append("<div class='text-success'>Added "+studentName[0]+" "+studentName[1]+"</div>");
+			$("#info").append("<div class='text-success'>Added "+studentName[0]+" "+studentName[1]+"</div>");
 		}
 	}
 
@@ -459,7 +444,7 @@ $row = NULL;
 			attendanceAddStudent(studentID, studentName[0], studentName[1]);
 		}
 		);
-		$("#infoAddAll").append("<div class='text-success'>Added all students</div>");
+		$("#info").append("<div class='text-success'>Added all students</div>");
 	}
 
 
@@ -481,59 +466,126 @@ $row = NULL;
 			$.each( data, function( key, val ) {
 				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
 			});
-			$("#infoAddTeam").append("<div class='text-success'>Added students from "+$("#team option:selected").text()+"</div>");
+			$("#info").append("<div class='text-success'>Added students from "+$("#team option:selected").text()+"</div>");
 		});
 
 		request.fail(function( jqXHR, textStatus ) {
-			$("#infoAddTeam").append("Add Team Error");
+			$("#info").append("Add Team Error");
 		});
 	}
 
 	//Adds a event team to the meeting attendance page
+	//TODO: Work on this
 	function attendanceAddEvent() {
-//TODO: make this like the function above
+		//get selected eventID
+		var eventID = $("#eventList option:selected").val();
+		//get student list on team
+		var request = $.ajax({
+			url: "eventcopylist.php",
+			cache: false,
+			method: "POST",
+			data: {'eventID':eventID}, //no data sent
+			dataType: "json"
+		});
+
+		request.done(function( data ) {
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+			});
+			$("#info").append("<div class='text-success'>Added event member</div>");
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#info").append("Add Event Members Error");
+		});
 	}
+
 	//Add officers to the meeting attendance page
 	function attendanceAddOfficers() {
-//TODO: make this like the function above
+		var team = $("#team option:selected").val();
+		//get student list on team
+		var request = $.ajax({
+			url: "officercopylist.php",
+			cache: false,
+			method: "POST",
+			data: {}, //no data sent
+			dataType: "json"
+		});
+
+		request.done(function( data ) {
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+			});
+			$("#info").append("<div class='text-success'>Added officers</div>");
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#info").append("<div class='text-danger'>Add officers error</div>");
+		});
+	}
+
+	//Add event leaders to the meeting attendance page
+	function attendanceAddEventLeaders() {
+		var team = $("#team option:selected").val();
+		//get student list on team
+		var request = $.ajax({
+			url: "eventleadercopylist.php",
+			cache: false,
+			method: "POST",
+			data: {}, //no data sent
+			dataType: "json"
+		});
+
+		request.done(function( data ) {
+			$(".text-success").remove(); //removes any old update notices
+			$.each( data, function( key, val ) {
+				attendanceAddStudent(val["studentID"], val["last"], val["first"]);
+			});
+			$("#info").append("<div class='text-success'>Added event leaders</div>");
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$("#info").append("Add Event Leaders Error");
+		});
 	}
 
 	function showAttendanceTable() {
-		var eventAttendanceTable = <?=$attendanceTableHTML?>;
-		var officerAttendanceTable = <?=$officerAttendanceTableHTML?>;
-		var eventLeaderAttendanceTable = <?=$eventLeaderAttendanceTableHTML?>;
-		var eventID = '<?=$eventID?>';
+		//var officerAttendanceTable = 
 		var meetingType = document.getElementById('meetingType').value;
 		if(meetingType == 1)
 		{
 			// show event attendance table with all students in event
 			document.getElementById('attendanceContainer').innerHTML = eventAttendanceTable;
-			document.getElementById('meetingNameDisplay').hidden = false;
-			document.getElementById('meetingNameLabel').hidden = false;
+			document.getElementById('eventsListDiv').hidden = false;
+			$("#eventsListDiv").val($("#eventsListDiv option:first").val());
+			attendanceAddEvent();
 		}
-		// General Meeting
-		if(meetingType == 2)
+		else if(meetingType == 2) // General Meeting
 		{
 			document.getElementById('attendanceContainer').innerHTML = "";//generalAttendanceTable;
-			document.getElementById('meetingNameDisplay').hidden = true;
-			document.getElementById('meetingNameLabel').hidden = true;
-			document.getElementById('meetingName').value = 0;
+			document.getElementById('eventsListDiv').hidden = true;
+			$("#eventsListDiv").val("");
 		}
-		// Officer Meeting
-		if(meetingType == 3)
+		else if(meetingType == 3) // Officer Meeting
 		{
-			document.getElementById('attendanceContainer').innerHTML = officerAttendanceTable;
-			document.getElementById('meetingNameDisplay').hidden = true;
-			document.getElementById('meetingNameLabel').hidden = true;
-			document.getElementById('meetingName').value = 0;
+			document.getElementById('attendanceContainer').innerHTML = "";//officerAttendanceTable;
+			document.getElementById('eventsListDiv').hidden = true;
+			$("#eventsListDiv").val("");
+			attendanceAddOfficers();
 		}
-		// Event Leader Meeting
-		if(meetingType == 4)
+		else if(meetingType == 4) // Event Leader Meeting
 		{
 			document.getElementById('attendanceContainer').innerHTML = eventLeaderAttendanceTable;
-			document.getElementById('meetingNameDisplay').hidden = true;
-			document.getElementById('meetingNameLabel').hidden = true;
-			document.getElementById('meetingName').value = 0;
+			document.getElementById('eventsListDiv').hidden = true;
+			$("#eventsListDiv").val("");
+		}
+		else
+		{
+			document.getElementById('attendanceContainer').innerHTML = "";
+			document.getElementById('eventsListDiv').hidden = true;
+			$("#eventsListDiv").val("");
 		}
 	}
 </script>
