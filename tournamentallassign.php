@@ -22,7 +22,7 @@ function timeBlockTournamentScheduleAll($tournamentID, $timeBlockID, $year)
     INNER JOIN `team` on `tournamenttimechosen`.`teamID` = `team`.`teamID`
 	where `tournamenttimechosen`.`timeblockID` = $timeBlockID
 	order by `event`.`event`, `team`.`teamName`";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && $result->num_rows > 0){
 		$firstRow = 1;
 		while ($row = $result->fetch_assoc()):
@@ -58,7 +58,7 @@ function eventTournamentScheduleAll($tournamentID, $year, $tournamenteventID, $e
 	WHERE `tournament`.`tournamentID` = $tournamentID AND `tournamentevent`.`tournamenteventID`= $tournamenteventID
 	ORDER BY `team`.`teamName`";
 		$output="";
-		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
         $leaderIDs = getEventLeaderIDs($eventID, $year);
 		if($result)
 		{
@@ -394,7 +394,7 @@ else {
 	INNER JOIN `tournament` ON `timeblock`.`tournamentID`=`tournament`.`tournamentID`
 	WHERE `tournament`.`tournamentID` = '".$tournamentID."'
 	ORDER BY `timeblock`.`timeStart`";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 
 		$output .="<div id='timeCarousel' class='carousel-frame'  style='display:none'>";
@@ -416,7 +416,7 @@ else {
     INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` 
     WHERE `tournamentevent`.`tournamentID` = $tournamentID
     ORDER BY `event`.`event`";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0){
 	
 		$output .="<div id='eventCarousel' class='carousel-frame'  style='display:none'>";

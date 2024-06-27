@@ -97,7 +97,7 @@ if($result)
 		{
 			$output .="<h4>Officer: $officerPos</h4>";
 		}
-		$eventLeaderPos = getEventLeaderPosition($row['studentID'],$year);
+		$eventLeaderPos = getEventsText(getEventLeaderPosition($row['studentID'],$year));
 		if($eventLeaderPos)
 		{
 			$output .="<h4>Leading Event(s): $eventLeaderPos</h4>";
@@ -126,7 +126,7 @@ if($result)
 				}
 			}
 		}
-		$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
+		$output .="<div>".getStudentGradeGraduate($row['yearGraduating'])."</div>";
 		if($row['email'])
 		{
 			$output .="<div>Google Email: <a href='mailto:".$row['email']."'>".$row['email']."</a></div>";

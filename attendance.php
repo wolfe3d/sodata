@@ -9,6 +9,11 @@ if($studentID)
 	$studentIDWhere ="AND `student`.`studentID` != $studentID";
 }
 
+//TODO: Add function to edit old meetings, load similar way to the teamcopylist.php etc...
+//Must add loading of meeting notes, and meeting homework, attendance, engagement, homework for each student
+//put function in data.js that first loads the meetingID, homework and meeting notes, then loads students 
+//and finally loads this page and puts in all the students
+
 function getAttendanceTypes()
 {
 	global $mysqlConn;
@@ -175,8 +180,8 @@ $row = NULL;
 		}
 	}
 
-	//Adds an additional student to the meeting attendance page
-	function attendanceAddStudent(studentID, last, first, info) {
+	//Add a student to the meeting attendance page
+	function attendanceAddStudent(studentID, last, first, info, attendance=1, engagement=2, homework=0) {
 		var formattedName = first + ' ' + last;
 		formattedName += info!=null?" - " + info:"";
 		if(studentID.length === 0)
@@ -201,15 +206,15 @@ $row = NULL;
 						<h3>${formattedName} </h3>
 						<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" checked>
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" ${attendance==1?'checked':''}>
 						<label class="form-check-label" for="attendance-${studentID}-P">P</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="0">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="-1" ${attendance==-1?'checked':''}>
 						<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="-1">
+						<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="0" ${attendance==0?'checked':''}>
 						<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
 					</div>`;
 					
@@ -217,15 +222,15 @@ $row = NULL;
 					{
 						newStudent +=`<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0" ${engagement==0?'checked':''}>
 						<label class="form-check-label" for="engagement-${studentID}-0">0</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1">
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1" ${engagement==1?'checked':''}>
 						<label class="form-check-label" for="engagement-${studentID}-1">1</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" checked>
+						<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" ${engagement==2?'checked':''}>
 						<label class="form-check-label" for="engagement-${studentID}-2">2</label>
 					</div>`;
 					}
@@ -233,15 +238,15 @@ $row = NULL;
 					{
 						newStudent +=`<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" checked>
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" ${homework==0?'checked':''}>
 						<label class="form-check-label" for="homework-${studentID}-0">0</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1" ${homework==1?'checked':''}>
 						<label class="form-check-label" for="homework-${studentID}-1">1</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2">
+						<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2" ${homework==2?'checked':''}>
 						<label class="form-check-label" for="homework-${studentID}-2">2</label>
 					</div>`;
 					}

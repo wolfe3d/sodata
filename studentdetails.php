@@ -4,6 +4,7 @@ userCheckPrivilege(1);
 $schoolID = $_SESSION['userData']['schoolID'];
 $myStudentID = getStudentID($_SESSION['userData']['userID']);
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
+$year = getCurrentSOYear();
 $query = "SELECT * FROM `student` WHERE `studentID` = $studentID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if($result)
@@ -17,7 +18,8 @@ if($officerPos)
 {
 	$output .="<h3>Officer: $officerPos</h3>";
 }
-$eventLeaderPos = getEventLeaderPosition(getCurrentSOYear())['event'];
+
+$eventLeaderPos = getEventsText(getEventLeaderPosition($row['studentID'],$year));
 if($eventLeaderPos)
 {
 	$output .="<h3>Leading Event(s): $eventLeaderPos</h3>";
@@ -61,7 +63,7 @@ if(userHasPrivilege(4)||$studentID==$myStudentID)
 	$output .= "<div>Student's School ID: ".$row['studentschoolID']."</div>";
 	$output .= "<div>Scilympiad ID: ".$row['scilympiadID']."</div>";
 }
-$output .="<div>Grade: ".getStudentGrade($row['yearGraduating'])." (".$row['yearGraduating'].")</div>";
+$output .="<div>".getStudentGradeGraduate($row['yearGraduating'])."</div>";
 if($row['email'])
 {
 	$output .="<div>Google Email: <a href='mailto:".$row['email']."'>".$row['email']."</a></div>";
@@ -83,7 +85,7 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	{
 		$output .="<div>Previous Positions: $officerPosPrev</div>";
 	}
-	$eventLeaderPosPrev = getEventLeaderPositionPrevious($studentID,"");
+	$eventLeaderPosPrev = getEventLeaderPositionPrevious($studentID, $year);
 	if($eventLeaderPosPrev)
 	{
 		$output .="<div>Previous Event(s) Lead: $eventLeaderPosPrev</div>";

@@ -21,7 +21,7 @@ $output .="</div>";
 if($newsID<0)
 {
 	$query = "INSERT INTO `news` (`schoolID`) VALUES ($schoolID);";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if ($result)
 	{
 		$newsID = $mysqlConn->insert_id;//must put this in a variable or echo - before sending to exit;

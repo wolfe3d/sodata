@@ -444,7 +444,7 @@ function printEmailTable ($query, $eventID, $year)
 {
 	global $mysqlConn, $schoolID;
 	$output="";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$emails[] = NULL;
 	$schoolEmails[]=NULL;
 	$rows = 0;
@@ -1085,6 +1085,17 @@ function getEventsList($events,$number=0,$label, $select=null)
 	return $output;
 }
 
+//get events list as text
+function getEventsText($events)
+{
+	$output = "";
+	foreach ($events as $event)
+	{
+		$output .= $output?", ":"";
+		$output .= $event['event'] . " (".$event['type'].")</option>";
+	}
+	return $output;
+}
 
 //get list of courses
 function getCourseList()
@@ -1189,7 +1200,7 @@ function getOfficerPositionPrevious($studentID)
 	global $mysqlConn, $schoolID;
 	$year = getCurrentSOYear();
 	$query = "SELECT `year`, `position` FROM `officer` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
-	$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
 		while ($row = $result->fetch_assoc()):
@@ -1225,7 +1236,7 @@ function getEventLeaderPositionPrevious($studentID,$year)
 	global $mysqlConn, $schoolID;
 	$output = "";
 	$year = getIfSet($year,getCurrentSOYear());
-	$query = "SELECT `event`,`eventleader`.`year` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year";
+	$query = "SELECT `event`,`eventleader`.`year` FROM `eventleader` INNER JOIN `event` ON `eventleader`.`eventID` = `event`.`eventID` WHERE `studentID`=$studentID AND `year`< $year ORDER BY `year` DESC";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result)
 	{
@@ -1277,6 +1288,17 @@ function getStudentGrade($yearGraduating, $requestedYear=0)
 	}
 	//12(Top grade) - difference from graduation year - difference from requested year (used when going to old tournament/year)
 	return 12-($yearGraduating-$currentSOYear)-($currentSOYear-$requestedYear);
+}
+
+//get student's grade or year graduated
+function getStudentGradeGraduate($yearGraduating, $requestedYear=0)
+{
+	$grade = getStudentGrade($yearGraduating, $requestedYear);
+	if ($grade>12)
+	{
+		return "Graduated: $yearGraduating";
+	}
+	return "Grade: $grade ($yearGraduating)";
 }
 
 //for option htmls
@@ -1502,7 +1524,7 @@ function random_str(
 		$output = "";
 		//Get student information row information
 		$query = "SELECT * FROM `slide` WHERE `schoolID` = $schoolID ORDER BY `slideOrder`";
-		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if($result && mysqli_num_rows($result)>0){
 			$output .="<div style='display: block;   margin-left: auto;  margin-right: auto; max-width: 1080px'><div id='homeCarousel' class='carousel slide carousel-dark' data-bs-ride='carousel' style='height:400px;'>";
 			$output .="<div class='carousel-indicators'>";
@@ -1553,7 +1575,7 @@ function random_str(
 		$output = "";
 		//Get student information row information
 		$query = "SELECT * FROM `news` WHERE `schoolID` = $schoolID";
-		$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		if($result && mysqli_num_rows($result)>0){
 			while ($row = $result->fetch_assoc()):
 			$output .=$row['news'];

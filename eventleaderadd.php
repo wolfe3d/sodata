@@ -13,7 +13,7 @@ if(empty($year)||empty($studentID)||empty($eventID))
 
 //Check to see if officer is already added
 $query = "SELECT * FROM `eventleader` WHERE `year` = $year AND `studentID` = $studentID AND `eventID` = $eventID";
-$result = $mysqlConn->query($query) or print("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($row = $result->fetch_assoc())
 {
 	error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
