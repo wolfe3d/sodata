@@ -160,6 +160,11 @@ function loadpage(myPage){
 				}
 				break;
 
+				case 'attendance':
+				if(typepage=="edit"){
+					attendanceEdit(myID);
+				}
+
 				case 'eventyear':
 				if(typepage=="edit"){
 					//eventyearPrepare(myID);
@@ -616,6 +621,35 @@ function coachEdit(myID)
 	});
 }
 
+
+///////////////////
+///Attendance Edit
+//////////////////
+function attendanceEdit(myID)
+{
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+			console.log("Input changed: ", $(this).attr('id'), " with value: ", this.value);
+			// if((this.id).startsWith('attendance')) {
+			// 	var studentID = ((this.id).split('-'))[1];
+			// 	//attendancevalue is this.value
+			// 	fieldUpdate(myID,'meetingattendance','attendance',this.value,studentID,studentID);
+			// }
+
+			fieldUpdate(myID,'meeting',this.id,this.value,this.id,this.id);
+			
+		});
+	});
+
+	$('#attendanceContainer').on('change', ':input', function() {
+        console.log("Radio button changed: ", $(this).attr('id'), " with value: ", this.value);
+        if ((this.id).startsWith('attendance')) {
+            var studentID = ((this.id).split('-'))[1];
+            console.log("Updating attendance for student ID: ", studentID);
+            fieldUpdate(myID, 'meetingattendance', studentID, this.value, $(this).attr('id'), $(this).attr('id'));
+        }
+    });
+}
 ///////////////////
 ///Event functions
 //////////////////

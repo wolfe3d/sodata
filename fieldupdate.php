@@ -10,6 +10,7 @@ $myID = intval($_POST['myid']);
 $table = $mysqlConn->real_escape_string($_POST['mytable']);
 $field = $mysqlConn->real_escape_string($_POST['myfield']);
 $value = $mysqlConn->real_escape_string($_POST['myvalue']);
+$studentID = isset($_POST['studentID']) ? intval($_POST['studentID']) : null;
 
 
 //special cases for times
@@ -30,7 +31,16 @@ if($result && mysqli_num_rows($result)>0){
 	exit;
 }*/
 //Make changes to database
-$query = "UPDATE `$table` SET `$field`='$value' WHERE `$table`.`".$table."ID` = $myID";
+if($table == 'meetingattendance') // exception for meetingattendance table
+{
+	$query = "UPDATE `$table` SET `attendance`='$value' WHERE `$table`.`studentID` = $field";
+	// $queryEscaped = json_encode($query);
+	// echo '<script>console.log('.$queryEscaped.');</script>';
+}
+else
+{
+	$query = "UPDATE `$table` SET `$field`='$value' WHERE `$table`.`".$table."ID` = $myID";
+}
 if ($mysqlConn->query($query) === TRUE)
 {
 	exit ("1");
