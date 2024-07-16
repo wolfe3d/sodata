@@ -12,11 +12,17 @@ $field = $mysqlConn->real_escape_string($_POST['myfield']);
 $value = $mysqlConn->real_escape_string($_POST['myvalue']);
 $studentID = isset($_POST['studentID']) ? intval($_POST['studentID']) : null;
 
+$tempTable = '';
 
 //special cases for times
 if($field=="timeStart" || $field=="timeEnd")
 {
 	$value = date('Y-m-d H:i:s',strtotime($value));
+}
+if($table == 'attendance' || $table == 'engagement' || $table == 'homework')
+{
+	$tempTable = $table;
+	$table = 'meetingattendance';
 }
 //check to see if user has a valid ID
 $query = "SELECT `".$table."ID` FROM `$table` WHERE `$table`.`".$table."ID` = $myID";
@@ -33,7 +39,7 @@ if($result && mysqli_num_rows($result)>0){
 //Make changes to database
 if($table == 'meetingattendance') // exception for meetingattendance table
 {
-	$query = "UPDATE `$table` SET `attendance`='$value' WHERE `$table`.`studentID` = $field";
+	$query = "UPDATE `$table` SET `$tempTable`='$value' WHERE `$table`.`studentID` = $field";
 	// $queryEscaped = json_encode($query);
 	// echo '<script>console.log('.$queryEscaped.');</script>';
 }

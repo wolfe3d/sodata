@@ -636,17 +636,24 @@ function attendanceEdit(myID)
 
 	$('#attendanceContainer').on('change', ':input', function() {
         console.log("Radio button changed: ", $(this).attr('id'), " with value: ", this.value);
-        if ((this.id).startsWith('attendance')) {
+        if ((this.id).startsWith('attendance') || (this.id).startsWith('engagement') || (this.id).startsWith('homework')) {
             var studentID = ((this.id).split('-'))[1];
+			var table = ((this.id).split('-'))[0];
             console.log("Updating attendance for student ID: ", studentID);
-            fieldUpdate(myID, 'meetingattendance', studentID, this.value, $(this).attr('id'), $(this).attr('id'));
+            fieldUpdate(myID, table, studentID, this.value, $(this).attr('id'), $(this).attr('id'));
         }
     });
 }
 // Load a single student and their attendance data onto the page
 function attendanceAddStudent(studentID, last, first, info, attendance=1, engagement=2, homework=0) {
 	var formattedName = first + ' ' + last;
-	formattedName += info!=null?" - " + info:"";
+	 // adding student to the attendance form, or loading the student for attendance edit
+	if(info == "load") { // for event attendance edit - TODO add additional checks for other types of attendance?
+		var meetingType = 1;
+	} else { // adding student to attendance form
+		formattedName += info!=null?" - " + info:"";
+		var meetingType = $("#meetingType option:selected").val();
+	}
 	if(studentID.length === 0)
 	{
 		//ignore this student - this may be called as part of adding everyone
@@ -664,7 +671,6 @@ function attendanceAddStudent(studentID, last, first, info, attendance=1, engage
 		//create a new div with student information
 		//if(confirm("Add student: " + formattedName + "?"))
 		//{
-			var meetingType = $("#meetingType option:selected").val();
 			var newStudent = `<div>
 					<h3>${formattedName} </h3>
 					<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>

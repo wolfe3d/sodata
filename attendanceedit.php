@@ -98,7 +98,7 @@ function loadAttendanceData($meetingID)
                             student.studentID,
                             student.last,
                             student.first,
-                            "",
+                            "load",
                             student.attendance,
                             student.engagement,
                             student.homework

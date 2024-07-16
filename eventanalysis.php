@@ -83,7 +83,7 @@ while($row = $result -> fetch_assoc()):
 		if($row['eventID'] == $eventID)
 		{
 			$output .= "<h3>".$row['meetingDate']."</h3>";
-			if(userHasPrivilege(2) && (strtotime('-1 day') < strtotime($row['meetingDate'])))
+			if(userHasPrivilege(2)) // && (strtotime('-1 day') < strtotime($row['meetingDate'])))
 			{
 				$meetingID = $row['meetingID'];
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
