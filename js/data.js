@@ -160,6 +160,11 @@ function loadpage(myPage){
 				}
 				break;
 
+				case 'attendance':
+				if(typepage=="edit"){
+					attendanceEdit(myID);
+				}
+
 				case 'eventyear':
 				if(typepage=="edit"){
 					//eventyearPrepare(myID);
@@ -614,6 +619,112 @@ function coachEdit(myID)
 	request.fail(function( jqXHR, textStatus ) {
 		$("#mainContainer").html("Removal Error");
 	});
+}
+
+
+///////////////////
+///Attendance functions
+//////////////////
+function attendanceEdit(myID)
+{
+	$('#addTo :input,select').each(function() {
+		$(this).change(function(){
+			console.log("Input changed: ", $(this).attr('id'), " with value: ", this.value);
+			fieldUpdate(myID,'meeting',this.id,this.value,this.id,this.id);
+		});
+	});
+
+	$('#attendanceContainer').on('change', ':input', function() {
+        console.log("Radio button changed: ", $(this).attr('id'), " with value: ", this.value);
+        if ((this.id).startsWith('attendance') || (this.id).startsWith('engagement') || (this.id).startsWith('homework')) {
+            var studentID = ((this.id).split('-'))[1];
+			var table = ((this.id).split('-'))[0];
+            console.log("Updating attendance for student ID: ", studentID);
+            fieldUpdate(myID, table, studentID, this.value, $(this).attr('id'), $(this).attr('id'));
+        }
+    });
+}
+// Load a single student and their attendance data onto the page
+function attendanceAddStudent(studentID, last, first, info, attendance=1, engagement=2, homework=0) {
+	var formattedName = first + ' ' + last;
+	 // adding student to the attendance form, or loading the student for attendance edit
+	if(info == "load") { // for event attendance edit - TODO add additional checks for other types of attendance?
+		var meetingType = 1;
+	} else { // adding student to attendance form
+		formattedName += info!=null?" - " + info:"";
+		var meetingType = $("#meetingType option:selected").val();
+	}
+	if(studentID.length === 0)
+	{
+		//ignore this student - this may be called as part of adding everyone
+		return 0;
+	}
+
+	//check if the new student was already added before
+	if(document.getElementsByName('attendance-'+studentID).length > 0) 
+	{
+		//ignore this student - this may be called as part of adding a team
+		return 0;
+	}
+	else
+	{
+		//create a new div with student information
+		//if(confirm("Add student: " + formattedName + "?"))
+		//{
+			var newStudent = `<div>
+					<h3>${formattedName} </h3>
+					<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" ${attendance==1?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-P">P</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="-1" ${attendance==-1?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="0" ${attendance==0?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
+				</div>`;
+				
+				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding engagement to other meeting types
+				{
+					newStudent +=`<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0" ${engagement==0?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-0">0</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1" ${engagement==1?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-1">1</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" ${engagement==2?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-2">2</label>
+				</div>`;
+				}
+				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding homework to other meeting types
+				{
+					newStudent +=`<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" ${homework==0?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-0">0</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1" ${homework==1?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-1">1</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2" ${homework==2?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-2">2</label>
+				</div>`;
+				}
+				newStudent += "<hr>";
+			//document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
+			$("#attendanceContainer").append(newStudent);
+			return 1;
+		//}
+	}
 }
 
 ///////////////////

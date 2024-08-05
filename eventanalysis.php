@@ -83,13 +83,15 @@ while($row = $result -> fetch_assoc()):
 		if($row['eventID'] == $eventID)
 		{
 			$output .= "<h3>".$row['meetingDate']."</h3>";
-			if(userHasPrivilege(2) && (strtotime('-1 day') < strtotime($row['meetingDate'])))
+			if(userHasPrivilege(2)) // && (strtotime('-1 day') < strtotime($row['meetingDate'])))
 			{
-				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-".$row['meetingID']."'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				$meetingID = $row['meetingID'];
+				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				//$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-".$row['meetingID']."'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
 			}
 			//$output .= "<ul><li>ID: ".$row['meetingID']."</li>";
-			$output .= "<li>Time In: ".$row['meetingTimeIn']."</li>";
-			$output .= "<li>Time Out: ".$row['meetingTimeOut']."</li>";
+			$output .= "<li>Time In: ".date('h:i A', strtotime($row['meetingTimeIn']))."</li>"; // make time output consistent with attendance time input
+			$output .= "<li>Time Out: ".date('h:i A', strtotime($row['meetingTimeOut']))."</li>";
 			$output .= "<li>Description: ".$row['meetingDescription']."</li>";
 			$output .= "<li>Homework: ".$row['meetingHW']."</li></ul>";
 		}
