@@ -64,8 +64,8 @@ function getEventMeetings($eventID)
 		while ($row = $result->fetch_assoc()):
 			$output.="<li id=meeting-".$row['meetingID'].">";
 			$output.= $row['meetingDate']." ";
-			$output.= "<div>Description:" . $row['meetingDescription'] . "</div>";
-			$output.= "<div>Homework:" . $row['meetingHW'] . "</div>";
+			$output.= "<div>Description: " . $row['meetingDescription'] . "</div>";
+			$output.= "<div>Homework: " . $row['meetingHW'] . "</div>";
 			//next line should only be if leader
 			//$output .= "<a class='btn btn-secondary btn-sm' role='button' href='#event-meeting-view-".$row['meetingID']."'><span class='bi bi-controller'></span> View Details</a>";
 			$output.="</li>";
