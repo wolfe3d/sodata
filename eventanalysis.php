@@ -103,7 +103,7 @@ $output .= "</div>";
 $output .= "<hr>";
 //TODO: ORDER BY Average Score, highest ->lowest
 //Maybe: Put in table, note if student is listed in a team (notCompetition)
-$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= $schoolID AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`notCompetition`=0 AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last`, `first`";
+$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= $schoolID AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`notCompetition`=0 AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last` ASC, `first` ASC, `tournament`.`dateTournament` DESC";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $teamRoster = getTeamRoster();
