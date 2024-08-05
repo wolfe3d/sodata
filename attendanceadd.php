@@ -9,7 +9,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     $eventID = intval($_POST['eventsList']);
     $meetingTimeIn = $mysqlConn->real_escape_string($_POST['meetingTimeIn']);
     $meetingTimeOut = $mysqlConn->real_escape_string($_POST['meetingTimeOut']);
-    $meetingDescription = $mysqlConn->real_escape_string($_POST['meetingDesc']);
+    $meetingDescription = $mysqlConn->real_escape_string($_POST['meetingDescription']);
     $meetingHW = $mysqlConn->real_escape_string($_POST['meetingHW']);
 
     $query = "INSERT INTO `meeting` (`meetingTypeID`, `eventID`, `meetingDate`, `meetingTimeIn`, `meetingTimeOut`, `meetingDescription`, `meetingHW`) 

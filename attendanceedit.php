@@ -65,14 +65,17 @@ function loadAttendanceData($meetingID)
             <label for="meetingTimeOut">Time Out</label>
             <input id="meetingTimeOut" name="meetingTimeOut" class="form-control" type="time" value="<?=$row["meetingTimeOut"]?>" required>
         </p>
+
         <p>
-            <label for="meetingDescription">Description</label>
-            <input id="meetingDescription" name="meetingDescription" class="form-control" type="text" value="<?=$row["meetingDescription"]?>" required>
+            <label for="meetingDescription">Meeting Description</label>
+	        <textarea id="meetingDescription" name="meetingDescription" class="form-control" type="text"><?=$row["meetingDescription"]?></textarea>
         </p>
+	    
         <p>
-            <label for="meetingHW">Homework</label>
-            <input id="meetingHW" name="meetingHW" class="form-control" type="text" value="<?=$row["meetingHW"]?>" required>
+            <label for="meetingHW">Meeting Homework</label>
+            <textarea id="meetingHW" name="meetingHW" class="form-control" type="text"><?=$row["meetingHW"]?></textarea>
         </p>
+
         <p>
         <div id="attendanceContainer"></div>
         
@@ -81,6 +84,9 @@ function loadAttendanceData($meetingID)
 	<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>
 	</fieldset>
 </form>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
+
 <script defer>
     // Function to load attendance data for a specific meeting
     function loadAttendanceData(meetingID) {
@@ -116,5 +122,18 @@ function loadAttendanceData($meetingID)
     }
     $(document).ready(function() {
         loadAttendanceData(<?= $meetingID ?>);
+		$('#meetingHW').summernote({focus: true});
+		$('#meetingDescription').summernote({focus: true});
+		loadSummerNoteButtons();
     });
+	
+	function loadSummerNoteButtons()
+	{
+		//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
+		let buttons = $('.note-editor button[data-toggle="dropdown"]');
+		buttons.each((key, value)=>{
+			$(value).attr('data-bs-toggle', 'dropdown');
+		})
+	}
+
 </script>

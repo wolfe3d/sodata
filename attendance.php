@@ -84,13 +84,14 @@ $row = NULL;
 		<label for="meetingTimeOut">Meeting Time Out</label>
 		<input id="meetingTimeOut" name="meetingTimeOut" type="time" required>
 	</p>
-
-	<label for="meetingDesc">Meeting Description</label>
-	<textarea id="meetingDesc" name="meetingDesc" class="form-control" type="text"></textarea>
-
-	<label for="meetingHW">Meeting Homework</label>
+	<p>
+		<label for="meetingDescription">Meeting Description</label>
+		<textarea id="meetingDescription" name="meetingDescription" class="form-control" type="text"></textarea>
+	</p>
+	<p>
+		<label for="meetingHW">Meeting Homework</label>
 	<textarea id="meetingHW" name="meetingHW" class="form-control" type="text"></textarea>
-
+	</p>
 	<div id="attendanceContainer"></div>
 	<p>
 		<div>Select a single student</div>
@@ -133,7 +134,7 @@ $row = NULL;
 	$(document).ready(function() {
 		removeAttribute();
 		$('#meetingHW').summernote({focus: true});
-		$('#meetingDesc').summernote({focus: true});
+		$('#meetingDescription').summernote({focus: true});
 		loadSummerNoteButtons();
 		showAttendanceTable();
 		$("#eventsList").on( "change", function (e) {
