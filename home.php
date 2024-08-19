@@ -169,14 +169,14 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<p><a type='button' class='btn btn-primary' href='#news-edit'><span class='bi bi-edit'></span> Edit News</button></a></p>";
 	}
 
+	$output .= "<hr><h2>My Profile</h2>";
 	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
-	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
-	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
+	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'<br><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
 
 	if($studentID)
 	{
 		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($studentID)."</p>";
-	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Your Information</a></p>";
+	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Full Student Information</a></p>";
 
 	}
 	$output .= "</ul>";
