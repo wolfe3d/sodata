@@ -271,24 +271,45 @@ function timeblockEdit($id, $time, $editable = 0)
 //get students previous results, use this also to just get Event list for a Team assignment
 function studentTournamentResults($studentID)
 {
-	global $mysqlConn;
-	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` WHERE `teammateplace`.`studentID` = $studentID AND `place` IS NOT NULL AND `notCompetition` = 0 ORDER BY `dateTournament` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if($result && mysqli_num_rows($result)>0)
-	{
-		$output .="<h3>Results</h3><ul>";
-		while ($row = $result->fetch_assoc()):
-			$output.="<div id='".$row['tournamentName']."'>";
-			$output.="<li>".$row['tournamentName']." - " . $row['dateTournament'];
-			$output.=" <a class='btn btn-secondary btn-sm' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
-			$output.="</li>";
-			//show results
-			$output.=	studentEvents($row['tournamentID'], $studentID, true);
-		endwhile;
-		$output.="</ul></div>";
-	}
-	return $output;
+    global $mysqlConn;
+    $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` 
+              FROM `tournament` 
+              INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` 
+              INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` 
+              WHERE `teammateplace`.`studentID` = $studentID 
+              AND `place` IS NOT NULL 
+              AND `notCompetition` = 0 
+              ORDER BY `dateTournament` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = "";
+    if($result && mysqli_num_rows($result)>0)
+    {
+        $output .= "<h3>Results</h3>";
+        $output .= "<div class='accordion' id='tournamentResultsAccordion'>";
+        while ($row = $result->fetch_assoc()):
+            $tournamentID = $row['tournamentID'];
+            $tournamentName = $row['tournamentName'];
+            $dateTournament = $row['dateTournament'];
+            $output .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading{$tournamentID}'>
+                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$tournamentID}' aria-expanded='false' aria-controls='collapse{$tournamentID}'>
+                            {$tournamentName} - {$dateTournament}
+                        </button>
+                    </h2>
+                    <div id='collapse{$tournamentID}' class='accordion-collapse collapse' aria-labelledby='heading{$tournamentID}' data-bs-parent='#tournamentResultsAccordion'>
+                        <div class='accordion-body'>
+                            <a class='btn btn-secondary btn-sm mb-3' role='button' href='#tournament-view-{$tournamentID}'>
+                                <span class='bi bi-controller'></span> View Details
+                            </a>
+                            " . studentEvents($tournamentID, $studentID, true) . "
+                        </div>
+                    </div>
+                </div>";
+        endwhile;
+        $output .= "</div>";
+    }
+    return $output;
 }
 
 //use student placements to calculate score
