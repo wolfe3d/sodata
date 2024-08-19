@@ -55,23 +55,21 @@ function getUpcomingTournamentCoach()
 // Get all meetings from an event
 function getEventMeetings($eventID)
 {
-	global $mysqlConn;
-	$query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = '';
-	if($result && mysqli_num_rows($result)>0)
-	{
-		while ($row = $result->fetch_assoc()):
-			$output.="<li id=meeting-".$row['meetingID'].">";
-			$output.= $row['meetingDate']." ";
-			$output.= "<div>Description: " . $row['meetingDescription'] . "</div>";
-			$output.= "<div>Homework: " . $row['meetingHW'] . "</div>";
-			//next line should only be if leader
-			//$output .= "<a class='btn btn-secondary btn-sm' role='button' href='#event-meeting-view-".$row['meetingID']."'><span class='bi bi-controller'></span> View Details</a>";
-			$output.="</li>";
-		endwhile;
-	}
-	return $output;
+    global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = '';
+    if($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $output .= "<div class='mb-3'>";
+            $output .= "<strong>" . $row['meetingDate'] . "</strong>";
+            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+            $output .= "<div>Homework: " . $row['meetingHW'] . "</div>";
+            $output .= "</div>";
+        endwhile;
+    }
+    return $output;
 }
 
 //
@@ -92,7 +90,8 @@ function getStudentMeetings($studentID)
     
     $output = "";
     if ($result && mysqli_num_rows($result) > 0) {
-        $output .= "<h3>Meetings</h3><div>";
+        $output .= "<h3>Meetings</h3>";
+        $output .= "<div class='accordion' id='meetingsAccordion'>";
         
         while ($row = $result->fetch_assoc()) {
             $tournamentID = $row['tournamentID'];
@@ -123,18 +122,24 @@ function getEventsByStudent($tournamentID, $studentID, $dateTournament)
         while ($row = $result->fetch_assoc()):
             $eventName = $row['event'];
             $eventID = $row['eventID'];
-            $output .= "<div class='dropdown mb-2'>
-                        <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton_{$eventID}' data-bs-toggle='dropdown' aria-expanded='false'>
+            $output .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading{$eventID}'>
+                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
                             {$eventName}
                         </button>
-                        <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton_{$eventID}'>
-                            <li class='dropdown-item-content'>" . getEventMeetings($eventID) . "</li>
-                        </ul>
-                    </div>";
+                    </h2>
+                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
+                        <div class='accordion-body'>
+                            " . getEventMeetings($eventID) . "
+                        </div>
+                    </div>
+                </div>";
         endwhile;
     }
     return $output;
 }
+
 
 if(!empty($_SESSION['userData'])){
 	$studentID = NULL;
