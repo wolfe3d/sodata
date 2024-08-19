@@ -77,46 +77,63 @@ function getEventMeetings($eventID)
 //
 function getStudentMeetings($studentID)
 {
-	global $mysqlConn;
-	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` 
-	INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` 
-	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` 
-	WHERE `teammateplace`.`studentID` = $studentID  AND `notCompetition` = 1 ORDER BY `dateTournament` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if($result && mysqli_num_rows($result)>0)
-	{
-		$output .="<h3>Meetings</h3><div>";
+    global $mysqlConn;
 
-		$row = $result->fetch_assoc();
-	    $output.=	getEventsByStudent($row['tournamentID'], $studentID);
-		$output.="</div>";
-	}
-	return $output;
+    $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` 
+    FROM `tournament` 
+    INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` 
+    INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` 
+    WHERE `teammateplace`.`studentID` = $studentID  
+    AND `notCompetition` = 1 
+    ORDER BY `dateTournament` DESC 
+    LIMIT 1";
+
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    
+    $output = "";
+    if ($result && mysqli_num_rows($result) > 0) {
+        $output .= "<h3>Meetings</h3><div>";
+        
+        while ($row = $result->fetch_assoc()) {
+            $tournamentID = $row['tournamentID'];
+            $tournamentName = $row['tournamentName'];
+            $dateTournament = $row['dateTournament'];
+            $output .= getEventsByStudent($tournamentID, $studentID, $dateTournament);
+        }
+
+        $output .= "</div>";
+    }
+    return $output;
 }
-// use fall roster to get all events student is on, match each event to their respective meetings
-function getEventsByStudent($tournamentID, $studentID)
+
+function getEventsByStudent($tournamentID, $studentID, $dateTournament)
 {
-	global $mysqlConn;
-	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
-	FROM `teammateplace` 
-	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` 
-	INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
-	INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` WHERE `tournamentID` = $tournamentID 
-	AND `student`.`studentID` = $studentID
-	ORDER BY `event`.`event` DESC";
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if ($result && mysqli_num_rows($result)>0)
-	{
-		$output = "<ul>";
-		while ($row = $result->fetch_assoc()):
-			//show results
-			$output.="<li>".$row['event']."<ul>".getEventMeetings($row['eventID'])."</ul></li>";
-		endwhile;
-		$output .= "</ul>";
-	}
-	return $output;
+    global $mysqlConn;
+    $eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
+    FROM `teammateplace` 
+    INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` 
+    INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
+    INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` WHERE `tournamentID` = $tournamentID 
+    AND `student`.`studentID` = $studentID
+    ORDER BY `event`.`event` ASC";
+    $result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = "";
+    if ($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $eventName = $row['event'];
+            $eventID = $row['eventID'];
+            $output .= "<div class='dropdown mb-2'>
+                        <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton_{$eventID}' data-bs-toggle='dropdown' aria-expanded='false'>
+                            {$eventName}
+                        </button>
+                        <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton_{$eventID}'>
+                            <li class='dropdown-item-content'>" . getEventMeetings($eventID) . "</li>
+                        </ul>
+                    </div>";
+        endwhile;
+    }
+    return $output;
 }
 
 if(!empty($_SESSION['userData'])){
