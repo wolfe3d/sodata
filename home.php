@@ -169,6 +169,9 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<p><a type='button' class='btn btn-primary' href='#news-edit'><span class='bi bi-edit'></span> Edit News</button></a></p>";
 	}
 
+	$output .= "<hr><h2>Meeting Times</h2>";
+	$output .= "<iframe width=1375px height=375px src='https://docs.google.com/spreadsheets/d/1dr-W7MH8q4OmFHhoIpu3w8eOOyrl7pj4R3AYuA7PypA/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:H14'></iframe>";
+
 	$output .= "<hr><h2>My Profile</h2>";
 	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
 	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'<br><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
