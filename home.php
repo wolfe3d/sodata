@@ -72,6 +72,20 @@ function getEventMeetings($eventID)
     return $output;
 }
 
+//Just Get Most Recent Event Meeting Date (Optimizable)
+function getEventMeetingDate($eventID)
+{
+    global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` LIMIT 1";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    if (mysqli_num_rows($result)>0)
+	{
+		$row = $result->fetch_assoc();
+		$output = $row['meetingDate'];
+	}
+    return $output;
+}
+
 //
 function getStudentMeetings($studentID)
 {
@@ -105,6 +119,7 @@ function getStudentMeetings($studentID)
     return $output;
 }
 
+//Badge can be updated depending on time from meeting (Set to 2 days after will clear RECENT badge)
 function getEventsByStudent($tournamentID, $studentID, $dateTournament)
 {
     global $mysqlConn;
@@ -122,7 +137,25 @@ function getEventsByStudent($tournamentID, $studentID, $dateTournament)
         while ($row = $result->fetch_assoc()):
             $eventName = $row['event'];
             $eventID = $row['eventID'];
-            $output .= "
+			if ((strtotime('-2 day') < strtotime(getEventMeetingDate($eventID))))
+			{
+				$output .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading{$eventID}'>
+                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
+                            {$eventName}&nbsp;<span class='badge bg-danger'>RECENT</span>
+                        </button>
+                    </h2>
+                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
+                        <div class='accordion-body'>
+                            " . getEventMeetings($eventID) . "
+                        </div>
+                    </div>
+                </div>";
+			}
+			if ((strtotime('-2 day') >= strtotime(getEventMeetingDate($eventID))))
+			{
+				$output .= "
                 <div class='accordion-item'>
                     <h2 class='accordion-header' id='heading{$eventID}'>
                         <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
@@ -135,6 +168,8 @@ function getEventsByStudent($tournamentID, $studentID, $dateTournament)
                         </div>
                     </div>
                 </div>";
+			}
+            
         endwhile;
     }
     return $output;
