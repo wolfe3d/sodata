@@ -8,7 +8,6 @@ if($studentID)
 {
 	$studentIDWhere ="AND `student`.`studentID` != $studentID";
 }
-date_default_timezone_set('America/New_York');
 
 //TODO: Add function to edit old meetings, load similar way to the teamcopylist.php etc...
 //Must add loading of meeting notes, and meeting homework, attendance, engagement, homework for each student
