@@ -60,8 +60,8 @@ elseif(userHasPrivilege(2))
 }
 $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 
-$date = date('Y-m-d');
-$row = NULL; 
+$row = NULL;
+$date = time();
 ?>
 
 <form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
@@ -115,6 +115,10 @@ $row = NULL;
 <script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 
 <script defer>
+	var localDate = new Date(<?=$date * 1000?>);
+	var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+	document.getElementById("displayDate").innerHTML = formattedDate;
+	document.getElementById('meetingDate').value = formattedDate;
 	
 	function loadSummerNoteButtons()
 	{
