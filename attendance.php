@@ -63,7 +63,8 @@ $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 $row = NULL;
 $date = time();
 ?>
-
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 <form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
 <div id="info"></div>
 	<label for="meetingType">Meeting Type</label>
@@ -111,8 +112,6 @@ $date = time();
 		<button class='btn btn-primary' type="submit">Submit</button>
 	</p>
 </form>
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
-<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 
 <script defer>
 	var localDate = new Date(<?=$date * 1000?>);
