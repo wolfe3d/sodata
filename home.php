@@ -91,13 +91,11 @@ function getStudentMeetings($studentID)
 {
     global $mysqlConn;
 
-    $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` 
-    FROM `tournament` 
-    INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` 
-    INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` 
-    WHERE `teammateplace`.`studentID` = $studentID  
-    AND `notCompetition` = 1 
-    ORDER BY `dateTournament` DESC 
+    $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`, `teamName`
+	FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID`
+	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
+	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 AND `published`=1
+	ORDER BY `dateTournament` DESC
     LIMIT 1";
 
     $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -124,12 +122,11 @@ function getEventsByStudent($tournamentID, $studentID, $dateTournament)
 {
     global $mysqlConn;
     $eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
-    FROM `teammateplace` 
-    INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` 
-    INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
-    INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` WHERE `tournamentID` = $tournamentID 
-    AND `student`.`studentID` = $studentID
-    ORDER BY `event`.`event` ASC";
+	FROM `teammateplace` 
+	INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` 
+	INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` 
+	INNER JOIN `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID 
+	ORDER BY `event`.`event`";
     $result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     $output = "";
     if ($result && mysqli_num_rows($result)>0)
