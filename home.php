@@ -56,7 +56,7 @@ function getUpcomingTournamentCoach()
 function getEventMeetings($eventID)
 {
     global $mysqlConn;
-    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID AND `meeting`.`meetingTypeID` = 1 ORDER BY `meeting`.`meetingDate` DESC";
     $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
     $output = '';
     if($result && mysqli_num_rows($result)>0)
@@ -94,7 +94,7 @@ function getStudentMeetings($studentID)
     $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`, `teamName`
 	FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID`
 	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
-	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 AND `published`=1
+	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 AND `published`=1 
 	ORDER BY `dateTournament` DESC
     LIMIT 1";
 
