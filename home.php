@@ -55,69 +55,123 @@ function getUpcomingTournamentCoach()
 // Get all meetings from an event
 function getEventMeetings($eventID)
 {
-	global $mysqlConn;
-	$query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = '';
-	if($result && mysqli_num_rows($result)>0)
+    global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID AND `meeting`.`meetingTypeID` = 1 ORDER BY `meeting`.`meetingDate` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = '';
+    if($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $output .= "<div class='mb-3'>";
+            $output .= "<strong>" . $row['meetingDate'] . "</strong>";
+            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+            $output .= "<div>Homework: " . $row['meetingHW'] . "</div>";
+            $output .= "</div>";
+        endwhile;
+    }
+    return $output;
+}
+
+//Just Get Most Recent Event Meeting Date (Optimizable)
+function getEventMeetingDate($eventID)
+{
+    global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` LIMIT 1";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    if (mysqli_num_rows($result)>0)
 	{
-		while ($row = $result->fetch_assoc()):
-			$output.="<li id=meeting-".$row['meetingID'].">";
-			$output.= $row['meetingDate']." ";
-			$output.= "<div>Description: " . $row['meetingDescription'] . "</div>";
-			$output.= "<div>Homework: " . $row['meetingHW'] . "</div>";
-			//next line should only be if leader
-			//$output .= "<a class='btn btn-secondary btn-sm' role='button' href='#event-meeting-view-".$row['meetingID']."'><span class='bi bi-controller'></span> View Details</a>";
-			$output.="</li>";
-		endwhile;
+		$row = $result->fetch_assoc();
+		$output = $row['meetingDate'];
 	}
-	return $output;
+    return $output;
 }
 
 //
 function getStudentMeetings($studentID)
 {
-	global $mysqlConn;
-	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` FROM `tournament` 
-	INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID` 
-	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID` 
-	WHERE `teammateplace`.`studentID` = $studentID  AND `notCompetition` = 1 ORDER BY `dateTournament` DESC";
-	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if($result && mysqli_num_rows($result)>0)
-	{
-		$output .="<h3>Meetings</h3><div>";
+    global $mysqlConn;
 
-		$row = $result->fetch_assoc();
-	    $output.=	getEventsByStudent($row['tournamentID'], $studentID);
-		$output.="</div>";
-	}
-	return $output;
+    $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`, `teamName`
+	FROM `tournament` INNER JOIN `team` ON `tournament`.`tournamentID` = `team`.`tournamentID`
+	INNER JOIN `teammateplace` ON `team`.`teamID` = `teammateplace`.`teamID`
+	WHERE `teammateplace`.`studentID` = $studentID AND `notCompetition`=1 AND `published`=1 
+	ORDER BY `dateTournament` DESC
+    LIMIT 1";
+
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    
+    $output = "";
+    if ($result && mysqli_num_rows($result) > 0) {
+        $output .= "<h3>Meetings</h3>";
+        $output .= "<div class='accordion' id='meetingsAccordion'>";
+        
+        while ($row = $result->fetch_assoc()) {
+            $tournamentID = $row['tournamentID'];
+            $tournamentName = $row['tournamentName'];
+            $dateTournament = $row['dateTournament'];
+            $output .= getEventsByStudent($tournamentID, $studentID, $dateTournament);
+        }
+
+        $output .= "</div>";
+    }
+    return $output;
 }
-// use fall roster to get all events student is on, match each event to their respective meetings
-function getEventsByStudent($tournamentID, $studentID)
+
+//Badge can be updated depending on time from meeting (Set to 2 days after will clear RECENT badge)
+function getEventsByStudent($tournamentID, $studentID, $dateTournament)
 {
-	global $mysqlConn;
-	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
+    global $mysqlConn;
+    $eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
 	FROM `teammateplace` 
-	INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` 
-	INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
-	INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID` WHERE `tournamentID` = $tournamentID 
-	AND `student`.`studentID` = $studentID
-	ORDER BY `event`.`event` DESC";
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if ($result && mysqli_num_rows($result)>0)
-	{
-		$output = "<ul>";
-		while ($row = $result->fetch_assoc()):
-			//show results
-			$output.="<li>".$row['event']."<ul>".getEventMeetings($row['eventID'])."</ul></li>";
-		endwhile;
-		$output .= "</ul>";
-	}
-	return $output;
+	INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` 
+	INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` 
+	INNER JOIN `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID 
+	ORDER BY `event`.`event`";
+    $result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = "";
+    if ($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $eventName = $row['event'];
+            $eventID = $row['eventID'];
+			if ((strtotime('-2 day') < strtotime(getEventMeetingDate($eventID))))
+			{
+				$output .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading{$eventID}'>
+                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
+                            {$eventName}&nbsp;<span class='badge bg-danger'>RECENT</span>
+                        </button>
+                    </h2>
+                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
+                        <div class='accordion-body'>
+                            " . getEventMeetings($eventID) . "
+                        </div>
+                    </div>
+                </div>";
+			}
+			if ((strtotime('-2 day') >= strtotime(getEventMeetingDate($eventID))))
+			{
+				$output .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading{$eventID}'>
+                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
+                            {$eventName}
+                        </button>
+                    </h2>
+                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
+                        <div class='accordion-body'>
+                            " . getEventMeetings($eventID) . "
+                        </div>
+                    </div>
+                </div>";
+			}
+            
+        endwhile;
+    }
+    return $output;
 }
+
 
 if(!empty($_SESSION['userData'])){
 	$studentID = NULL;
@@ -147,6 +201,7 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<p><a type='button' class='btn btn-primary' href='#news-edit'><span class='bi bi-edit'></span> Edit News</button></a></p>";
 	}
 
+	$output .= "<hr><h2>My Profile</h2>";
 	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
 	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
 	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
@@ -154,7 +209,7 @@ if(!empty($_SESSION['userData'])){
 	if($studentID)
 	{
 		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($studentID)."</p>";
-	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Your Information</a></p>";
+	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Full Student Information</a></p>";
 
 	}
 	$output .= "</ul>";
