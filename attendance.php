@@ -113,12 +113,13 @@ $date = time();
 	</p>
 </form>
 
-<script defer>
-	var localDate = new Date(<?=$date * 1000?>);
-	var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
-	document.getElementById("displayDate").innerHTML = formattedDate;
-	document.getElementById('meetingDate').value = formattedDate;
-	
+<script defer>	
+	function displayTime() {
+		var localDate = new Date(<?=$date * 1000?>);
+		var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+		document.getElementById("displayDate").innerHTML = formattedDate;
+		document.getElementById('meetingDate').value = formattedDate;
+	}
 	function loadSummerNoteButtons()
 	{
 		//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
@@ -135,6 +136,7 @@ $date = time();
 		}
 	}
 	$(document).ready(function() {
+		displayTime();
 		removeAttribute();
 		$('#meetingHW').summernote({focus: true});
 		$('#meetingDescription').summernote({focus: true});
