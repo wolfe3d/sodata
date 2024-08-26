@@ -629,9 +629,18 @@ function attendanceEdit(myID)
 {
 	$('#addTo :input,select').each(function() {
 		$(this).change(function(){
-			console.log("Input changed: ", $(this).attr('id'), " with value: ", this.value);
+			//console.log("Input changed: ", $(this).attr('id'), " with value: ", this.value);
 			fieldUpdate(myID,'meeting',this.id,this.value,this.id,this.id);
 		});
+	});
+
+	// Meeting description and homework
+	$('[data-summernote]').summernote({
+		callbacks: { onBlur: function() {
+			const content = $(this).summernote('code');
+			//console.log($(this).attr('id') + " content changed: ", content);
+			fieldUpdate(myID, 'meeting', $(this).attr('id'), content, $(this).attr('id'), $(this).attr('id'));
+		}}
 	});
 
 	$('#attendanceContainer').on('change', ':input', function() {
@@ -639,7 +648,7 @@ function attendanceEdit(myID)
         if ((this.id).startsWith('attendance') || (this.id).startsWith('engagement') || (this.id).startsWith('homework')) {
             var studentID = ((this.id).split('-'))[1];
 			var table = ((this.id).split('-'))[0];
-            console.log("Updating attendance for student ID: ", studentID);
+            //console.log("Updating attendance for student ID: ", studentID);
             fieldUpdate(myID, table, studentID, this.value, $(this).attr('id'), $(this).attr('id'));
         }
     });
