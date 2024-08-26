@@ -61,7 +61,7 @@ elseif(userHasPrivilege(2))
 $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 
 $row = NULL;
-$date = time();
+$date = date('Y-m-d');
 ?>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
 <script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
@@ -74,7 +74,7 @@ $date = time();
 
 	<label for="meetingDate">Meeting Date</label>
 	<br>
-	<p value="<?=$date?>" ><u><?=$date?></u></p>
+	<p id="displayDate"></p>
 	<input id="meetingDate" name="meetingDate" type="date" value="<?=$date?>" hidden>
 
 	<p>
@@ -113,12 +113,13 @@ $date = time();
 	</p>
 </form>
 
-<script defer>
-	var localDate = new Date(<?=$date * 1000?>);
-	var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
-	document.getElementById("displayDate").innerHTML = formattedDate;
-	document.getElementById('meetingDate').value = formattedDate;
-	
+<script defer>	
+	function displayTime() {
+		var localDate = new Date(<?=$date * 1000?>);
+		var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+		document.getElementById("displayDate").innerHTML = formattedDate;
+		document.getElementById('meetingDate').value = formattedDate;
+	}
 	function loadSummerNoteButtons()
 	{
 		//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
@@ -135,6 +136,7 @@ $date = time();
 		}
 	}
 	$(document).ready(function() {
+		displayTime();
 		removeAttribute();
 		$('#meetingHW').summernote({focus: true});
 		$('#meetingDescription').summernote({focus: true});
