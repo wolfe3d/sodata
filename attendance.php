@@ -61,7 +61,7 @@ elseif(userHasPrivilege(2))
 $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 
 $row = NULL;
-$date = time();
+$date = date('Y-m-d');
 ?>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
 <script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
@@ -74,7 +74,7 @@ $date = time();
 
 	<label for="meetingDate">Meeting Date</label>
 	<br>
-	<p value="<?=$date?>" ><u><?=$date?></u></p>
+	<p id="displayDate"></p>
 	<input id="meetingDate" name="meetingDate" type="date" value="<?=$date?>" hidden>
 
 	<p>
