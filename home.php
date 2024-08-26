@@ -63,7 +63,7 @@ function getEventMeetings($eventID)
     {
         while ($row = $result->fetch_assoc()):
             $output .= "<div class='mb-3'>";
-            $output .= "<strong>" . $row['meetingDate'] . "</strong>";
+            $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
             $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
             $output .= "<div>Homework: " . $row['meetingHW'] . "</div>";
             $output .= "</div>";
