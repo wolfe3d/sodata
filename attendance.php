@@ -115,7 +115,7 @@ $date = date('Y-m-d');
 
 <script defer>	
 	function displayTime() {
-		var localDate = new Date(<?=$date * 1000?>);
+		var localDate = new Date(<?=time() * 1000?>);
 		var formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
 		document.getElementById("displayDate").innerHTML = formattedDate;
 		document.getElementById('meetingDate').value = formattedDate;
