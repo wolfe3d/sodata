@@ -68,12 +68,12 @@ function loadAttendanceData($meetingID)
 
         <p>
             <label for="meetingDescription">Meeting Description</label>
-	        <textarea id="meetingDescription" name="meetingDescription" class="form-control" type="text"><?=$row["meetingDescription"]?></textarea>
+	        <textarea id="meetingDescription" name="meetingDescription" class="form-control" type="text" data-summernote><?=$row["meetingDescription"]?></textarea>
         </p>
 	    
         <p>
             <label for="meetingHW">Meeting Homework</label>
-            <textarea id="meetingHW" name="meetingHW" class="form-control" type="text"><?=$row["meetingHW"]?></textarea>
+            <textarea id="meetingHW" name="meetingHW" class="form-control" type="text" data-summernote><?=$row["meetingHW"]?></textarea>
         </p>
 
         <p>
