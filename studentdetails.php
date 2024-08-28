@@ -107,7 +107,7 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	$output .=studentCourseCompleted($studentID);
 	$output .=studentCourseEnrolled($studentID);
 	$output .=studentAwards($studentID);
-	$output .=studentTournamentResults($studentID, true);
+	$output .=studentTournamentResultsList($studentID, true);
 }
 
 

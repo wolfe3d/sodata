@@ -269,7 +269,7 @@ function timeblockEdit($id, $time, $editable = 0)
 }
 
 //get students previous results, use this also to just get Event list for a Team assignment
-function studentTournamentResults($studentID)
+function studentTournamentResultsAccordion($studentID)
 {
     global $mysqlConn;
     $query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName` 
@@ -308,6 +308,28 @@ function studentTournamentResults($studentID)
                 </div>";
         endwhile;
         $output .= "</div>";
+    }
+    return $output;
+}
+
+function studentTournamentResultsList($studentID)
+{
+    global $mysqlConn;
+    $query = "SELECT DISTINCT tournament.tournamentID, dateTournament, tournamentName FROM tournament INNER JOIN team ON tournament.tournamentID = team.tournamentID INNER JOIN teammateplace ON team.teamID = teammateplace.teamID WHERE teammateplace.studentID = $studentID AND place IS NOT NULL AND notCompetition = 0 ORDER BY dateTournament DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". FILE ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = "";
+    if($result && mysqli_num_rows($result)>0)
+    {
+        $output .="<h3>Results</h3><ul>";
+        while ($row = $result->fetch_assoc()):
+            $output.="<div id='".$row['tournamentName']."'>";
+            $output.="<li>".$row['tournamentName']." - " . $row['dateTournament'];
+            $output.=" <a class='btn btn-secondary btn-sm' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
+            $output.="</li>";
+            //show results
+            $output.=    studentEvents($row['tournamentID'], $studentID, true);
+        endwhile;
+        $output.="</ul></div>";
     }
     return $output;
 }
