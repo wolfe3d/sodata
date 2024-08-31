@@ -145,8 +145,17 @@ $date = date('Y-m-d');
 		$("#eventsList").on( "change", function (e) {
 			attendanceAddEvent();
 		});
+		if(window.localStorage) // temp fix for summernote buttons not loading
+		{
+			if(!localStorage.getItem('firstLoad')) {
+				localStorage['firstLoad'] = true;
+				window.location.reload();
+			}  
+			else {
+				localStorage.removeItem('firstLoad');
+			}
+		}
 	});
-
 	var form = document.getElementById('addTo');
 	form.addEventListener('submit', function() {
 		if(confirm('Are you sure you want to submit your meeting attendance?'))
