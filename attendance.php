@@ -63,8 +63,6 @@ $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 $row = NULL;
 $date = date('Y-m-d');
 ?>
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
-<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 <form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
 <div id="info"></div>
 	<label for="meetingType">Meeting Type</label>
@@ -145,16 +143,6 @@ $date = date('Y-m-d');
 		$("#eventsList").on( "change", function (e) {
 			attendanceAddEvent();
 		});
-		if(window.localStorage) // temp fix for summernote buttons not loading
-		{
-			if(!localStorage.getItem('firstLoad')) {
-				localStorage['firstLoad'] = true;
-				window.location.reload();
-			}  
-			else {
-				localStorage.removeItem('firstLoad');
-			}
-		}
 	});
 	var form = document.getElementById('addTo');
 	form.addEventListener('submit', function() {
