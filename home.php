@@ -242,7 +242,7 @@ if(!empty($_SESSION['userData'])){
 			$output .= "<hr><h2>My Event Meetings</h2>" . $myMeetings;
 		}
 		//show all previous results for this student
-		$myTournamentResults = studentTournamentResults($studentID, true);
+		$myTournamentResults = studentTournamentResultsAccordion($studentID, true);
 		$myAwards = studentAwards($studentID);
 
 		if($myTournamentResults)
