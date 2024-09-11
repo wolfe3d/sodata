@@ -81,7 +81,7 @@ userCheckPrivilege(1);
 	<meta name="keywords" content="Walton, Science, Olympiad, SO" />
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
+	
 	<!--<script src="js/jquery.modal.min.js"></script> Modal plugin https://github.com/kylefox/jquery-modal-->
 	<link rel="stylesheet" href="css/wolfestyle.css" />
 
@@ -89,6 +89,9 @@ userCheckPrivilege(1);
 
 	<script src="js/data.js"></script>
 	<script src="js/teampropose.js"></script>
+
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css" rel="stylesheet">
+	<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.js"></script>
 
 	<!-- Add the slick-theme.css if you want default styling -->
 	<!-- <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>-->
