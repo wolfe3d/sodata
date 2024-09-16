@@ -98,7 +98,7 @@ function getTournaments($year)
 	global $mysqlConn;
 	$tournaments = [];
 	$query = "SELECT `tournament`.`tournamentID`, `tournament`.`tournamentName` FROM `tournament` WHERE `tournament`.`year`=$year ORDER BY `dateTournament`";
-	$resultTournament = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	//TODO REMOVE $resultTournament = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		while ($row = $result->fetch_assoc()):
@@ -112,10 +112,38 @@ function getTournaments($year)
 	return FALSE;
 }
 
+//get Attendance score
+function calculateAttendance($studentID, $year)
+{
+	global $mysqlConn;
+	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
+	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$startDate = "0000-00-00";
+	$endDate = "3000-00-00";
+	if($resultYear->num_rows){
+		$rowYear = $resultYear->fetch_assoc();
+		$startDate = $rowYear['startDate'];
+		$endDate = $rowYear['endDate'];
+	}
+
+
+	$query = "SELECT `meetingAttendance`.`studentID`, SUM(`meetingAttendance`.`attendance`) AS `attendance`,SUM(`meetingAttendance`.`engagement`) AS `engagement`,SUM(`meetingAttendance`.`homework`) AS `homework` FROM `meetingAttendance` 
+	INNER JOIN `meeting` ON `meetingAttendance`.`meetingID`=`meeting`.`meetingID`
+	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate' 
+	AND `meetingAttendance`.`studentID` = $studentID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		$row = $result->fetch_assoc();
+		return intval($row['attendance'])+intval($row['engagement'])+intval($row['homework']);
+	}
+	return 0;
+}
+
 //get tournaments
 function calculateOverallScores(&$students, $tournaments)
 {
 	global $mysqlConn;
+	global $year;
 	foreach ($students as &$student)
 	{
 			$totalScore = 0;
@@ -152,6 +180,10 @@ function calculateOverallScores(&$students, $tournaments)
 				array_push($student['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'score'=>$scoreStudent, 'eventsNumber'=>$numEvents]);
 			}
 			$student['count']=$tournamentCount;
+
+			//attendance score
+			$student['attendance']=calculateAttendance($student['studentID'],$year);
+
 			if ($totalPlace)
 			{
 				$student['averagePlace']=number_format($totalPlace/$tournamentCount,2,".","");
@@ -173,7 +205,7 @@ function calculateOverallScores(&$students, $tournaments)
 			else {
 				$student['averageEvents']= 0;
 			}
-			$student['score']= number_format($totalScore,2,".","");
+			$student['score']= number_format($totalScore+$student['attendance'],2,".","");
 			$student['rank']= 0;
 			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 		}
@@ -200,6 +232,10 @@ function calculateOverallScores(&$students, $tournaments)
 	$output .="<th><div>Students</div><div><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></div></th>";
 	$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`grade`, 1)'>Grade</a></th>";
 
+	//attendance score
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`attendance`, 1)'>Attendance Score</a></th>";
+
+
 	//list all the tournament names in the header
 	foreach ($tournaments as $tournament)
 	{
@@ -225,9 +261,13 @@ function calculateOverallScores(&$students, $tournaments)
 	foreach ($students as $student)
 	{
 			$grade = getStudentGrade($student['yearGraduating'], $year);
-			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' averageEvents='".$student['averageEvents']."' score='".$student['score']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
+			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' attendance='".$student['attendance']."' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' averageEvents='".$student['averageEvents']."' score='".$student['score']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
 			$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last']. ", " . $student['first'] . "</a></td>";
 			$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
+
+			//attendance score
+			$output .= "<td id='attendance-".$student['studentID']."'>".$student['attendance']."</td>";
+
 
 			$totalScore = 0;
 			foreach ($student['tournaments'] as $tournament)

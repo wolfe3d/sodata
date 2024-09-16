@@ -736,6 +736,49 @@ function attendanceAddStudent(studentID, last, first, info, attendance=1, engage
 	}
 }
 
+function tournamentSort(tableName, byAttr, isNumber=0)
+{
+	var $table=$('#'+tableName);
+	var sortBy = $table.attr('sortby');
+	var rows = $table.find('tbody>tr').get();
+	rows.sort(function(a, b) {
+		if(sortBy == byAttr)
+		{
+			//switch the ordering to descending
+			var keyB = $(a).attr(byAttr);
+			var keyA = $(b).attr(byAttr);
+		}
+		else {
+			//normal ordering (ascending)
+			var keyA = $(a).attr(byAttr);
+			var keyB = $(b).attr(byAttr);
+		}
+
+		if(isNumber)
+		{
+			if (Number(keyA) > Number(keyB)) return 1;
+			if (Number(keyA) < Number(keyB)) return -1;
+		}
+		else {
+			if (keyA > keyB) return 1;
+			if (keyA < keyB) return -1;
+		}
+		return 0;
+	});
+	$.each(rows, function(index, row) {
+		$table.children('tbody').append(row);
+	});
+	//set the table attribute
+	if(sortBy == byAttr)
+	{
+		$table.attr('sortby',byAttr+"d"); //names the sorting as descending
+	}
+	else
+	{
+		$table.attr('sortby',byAttr);//names the sort (ascending)
+	}
+}
+
 ///////////////////
 ///Event functions
 //////////////////
