@@ -127,10 +127,10 @@ function calculateAttendance($studentID, $year)
 	}
 
 
-	$query = "SELECT `meetingAttendance`.`studentID`, SUM(`meetingAttendance`.`attendance`) AS `attendance`,SUM(`meetingAttendance`.`engagement`) AS `engagement`,SUM(`meetingAttendance`.`homework`) AS `homework` FROM `meetingAttendance` 
-	INNER JOIN `meeting` ON `meetingAttendance`.`meetingID`=`meeting`.`meetingID`
+	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
+	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
 	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate' 
-	AND `meetingAttendance`.`studentID` = $studentID";
+	AND `meetingattendance`.`studentID` = $studentID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
