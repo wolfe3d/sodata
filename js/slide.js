@@ -79,18 +79,8 @@ function slideSave(slideID)
 	saveText();
 }
 var slideIDE = "" ; //the editing slide ID
-function loadSummerNoteButtons()
-{
-	//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
-	let buttons = $('.note-editor button[data-toggle="dropdown"]');
-	buttons.each((key, value)=>{
-		$(value).attr('data-bs-toggle', 'dropdown'); //TODO:  Attempt to remove this in later summernote versions
-		//$(value).removeAttr('data-toggle');
-	})
-}
 var editText = function(slideID) {
 	$('#html-'+slideID).summernote({focus: true});
-	loadSummerNoteButtons();
 	slideIDE = slideID;
 	$('#previewSlideButton-'+slideIDE).show();
 };

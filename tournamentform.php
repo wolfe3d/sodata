@@ -47,10 +47,6 @@
 	<input id="teamsAttended" name="teamsAttended" class="form-control" type="number" min='0' value="<?=$row['teamsAttended']?>">
 </p>
 <p>
-	<label for="note">Note(s)</label>
-	<input id="note" name="note" class="form-control" type="text" value="<?=$row['note']?>">
-</p>
-<p>
 	<label for="websiteHost">Host's Website</label>
 	<input id="websiteHost" name="websiteHost" class="form-control" type="url" value="<?=$row['websiteHost']?>">
 </p>
@@ -75,7 +71,10 @@
 	<input id="addressBilling" name="addressBilling" class="form-control" type="text" value="<?=$row['addressBilling']?>">
 </p>
 <p>
+	<label for="note">Note(s)</label>
+	<textarea id="note" name="note" class="form-control" data-summernote><?=$row['note']?></textarea>
+</p>
+<p>
 	<label for="resultsLink">Results Link (Prefer Duosmium or Secondly Drive Link)</label>
 	<input id="resultsLink" name="resultsLink" class="form-control" type="text" value="<?=$row['resultsLink']?>">
 </p>
-

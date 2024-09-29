@@ -1,5 +1,7 @@
 //TODO: Add blocker to keep users from clicking multiple times while an AJAX event is being completed.
 var mobile = 0;
+loadSummerNoteButtons();
+
 if ( $( window ).width() <= 650 )
 {
 	mobile = 1;
@@ -944,6 +946,13 @@ function touramentCarouselToggle()
 
 function tournamentsPreparePage()
 {
+	//note update
+	$('[data-summernote]').summernote({
+		callbacks: { onBlur: function() {
+			let content = $(this).summernote('code');
+			fieldUpdate(myID, 'tournament', $(this).attr('id'), content, $(this).attr('id'), $(this).attr('id'));
+		}}
+	});
 	$("#searchDiv").hide();
 	$("#addTo").hide();
 	//Load Students
@@ -1047,6 +1056,13 @@ function tournamentEdit(myID)
 				fieldUpdate(myID,'tournament',this.id,this.value,this.id,this.id);
 			}
 		});
+	});
+	//note update
+	$('[data-summernote]').summernote({
+		callbacks: { onBlur: function() {
+			let content = $(this).summernote('code');
+			fieldUpdate(myID, 'tournament', $(this).attr('id'), content, $(this).attr('id'), $(this).attr('id'));
+		}}
 	});
 }
 
@@ -1986,4 +2002,15 @@ function leaderRemoveRow(myID,table, myName)
 		$(".text-success").remove();
 		$("#" + table + "-" + myID).before("<div class='text-danger' class='error'>Request failed:"+textStatus+"</div>");
 	});
+}
+
+
+/* Load Summer Note summernote */
+function loadSummerNoteButtons()
+{
+	//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
+	let buttons = $('.note-editor button[data-toggle="dropdown"]');
+	buttons.each((key, value)=>{
+		$(value).attr('data-bs-toggle', 'dropdown');
+	})
 }

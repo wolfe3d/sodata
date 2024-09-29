@@ -5,17 +5,8 @@ $().ready(function() {
 	editText();
 });
 
-function loadSummerNoteButtons()
-{
-	//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
-	let buttons = $('.note-editor button[data-toggle="dropdown"]');
-	buttons.each((key, value)=>{
-		$(value).attr('data-bs-toggle', 'dropdown');
-	})
-}
 var editText = function() {
 	$('#news').summernote({focus: true});
-	loadSummerNoteButtons();
 	$('#saveButton').show();
 	$('#editButton').hide();
 };

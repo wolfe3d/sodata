@@ -85,11 +85,11 @@ $date = date('Y-m-d');
 	</p>
 	<p>
 		<label for="meetingDescription">Meeting Description</label>
-		<textarea id="meetingDescription" name="meetingDescription" class="form-control" type="text"></textarea>
+		<textarea id="meetingDescription" name="meetingDescription" class="form-control"></textarea>
 	</p>
 	<p>
 		<label for="meetingHW">Meeting Homework</label>
-	<textarea id="meetingHW" name="meetingHW" class="form-control" type="text"></textarea>
+	<textarea id="meetingHW" name="meetingHW" class="form-control"></textarea>
 	</p>
 	<div id="attendanceContainer"></div>
 	<p>
@@ -118,14 +118,6 @@ $date = date('Y-m-d');
 		document.getElementById("displayDate").innerHTML = formattedDate;
 		document.getElementById('meetingDate').value = formattedDate;
 	}
-	function loadSummerNoteButtons()
-	{
-		//The below code causes a bootstrap error, but is necessary for dropdowns in summernote to work.
-		let buttons = $('.note-editor button[data-toggle="dropdown"]');
-		buttons.each((key, value)=>{
-			$(value).attr('data-bs-toggle', 'dropdown');
-		})
-	}
 
 	function removeAttribute() {
 		var selectElement = document.getElementById('studentID');
@@ -138,7 +130,6 @@ $date = date('Y-m-d');
 		removeAttribute();
 		$('#meetingHW').summernote({focus: true});
 		$('#meetingDescription').summernote({focus: true});
-		loadSummerNoteButtons();
 		showAttendanceTable();
 		$("#eventsList").on( "change", function (e) {
 			attendanceAddEvent();
