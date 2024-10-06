@@ -26,6 +26,6 @@ function getTeamStudents($teamID)
 	}
 }
 
-$teamID = intval($_POST['team']);
+$teamID = intval($_POST['myID']);
 echo json_encode(getTeamStudents($teamID));
 ?>
