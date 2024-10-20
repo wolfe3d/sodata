@@ -102,7 +102,7 @@ function checkPage(){
 						<a class="nav-link" id="summercampBtn" href="#summercamp">Summer Camp</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="boosterclubBtn" href="https://www.waltonsciolybooster.org/">Booster Club</a>
+						<a class="nav-link" id="boosterclubBtn" href="https://www.waltonsciolybooster.org/">Parents</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav">
@@ -221,7 +221,10 @@ function checkPage(){
 			<div class="container">
 				<div class="row">
 					<div class="12u">
-						<h2>Support</h2>
+						<h2>Support Us</h2>
+						<p>Parents, please sign up to volunteer here <a href="
+https://www.signupgenius.com/index.cfm?go=c.SignUpSearch&eid=08C7CEDDF5C8FF640F&cs=09CBBAD88FB88B117B0A640F5BB09BCAFDB0&sortby=startdate
+">2024-2025 Signup Link</a>.  Thank you!</p>
 						<p>If you are would like to sponsor or support the team, please contact the <a href="https://www.waltonsciolybooster.org/">Booster Club</a>.  Thank you!</p>
 					</div>
 				</div>
