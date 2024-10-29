@@ -1,6 +1,6 @@
 <?php
 require_once("php/functions.php");
-userCheckPrivilege(5);
+userCheckPrivilege(4);
 
 $teamID = intval($_REQUEST['myID']);
 $query = "SELECT `team`.`locked` from `team` INNER JOIN `tournament` ON `team`.`tournamentID`=`tournament`.`tournamentID` WHERE `team`.`teamID` = $teamID AND `tournament`.`schoolID` = 1";
