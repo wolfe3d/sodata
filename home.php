@@ -254,7 +254,10 @@ if(!empty($_SESSION['userData'])){
 	//Coach Reminders
 	if(userHasPrivilege(5))
 	{
-		$output.="<p><a class='btn btn-info' role='button' href='#tournamentsscore'><span class='bi bi-graph-up'></span> Student Ranking</a></p>";
+		$output.="<p>";
+		$output.="<a class='btn btn-info' role='button' href='#tournamentsscore'><span class='bi bi-graph-up'></span> Student Ranking</a>";
+		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreevent'><span class='bi bi-graph-up'></span> Event Scores</a>";
+		$output.="</p>";
 	}
 
 }else{

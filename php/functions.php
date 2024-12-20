@@ -25,6 +25,14 @@ function ordinal($n)
 	}
     return "Place Not Entered";
 }
+//get pts plural or singular
+function points($n)
+{
+    if($n>1)
+        return $n. ' pts';
+    else
+        return $n. ' pt';
+}
 //get all students in a select
 function getAllStudents($active, $studentID)
 {
