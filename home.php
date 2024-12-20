@@ -257,6 +257,7 @@ if(!empty($_SESSION['userData'])){
 		$output.="<p>";
 		$output.="<a class='btn btn-info' role='button' href='#tournamentsscore'><span class='bi bi-graph-up'></span> Student Ranking</a>";
 		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreevent'><span class='bi bi-graph-up'></span> Event Scores</a>";
+		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreeventoverall'><span class='bi bi-graph-up'></span> Event Performance</a>";
 		$output.="</p>";
 	}
 

@@ -1167,8 +1167,8 @@ function getCourseList()
 	echo $courses;
 }
 
-//get list of events for year
-function getEventListYear($number,$label, $year, $select)
+//get events for year
+function getEventsYear($year)
 {
 	global $mysqlConn;
 	$year = intval($year);
@@ -1183,6 +1183,13 @@ function getEventListYear($number,$label, $year, $select)
 			$events[] = ['eventID'=>$row['eventID'], 'event'=>$event,'type'=>$type];
 		endwhile;
 	}
+	return $events;
+}
+
+//get list of events for year
+function getEventListYear($number,$label, $year, $select)
+{
+	$events = getEventsYear($year);
 	return getEventsList($events, $number, $label, $select);
 }
 

@@ -6,8 +6,8 @@ require_once  ("php/functionstournamentscore.php");
 
 $output = "";
 //get posted info
-$yearevent = isset($_POST['myID'])?explode('&', $_POST['myID']):null;
-$year = isset($yearevent[0])?intval($yearevent[0]):getCurrentSOYear();
+$year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
+
 //$query = "SELECT `student`.`studentID`, `student`.`last`, `student`.`first` FROM `student` WHERE `student`.`active`";
 
 
@@ -21,12 +21,10 @@ $year = isset($yearevent[0])?intval($yearevent[0]):getCurrentSOYear();
 $returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
 //text output
 //$output = "<div>" . getSOYears($year, 0) . "</div>";
-$eventID = isset($yearevent[1])?intval($yearevent[1]):getEventAlphaYear($year);
 $output = "<div>" . getSOYears($year, 0) . "</div>";
-$output .= "<div>" . getEventListYear(null,"Choose Event", $year, $eventID). "</div>";
-$output .="<h2>Event Scores and Placements - $year</h2>";
+$output .="<h2>Event Performance -  $year</h2>";
 $output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
-
+$events = getEventsYear(null,null, $year, null);
 
 	$students = getAllStudentsParticipated($year);
 	if (!$students)
@@ -49,8 +47,7 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 	}
 	$output .= "<col span=5></colgroup><thead><tr>";
 
-	$output .="<th><div>Students</div><div><a href='javascript:tournamentSort(`tournamentTable`,`studentLast`)'>Last</a>, <a href='javascript:tournamentSort(`tournamentTable`,`studentFirst`)'>First</a></div></th>";
-	$output .="<th><a href='javascript:tournamentSort(`tournamentTable`,`grade`, 1)'>Grade</a></th>";
+	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`event`, 1)'>Events</a></th>";
 
 	//attendance score
 	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`attendance`, 1)'>Attendance Score</a></th>";
@@ -77,40 +74,37 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 
 	//list all the students and their events and score
 	$tallyPlaces = [0,0,0,0,0,0];
-	foreach ($students as $student)
+	foreach ($events as $event)
 	{
-			$grade = getStudentGrade($student['yearGraduating'], $year);
-			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' attendance='".$student['attendance']."' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' score='".$student['score']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
-			$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last']. ", " . $student['first'] . "</a></td>";
-			$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
+			$output .="<tr event='".$event['eventName']."' attendance='".$event['attendance']."' count='".$event['count']."' averagePlace='".$event['averagePlace']."' averageScore='".$event['averageScore']."' score='".$event['score']."' rank='".$event['rank']."' first='".$event['places'][0]."' second='".$event['places'][1]."' third='".$event['places'][2]."'>";
+			$output .="<td class='event' id='event-".$event['eventID']."'><a target='_blank' href='#event-details-".$event['eventID']."'>".$event['eventName']."</a></td>";
 
 			//attendance score
-			$output .= "<td id='attendance-".$student['studentID']."'>".$student['attendance']."</td>";
+			$output .= "<td id='attendance-".$event['studentID']."'>".$event['attendance']."</td>";
 
 
 			$totalScore = 0;
-			foreach ($student['tournaments'] as $tournament)
+			foreach ($event['tournaments'] as $tournament)
 			{
-				$output .= "<td id='studentscore-".$student['studentID']."-".$tournament['tournamentID']."' class='score-".$tournament['tournamentID']." student-".$student['studentID']."'>".$tournament['placement']."</td>";
+				$output .= "<td id='studentscore-".$event['studentID']."-".$tournament['tournamentID']."' class='score-".$tournament['tournamentID']." student-".$event['studentID']."'>".$tournament['placement']."</td>";
 			}
-			$output .= "<td id='count-".$student['studentID']."'>".$student['count']."</td>";
-			$output .= "<td id='averagePlace-".$student['studentID']."'>".$student['averagePlace']."</td>";
-			$output .= "<td id='averageScore-".$student['studentID']."'>".$student['averageScore']."</td>";
-			$output .= "<td id='totalscore-".$student['studentID']."'>".$student['score']."</td>";
-			$output .= "<td id='rank-".$student['studentID']."'>".$student['rank']."</td>";
+			$output .= "<td id='count-".$event['studentID']."'>".$event['count']."</td>";
+			$output .= "<td id='averagePlace-".$event['studentID']."'>".$event['averagePlace']."</td>";
+			$output .= "<td id='averageScore-".$event['studentID']."'>".$event['averageScore']."</td>";
+			$output .= "<td id='totalscore-".$event['studentID']."'>".$event['score']."</td>";
+			$output .= "<td id='rank-".$event['studentID']."'>".$event['rank']."</td>";
 
-			$output .= "<td id='first-".$student['studentID']."'>".$student['places'][0]."</td>";
-			$output .= "<td id='second-".$student['studentID']."'>".$student['places'][1]."</td>";
-			$output .= "<td id='third-".$student['studentID']."'>".$student['places'][2]."</td>";
+			$output .= "<td id='first-".$event['studentID']."'>".$event['places'][0]."</td>";
+			$output .= "<td id='second-".$event['studentID']."'>".$event['places'][1]."</td>";
+			$output .= "<td id='third-".$event['studentID']."'>".$event['places'][2]."</td>";
 
 			$output .="</tr>";
 
 			//tally Placements
 			for ($n = 0; $n < count($tallyPlaces); $n++)
 			{
-				$tallyPlaces[$n] += $student['places'][$n];
+				$tallyPlaces[$n] += $event['places'][$n];
 			}
-			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
 		}
 	$output .= "</tbody><table>";
 
@@ -124,11 +118,8 @@ echo $output;
 ?>
 <script defer>
 	$(document).ready(function() {
-		$("#eventsList").change(function(){
-			window.location.hash = '#tournamentsscoreevent--'+ $("#year option:selected").text()+'&'+$("#eventsList option:selected").val();
-		});
 		$("#year").change(function(){
-			window.location.hash = '#tournamentsscoreevent--'+ $("#year option:selected").text()+'&'+$("#eventsList option:selected").val();
+			window.location.hash = '#tournamentsscoreevent--'+ $("#year option:selected").text();
 		});
 	});
 </script>

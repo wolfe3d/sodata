@@ -281,7 +281,63 @@ function calculateEventScores(&$students, $tournaments, $eventID)
 			$student['count']=$tournamentCount;
 
 			//attendance score
-//TODO: Change for event
+
+			$student['attendance']=calculateAttendanceEvent($student['studentID'],$year, $eventID);
+
+			if ($totalPlace)
+			{
+				$student['averagePlace']=number_format($totalPlace/$tournamentCount,2,".","");
+			}
+			else {
+				$student['averagePlace']= 0;
+			}
+			if ($totalScore)
+			{
+				$student['averageScore']=number_format($totalScore/$tournamentCount,2,".","");
+			}
+			else {
+				$student['averageScore']= 0;
+			}
+			$student['score']= number_format($totalScore+$student['attendance'],2,".","");
+			$student['rank']= 0;
+			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
+		}
+}
+
+//get Event scores
+function calculateEventOverallScores(&$events, $tournaments)
+{
+	global $mysqlConn;
+	global $year;
+	foreach ($events as &$event)
+	{
+			$totalScore = 0;
+			$tournamentCount = 0;
+			$totalPlace = 0;
+			$event['places'] = [0,0,0,0,0,0];
+			$event['tournaments'] = [];
+			foreach ($tournaments as $tournament)
+			{
+				$scoreStudent = "";
+				$placementStudent = "";
+				$teammateplaces = getPlaces($tournament['tournamentID']);
+				foreach ($teammateplaces as $place)
+				{
+					if ($place['studentID']==$student['studentID']&&$tournament['tournamentID']==$place['tournamentID']&&getEventID($place['tournamenteventID'])==$eventID)
+					{
+						$student['places'] = tallyPlacements($place['place'], $student['places']);
+						$scoreStudent = $place['score'];
+						$placementStudent = ordinal($place['place'])." (".points(round($place['score'],1)).")";
+						$totalScore += $scoreStudent;
+						$tournamentCount += 1;
+						$totalPlace += $place['place'];
+					}
+				}
+				array_push($student['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'placement'=>$placementStudent, 'score'=>$scoreStudent, 'eventsNumber'=>1]);
+			}
+			$student['count']=$tournamentCount;
+
+			//attendance score
 
 			$student['attendance']=calculateAttendanceEvent($student['studentID'],$year, $eventID);
 
