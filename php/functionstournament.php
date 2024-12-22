@@ -252,11 +252,11 @@ function tallyPlacements($place, $tally)
 	}
 	return $tally;
 }
-function tallyPlacementsPrint($tallyPlaces)
+function tallyPlacementsPrint($tallyPlaces, $title)
 {
 	$output = "<h2>Placement Tally</h2>";
 	$output .= "<table id='tally' class='table table-hover table-striped'>";
-	$output .= "<thead class='table-dark'><tr><th>Place</th><th>Team Members</th></tr></thead><tbody>";
+	$output .= "<thead class='table-dark'><tr><th>Place</th><th>$title</th></tr></thead><tbody>";
 	//TODO: Add column for number of events earning a placement
 	for ($n = 0; $n < count($tallyPlaces); $n++)
 	{

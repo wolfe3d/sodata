@@ -127,7 +127,7 @@ else
 	$output .= "</tbody><table>";
 
 	// Create a table for tally of places
-	$output .= tallyPlacementsPrint($tallyPlaces);
+	$output .= tallyPlacementsPrint($tallyPlaces, "Team Members");
 
 	// Save function
 	$output .= "<p>" . $returnBtn;

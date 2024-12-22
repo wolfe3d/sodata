@@ -118,6 +118,34 @@ function calculateAttendance($studentID, $year)
 	return 0;
 }
 
+//get Event Attendance score for Event
+function calculateAttendanceEvent($studentID, $eventID, $year)
+{
+	global $mysqlConn;
+	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
+	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$startDate = "0000-00-00";
+	$endDate = "3000-00-00";
+	if($resultYear->num_rows){
+		$rowYear = $resultYear->fetch_assoc();
+		$startDate = $rowYear['startDate'];
+		$endDate = $rowYear['endDate'];
+	}
+
+
+	$query = "SELECT `meeting`.`eventID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
+	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
+	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate' 
+	AND `meeting`.`eventID` = '$eventID'
+	AND `meetingattendance`.`studentID` = '$studentID'";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		$row = $result->fetch_assoc();
+		return intval($row['attendance'])+intval($row['engagement'])+intval($row['homework']);
+	}
+	return 0;
+}
+
 //get tournaments
 function calculateOverallScores(&$students, $tournaments)
 {
@@ -206,8 +234,8 @@ function getEventAlphaYear($year)
 	return 0;
 }
 
-//get Attendance score
-function calculateAttendanceEvent($studentID, $year, $eventID)
+//get Attendance score for a single student in one event
+function calculateAttendanceEventOne($eventID, $year)
 {
 	global $mysqlConn;
 	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
@@ -224,8 +252,7 @@ function calculateAttendanceEvent($studentID, $year, $eventID)
 	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
 	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate'
-	AND `meeting`.`eventID`= '$eventID' 
-	AND `meetingattendance`.`studentID` = $studentID";
+	AND `meeting`.`eventID`= '$eventID'";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
@@ -269,11 +296,20 @@ function calculateEventScores(&$students, $tournaments, $eventID)
 					if ($place['studentID']==$student['studentID']&&$tournament['tournamentID']==$place['tournamentID']&&getEventID($place['tournamenteventID'])==$eventID)
 					{
 						$student['places'] = tallyPlacements($place['place'], $student['places']);
-						$scoreStudent = $place['score'];
-						$placementStudent = ordinal($place['place'])." (".points(round($place['score'],1)).")";
-						$totalScore += $scoreStudent;
-						$tournamentCount += 1;
-						$totalPlace += $place['place'];
+						if($place['place'])
+						{
+							//place and score entered
+							$scoreStudent = $place['score'];
+							$placementStudent = ordinal($place['place'])."<br>(".points(round($place['score'],1)).")";
+							$totalScore += $scoreStudent;
+							$tournamentCount += 1;
+							$totalPlace += $place['place'];
+						}
+						else
+						{
+							 //place not entered
+							 $placementStudent = ordinal($place['place']);
+						}
 					}
 				}
 				array_push($student['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'placement'=>$placementStudent, 'score'=>$scoreStudent, 'eventsNumber'=>1]);
@@ -282,7 +318,7 @@ function calculateEventScores(&$students, $tournaments, $eventID)
 
 			//attendance score
 
-			$student['attendance']=calculateAttendanceEvent($student['studentID'],$year, $eventID);
+			$student['attendance']=calculateAttendanceEvent($student['studentID'], $eventID, $year);
 
 			if ($totalPlace)
 			{
@@ -298,6 +334,7 @@ function calculateEventScores(&$students, $tournaments, $eventID)
 			else {
 				$student['averageScore']= 0;
 			}
+			$student['tournamentScore']=number_format($totalScore,2,".","");
 			$student['score']= number_format($totalScore+$student['attendance'],2,".","");
 			$student['rank']= 0;
 			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
@@ -312,52 +349,66 @@ function calculateEventOverallScores(&$events, $tournaments)
 	foreach ($events as &$event)
 	{
 			$totalScore = 0;
-			$tournamentCount = 0;
+			//$tournamentCount = 0;
 			$totalPlace = 0;
 			$event['places'] = [0,0,0,0,0,0];
 			$event['tournaments'] = [];
+			$eventsNumber = 0;
 			foreach ($tournaments as $tournament)
 			{
-				$scoreStudent = "";
-				$placementStudent = "";
+				$scoreTourament = "";
+				$placementEvent = "";
 				$teammateplaces = getPlaces($tournament['tournamentID']);
+				$tournamentHasEvent =0;
+				$teamIDs = array();
 				foreach ($teammateplaces as $place)
 				{
-					if ($place['studentID']==$student['studentID']&&$tournament['tournamentID']==$place['tournamentID']&&getEventID($place['tournamenteventID'])==$eventID)
+					if (getEventID($place['tournamenteventID'])==$event['eventID']&&array_search($place['teamID'], $teamIDs)===false)
 					{
-						$student['places'] = tallyPlacements($place['place'], $student['places']);
-						$scoreStudent = $place['score'];
-						$placementStudent = ordinal($place['place'])." (".points(round($place['score'],1)).")";
-						$totalScore += $scoreStudent;
-						$tournamentCount += 1;
-						$totalPlace += $place['place'];
+						$event['places'] = tallyPlacements($place['place'], $event['places']);
+						if($placementEvent) $placementEvent .="<br>";
+						if($place['place'])
+						{
+							//place and score entered
+							$placementEvent .= ordinal($place['place'])." (".points(round($place['score'],1)).") ";
+							$scoreTourament += $place['score'];
+							$eventsNumber +=1;
+							$totalPlace += $place['place'];
+						}
+						else
+						{
+							 //place not entered
+							$placementEvent .= ordinal($place['place']);
+						}
+						$teamIDs[] = $place['teamID'];
 					}
 				}
-				array_push($student['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'placement'=>$placementStudent, 'score'=>$scoreStudent, 'eventsNumber'=>1]);
+				unset ($teamIDs);
+				//if ($tournamentHasEvent) $tournamentCount += 1;
+				$totalScore += $scoreTourament;
+				array_push($event['tournaments'], ['tournamentID'=>$tournament['tournamentID'], 'placement'=>$placementEvent, 'score'=>$scoreTourament, 'eventsNumber'=>1]);
 			}
-			$student['count']=$tournamentCount;
-
 			//attendance score
-
-			$student['attendance']=calculateAttendanceEvent($student['studentID'],$year, $eventID);
+			$event['attendance']=calculateAttendanceEventOne($event['eventID'], $year);
 
 			if ($totalPlace)
 			{
-				$student['averagePlace']=number_format($totalPlace/$tournamentCount,2,".","");
+				$event['averagePlace']=number_format($totalPlace/$eventsNumber,2,".","");
 			}
 			else {
-				$student['averagePlace']= 0;
+				$event['averagePlace']= 0;
 			}
 			if ($totalScore)
 			{
-				$student['averageScore']=number_format($totalScore/$tournamentCount,2,".","");
+				$event['tournamentScore']=number_format($totalScore,2,".","");
+				$event['averageScore']=number_format($totalScore/$eventsNumber,2,".","");
 			}
 			else {
-				$student['averageScore']= 0;
+				$event['averageScore']= 0;
 			}
-			$student['score']= number_format($totalScore+$student['attendance'],2,".","");
-			$student['rank']= 0;
-			//$output .= "<td>".$student['count']."</td><td>".number_format($student['avgPlace'],2)."</td><td id='score-".$student['studentID']."'>".number_format($student['score'],2)."</td><td id='rank-".$student['studentID']."'>".$student['rank']."</td></tr>";
+			$event['score']= number_format($totalScore+$event['attendance'],2,".","");
+			$event['rank']= 0;
+			//$output .= "<td>".$event['count']."</td><td>".number_format($event['avgPlace'],2)."</td><td id='score-".$event['studentID']."'>".number_format($event['score'],2)."</td><td id='rank-".$event['studentID']."'>".$event['rank']."</td></tr>";
 		}
 }
 ?>

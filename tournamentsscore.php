@@ -20,7 +20,7 @@ $returnBtn = "<p><button class='btn btn-outline-secondary' onclick='window.histo
 //text output
 $output = "<div>" . getSOYears($year, 0) . "</div>";
 $output .="<h2>Student Scores and Overall Placements - $year</h2>";
-$output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
+$output .="<p class='text-warning'>Overall placement alone does not determine team placement.</p>";
 
 
 	$students = getAllStudentsParticipated($year);
@@ -109,7 +109,7 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 		}
 	$output .= "</tbody><table>";
 
-	$output .= tallyPlacementsPrint($tallyPlaces);
+	$output .= tallyPlacementsPrint($tallyPlaces, "Team Members");
 
 	$output .= $returnBtn;
 

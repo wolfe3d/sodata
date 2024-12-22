@@ -725,7 +725,7 @@ function attendanceAddStudent(studentID, last, first, info, attendance=1, engage
 				}
 				newStudent += "<hr>";
 			//document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
-			$("#attendanceContainer").append(newStudent);
+			$("#attendanceContainer").append(newSteudent);
 			return 1;
 		//}
 	}

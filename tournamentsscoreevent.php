@@ -25,8 +25,7 @@ $eventID = isset($yearevent[1])?intval($yearevent[1]):getEventAlphaYear($year);
 $output = "<div>" . getSOYears($year, 0) . "</div>";
 $output .= "<div>" . getEventListYear(null,"Choose Event", $year, $eventID). "</div>";
 $output .="<h2>Event Scores and Placements - $year</h2>";
-$output .="<p class='text-warning'>This page is a beta version and calculations are likely to change.</p>";
-
+$output .="<p class='text-warning'>Event placement alone does not determine team placement.</p>";
 
 	$students = getAllStudentsParticipated($year);
 	if (!$students)
@@ -65,7 +64,8 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 	//$output .="<th rowspan='2'>Avg Place</th>";
 	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`count`, 1)'>Total Tournaments</a></th>";
 	$output .="<th rowspan='1'><a href='javascript:tournamentSort(`tournamentTable`,`averagePlace`, 1)'>Average Place</a></th>";
-	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`averageScore`, 1)'>Average Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`tournamentScore`, 1)'>Total Tournament Score</a></div><div>(Higher is Better)</div></th>";
+	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`averageScore`, 1)'>Average Tournament Score</a></div><div>(Higher is Better)</div></th>";
 	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`score`, 1)'>Total Score</a></div><div>(Higher is Better)</div></th>";
 	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`rank`, 1)'>Total Rank</a></div><div>(Lower is Better)</div></th>";
 	$output .="<th rowspan='1'><div><a href='javascript:tournamentSort(`tournamentTable`,`first`, 0)'>1st Places</a></div></th>";
@@ -80,7 +80,7 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 	foreach ($students as $student)
 	{
 			$grade = getStudentGrade($student['yearGraduating'], $year);
-			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' attendance='".$student['attendance']."' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' score='".$student['score']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
+			$output .="<tr studentLast='".removeParenthesisText($student['last'])."'  studentFirst='".removeParenthesisText($student['first'])."' grade='$grade' attendance='".$student['attendance']."' count='".$student['count']."' averagePlace='".$student['averagePlace']."' averageScore='".$student['averageScore']."' score='".$student['score']."' tournamentScore='".$student['tournamentScore']."' rank='".$student['rank']."' first='".$student['places'][0]."' second='".$student['places'][1]."' third='".$student['places'][2]."'>";
 			$output .="<td class='student' id='teammate-".$student['studentID']."'><a target='_blank' href='#student-details-".$student['studentID']."'>".$student['last']. ", " . $student['first'] . "</a></td>";
 			$output .="<td id='grade-".$student['studentID']."'>$grade</td>";
 
@@ -95,6 +95,7 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 			}
 			$output .= "<td id='count-".$student['studentID']."'>".$student['count']."</td>";
 			$output .= "<td id='averagePlace-".$student['studentID']."'>".$student['averagePlace']."</td>";
+			$output .= "<td id='tournamentScore-".$student['studentID']."'>".$student['tournamentScore']."</td>";
 			$output .= "<td id='averageScore-".$student['studentID']."'>".$student['averageScore']."</td>";
 			$output .= "<td id='totalscore-".$student['studentID']."'>".$student['score']."</td>";
 			$output .= "<td id='rank-".$student['studentID']."'>".$student['rank']."</td>";
@@ -114,7 +115,7 @@ $output .="<p class='text-warning'>This page is a beta version and calculations 
 		}
 	$output .= "</tbody><table>";
 
-	$output .= tallyPlacementsPrint($tallyPlaces);
+	$output .= tallyPlacementsPrint($tallyPlaces, "Team Members");
 
 	$output .= $returnBtn;
 

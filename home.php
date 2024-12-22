@@ -254,11 +254,11 @@ if(!empty($_SESSION['userData'])){
 	//Coach Reminders
 	if(userHasPrivilege(5))
 	{
-		$output.="<p>";
-		$output.="<a class='btn btn-info' role='button' href='#tournamentsscore'><span class='bi bi-graph-up'></span> Student Ranking</a>";
-		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreevent'><span class='bi bi-graph-up'></span> Event Scores</a>";
-		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreeventoverall'><span class='bi bi-graph-up'></span> Event Performance</a>";
-		$output.="</p>";
+		$output.="<p><div class='btn-group' role='group' aria-label='Coach Analysis Buttons'>";
+		$output.="<a class='btn btn-info' role='button' href='#tournamentsscore' data-toggle='tooltip' data-placement='top' title='Overall Scores'><span class='bi bi-graph-up'></span> Student Ranking</a>";
+		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreevent' data-toggle='tooltip' data-placement='top' title='Event Scores'><span class='bi bi-hammer'></span> Event Scores</a>";
+		$output.=" <a class='btn btn-info' role='button' href='#tournamentsscoreeventoverall'  data-toggle='tooltip' data-placement='top' title='Event Performance'><span class='bi bi-fuel-pump'></span> Event Performance</a>";
+		$output.="</div></p>";
 	}
 
 }else{
