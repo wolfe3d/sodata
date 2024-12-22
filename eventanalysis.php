@@ -61,7 +61,8 @@ function numberOfMeetings($studentID, $eventID, $year)
 
 	$query = "SELECT * FROM `meeting` INNER JOIN `meetingattendance` ON `meeting`.`eventID` = $eventID 
 	AND `meetingattendance`.`meetingID` = `meeting`.`meetingID`
-	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'";
+	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
+	AND `meetingattendance`.`attendance` > 0";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$count = 0;
 	while($row = $result -> fetch_assoc()):
