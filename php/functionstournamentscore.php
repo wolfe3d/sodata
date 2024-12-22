@@ -95,20 +95,11 @@ function getTournaments($year)
 function calculateAttendance($studentID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
-	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$startDate = "0000-00-00";
-	$endDate = "3000-00-00";
-	if($resultYear->num_rows){
-		$rowYear = $resultYear->fetch_assoc();
-		$startDate = $rowYear['startDate'];
-		$endDate = $rowYear['endDate'];
-	}
-
+	$SOdates = getCompetitionYearBegEnd($year);
 
 	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
-	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate' 
+	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
 	AND `meetingattendance`.`studentID` = $studentID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
@@ -118,24 +109,15 @@ function calculateAttendance($studentID, $year)
 	return 0;
 }
 
-//get Event Attendance score for Event
+//get Event Attendance score for one student in one Event
 function calculateAttendanceEvent($studentID, $eventID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
-	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$startDate = "0000-00-00";
-	$endDate = "3000-00-00";
-	if($resultYear->num_rows){
-		$rowYear = $resultYear->fetch_assoc();
-		$startDate = $rowYear['startDate'];
-		$endDate = $rowYear['endDate'];
-	}
-
+	$SOdates = getCompetitionYearBegEnd($year);
 
 	$query = "SELECT `meeting`.`eventID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
-	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate' 
+	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
 	AND `meeting`.`eventID` = '$eventID'
 	AND `meetingattendance`.`studentID` = '$studentID'";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
@@ -234,24 +216,15 @@ function getEventAlphaYear($year)
 	return 0;
 }
 
-//get Attendance score for a single student in one event
+//get Attendance score  for one event in a given year
 function calculateAttendanceEventOne($eventID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
-	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$startDate = "0000-00-00";
-	$endDate = "3000-00-00";
-	if($resultYear->num_rows){
-		$rowYear = $resultYear->fetch_assoc();
-		$startDate = $rowYear['startDate'];
-		$endDate = $rowYear['endDate'];
-	}
-
+	$SOdates = getCompetitionYearBegEnd($year);
 
 	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
-	WHERE `meeting`.`meetingDate`>= '$startDate' AND `meeting`.`meetingDate`<= '$endDate'
+	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
 	AND `meeting`.`eventID`= '$eventID'";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){

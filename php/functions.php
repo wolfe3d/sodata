@@ -1236,6 +1236,21 @@ function getCurrentSOYear()
 	}
 	return date("Y");
 }
+//get Science Olympiad year Beginning and End
+function getCompetitionYearBegEnd($year)
+{
+	global $mysqlConn;
+	$query = "SELECT * FROM `competitionyear` WHERE `year` = $year";
+	$resultYear = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$SOdates = array("startDate"=>"0000-00-00", "endDate"=>"3000-00-00");
+	if($resultYear->num_rows){
+		$rowYear = $resultYear->fetch_assoc();
+		$SOdates['startDate'] = $rowYear['startDate'];
+		$SOdates['endDate'] = $rowYear['endDate'];
+	}
+	return $SOdates;
+}
+
 //get Current Officer Position
 function getOfficerPosition($studentID)
 {

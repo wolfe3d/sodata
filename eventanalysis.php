@@ -2,6 +2,8 @@
 header("Content-Type: text/plain");
 //get functions required
 require_once  ("php/functions.php");
+require_once  ("php/functionstournamentscore.php");
+
 //initial access check for event leaders or higher
 userCheckPrivilege(2);
 
@@ -52,10 +54,14 @@ function onTeamEvent($tournamentID, $studentID, $eventID)
 	return FALSE;
 }
 // Find number of meetings that a student has attended for an event
-function numberOfMeetings($studentID, $eventID)
+function numberOfMeetings($studentID, $eventID, $year)
 {
 	global $mysqlConn;
-	$query = "SELECT * FROM `meeting` INNER JOIN `meetingattendance` ON `meeting`.`eventID` = $eventID AND `meetingattendance`.`meetingID` = `meeting`.`meetingID`";
+	$SOdates = getCompetitionYearBegEnd($year);
+
+	$query = "SELECT * FROM `meeting` INNER JOIN `meetingattendance` ON `meeting`.`eventID` = $eventID 
+	AND `meetingattendance`.`meetingID` = `meeting`.`meetingID`
+	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	$count = 0;
 	while($row = $result -> fetch_assoc()):
@@ -109,7 +115,16 @@ $output .= "</div>";
 $output .= "<hr>";
 //TODO: ORDER BY Average Score, highest ->lowest
 //Maybe: Put in table, note if student is listed in a team (notCompetition)
-$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` WHERE `student`.`schoolID`= $schoolID AND eventID = $eventID and `student`.`active` = 1 and `place` IS NOT NULL AND `tournament`.`notCompetition`=0 AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last` ASC, `first` ASC, `tournament`.`dateTournament` DESC";
+$query = "SELECT `student`.`studentID`,`first`, `last`, `email`, `emailSchool`,`place`,`score`,`tournamentName`,`tournament`. `year` 
+FROM `tournamentevent` INNER JOIN `teammateplace` ON `tournamentevent`.`tournamenteventID` = `teammateplace`.`tournamenteventID` 
+INNER JOIN `tournament` on `tournamentevent`.`tournamentID` = `tournament`.`tournamentID` 
+INNER JOIN `student` ON `teammateplace`.`studentID` = `student`.`studentID` 
+WHERE `student`.`schoolID`= $schoolID 
+AND eventID = $eventID 
+AND `student`.`active` = 1 
+AND `place` IS NOT NULL 
+AND `tournament`.`notCompetition`=0 
+AND `tournament`.`year`<=".getCurrentSOYear()." Order By `last` ASC, `first` ASC, `tournament`.`dateTournament` DESC";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $teamRoster = getTeamRoster();
@@ -125,24 +140,29 @@ while ($row = $result->fetch_assoc()):
 			if($studentID)
 			{
 				$output.= "</ul>";
-			}
-			if ($totalTournaments > 0 )
-			{
-				$output .= "<div>Total Score: ".$totalScore."</div>";
-				$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
-				$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
-				$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
+				if ($totalTournaments > 0 || $students[$studentID]['numberOfMeetings'])
+				{
+					$output .= "<div>Total Score: ".$totalScore."</div>";
+					$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
+					$output .= "<div>Average Place: ".$totalPlace/$totalTournaments."</div>";
+					$output .= "<div>Meetings Attended: ".$students[$studentID]['numberOfMeetings']."</div>";
+					$output .= "<div>Attendance Score ($year): ".$students[$studentID]['attendanceScore']."</div><br><br>";
 
-				$students[$studentID]['scoreTotal']=$totalScore;
-				$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
-				$students[$studentID]['placeAvg']=$totalPlace/$totalTournaments;
-				$students[$studentID]['tournamentTotal']=$totalTournaments;
+
+					$students[$studentID]['scoreTotal']=$totalScore;
+					$students[$studentID]['scoreAvg']=$totalScore/$totalTournaments;
+					$students[$studentID]['placeAvg']=$totalPlace/$totalTournaments;
+					$students[$studentID]['tournamentTotal']=$totalTournaments;
+				}
 			}
 			//start next student
 			$studentID = $row['studentID'];
 			$students[$studentID]['studentID'] = $row['studentID'];
 			$students[$studentID]['last'] = $row['last'];
 			$students[$studentID]['first'] = $row['first'];
+			$students[$studentID]['attendanceScore'] = calculateAttendanceEvent($row['studentID'], $eventID, $year);
+			$students[$studentID]['numberOfMeetings']= numberOfMeetings($studentID, $eventID, $year);
+
 
 			$output.= "<h3>".$row['first'] . " " . $row['last']."</h3>";
 			//check to see if the student is assigned to the a team or a fill in
@@ -155,7 +175,7 @@ while ($row = $result->fetch_assoc()):
 			$totalScore = 0;
 			$totalTournaments = 0;
 		}
-    if($row['email']){
+    if($row['tournamentName']){
         $output.="<li>".$row['tournamentName'] . " (" . $row['year'] .") " . $row['place']."</li>";
 				$totalPlace += $row['place'];
 				$totalScore += $row['score'];
@@ -164,13 +184,15 @@ while ($row = $result->fetch_assoc()):
 endwhile;
 
 //finish last student
-if ($totalTournaments > 0 )
+if ($totalTournaments > 0 || $students[$studentID]['numberOfMeetings'])
 {
 	$output.= "</ul>";
 	$output .= "<div>Total Score: ".$totalScore."</div>";
 	$output .= "<div>Average Score: ".$totalScore/$totalTournaments."</div>";
 	$output .= "<div>Average place: ".$totalPlace/$totalTournaments."</div>";
-	$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID)."</div><br><br>";
+	$output .= "<div>Meetings attended: ".numberOfMeetings($studentID, $eventID, $year)."</div>";
+	$output .= "<div>Attendance Score ($year): ".$students[$studentID]['attendanceScore']."</div><br><br>";
+
 
 	$students[$studentID]['tournamentTotal']=$totalTournaments;
 	$students[$studentID]['scoreTotal']=$totalScore;
@@ -184,7 +206,7 @@ $tournamentNumber = array_column($students, 'tournamentTotal');
 $placeAvg = array_column($students, 'placeAvg');
 array_multisort($totals,SORT_DESC,$placeAvg, SORT_ASC, $students);
 $output .="<h2>Summary</h2>";
-$output .="<table class='table table-striped table-hover'><thead class='table-dark'><tr><th scope='col'>Name</th><th scope='col'>Tournaments</th><th scope='col'>Total Score</th><th scope='col'>Average Score</th><th scope='col'>Average Place</th></tr></thead>";
+$output .="<table class='table table-striped table-hover'><thead class='table-dark'><tr><th scope='col'>Name</th><th scope='col'>Number of Meetings</th><th scope='col'>Attendance Score</th><th scope='col'>Tournaments</th><th scope='col'>Tournaments' Score</th><th scope='col'>Average Tournament</th><th scope='col'>Average Place</th></tr></thead>";
 $output .="<tbody>";
 $studentNotOnEvent = 0;
 foreach ($students as &$student) {
@@ -195,7 +217,7 @@ foreach ($students as &$student) {
 		$onEvent ="*";
 	}
 	
-    $output .="<tr><th scope='row'>".$student['last'].", ".$student['first']."$onEvent</th><td>".$student['tournamentTotal']."</td><td>".$student['scoreTotal']."</td><td>".$student['scoreAvg']."</td><td>".$student['placeAvg']."</td></tr>";
+    $output .="<tr><th scope='row'>".$student['last'].", ".$student['first']."$onEvent</th><td>".$student['numberOfMeetings']."</td><td>".$student['attendanceScore']."</td><td>".$student['tournamentTotal']."</td><td>".$student['scoreTotal']."</td><td>".$student['scoreAvg']."</td><td>".$student['placeAvg']."</td></tr>";
 }
 $output .="</tbody></table>";
 if ($studentNotOnEvent)
