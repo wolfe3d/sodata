@@ -97,7 +97,7 @@ while($row = $result -> fetch_assoc()):
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
 				//$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-".$row['meetingID']."'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
 			}
-			if(userHasPrivilege(5))
+			else if(userHasPrivilege(5))
 			{
 				$meetingID = $row['meetingID'];
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
