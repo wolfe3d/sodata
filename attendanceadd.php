@@ -20,19 +20,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     // Handle meeting attendance for each student
     $studentData = [];
     foreach ($_POST as $key => $value) {
-        $keyExplode = explode("-", $key);
-        $studentID = $keyExplode[1];
+        $studentID = $attendance = $engagement = $homework = $type = null;
         // Check if the key starts with 'attendance-' (TODO: make this better/less hardcoded)
-        if ($keyExplode[0]='attendance-') {
+        if (strpos($key, 'attendance-') === 0) {
+            $studentID = explode("-",$key)[1];
             //attendance value will be 1 for present, 0 for absent excused, -1 for absent unexcused
-            $studentData[$studentID]['attendance'] =  intval($value); //intval ensures that only an integer can be passed as a value (no sql query)
+            $attendance = intval($value); //intval ensures that only an integer can be passed as a value (no sql query)
         }
-        elseif ($keyExplode[0]='engagement-') {
-            $studentData[$studentID]['engagement'] = intval($value);
+        elseif (strpos($key, 'engagement-') === 0) {
+            $studentID = explode("-",$key)[1];
+            $engagement = intval($value);
         }
-        elseif ($keyExplode[0]='homework-') {
-            $studentData[$studentID]['homework'] = intval($value);
+        elseif (strpos($key, 'homework-') === 0) {
+            $studentID = explode("-",$key)[1];
+            $homework = intval($value);
         }
+        if ($studentID !== null) {
+            if (!isset($studentData[$studentID])) {
+                // Initialize student data at their studentID
+                $studentData[$studentID] = [
+                    'attendance' => '',
+                    'engagement' => '',
+                    'homework' => ''
+                ];
+            }
+            // Assign values based on the key
+            if ($attendance !== null) {
+                $studentData[$studentID]['attendance'] = $attendance;
+            }
+            if ($engagement !== null) {
+                $studentData[$studentID]['engagement'] = $engagement;
+            }
+            if ($homework !== null) {
+                $studentData[$studentID]['homework'] = $homework;
+            }
+        } 
     }
     foreach ($studentData as $studentID => $data) {
         $attendance = $data['attendance'];

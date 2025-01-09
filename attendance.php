@@ -63,7 +63,7 @@ $event = 0;//getEventLeaderPosition($studentID)[0]['event'];
 $row = NULL;
 $date = date('Y-m-d');
 ?>
-<form id="addTo" method="post" action="javascript:addToSubmit('attendanceadd.php')">
+<form id="addTo" method="post" action="javascript:attendanceSubmit('attendanceadd.php')">
 <div id="info"></div>
 	<label for="meetingType">Meeting Type</label>
 	<?=getAttendanceTypes()?>
@@ -135,23 +135,7 @@ $date = date('Y-m-d');
 			attendanceAddEvent();
 		});
 	});
-	var form = document.getElementById('addTo');
-	form.addEventListener('submit', function() {
-		if(confirm('Are you sure you want to submit your meeting attendance?'))
-		{
-			alert('Meeting attendance submitted!');
-			var eventID = document.getElementById("eventsList").value;
-			if(document.getElementById('meetingType').value == 1)
-			{
-				window.location.href = `#event-analysis-${eventID}`;
-			} else {
-				window.location.href = `#leaders`;
-			}
-		}
-		else {
-			event.preventDefault();
-		}
-	}, false);
+
 
 	function attendanceAddStudentSelected() {
 		var studentID = document.getElementById("studentID").value;
