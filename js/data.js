@@ -625,6 +625,7 @@ function attendanceEdit(myID)
 	$('#addTo :input,select').each(function() {
 		$(this).change(function(){
 			//console.log("Input changed: ", $(this).attr('id'), " with value: ", this.value);
+			//fieldUpdate(myID,table,field,value,domID,messageID)
 			fieldUpdate(myID,'meeting',this.id,this.value,this.id,this.id);
 		});
 	});
@@ -638,18 +639,9 @@ function attendanceEdit(myID)
 		}}
 	});
 
-	$('#attendanceContainer').on('change', ':input', function() {
-        console.log("Radio button changed: ", $(this).attr('id'), " with value: ", this.value);
-        if ((this.id).startsWith('attendance') || (this.id).startsWith('engagement') || (this.id).startsWith('homework')) {
-            var studentID = ((this.id).split('-'))[1];
-			var table = ((this.id).split('-'))[0];
-            //console.log("Updating attendance for student ID: ", studentID);
-            fieldUpdate(myID, table, studentID, this.value, $(this).attr('id'), $(this).attr('id'));
-        }
-    });
 }
 // Load a single student and their attendance data onto the page
-function attendanceAddStudent(studentID, last, first, info, attendance=1, engagement=2, homework=0) {
+function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info, attendance=1, engagement=2, homework=0) {
 	var formattedName = first + ' ' + last;
 	 // adding student to the attendance form, or loading the student for attendance edit
 	if(info == "load") { // for event attendance edit - TODO add additional checks for other types of attendance?
@@ -665,7 +657,7 @@ function attendanceAddStudent(studentID, last, first, info, attendance=1, engage
 	}
 
 	//check if the new student was already added before
-	if(document.getElementsByName('attendance-'+studentID).length > 0) 
+	if(document.getElementsByName('attendanceStudent-'+studentID).length > 0) 
 	{
 		//ignore this student - this may be called as part of adding a team
 		return 0;
@@ -675,62 +667,110 @@ function attendanceAddStudent(studentID, last, first, info, attendance=1, engage
 		//create a new div with student information
 		//if(confirm("Add student: " + formattedName + "?"))
 		//{
-			var newStudent = `<div>
+			var newStudent = `<div name="attendanceStudent-${studentID}" id="attendanceStudent-${studentID}">
 					<h3>${formattedName} </h3>
 					<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-P" value="1" ${attendance==1?'checked':''}>
-					<label class="form-check-label" for="attendance-${studentID}-P">P</label>
+					<input class="form-check-input" type="radio" name="attendance-${studentID}-${meetingAttendanceID}" id="attendance-${studentID}-${meetingAttendanceID}-P" value="1" ${attendance==1?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-${meetingAttendanceID}-P">P</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AU" value="-1" ${attendance==-1?'checked':''}>
-					<label class="form-check-label" for="attendance-${studentID}-AU">AU</label>
+					<input class="form-check-input" type="radio" name="attendance-${studentID}-${meetingAttendanceID}" id="attendance-${studentID}-${meetingAttendanceID}-AU" value="-1" ${attendance==-1?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-${meetingAttendanceID}-AU">AU</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="attendance-${studentID}" id="attendance-${studentID}-AE" value="0" ${attendance==0?'checked':''}>
-					<label class="form-check-label" for="attendance-${studentID}-AE">AE</label>
+					<input class="form-check-input" type="radio" name="attendance-${studentID}-${meetingAttendanceID}" id="attendance-${studentID}-${meetingAttendanceID}-AE" value="0" ${attendance==0?'checked':''}>
+					<label class="form-check-label" for="attendance-${studentID}-${meetingAttendanceID}-AE">AE</label>
 				</div>`;
 				
 				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding engagement to other meeting types
 				{
 					newStudent +=`<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-0" value="0" ${engagement==0?'checked':''}>
-					<label class="form-check-label" for="engagement-${studentID}-0">0</label>
+					<input class="form-check-input" type="radio" name="engagement-${studentID}-${meetingAttendanceID}" id="engagement-${studentID}-${meetingAttendanceID}-0" value="0" ${engagement==0?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-${meetingAttendanceID}-0">0</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-1" value="1" ${engagement==1?'checked':''}>
-					<label class="form-check-label" for="engagement-${studentID}-1">1</label>
+					<input class="form-check-input" type="radio" name="engagement-${studentID}-${meetingAttendanceID}" id="engagement-${studentID}-${meetingAttendanceID}-1" value="1" ${engagement==1?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-${meetingAttendanceID}-1">1</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="engagement-${studentID}" id="engagement-${studentID}-2" value="2" ${engagement==2?'checked':''}>
-					<label class="form-check-label" for="engagement-${studentID}-2">2</label>
+					<input class="form-check-input" type="radio" name="engagement-${studentID}-${meetingAttendanceID}" id="engagement-${studentID}-${meetingAttendanceID}-2" value="2" ${engagement==2?'checked':''}>
+					<label class="form-check-label" for="engagement-${studentID}-${meetingAttendanceID}-2">2</label>
 				</div>`;
 				}
 				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding homework to other meeting types
 				{
 					newStudent +=`<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-0" value="0" ${homework==0?'checked':''}>
-					<label class="form-check-label" for="homework-${studentID}-0">0</label>
+					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-0" value="0" ${homework==0?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-${meetingAttendanceID}-0">0</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-1" value="1" ${homework==1?'checked':''}>
-					<label class="form-check-label" for="homework-${studentID}-1">1</label>
+					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-1" value="1" ${homework==1?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-${meetingAttendanceID}-1">1</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="homework-${studentID}" id="homework-${studentID}-2" value="2" ${homework==2?'checked':''}>
-					<label class="form-check-label" for="homework-${studentID}-2">2</label>
+					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-2" value="2" ${homework==2?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-${meetingAttendanceID}-2">2</label>
 				</div>`;
 				}
-				newStudent += "<hr>";
+				newStudent += "</div><hr>";
 			//document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
 			$("#attendanceContainer").append(newStudent);
+			$('#attendanceStudent-'+studentID).on('change', ':input', function() {
+				console.log("Radio button changed: ", $(this).attr('id'), " with value: ", this.value);
+				radioID = (this.id).split('-');
+				var meetingAttendanceID = radioID[2];
+				var field = radioID[0];
+				var studentID = radioID[1];
+				if (meetingAttendanceID)
+				{
+					//console.log("Updating attendance for student ID: ", studentID);
+					fieldUpdate(meetingAttendanceID, "meetingattendance", field, this.value, $(this).attr('id'), $(this).attr('id'));
+				}
+				if(field == "attendance" && this.value < 1)
+				{
+					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-0").click();
+				}
+			});
 			return 1;
 		//}
 	}
 }
+   // Function to load attendance data for a specific meeting
+   function loadAttendanceData(meetingID) {
+	$.ajax({
+		url: "attendanceload.php",
+		type: "POST",
+		data: { 'meetingID': meetingID },
+		dataType: "json",
+		success: function(data) {
+			$("#attendanceContainer").empty();
 
+			if (data && data.length > 0) {
+				data.forEach(student => {
+					attendanceAddStudent(
+						student.meetingAttendanceID,
+						student.studentID,
+						student.last,
+						student.first,
+						"load",
+						student.attendance,
+						student.engagement,
+						student.homework
+					);
+				});
+			} else {
+				$("#info").append("<div class='text-warning'>No attendance data found for this meeting.</div>");
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log("Error loading attendance data: ", textStatus, errorThrown);
+			$("#info").append("<div class='text-danger'>Error loading attendance data.</div>");
+		}
+	});
+}
 function tournamentSort(tableName, byAttr, isNumber=0)
 {
 	var $table=$('#'+tableName);

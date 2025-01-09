@@ -20,21 +20,21 @@ function loadAttendanceData($meetingID)
     $studentOutput = "";
     while($attendanceRow = $result -> fetch_assoc()):
         $formattedName = $attendanceRow['first'] . " " . $attendanceRow['last'];
-        $studentID = $attendanceRow['studentID'];
+        $meetingAttendanceID = $attendanceRow['meetingAttendanceID'];
         $studentOutput .= "<div>
 				<h3>${formattedName}</h3>
 				<p>Attendance: P = Present, AU = Absent Unexcused, AE = Absent Excused (Contacted you with a reason before meeting / Absent from school)</p>
 			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-P' value='1' checked>
-				<label class='form-check-label' for='attendance-${studentID}-P'>P</label>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}-${meetingAttendanceID}' id='attendance-${studentID}-${meetingAttendanceID}-P' value='1' checked>
+				<label class='form-check-label' for='attendance-${studentID}-${meetingAttendanceID}-P'>P</label>
 			</div>
 			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AU' value='0'>
-				<label class='form-check-label' for='attendance-${studentID}-AU'>AU</label>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}-${meetingAttendanceID}' id='attendance-${studentID}-${meetingAttendanceID}-AU' value='0'>
+				<label class='form-check-label' for='attendance-${studentID}-${meetingAttendanceID}-AU'>AU</label>
 			</div>
 			<div class='form-check form-check-inline'>
-				<input class='form-check-input' type='radio' name='attendance-${studentID}' id='attendance-${studentID}-AE' value='-1'>
-				<label class='form-check-label' for='attendance-${studentID}-AE'>AE</label>
+				<input class='form-check-input' type='radio' name='attendance-${studentID}-${meetingAttendanceID}' id='attendance-${studentID}-${meetingAttendanceID}-AE' value='-1'>
+				<label class='form-check-label' for='attendance-${studentID}-${meetingAttendanceID}-AE'>AE</label>
 			</div>
 			</div><hr>";
     endwhile;
@@ -86,43 +86,12 @@ function loadAttendanceData($meetingID)
 </form>
 
 <script defer>
-    // Function to load attendance data for a specific meeting
-    function loadAttendanceData(meetingID) {
-        $.ajax({
-            url: "attendanceload.php",
-            type: "POST",
-            data: { 'meetingID': meetingID },
-            dataType: "json",
-            success: function(data) {
-                $("#attendanceContainer").empty();
-
-                if (data && data.length > 0) {
-                    data.forEach(student => {
-                        attendanceAddStudent(
-                            student.studentID,
-                            student.last,
-                            student.first,
-                            "load",
-                            student.attendance,
-                            student.engagement,
-                            student.homework
-                        );
-                    });
-                } else {
-                    $("#info").append("<div class='text-warning'>No attendance data found for this meeting.</div>");
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error loading attendance data: ", textStatus, errorThrown);
-                $("#info").append("<div class='text-danger'>Error loading attendance data.</div>");
-            }
-        });
-    }
+ 
     $(document).ready(function() {
         loadAttendanceData(<?= $meetingID ?>);
-		$('#meetingHW').summernote({focus: true});
-		$('#meetingDescription').summernote({focus: true});
-		loadSummerNoteButtons();
+		//$('#meetingHW').summernote({focus: true});
+		//$('#meetingDescription').summernote({focus: true});
+		//loadSummerNoteButtons();
     });
 
 </script>

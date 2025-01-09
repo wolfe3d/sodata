@@ -163,12 +163,12 @@ $date = date('Y-m-d');
 			return 0;
 		}
 		//check if the new student was already added before
-		if(document.getElementsByName('attendance-'+studentID).length > 0) 
+		if(document.getElementsByName('attendanceStudent-'+studentID).length > 0) 
 		{
 			alert('Student already exists in this meeting!');
 			return;
 		}
-		if(attendanceAddStudent(studentID, studentName[0], studentName[1]),"")
+		if(attendanceAddStudent("",studentID, studentName[0], studentName[1]),"")
 		{
 			$("#info").append("<div class='text-success'>Added "+studentName[0]+" "+studentName[1]+"</div>");
 		}
@@ -181,7 +181,7 @@ $date = date('Y-m-d');
 		{
 			var studentID = this.value;
 			var studentName = this.text.split(', ');
-			attendanceAddStudent(studentID, studentName[0], studentName[1], "");
+			attendanceAddStudent("",studentID, studentName[0], studentName[1], "");
 		}
 		);
 		$("#info").append("<div class='text-success'>Added all students</div>");
@@ -204,7 +204,7 @@ $date = date('Y-m-d');
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"],"");
+				attendanceAddStudent("",val["studentID"], val["last"], val["first"],"");
 			});
 			$("#info").append("<div class='text-success'>Added students from "+$("#team option:selected").text()+"</div>");
 		});
@@ -232,7 +232,7 @@ $date = date('Y-m-d');
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"],"");
+				attendanceAddStudent("",val["studentID"], val["last"], val["first"],"");
 			});
 			$("#info").append("<div class='text-success'>Added event member</div>");
 		});
@@ -257,7 +257,7 @@ $date = date('Y-m-d');
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"], val["position"]);
+				attendanceAddStudent("",val["studentID"], val["last"], val["first"], val["position"]);
 			});
 			$("#info").append("<div class='text-success'>Added officers</div>");
 		});
@@ -282,7 +282,7 @@ $date = date('Y-m-d');
 		request.done(function( data ) {
 			$(".text-success").remove(); //removes any old update notices
 			$.each( data, function( key, val ) {
-				attendanceAddStudent(val["studentID"], val["last"], val["first"], val["event"]);
+				attendanceAddStudent("",val["studentID"], val["last"], val["first"], val["event"]);
 			});
 			$("#info").append("<div class='text-success'>Added event leaders</div>");
 		});

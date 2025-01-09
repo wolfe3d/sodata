@@ -20,6 +20,7 @@ function getMeetingAttendance($meetingID)
         while ($row = $result->fetch_assoc())
         {
             $data = [
+                "meetingAttendanceID" => $row["meetingAttendanceID"],
                 "studentID" => $row["studentID"],
                 "last" => $row["last"],
                 "first" => $row["first"],
