@@ -136,6 +136,24 @@ $date = date('Y-m-d');
 		});
 	});
 
+	var form = document.getElementById('addTo');
+	form.addEventListener('submit', function() {
+		if(confirm('Are you sure you want to submit your meeting attendance?'))
+		{
+			alert('Meeting attendance submitted!');
+			var eventID = document.getElementById("eventsList").value;
+			if(document.getElementById('meetingType').value == 1)
+			{
+				window.location.href = `#event-analysis-${eventID}`;
+			} else {
+				window.location.href = `#leaders`;
+			}
+		}
+		else {
+			event.preventDefault();
+		}
+	}, false);
+
 
 	function attendanceAddStudentSelected() {
 		var studentID = document.getElementById("studentID").value;

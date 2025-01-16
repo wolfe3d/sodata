@@ -1542,33 +1542,6 @@ function tournamentEventsAdd(tournamentID)
 	});
 }
 
-function addToSubmit(page)
-{
-	var request = $.ajax({
-		url: page,
-		cache: false,
-		method: "POST",
-		data: $("#addTo").serialize(),
-		dataType: "html"
-	});
-
-	request.done(function( html ) {
-		$(".text-success").remove(); //removes any old update notices
-		if(html>0)
-		{
-			history.back();
-		}
-		else
-		{
-			$("#mainContainer").append("<div class='text-success' class='error'>"+html+"</div>");
-		}
-	});
-
-	request.fail(function( jqXHR, textStatus ) {
-		$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
-	});
-}
-
 function attendanceSubmit(page)
 {
 	var request = $.ajax({
@@ -1581,7 +1554,6 @@ function attendanceSubmit(page)
 
 	request.done(function( html ) {
 		$(".text-success").remove(); //removes any old update notices
-		alert (html);
 		if(html>0)
 		{
 			history.back();
@@ -1595,24 +1567,6 @@ function attendanceSubmit(page)
 	request.fail(function( jqXHR, textStatus ) {
 		$("#mainContainer").html("Error.  Check file named " + $("#addTo").attr('action') + " exists.");
 	});
-
-	/*	var form = document.getElementById('addTo');
-	form.addEventListener('submit', function() {
-		if(confirm('Are you sure you want to submit your meeting attendance?'))
-		{
-			alert('Meeting attendance submitted!');
-			var eventID = document.getElementById("eventsList").value;
-			if(document.getElementById('meetingType').value == 1)
-			{
-				window.location.href = `#event-analysis-${eventID}`;
-			} else {
-				window.location.href = `#leaders`;
-			}
-		}
-		else {
-			event.preventDefault();
-		}
-	}, false);*/
 }
 
 function tournamentTimeblockRemove(myID)
