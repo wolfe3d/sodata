@@ -771,6 +771,37 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 		}
 	});
 }
+//Remove a meeting attendance entry
+function attendanceRemove(myID)
+{
+	if(confirm("Are you sure you want to delete the meeting with meetingID: " + myID +"? "))
+	{
+		var request = $.ajax({
+			url: "attendanceremove.php",
+			cache: false,
+			method: "POST",
+			data: {myID:myID, refreshAttendance: '1'},
+			dataType: "html"
+		});
+		request.done(function( html ) {
+			$(".text-success").remove(); //remove any old text-success notes
+			if(html=="1")
+			{
+				$("#meeting-" + myID).before("<div class='text-success'> Meeting "+myID+" removed permanently.</div>"); //add note to show modification
+				$("#meeting-" + myID).remove(); //remove element
+				confirm("Meeting "+myID+" removed permanently.");
+			}
+			else {
+				$("#meeting-" + myID).before("<div class='text-danger'>Meeting Attendance Removal Error: "+html+"</div>");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$(".text-success").remove();
+			$("#meeting-" + myID).before("<div class='text-danger'>Meeting Attendance Removal Error: "+textStatus+"</div>");
+		});
+	}
+}
 function tournamentSort(tableName, byAttr, isNumber=0)
 {
 	var $table=$('#'+tableName);

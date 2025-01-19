@@ -89,24 +89,26 @@ while($row = $result -> fetch_assoc()):
 		// check if eventID matches meeting's eventID
 		if($row['eventID'] == $eventID)
 		{
-			$output .= "<h3>".$row['meetingDate']."</h3>";
+			$output .= "<div id=meeting-" . $row['meetingID'] ."><h3>".$row['meetingDate']."</h3>";
 			$timeDifference = time() - strtotime($row['meetingDate'].$row['meetingTimeOut']);
 			if(userHasPrivilege(2) && ($timeDifference <= 86400))
 			{
 				$meetingID = $row['meetingID'];
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				$output .= "<a class='btn btn-danger btn-sm' role='button' href='javascript:attendanceRemove(" . $row['meetingID'] . ")'><span class='bi bi-eraser'></span> Remove</a>";
 				//$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-".$row['meetingID']."'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
 			}
 			else if(userHasPrivilege(5))
 			{
 				$meetingID = $row['meetingID'];
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				
 			}
 			//$output .= "<ul><li>ID: ".$row['meetingID']."</li>";
 			$output .= "<li>Time In: ".date('h:i A', strtotime($row['meetingTimeIn']))."</li>"; // make time output consistent with attendance time input
 			$output .= "<li>Time Out: ".date('h:i A', strtotime($row['meetingTimeOut']))."</li>";
 			$output .= "<li>Description: ".$row['meetingDescription']."</li>";
-			$output .= "<li>Homework: ".$row['meetingHW']."</li></ul>";
+			$output .= "<li>Homework: ".$row['meetingHW']."</li></ul></div>";
 		}
 	}
 	
