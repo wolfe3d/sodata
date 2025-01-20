@@ -784,11 +784,11 @@ function attendanceRemove(myID)
 			dataType: "html"
 		});
 		request.done(function( html ) {
-			$(".text-success").remove(); //remove any old text-success notes
+			$(".text-success").remove();
 			if(html=="1")
 			{
-				$("#meeting-" + myID).before("<div class='text-success'> Meeting "+myID+" removed permanently.</div>"); //add note to show modification
-				$("#meeting-" + myID).remove(); //remove element
+				$("#meeting-" + myID).before("<div class='text-success'> Meeting "+myID+" removed permanently.</div>"); 
+				$("#meeting-" + myID).remove();
 				confirm("Meeting "+myID+" removed permanently.");
 			}
 			else {
