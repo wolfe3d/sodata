@@ -102,7 +102,7 @@ while($row = $result -> fetch_assoc()):
 			{
 				$meetingID = $row['meetingID'];
 				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-$meetingID'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
-				
+				$output .= "<a class='btn btn-danger btn-sm' role='button' href='javascript:attendanceRemove(" . $row['meetingID'] . ")'><span class='bi bi-eraser'></span> Remove</a>";
 			}
 			//$output .= "<ul><li>ID: ".$row['meetingID']."</li>";
 			$output .= "<li>Time In: ".date('h:i A', strtotime($row['meetingTimeIn']))."</li>"; // make time output consistent with attendance time input
