@@ -35,7 +35,7 @@ $output .="<p class='text-warning'>Overall placement alone does not determine te
 	calculateTeamRanking($students);
 
 	$output .="<table id='tournamentTable' class='tournament table table-hover'>";
-	$output .="<colgroup><col span=2>";
+	$output .="<colgroup><col span=2><col style='background-color:lightgray'>";
 	foreach ($tournaments as $i=>$tournament)
 	{
 			$output .= "<col style='background-color:".rainbow($i)."'>";
