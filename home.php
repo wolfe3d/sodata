@@ -21,8 +21,10 @@ function getUpcomingTournamentStudent($userID, $studentID)
 		$output = '<hr><h2>Upcoming Tournaments</h2>';
 		while ($row = $result->fetch_assoc()):
 			$output.="<div id=\"".$row['tournamentName']."\">";
-			$output.="<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
-			$output.="<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
+			$output .= "<div style='display: flex; align-items: center; gap: 1rem;'>";
+			$output .= "<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
+			$output .= "<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
+			$output .= "</div>";
 			$output.=studentTournamentSchedule($row['tournamentID'], $studentID, "", $row['year']);
 			$output.="</div>";
 		endwhile;
@@ -188,7 +190,6 @@ if(!empty($_SESSION['userData'])){
 
 	$output .= "<div style='display: flex; justify-content: center; vertical-align: middle;padding: 10px;'><img style='vertical-align: middle' height='256px' src='images/waltoncthulu256.png'></img></div>";
 	$output .= '<div>';
-	//$output .="<p style=' text-align: center'><img src='images/teamphoto.jpg' alt='team photo' width='600px'><p>";
 
 	$output .= getCarousel();
 	if(userHasPrivilege(4))
@@ -202,17 +203,19 @@ if(!empty($_SESSION['userData'])){
 	}
 
 	$output .= "<hr><h2>My Profile</h2>";
-	$output .= '<img src="'.$_SESSION['userData']['picture'].'">';
-	$output .= '<p><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].'</p>';
-	$output .= '<p><b>Email:</b> '.$_SESSION['userData']['email'].'</p>';
-
+	$output .= '<div style="display: flex; align-items: center; gap: 24px;">';
+	$output .= '<img src="'.$_SESSION['userData']['picture'].'" style="width:130px; height:130px; border-radius:50%;">';
+	$output .= '<div>';
+	$output .= '<h5><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].' | '.$_SESSION['userData']['email'].'</h5>';
+	
 	if($studentID)
 	{
-		$output .= "<p><a href='https://scilympiad.com/public/Student/StudentDB'>Scilympiad</a> ID: ".studentScilympiadID($studentID)."</p>";
-	$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Full Student Information</a></p>";
-
+		$output .= "<h5><a href='https://scilympiad.com/public/Student/StudentDB'><b>Scilympiad</a> ID</b>: ".studentScilympiadID($studentID)."</h5>";
+		$output.="<p><a class='btn btn-info' role='button' href='#student-details-$studentID'><span class='bi bi-file-earmark-person'></span> Full Student Information</a></p>";
 	}
 	$output .= "</ul>";
+	$output .= '</div>';
+	$output .= '</div>';
 
 	//Reminders
 	//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
