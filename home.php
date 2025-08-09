@@ -23,7 +23,16 @@ function getUpcomingTournamentStudent($userID, $studentID)
 			$output.="<div id=\"".$row['tournamentName']."\">";
 			$output .= "<div style='display: flex; align-items: center; gap: 1rem;'>";
 			$output .= "<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
-			$output .= "<div><a class='btn btn-primary' role='button' href=\"#tournament-view-".$row['tournamentID']."\"><span class='bi bi-controller'></span> View Details</a></div>";
+			$output .= "<div class='d-block d-md-none'>
+							<a class='btn btn-primary btn-sm' role='button' href=\'#tournament-view-".$row['tournamentID']."\'>
+								<span class='bi bi-controller'></span> View Details
+							</a>
+						</div>
+						<div class='d-none d-md-block'>
+							<a class='btn btn-primary' role='button' href=\'#tournament-view-".$row['tournamentID']."\'>
+								<span class='bi bi-controller'></span> View Details
+							</a>
+						</div>";
 			$output .= "</div>";
 			$output.=studentTournamentSchedule($row['tournamentID'], $studentID, "", $row['year']);
 			$output.="</div>";
@@ -204,7 +213,7 @@ if(!empty($_SESSION['userData'])){
 
 	$output .= "<hr><h2>My Profile</h2>";
 	$output .= '<div style="display: flex; align-items: center; gap: 24px;">';
-	$output .= '<img src="'.$_SESSION['userData']['picture'].'" style="width:130px; height:130px; border-radius:50%;">';
+	$output .= '<img class="d-none d-md-block" src="'.$_SESSION['userData']['picture'].'" style="width:130px; height:130px; border-radius:50%;">';
 	$output .= '<div>';
 	$output .= '<h5><b>Name:</b> '.$_SESSION['userData']['first_name'].' '.$_SESSION['userData']['last_name'].' | '.$_SESSION['userData']['email'].'</h5>';
 	

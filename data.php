@@ -117,24 +117,45 @@ userCheckPrivilege(1);
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<!-- Absolutely centered brand -->
-			<a class="navbar-brand d-flex align-items-center"
-			href="#"
-			style="
-					position: absolute;
-					left: 0; right: 0;
-					margin-left: auto; margin-right: auto;
-					top: 0; bottom: 0;
-					height: 100%;
-					gap: 12px;
-					justify-content: center;
-					pointer-events: none; /* Prevents blocking nav links, remove if you want it clickable */
-			">
-				<img style="vertical-align: middle;" height="50px" src="images/waltoncthulu256.png" alt="Logo" />
-				<span style="color:#555f66; font-size: 2rem; font-weight: bold; line-height: 1;">
-					WALTON SCIENCE OLYMPIAD
-				</span>
-			</a>
+
+			<!-- Desktop Title (Centered) -->
+			<div class='d-none d-md-block'>
+				<a class="navbar-brand d-flex align-items-center"
+				href="#"
+				style="
+						position: absolute;
+						left: 0; right: 0;
+						margin-left: auto; margin-right: auto;
+						top: 0; bottom: 0;
+						height: 100%;
+						gap: 12px;
+						justify-content: center;
+						pointer-events: none; /* Prevents blocking nav links, remove if you want it clickable */
+				">
+					<img style="vertical-align: middle;" height="50px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 2rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
+
+			<!-- Mobile Title (Right-aligned and fixed at the top) -->
+			<div class='d-md-none'>
+				<a class="navbar-brand d-flex align-items-center"
+				href="#"
+				style="
+						position: absolute;
+						right: 0.3rem;
+						top: 0.5rem;
+						gap: 12px;
+						pointer-events: none;
+				">
+					<img style="vertical-align: middle;" height="25px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 1.2rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
 
 			<div class="collapse navbar-collapse" id="navbarContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0 bg-body rounded-3 p-2 shadow-sm fw-semibold">

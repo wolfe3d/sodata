@@ -307,11 +307,18 @@ function studentTournamentResultsAccordion($studentID)
                     </h2>
                     <div id='collapse{$tournamentID}' class='accordion-collapse collapse' aria-labelledby='heading{$tournamentID}' data-bs-parent='#tournamentResultsAccordion'>
                         <div class='accordion-body'>
-                            <a class='btn btn-secondary btn-sm mb-3' role='button' href='#tournament-view-{$tournamentID}'>
-                                <span class='bi bi-controller'></span> View Details
-                            </a>
-                            " . studentEvents($tournamentID, $studentID, true) . "
-                        </div>
+							<div class='d-none d-md-block'>
+								<a class='btn btn-secondary mb-3' role='button' href='#tournament-view-{$tournamentID}'>
+									<span class='bi bi-controller'></span> View Details
+								</a>
+							</div>
+							<div class='d-md-none'>
+								<a class='btn btn-secondary btn-sm mb-3' role='button' href='#tournament-view-{$tournamentID}'>
+									<span class='bi bi-controller'></span> View Details
+								</a>
+							</div>
+							" . studentEvents($tournamentID, $studentID, true) . "
+						</div>
                     </div>
                 </div>";
         endwhile;
