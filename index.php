@@ -153,8 +153,9 @@ function checkPage(){
 				<div class="row">
 					<div class="6u">
 						<h3>Dodgen-Walton Division B Science Olympiad Tournament</h3>
-						<h4>November 16, 2024</h4>
-						<div><a href="https://scilympiad.com/dodgen-walton">More Information on our Scilympiad site</a></div>
+						<h4>November 15, 2025</h4>
+						<div><a href="https://scilympiad.com/dodgen-walton">Dodgen-Walton In Person</a></div>
+						<div><a href="https://scilympiad.com/dw-satellite">DW Satellite</a></div>
 						<br><br>
 					</div>
 

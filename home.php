@@ -89,7 +89,8 @@ function getEventMeetingDate($eventID)
     global $mysqlConn;
     $query = "SELECT * FROM `meeting` WHERE `meeting`.`eventID` = $eventID ORDER BY `meeting`.`meetingDate` LIMIT 1";
     $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-    if (mysqli_num_rows($result)>0)
+    $output = '';
+	if (mysqli_num_rows($result)>0)
 	{
 		$row = $result->fetch_assoc();
 		$output = $row['meetingDate'];
