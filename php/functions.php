@@ -307,11 +307,18 @@ function studentTournamentResultsAccordion($studentID)
                     </h2>
                     <div id='collapse{$tournamentID}' class='accordion-collapse collapse' aria-labelledby='heading{$tournamentID}' data-bs-parent='#tournamentResultsAccordion'>
                         <div class='accordion-body'>
-                            <a class='btn btn-secondary btn-sm mb-3' role='button' href='#tournament-view-{$tournamentID}'>
-                                <span class='bi bi-controller'></span> View Details
-                            </a>
-                            " . studentEvents($tournamentID, $studentID, true) . "
-                        </div>
+							<div class='d-none d-md-block'>
+								<a class='btn btn-secondary mb-3' role='button' href='#tournament-view-{$tournamentID}'>
+									<span class='bi bi-controller'></span> View Details
+								</a>
+							</div>
+							<div class='d-md-none'>
+								<a class='btn btn-secondary btn-sm mb-3' role='button' href='#tournament-view-{$tournamentID}'>
+									<span class='bi bi-controller'></span> View Details
+								</a>
+							</div>
+							" . studentEvents($tournamentID, $studentID, true) . "
+						</div>
                     </div>
                 </div>";
         endwhile;
@@ -555,8 +562,10 @@ function getLatestTeamTournamentStudent($studentID)
 	{
 		$row = $result->fetch_assoc();
 		$output.="<div id='".$row['tournamentName']."'>";
+		$output .= "<div style='display: flex; align-items: center; gap: 1rem;'>";
 		$output .="<h3>".$row['tournamentName']." - Team ". $row['teamName'] ." (" . $row['dateTournament']. ")</h3>";
 		$output.="<div><a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'><span class='bi bi-controller'></span> View Details</a></div>";
+		$output.="</div>";
 		$output.= studentEvents($row['tournamentID'], $studentID, false);
 		$output.="</div>";
 	}
@@ -722,25 +731,26 @@ function studentEventPriority($studentID)
 //get student events from a specific tournament
 function studentEvents($tournamentID, $studentID, $showPlace)
 {
-	global $mysqlConn;
-	$eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID ORDER BY `event`.`event`";
-	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	$output = "";
-	if ($result && mysqli_num_rows($result)>0)
-	{
-		$output = "<ul>";
-		while ($row = $result->fetch_assoc()):
-			//show results
-			$output.="<li>".$row['event'];
-			if($showPlace)
-			{
-				$output.=": ". $row['place'];
-			}
-			$output.=" (".studentPartners($row['tournamenteventID'], $row['teamID'], $studentID).")</li>";
-		endwhile;
-		$output .= "</ul>";
-	}
-	return $output;
+    global $mysqlConn;
+    $eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` FROM `teammateplace` INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` inner join `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID ORDER BY `event`.`event`";
+    $result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = "";
+    if ($result && mysqli_num_rows($result)>0)
+    {
+        $output = "<ul>";
+        while ($row = $result->fetch_assoc()):
+            $output .= "<li><p style='display:inline'>";
+            $output .= $row['event'];
+            if($showPlace)
+            {
+                $output .= ": " . $row['place'];
+            }
+            $output .= " (" . studentPartners($row['tournamenteventID'], $row['teamID'], $studentID) . ")";
+            $output .= "</p></li>";
+        endwhile;
+        $output .= "</ul>";
+    }
+    return $output;
 }
 
 //get student team name from a spceific tournament

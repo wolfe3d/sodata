@@ -112,41 +112,92 @@ userCheckPrivilege(1);
 	<!-- Header -->
 
 	<!-- Navbar content -->
-	<nav class="navbar navbar-expand-lg bg-light">
-		<div class="container-fluid">
+	<nav class="navbar navbar-expand-lg bg-light shadow-sm mb-2">
+		<div class="container-fluid py-2" style="position: relative;">
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<a class="navbar-brand" href="#"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> Walton Science Olympiad</a>
+
+			<!-- Desktop Title (Centered) -->
+			<div class='d-none d-md-block'>
+				<a class="navbar-brand d-flex align-items-center"
+				href="#"
+				style="
+						position: absolute;
+						left: 0; right: 0;
+						margin-left: auto; margin-right: auto;
+						top: 0; bottom: 0;
+						height: 100%;
+						gap: 12px;
+						justify-content: center;
+						pointer-events: none; /* Prevents blocking nav links, remove if you want it clickable */
+				">
+					<img style="vertical-align: middle;" height="50px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 2rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
+
+			<!-- Mobile Title (Right-aligned and fixed at the top) -->
+			<div class='d-md-none'>
+				<a class="navbar-brand d-flex align-items-center"
+				href="#"
+				style="
+						position: absolute;
+						right: 0.3rem;
+						top: 0.5rem;
+						gap: 12px;
+						pointer-events: none;
+				">
+					<img style="vertical-align: middle;" height="25px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 1.2rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
 
 			<div class="collapse navbar-collapse" id="navbarContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0 bg-body rounded-3 p-2 shadow-sm fw-semibold">
 					<li class="nav-item">
-						<a class="nav-link active" id="mainBtn" aria-current="page" href="#home">Home</a>
+						<a class="nav-link active fs-5" id="mainBtn" aria-current="page" href="#home">HOME</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="eventBtn" href="#events">Events</a>
+						<a class="nav-link fs-5" id="eventBtn" href="#events">EVENTS</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="tournamentBtn" href="#tournaments">Tournaments</a>
+						<a class="nav-link fs-5" id="tournamentBtn" href="#tournaments">TOURNAMENTS</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="studentBtn" href="#students">Teammates</a>
+						<a class="nav-link fs-5" id="studentBtn" href="#students">TEAMMATES</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="leaderBtn" href="#leaders">Leaders</a>
+						<a class="nav-link fs-5" id="leaderBtn" href="#leaders">LEADERS</a>
 					</li>
 					<?php if (userHasPrivilege(4)){?>
 						<li class="nav-item">
-							<a class="nav-link" id="userBtn" href="#users">Users</a>
+							<a class="nav-link fs-5" id="userBtn" href="#users">USERS</a>
 						</li>
 					<?php }?>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a class="nav-link" id="loginBtn" href="logout.php">Logout</a>
+						<a class="nav-link fs-5 fw-semibold" id="loginBtn" href="logout.php">LOGOUT</a>
 					</li>
-					<li style="display: inline-block; height: 100%; vertical-align: middle;"><img style="vertical-align: middle " height="40px" src="<?=$_SESSION['userData']['picture']?>" /></li>
+					<?php
+						if(!empty($_SESSION['userData']))
+						{
+							$studentID = getStudentID($_SESSION['userData']['userID']);
+						}
+						$output = "";
+						$output .= 
+						"<li style='display: inline-block; height: 100%; vertical-align: middle;'>
+							<a href='#student-details-".$studentID."'>
+								<img style='vertical-align: middle' height='50px' src='".$_SESSION['userData']['picture']."' />
+							</a>
+						</li>";
+						echo $output;
+					?>
 				</ul>
 			</div>
 		</div>
