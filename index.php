@@ -209,7 +209,7 @@ function checkPage(){
 					<div class="12u">
 						<h2>Contact</h2>
 						<p><strong>Head Coach:</strong> Doug Wolfe</p>
-						<p><strong>Assistant Coaches:</strong> Wes Taylor and Matt Curtis</p>
+						<p><strong>Assistant Coach:</strong> Matt Curtis</p>
 						<h3>Email:</h3><p><a href="mailto:waltonscienceolympiad@gmail.com">waltonscienceolympiad@gmail.com</a></p>
 
 					</div>
