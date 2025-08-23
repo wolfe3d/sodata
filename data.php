@@ -112,28 +112,29 @@ userCheckPrivilege(1);
 	<!-- Header -->
 
 	<!-- Navbar content -->
-	<nav class="navbar navbar-expand-lg bg-light shadow-sm mb-2">
+	<nav class="navbar navbar-expand-xxl bg-light shadow-sm mb-2">
 		<div class="container-fluid py-2" style="position: relative;">
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
 			<!-- Desktop Title (Centered) -->
 			<div class='d-none d-md-block'>
 				<a class="navbar-brand d-flex align-items-center"
-				href="#"
-				style="
+					href="#"
+					style="
 						position: absolute;
 						left: 0; right: 0;
 						margin-left: auto; margin-right: auto;
-						top: 0; bottom: 0;
-						height: 100%;
+						
+						top: 0.1rem;
+
 						gap: 12px;
 						justify-content: center;
-						pointer-events: none; /* Prevents blocking nav links, remove if you want it clickable */
-				">
+						pointer-events: none;
+					">
 					<img style="vertical-align: middle;" height="50px" src="images/waltoncthulu256.png" alt="Logo" />
-					<span style="color:#555f66; font-size: 2rem; font-weight: bold; line-height: 1;">
+					<span style="color:#555f66; font-size: 1.5rem; font-weight: bold; line-height: 1;">
 						WALTON SCIENCE OLYMPIAD
 					</span>
 				</a>
@@ -160,23 +161,23 @@ userCheckPrivilege(1);
 			<div class="collapse navbar-collapse" id="navbarContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0 bg-body rounded-3 p-2 shadow-sm fw-semibold">
 					<li class="nav-item">
-						<a class="nav-link active fs-5" id="mainBtn" aria-current="page" href="#home">HOME</a>
+						<a class="nav-link active" style="font-size:0.9rem; font-weight: bold;" id="mainBtn" aria-current="page" href="#home">HOME</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link fs-5" id="eventBtn" href="#events">EVENTS</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="eventBtn" href="#events">EVENTS</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link fs-5" id="tournamentBtn" href="#tournaments">TOURNAMENTS</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="tournamentBtn" href="#tournaments">TOURNAMENTS</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link fs-5" id="studentBtn" href="#students">TEAMMATES</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="studentBtn" href="#students">TEAMMATES</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link fs-5" id="leaderBtn" href="#leaders">LEADERS</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="leaderBtn" href="#leaders">LEADERS</a>
 					</li>
 					<?php if (userHasPrivilege(4)){?>
 						<li class="nav-item">
-							<a class="nav-link fs-5" id="userBtn" href="#users">USERS</a>
+							<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="userBtn" href="#users">USERS</a>
 						</li>
 					<?php }?>
 				</ul>
