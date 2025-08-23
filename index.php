@@ -163,33 +163,40 @@ function checkPage(){
 					<br><br>
 					<div class="6u">
 						<h3>Previous Tournaments</h3>
-						<div>Tournaments were held at Walton 2018 (in person), 2019 (in person), 2020 (remote), 2021 (remote), 2022 and 2023 (both In Person and Satellite).</div>
+						<div>Tournaments were held at Walton since 2017.  Previously, the Dodgen-Walton tournament was known as the Dodgen tournament and Cobb tournament.  This tournament was started by Paul and Kathy Jacobson at least 25 years ago and is currently directed by Doug Wolfe.</div>
 						<br><br>
-						<h4>2024 Dodgen-Walton Tournament Results (2025 National Rules Year)</h4>
+						<h4>2024 Dodgen-Walton Division B Tournament Results (2025 National Rules Year)</h4>
 						<div><a href="https://www.duosmium.org/results/2024-11-16_dodgen_walton_satellite_invitational_b/">Satellite Scores</a></div>
 						<div><a href="https://www.duosmium.org/results/2024-11-16_dodgen_walton_invitational_b/">In Person Combined (Filter by Division AA or A)</a></div>
 
-						<h4>2023 Dodgen-Walton Tournament Results (2024 National Rules Year)</h4>
+						<h4>2023 Dodgen-Walton Division B Tournament Results (2024 National Rules Year)</h4>
 						<div><a href="results/2022/Satellite_Results_2023.xlsx">Satellite Scores</a></div>
 						<div><a href="https://www.duosmium.org/results/2023-11-11_dodgen_walton_invitational_b/">In Person (Combined)</a></div>
 						<div><a href="results/2022/InPerson_GoldFlight_2023.pdf">In Person Gold Flight</a></div>
 						<div><a href="results/2022/InPerson_SilverFlight_2023.pdf">In Person Silver Flight</a></div>
 
-						<h4>2022 Dodgen-Walton Tournament Results (2023 National Rules Year)</h4>
+						<h4>2022 Dodgen-Walton Division B Tournament Results (2023 National Rules Year)</h4>
 						<div><a href="results/2022/Results_Satellite_2022.xlsx">Satellite Scores</a></div>
 						<div><a href="results/2022/Results_Gold_2022.pdf">In Person Gold Flight</a></div>
 						<div><a href="results/2022/Results_Silver_2022.pdf">In Person Silver Flight</a></div>
 
-						<h4>2021 Dodgen-Walton Tournament Results (2022 National Rules Year)</h4>
+						<h4>2021 Dodgen-Walton Division B Tournament Results (2022 National Rules Year)</h4>
 						<div><a href="results/2021/RawScores_2021.xlsx">Raw Scores</a></div>
 						<div><a href="results/2021/Results_2021.xlsx">Overall Scores</a></div>
 						<div><a href="results/2021/Results_Gold_2021.xlsx">Gold Flight</a></div>
 						<div><a href="results/2021/Results_Silver_2021.xlsx">Silver Flight</a></div>
 
+						<h4>2020 Dodgen-Walton Division B Science Olympiad Tournament (2021 National Rules Year)</h4>
+						
+						<h4>2019 Dodgen-Walton Division B Science Olympiad Tournament (2020 National Rules Year)</h4>
+
 						<h4>2018 Walton/GSMST Division C Science Olympiad Tournament (2019 National Rules Year)</h4>
 						<div><a href="results/2018/2018Ctournamentresults.html">Tournament Results Updated 11/26/18</a></div>
 						<div>This is the final update to the tournament results, including full rankings for Forensics and Protein Modeling.</div>
-
+						
+						<h4>2018 Dodgen-Walton Division B Science Olympiad Tournament (2019 National Rules Year)</h4>
+						
+						<h4>2017 Dodgen-Walton Division B Science Olympiad Tournament (2018 National Rules Year)</h4>
 					</div>
 				</div>
 			</div>
