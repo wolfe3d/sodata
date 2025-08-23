@@ -165,9 +165,15 @@ function checkPage(){
 						<h3>Previous Tournaments</h3>
 						<div>Tournaments were held at Walton 2018 (in person), 2019 (in person), 2020 (remote), 2021 (remote), 2022 and 2023 (both In Person and Satellite).</div>
 						<br><br>
+						<h4>2024 Dodgen-Walton Tournament Results (2025 National Rules Year)</h4>
+						<div><a href="https://www.duosmium.org/results/2024-11-16_dodgen_walton_satellite_invitational_b/">Satellite Scores</a></div>
+						<div><a href="https://www.duosmium.org/results/2024-11-16_dodgen_walton_invitational_b/">In Person Combined (Filter by Division AA or A)</a></div>
 
 						<h4>2023 Dodgen-Walton Tournament Results (2024 National Rules Year)</h4>
-						<div><a href="">Posted Soon</a></div>
+						<div><a href="results/2022/Satellite_Results_2023.xlsx">Satellite Scores</a></div>
+						<div><a href="https://www.duosmium.org/results/2023-11-11_dodgen_walton_invitational_b/">In Person (Combined)</a></div>
+						<div><a href="results/2022/InPerson_GoldFlight_2023.pdf">In Person Gold Flight</a></div>
+						<div><a href="results/2022/InPerson_SilverFlight_2023.pdf">In Person Silver Flight</a></div>
 
 						<h4>2022 Dodgen-Walton Tournament Results (2023 National Rules Year)</h4>
 						<div><a href="results/2022/Results_Satellite_2022.xlsx">Satellite Scores</a></div>
