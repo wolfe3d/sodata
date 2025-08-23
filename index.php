@@ -152,7 +152,7 @@ function checkPage(){
 			<div class="container">
 				<div class="row">
 					<div class="6u">
-						<h3>Dodgen-Walton Division B Science Olympiad Tournament</h3>
+						<h3>Dodgen-Walton Division B (Middle School) Science Olympiad Tournament</h3>
 						<h4>November 15, 2025</h4>
 						<div><a href="https://scilympiad.com/dodgen-walton">Dodgen-Walton In Person</a></div>
 						<div><a href="https://scilympiad.com/dw-satellite">DW Satellite</a></div>
@@ -163,7 +163,7 @@ function checkPage(){
 					<br><br>
 					<div class="6u">
 						<h3>Previous Tournaments</h3>
-						<div>Tournaments were held at Walton since 2017.  Previously, the Dodgen-Walton tournament was known as the Dodgen tournament and Cobb tournament.  This tournament was started by Paul and Kathy Jacobson at least 25 years ago and is currently directed by Doug Wolfe.</div>
+						<div>Tournaments were held at Walton since 2017.  Previously, the Dodgen-Walton tournament was known as the Dodgen Invitational and Cobb Invitational.  This tournament was started by Paul and Kathy Jacobson at least 25 years ago and is currently directed by Doug Wolfe.</div>
 						<br><br>
 						<h4>2024 Dodgen-Walton Division B Tournament Results (2025 National Rules Year)</h4>
 						<div><a href="https://www.duosmium.org/results/2024-11-16_dodgen_walton_satellite_invitational_b/">Satellite Scores</a></div>
@@ -190,7 +190,7 @@ function checkPage(){
 						
 						<h4>2019 Dodgen-Walton Division B Science Olympiad Tournament (2020 National Rules Year)</h4>
 
-						<h4>2018 Walton/GSMST Division C Science Olympiad Tournament (2019 National Rules Year)</h4>
+						<h4>2018 Walton/GSMST Division C (High School) Science Olympiad Tournament (2019 National Rules Year)</h4>
 						<div><a href="results/2018/2018Ctournamentresults.html">Tournament Results Updated 11/26/18</a></div>
 						<div>This is the final update to the tournament results, including full rankings for Forensics and Protein Modeling.</div>
 						
