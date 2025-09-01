@@ -99,7 +99,7 @@ function getEventMeetingDate($eventID)
 }
 
 //
-function getStudentMeetings($studentID)
+function ($studentID)
 {
     global $mysqlConn;
 
