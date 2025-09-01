@@ -547,8 +547,8 @@ function printEmailTable ($query, $eventID, $year)
 	return $output;
 }
 
-//get latest team schedule - also known as the notCompetition Tournament.
-function getLatestTeamTournamentStudent($studentID)
+//get latest team schedule - row.
+function getLatestTeamTournamentStudentRow($studentID)
 {
 	global $mysqlConn;
 	$query = "SELECT DISTINCT `tournament`.`tournamentID`, `dateTournament`, `tournamentName`, `teamName`
@@ -561,6 +561,18 @@ function getLatestTeamTournamentStudent($studentID)
 	if($result && mysqli_num_rows($result)>0)
 	{
 		$row = $result->fetch_assoc();
+		return $row;
+	}
+	return $output;
+}
+
+//get latest team schedule - also known as the notCompetition Tournament.
+function printLatestTeamTournamentStudent($studentID, $row)
+{
+	//run function getLatestTeamTournamentStudentRow
+	$output = "";
+	if($row)
+	{
 		$output.="<div id='".$row['tournamentName']."'>";
 		$output .= "<div style='display: flex; align-items: center; gap: 1rem;'>";
 		$output .="<h3>".$row['tournamentName']." - Team ". $row['teamName'] ." (" . $row['dateTournament']. ")</h3>";
