@@ -102,7 +102,8 @@ if(userHasPrivilege(3)||$studentID==$myStudentID)
 	}
 	$output .= "<hr>";
 	//Get latest team assignments
-	$output .=getLatestTeamTournamentStudent($studentID);
+	$teamRow = getLatestTeamTournamentStudentRow($studentID);
+	$output .=printLatestTeamTournamentStudent($studentID, $teamRow);
 	$output .=studentEventPriority($studentID);
 	$output .=studentCourseCompleted($studentID);
 	$output .=studentCourseEnrolled($studentID);

@@ -63,6 +63,8 @@ function getUpcomingTournamentCoach()
 	}
 	return $output;
 }
+
+
 // Get all meetings from an event
 function getEventMeetings($eventID)
 {
@@ -82,7 +84,6 @@ function getEventMeetings($eventID)
     }
     return $output;
 }
-
 //Just Get Most Recent Event Meeting Date (Optimizable)
 function getEventMeetingDate($eventID)
 {
@@ -97,9 +98,118 @@ function getEventMeetingDate($eventID)
 	}
     return $output;
 }
+// Get all general meetings
+function getGeneralMeetings()
+{
+	global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`meetingTypeID` = 2 ORDER BY `meeting`.`meetingDate` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = '';
+    if($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $output .= "<div class='mb-3'>";
+            $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
+            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+            $output .= "</div>";
+        endwhile;
+    }
+    return $output;
+}
+// Get all event leader meetings
+function getEventLeaderMeetings()
+{
+	global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`meetingTypeID` = 4 ORDER BY `meeting`.`meetingDate` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = '';
+    if($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $output .= "<div class='mb-3'>";
+            $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
+            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+            $output .= "</div>";
+        endwhile;
+    }
+    return $output;
+}
+// Get all officer meetings
+function getOfficerMeetings()
+{
+	global $mysqlConn;
+    $query = "SELECT * FROM `meeting` WHERE `meeting`.`meetingTypeID` = 3 ORDER BY `meeting`.`meetingDate` DESC";
+    $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+    $output = '';
+    if($result && mysqli_num_rows($result)>0)
+    {
+        while ($row = $result->fetch_assoc()):
+            $output .= "<div class='mb-3'>";
+            $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
+            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+            $output .= "</div>";
+        endwhile;
+    }
+    return $output;
+}
 
-//
-function ($studentID)
+// Get all event meetings for a student
+function getEventMeetingsByStudent($tournamentID, $studentID)
+{
+	global $mysqlConn;
+	$eventQuery = "SELECT `event`, `tournamentevent`.`eventID` 
+	FROM `teammateplace` 
+	INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` 
+	INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` 
+	INNER JOIN `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID 
+	ORDER BY `event`.`event`";
+	$result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$output = "";
+	if ($result && mysqli_num_rows($result)>0)
+	{
+		while ($row = $result->fetch_assoc()):
+			$eventName = $row['event'];
+			$eventID = $row['eventID'];
+			$output .= "
+			<div class='accordion-item'>
+				<h2 class='accordion-header' id='heading-eventID-{$eventID}'>
+					<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse-eventID-{$eventID}' aria-expanded='false' aria-controls='collapse-eventID-{$eventID}'>
+						{$eventName}
+					</button>
+				</h2>
+				<div id='collapse-eventID-{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading-eventID-{$eventID}' data-bs-parent='#meetingsAccordion'>
+					<div class='accordion-body'>
+						" . getEventMeetings($eventID) . "
+					</div>
+				</div>
+			</div>";
+			
+		endwhile;
+	}
+	return $output;
+}
+
+//get all officer meetings for a student
+function getOfficerMeetingsByStudent()
+{
+	$output = "
+		<div class='accordion-item'>
+			<h2 class='accordion-header' id='headingOfficer'>
+				<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOfficer' aria-expanded='false' aria-controls='collapseOfficer'>
+					Officer Meetings
+				</button>
+			</h2>
+			<div id='collapseOfficer' class='accordion-collapse collapse' aria-labelledby='headingOfficer' data-bs-parent='#meetingsAccordion'>
+				<div class='accordion-body'>
+					" . getOfficerMeetings() . "
+				</div>
+			</div>
+		</div>";
+	return $output;
+}
+
+//Output general meetings
+function getStudentGeneralMeetings($studentID)
 {
     global $mysqlConn;
 
@@ -114,14 +224,13 @@ function ($studentID)
     
     $output = "";
     if ($result && mysqli_num_rows($result) > 0) {
-        $output .= "<h3>Meetings</h3>";
         $output .= "<div class='accordion' id='meetingsAccordion'>";
         
         while ($row = $result->fetch_assoc()) {
             $tournamentID = $row['tournamentID'];
             $tournamentName = $row['tournamentName'];
             $dateTournament = $row['dateTournament'];
-            $output .= getEventsByStudent($tournamentID, $studentID, $dateTournament);
+            $output .= getGeneralMeetingsByStudent($tournamentID, $studentID, $dateTournament);
         }
 
         $output .= "</div>";
@@ -129,58 +238,12 @@ function ($studentID)
     return $output;
 }
 
-//Badge can be updated depending on time from meeting (Set to 2 days after will clear RECENT badge)
-function getEventsByStudent($tournamentID, $studentID, $dateTournament)
+//Output event leader meetings
+function outputOfficerMeetings($studentID)
 {
-    global $mysqlConn;
-    $eventQuery = "SELECT `teammateplace`.`tournamenteventID`, `teamID`, `event`, `tournamentevent`.`eventID`, `place` 
-	FROM `teammateplace` 
-	INNER JOIN `student` on `teammateplace`.`studentID` = `student`.`studentID` 
-	INNER JOIN `tournamentevent` on `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID` 
-	INNER JOIN `event` on `tournamentevent`.`eventID` = `event`.`eventID` where `tournamentID` = $tournamentID and `student`.`studentID` = $studentID 
-	ORDER BY `event`.`event`";
-    $result = $mysqlConn->query($eventQuery) or error_log("\n<br />Warning: query failed:$eventQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-    $output = "";
-    if ($result && mysqli_num_rows($result)>0)
-    {
-        while ($row = $result->fetch_assoc()):
-            $eventName = $row['event'];
-            $eventID = $row['eventID'];
-			if ((strtotime('-2 day') < strtotime(getEventMeetingDate($eventID))))
-			{
-				$output .= "
-                <div class='accordion-item'>
-                    <h2 class='accordion-header' id='heading{$eventID}'>
-                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
-                            {$eventName}&nbsp;<span class='badge bg-danger'>RECENT</span>
-                        </button>
-                    </h2>
-                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
-                        <div class='accordion-body'>
-                            " . getEventMeetings($eventID) . "
-                        </div>
-                    </div>
-                </div>";
-			}
-			if ((strtotime('-2 day') >= strtotime(getEventMeetingDate($eventID))))
-			{
-				$output .= "
-                <div class='accordion-item'>
-                    <h2 class='accordion-header' id='heading{$eventID}'>
-                        <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse{$eventID}' aria-expanded='false' aria-controls='collapse{$eventID}'>
-                            {$eventName}
-                        </button>
-                    </h2>
-                    <div id='collapse{$eventID}' class='accordion-collapse collapse' aria-labelledby='heading{$eventID}' data-bs-parent='#meetingsAccordion'>
-                        <div class='accordion-body'>
-                            " . getEventMeetings($eventID) . "
-                        </div>
-                    </div>
-                </div>";
-			}
-            
-        endwhile;
-    }
+        $output .= "<div class='accordion' id='meetingsAccordion'>";
+        $output .= getOfficerMeetingsByStudent();
+        $output .= "</div>";
     return $output;
 }
 
@@ -229,30 +292,73 @@ if(!empty($_SESSION['userData'])){
 
 	//Reminders
 	//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
-	$tournament = "";
 	if($studentID)
 	{
-		$tournament =	getUpcomingTournamentStudent($userID, $studentID);
+		$output .=	getUpcomingTournamentStudent($userID, $studentID);
 	}
 	else if($coachID){
-		$tournament =	getUpcomingTournamentCoach();
+		$output .=	getUpcomingTournamentCoach();
 	}
-	$output .= $tournament;
 
 	if($studentID)
 	{
 		//Get latest team assignments
-		$myEvents = getLatestTeamTournamentStudent($studentID);
+		$teamRow = getLatestTeamTournamentStudentRow($studentID);
+		$myEvents = printLatestTeamTournamentStudent($studentID, $teamRow);
 		//show student's event priority
 		//$myEvents .= studentEventPriority($studentID);
 		if($myEvents)
 		{
 			$output .= "<hr><h2>My Events</h2>" . $myEvents;
 		}
-		$myMeetings = getStudentMeetings($studentID);
-		if($myMeetings)
-		{
-			$output .= "<hr><h2>My Event Meetings</h2>" . $myMeetings;
+		$output .= "<hr><h2>My Meetings</h2>";
+		$output .= "<h3>Event Meetings</h3>";
+    	$output .= "<div class='accordion' id='meetingsEventMeetingsAccordion'>";
+		$output .= getEventMeetingsByStudent($teamRow['tournamentID'], $studentID);
+    	$output .= "</div>";
+
+		$output .= "<br>";
+		$output .= "<h3>Other Meetings</h3>";
+		//General Meetings
+		$output .= "<div class='accordion' id='meetingsGeneralMeetingAccordion'>";
+		$output .= "
+			<div class='accordion-item'>
+				<h2 class='accordion-header' id='headingGeneral'>
+					<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseGeneral' aria-expanded='false' aria-controls='collapseGeneral'>
+						General Meetings
+					</button>
+				</h2>
+				<div id='collapseGeneral' class='accordion-collapse collapse' aria-labelledby='headingGeneral' data-bs-parent='#meetingsAccordion'>
+					<div class='accordion-body'>
+						" . getGeneralMeetings() . "
+					</div>
+				</div>
+			</div>";
+		$output .= "</div>";
+
+		//print event leader meetings
+		if (userHasPrivilege(2)) {
+			$output .= "<div class='accordion' id='meetingsEventLeaderAccordion'>";
+			$output .= "
+			<div class='accordion-item'>
+				<h2 class='accordion-header' id='headingEventLeader'>
+					<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEventLeader' aria-expanded='false' aria-controls='collapseEventLeader'>
+						Event Leader Meetings
+					</button>
+				</h2>
+				<div id='collapseEventLeader' class='accordion-collapse collapse' aria-labelledby='headingEventLeader' data-bs-parent='#meetingsAccordion'>
+					<div class='accordion-body'>
+						" . getEventLeaderMeetings() . "
+					</div>
+				</div>
+			</div>";
+			$output .= "</div>";
+		}
+		//print Officer meetings
+		if (userHasPrivilege(3)) {
+			$output .= "<div class='accordion' id='meetingsOfficerAccordion'>";
+        	$output .= getOfficerMeetingsByStudent();
+        	$output .= "</div>";
 		}
 		//show all previous results for this student
 		$myTournamentResults = studentTournamentResultsAccordion($studentID, true);

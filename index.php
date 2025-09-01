@@ -82,37 +82,76 @@ function checkPage(){
 
 
 	<!-- Navbar content -->
-	<nav class="navbar navbar-expand-lg bg-light">
-		<div class="container-fluid">
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+	<nav class="navbar navbar-expand-xxl bg-light shadow-sm mb-2">
+		<div class="container-fluid py-2" style="position: relative;">
+			<button class="navbar-toggler mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<a class="navbar-brand" href="#"><img style="vertical-align: middle " height="40px" src="images/waltoncthulu256.png"></img> Walton Science Olympiad</a>
+
+			<!-- Desktop Title (Centered) -->
+			<div class='d-none d-md-block'>
+				<a class="navbar-brand d-flex align-items-center"
+					href="#"
+					style="
+						position: absolute;
+						left: 0; right: 0;
+						margin-left: auto; margin-right: auto;
+						
+						top: 0.1rem;
+
+						gap: 12px;
+						justify-content: center;
+						pointer-events: none;
+					">
+					<img style="vertical-align: middle;" height="50px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 1.5rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
+
+			<!-- Mobile Title (Right-aligned and fixed at the top) -->
+			<div class='d-md-none'>
+				<a class="navbar-brand d-flex align-items-center"
+				href="#"
+				style="
+						position: absolute;
+						right: 0.3rem;
+						top: 0.5rem;
+						gap: 12px;
+						pointer-events: none;
+				">
+					<img style="vertical-align: middle;" height="25px" src="images/waltoncthulu256.png" alt="Logo" />
+					<span style="color:#555f66; font-size: 1.2rem; font-weight: bold; line-height: 1;">
+						WALTON SCIENCE OLYMPIAD
+					</span>
+				</a>
+			</div>
 
 			<div class="collapse navbar-collapse" id="navbarContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item">
-						<a class="nav-link active" id="mainBtn" aria-current="page" href="#">Home</a>
+						<a class="nav-link active" style="font-size:0.9rem; font-weight: bold;" id="mainBtn" aria-current="page" href="#">HOME</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="tournamentBtn" href="#tournaments">Tournaments</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="tournamentBtn" href="#tournaments">TOURNAMENTS</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="summercampBtn" href="#summercamp">Summer Camp</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="summercampBtn" href="#summercamp">SUMMER CAMP</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="boosterclubBtn" href="https://www.waltonsciolybooster.org/">Parents</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="boosterclubBtn" href="https://www.waltonsciolybooster.org/">PARENTS</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a class="nav-link" id="contactBtn" href="#contact">Contact</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="contactBtn" href="#contact">CONTACT</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="supportBtn" href="#support">Support Us</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="supportBtn" href="#support">SUPPORT US</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="loginBtn" href="#login">Login</a>
+						<a class="nav-link" style="font-size:0.9rem; font-weight: bold;" id="loginBtn" href="#login">LOGIN</a>
 					</li>
 				</ul>
 			</div>
@@ -121,8 +160,8 @@ function checkPage(){
 
 	<div id="banner" class="jumbotron jumbotron-fluid">
 		<div><img style="vertical-align: top" height="256px" src="images/waltoncthulu1200white.png"></img></div>
-		<h1>Walton Science Olympiad</h1>
-		<p>Walton High School</p>
+		<h1 style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);" class="text-white fw-bold">Walton Science Olympiad</h1>
+		<p style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);" class="text-white">Walton High School</p>
 	</div>
 
 	<!-- One -->
