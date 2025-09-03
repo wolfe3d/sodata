@@ -3,7 +3,6 @@ header("Content-Type: text/plain");
 require_once  ("php/functions.php");
 userCheckPrivilege(2);
 
-
 function getTeamStudents($teamID)
 {
 	global $mysqlConn;
@@ -26,6 +25,6 @@ function getTeamStudents($teamID)
 	}
 }
 
-$teamID = intval($_POST['myID']);
+$teamID = intval($_POST['team']);
 echo json_encode(getTeamStudents($teamID));
 ?>
