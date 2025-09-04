@@ -9,7 +9,8 @@ function getTeamStudents($teamID)
 	$query = "SELECT `teammate`.`studentID`, `student`.`last`, `student`.`first` FROM `team` 
 		INNER JOIN `teammate` ON `team`.`teamID` = `teammate`.`teamID` 
 		INNER JOIN `student` ON `teammate`.`studentID` = `student`.`studentID` 
-		WHERE `team`.`teamID` = $teamID";
+		WHERE `team`.`teamID` = $teamID
+		ORDER BY `student`.`last`, `student`.`first`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result && mysqli_num_rows($result)>0)
 	{
