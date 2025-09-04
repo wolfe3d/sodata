@@ -238,15 +238,6 @@ function getStudentGeneralMeetings($studentID)
     return $output;
 }
 
-//Output event leader meetings
-function outputOfficerMeetings($studentID)
-{
-        $output .= "<div class='accordion' id='meetingsAccordion'>";
-        $output .= getOfficerMeetingsByStudent();
-        $output .= "</div>";
-    return $output;
-}
-
 
 if(!empty($_SESSION['userData'])){
 	$studentID = NULL;
@@ -318,6 +309,11 @@ if(!empty($_SESSION['userData'])){
     	$output .= "</div>";
 
 		$output .= "<br>";
+	
+		
+	}
+	if($studentID||$coachID)
+	{
 		$output .= "<h3>Other Meetings</h3>";
 		//General Meetings
 		$output .= "<div class='accordion' id='meetingsGeneralMeetingAccordion'>";
@@ -335,7 +331,6 @@ if(!empty($_SESSION['userData'])){
 				</div>
 			</div>";
 		$output .= "</div>";
-
 		//print event leader meetings
 		if (userHasPrivilege(2)) {
 			$output .= "<div class='accordion' id='meetingsEventLeaderAccordion'>";
@@ -360,6 +355,9 @@ if(!empty($_SESSION['userData'])){
         	$output .= getOfficerMeetingsByStudent();
         	$output .= "</div>";
 		}
+	}
+	if($studentID)
+	{
 		//show all previous results for this student
 		$myTournamentResults = studentTournamentResultsAccordion($studentID, true);
 		$myAwards = studentAwards($studentID);
