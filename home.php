@@ -24,12 +24,12 @@ function getUpcomingTournamentStudent($userID, $studentID)
 			$output .= "<div style='display: flex; align-items: center; gap: 1rem;'>";
 			$output .= "<h3>".$row['tournamentName']." - ".$row['dateTournament'] . "</h3>";
 			$output .= "<div class='d-block d-md-none'>
-							<a class='btn btn-primary btn-sm' role='button' href=\'#tournament-view-".$row['tournamentID']."\'>
+							<a class='btn btn-primary btn-sm' role='button' href='#tournament-view-".$row['tournamentID']."'>
 								<span class='bi bi-controller'></span> View Details
 							</a>
 						</div>
 						<div class='d-none d-md-block'>
-							<a class='btn btn-primary' role='button' href=\'#tournament-view-".$row['tournamentID']."\'>
+							<a class='btn btn-primary' role='button' href='#tournament-view-".$row['tournamentID']."'>
 								<span class='bi bi-controller'></span> View Details
 							</a>
 						</div>";
