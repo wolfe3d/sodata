@@ -19,13 +19,11 @@ if($teamID)
 		exit ("Assignments exist for this team");
 	}
 
-
-
 //Remove team
 deletefromTable("team","teamID",$teamID);
 
 exit ("1");
 }
-exit ("Team ID not sent.");
 
+exit ("Team ID not sent.");
 ?>
