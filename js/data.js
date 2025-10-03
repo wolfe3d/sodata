@@ -1165,7 +1165,7 @@ function teamRemove(myID, teamName)
 	if(confirm("Are you sure you want to delete the tournament named: " + teamName +"?  This removes all of their data and it is permanent!!!  This will only work if all students have been removed from team."))
 	{
 		var request = $.ajax({
-			url: "teamRemove.php",
+			url: "teamremove.php",
 			cache: false,
 			method: "POST",
 			data: {myID:myID},
@@ -1179,7 +1179,7 @@ function teamRemove(myID, teamName)
 				$("#team-" + myID).remove(); //remove element
 			}
 			else {
-				$("#team-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div>");
+				$("#team-" + myID).before("<div class='text-danger'>Removal Error Returned:"+html+"</div>");
 			}
 		});
 
