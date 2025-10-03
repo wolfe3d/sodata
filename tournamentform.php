@@ -35,10 +35,6 @@
 	</select>
 </p>
 <p>
-	<label for="numberTeams">Number of Teams</label>
-	<input id="numberTeams" name="numberTeams" class="form-control" type="number" min='0' max='10' value="<?=$row['numberTeams']?>" required>
-</p>
-<p>
 	<label for="weight">Weight</label>
 	<input id="weight" name="weight" class="form-control" type="number" min='0' max='100' value="<?=$row['weight']?>">
 </p>

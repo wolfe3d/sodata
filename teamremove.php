@@ -23,9 +23,7 @@ if($teamID)
 
 //Remove team
 deletefromTable("team","teamID",$teamID);
-//modify team number in tournament table
-$numberTeams = getValuefromTable('tournament','numberTeams','tournamentID',$tournamentID);
-fieldUpdate('tournament',$tournamentID,'numberTeams',$numberTeams);
+
 exit ("1");
 }
 exit ("Team ID not sent.");

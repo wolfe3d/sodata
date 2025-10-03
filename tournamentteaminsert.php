@@ -13,23 +13,10 @@ if (isset($_POST['teamID']))
 else {
 	if($tournamentID)
 	{
-		//Check for the number of teams created
-		$query = "SELECT `numberTeams` FROM `tournament` WHERE `tournamentID` = $tournamentID";
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$row = $result->fetch_assoc();
-		$numberTeams = $row["numberTeams"];
-
 		//Get number of teams created
 		$query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID";
 		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$amountOfCreatedTeams = $result->num_rows;
-		//if there is already enough teams created, then do not allow an increase in team number
-		if($amountOfCreatedTeams>=$numberTeams)
-		{
-			echo "<div style='color:red'>The maximum number of teams has been created.</div>";
-			echo "<p><button class='btn btn-outline-secondary' onclick='window.history.back()' type='button'><span class='bi bi-arrow-left-circle'></span> Return</button></p>";
-			exit();
-		}
 	}
 	else {
 		exit( "<div style='color:red'>tournamentID is not set.</div>");

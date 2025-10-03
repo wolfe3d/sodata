@@ -19,14 +19,12 @@ if(empty($result))
 }
 
 $row = $result->fetch_assoc();
-$numberTeams = $row["numberTeams"];
 $userID = $_SESSION['userData']['userID'];
 $studentID = getStudentID($userID);
 
 //Get number of teams created
 $query = "SELECT * FROM `team` WHERE `tournamentID` = $tournamentID ORDER BY `teamName`";
 $resultTeams = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-$amountOfCreatedTeams = $resultTeams->num_rows;
 
 $output .="<div>";
  if($row)
@@ -82,7 +80,6 @@ $output .="<div>";
 			$output .="<div>Address: <a href='https://www.google.com/maps/search/?api=1&query=".$row['address']."'>".$row['address']."</a></div>";
 		}
 		$output .="<div>Date Tournament: ".$row['dateTournament']."</div>";
-		$output .="<div>Number of Teams Registered: ".$row['numberTeams']."</div>";
 		$output .="<div>Weight/Difficulty (0-100, 50=local/small, 75=regional, 90=state, 100 is hardest=national level): ".$row['weight']."</div>";
 		if($row['type'])
 		{
@@ -153,7 +150,7 @@ $output .="<div>";
 			$output.=studentTournamentSchedule($tournamentID, $studentID, $heading, $row['year']);
 		}
 
-		if(userHasPrivilege(5) || $published)
+		if($resultTeams->num_rows && (userHasPrivilege(5) || $published ))
 		{
 		while($rowTeam = $resultTeams->fetch_assoc()):
 			$output .="<div id='team-".$rowTeam['teamID']."'><h2>Team ".$rowTeam['teamName'];

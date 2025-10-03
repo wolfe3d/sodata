@@ -8,7 +8,6 @@ $dateTournament = $mysqlConn->real_escape_string($_POST['dateTournament']);
 $dateRegistration = $mysqlConn->real_escape_string($_POST['dateRegistration']);
 $year = getIfSet($mysqlConn->real_escape_string($_POST['year']), getCurrentSOYear());
 $type = intval($_POST['type']);
-$numberTeams = intval($_POST['numberTeams']);
 $weight = intval($_POST['weight']);
 $teamsAttended = intval($_POST['teamsAttended']);
 $note = $mysqlConn->real_escape_string($_POST['note']);
@@ -21,19 +20,11 @@ $directorEmail = $mysqlConn->real_escape_string($_POST['directorEmail']);
 $directorPhone = $mysqlConn->real_escape_string($_POST['directorPhone']);
 
 
-$query = "INSERT INTO `tournament` (`schoolID`,`tournamentName`,`host`,`dateTournament`,`dateRegistration`,`year`,`type`,`numberTeams`,`weight`,`teamsAttended`,`note`,`address`,`addressBilling`,`websiteHost`, `websiteScilympiad`, `director`, `directorEmail`, `directorPhone`) VALUES ('$schoolID','$name', '$host', '$dateTournament', '$dateRegistration', '$year', '$type', '$numberTeams', '$weight', '$teamsAttended', '$note', '$address', '$addressBilling', '$websiteHost', '$websiteScilympiad', '$director', '$directorEmail', '$directorPhone')";
+$query = "INSERT INTO `tournament` (`schoolID`,`tournamentName`,`host`,`dateTournament`,`dateRegistration`,`year`,`type`,`weight`,`teamsAttended`,`note`,`address`,`addressBilling`,`websiteHost`, `websiteScilympiad`, `director`, `directorEmail`, `directorPhone`) VALUES ('$schoolID','$name', '$host', '$dateTournament', '$dateRegistration', '$year', '$type', '$weight', '$teamsAttended', '$note', '$address', '$addressBilling', '$websiteHost', '$websiteScilympiad', '$director', '$directorEmail', '$directorPhone')";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 if ($result)
 {
 	$tournamentID = $mysqlConn->insert_id;
-	//Add Teams
-	$alphabet = range('A', 'Z');
-	for ($n=0;$n<$numberTeams;$n++)
-	{
-		$teamName = $alphabet[$n];
-		$query = "INSERT INTO `team` (`tournamentID`, `teamName`) VALUES ( '$tournamentID', '$teamName');";
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-	}
  	//Successful creation
 	exit("$tournamentID");
 }
