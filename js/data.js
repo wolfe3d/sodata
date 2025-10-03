@@ -1160,6 +1160,36 @@ function tournamentRemove(myID, tournamentName)
 	}
 }
 
+function teamRemove(myID, teamName)
+{
+	if(confirm("Are you sure you want to delete the tournament named: " + teamName +"?  This removes all of their data and it is permanent!!!  This will only work if all students have been removed from team."))
+	{
+		var request = $.ajax({
+			url: "teamRemove.php",
+			cache: false,
+			method: "POST",
+			data: {myID:myID},
+			dataType: "html"
+		});
+		request.done(function( html ) {
+			$(".text-success").remove(); //remove any old text-success notes
+			if(html=="1")
+			{
+				$("#team-" + myID).before("<div class='text-success'>"+teamName+" removed permanently.</div>"); //add note to show modification
+				$("#team-" + myID).remove(); //remove element
+			}
+			else {
+				$("#team-" + myID).before("<div class='text-danger'>Removal Error:"+html+"</div>");
+			}
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			$(".text-success").remove();
+			$("#team-" + myID).before("<div class='text-danger'>Removal Error:"+textStatus+"</div>");
+		});
+	}
+}
+
 function tournamentPublish(myID)
 {
 	if(confirm("Are you sure you want to publish the team assignments to students?"))

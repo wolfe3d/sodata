@@ -1471,6 +1471,68 @@ function getTournamentDates()
 
 }
 
+//get tournament ID
+function getTournamentID($teamID)
+{
+	global $mysqlConn;
+	$output = "";
+	$query = "SELECT `team`.`tournamentID` FROM `team` WHERE `team`.`teamID` = $teamID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		if ($row = $result->fetch_assoc()){
+			//set default weightings into the table
+			return $row['tournamentID'];
+		}
+	}
+	return FALSE;
+}
+
+//get any value from a field in table using index ID
+function getValuefromTable($table,$field,$tableIndex,$tableID)
+{
+	global $mysqlConn;
+	$output = "";
+	$query = "SELECT `$table`.`$field` FROM `$table` WHERE `$table`.`$tableIndex` = $tableID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result->num_rows){
+		if ($row = $result->fetch_assoc()){
+			//set default weightings into the table
+			return $row[$field];
+		}
+	}
+	return FALSE;
+}
+
+function fieldUpdate($table,$tableID,$field,$value)
+{
+	global $mysqlConn;
+	//special cases for times
+	if($field=="timeStart" || $field=="timeEnd")
+	{
+		$value = date('Y-m-d H:i:s',strtotime($value));
+	}
+	//check to see if user has a valid ID
+	$query = "SELECT `".$table."ID` FROM `$table` WHERE `$table`.`".$table."ID` = $tableID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
+		$row = $result->fetch_assoc();
+
+		//Check permissions to make this user is an admin or editing their own data
+		/*if(userCheckPrivilege(2) && $_SESSION['userData'][`id`]!=$row['userID'])
+		{
+		echo "The current user does not have privilege for this change.";
+		exit;
+	}*/
+	//Make changes to database
+	$query = "UPDATE `$table` SET `$field`='$value' WHERE `$table`.`".$table."ID` = $tableID";
+	if ($mysqlConn->query($query) === TRUE)
+	{
+		exit ("1");
+	}
+	}
+	exit($query . " " . $mysqlConn->error);
+}
+
 //print out privilege editing
 function editPrivilege($privilege,$userID)
 {
