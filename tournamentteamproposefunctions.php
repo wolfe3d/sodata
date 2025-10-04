@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(3);
-$schoolID = $_SESSION['userData']['schoolID'];
 
 //find students and order by best score for event (not average best score)
 function makeStudentArrayTopScore($teamID)

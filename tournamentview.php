@@ -3,13 +3,11 @@ require_once("php/functions.php");
 require_once  ("php/remove.php"); //Check to make sure user is logged in and has privileges
 
 userCheckPrivilege(1);
-$schoolID =$_SESSION['userData']['schoolID'] ;
-
 
 //text output
 $output = "";
 $tournamentID = intval($_REQUEST['myID']);
-$query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID AND `tournament`.`schoolID` = `schoolID` = " . $_SESSION['userData']['schoolID'];
+$query = "SELECT * from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID AND `tournament`.`schoolID` = `schoolID` = $schoolID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))

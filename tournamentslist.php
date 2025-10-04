@@ -1,7 +1,6 @@
 <?php
 require_once ("php/functions.php");
 userCheckPrivilege(1);
-$schoolID = $_SESSION['userData']['schoolID'];
 
 //text output
 $output = "";
@@ -27,7 +26,7 @@ if($search)
 }
 
 
-$query .= " WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `tournament`.`dateTournament` DESC";
+$query .= " WHERE `schoolID` = $schoolID $whereAND ORDER BY `tournament`.`dateTournament` DESC";
 $output .=userHasPrivilege(4)?$query:"";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 

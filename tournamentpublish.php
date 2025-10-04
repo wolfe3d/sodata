@@ -3,7 +3,7 @@ require_once("php/functions.php");
 userCheckPrivilege(5);
 
 $tournamentID = intval($_REQUEST['myID']);
-$query = "SELECT `published` from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID AND `tournament`.`schoolID` = `schoolID` = " . $_SESSION['userData']['schoolID'] ;
+$query = "SELECT `published` from `tournament` WHERE `tournament`.`tournamentID` = $tournamentID AND `tournament`.`schoolID` = `schoolID` = $schoolID";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 if(empty($result))

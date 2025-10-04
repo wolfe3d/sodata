@@ -28,7 +28,6 @@ function getEventStudentListTournament($tournamentID, $eventID)
 	}
 }
 $eventID = intval($_POST['eventID']);
-$schoolID = $_SESSION['userData']['schoolID'];
 $year = getCurrentSOYear();
 $tournamentID = getLatestTournamentNCSchoolID($year)['tournamentID'];
 echo json_encode(getEventStudentListTournament($tournamentID, $eventID));

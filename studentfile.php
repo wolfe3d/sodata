@@ -8,9 +8,10 @@ header('Content-Disposition: attachment; filename=students.csv');
 header("Content-Transfer-Encoding: UTF-8");
 require_once ("../connectsodb.php");
 require_once  ("php/checksession.php"); //Check to make sure user is logged in and has privileges
+require_once("php/functions.php");
 userCheckPrivilege(4);
 
-$query = "SELECT * FROM `student` WHERE `active` = 1 AND `schoolID` = "  . $_SESSION['userData']['schoolID'];
+$query = "SELECT * FROM `student` WHERE `active` = 1 AND `schoolID` = $schoolID";
 $emails = "";
 
 $fp = fopen('php://output', 'a');

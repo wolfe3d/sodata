@@ -24,5 +24,5 @@ function getStudents($schoolID)
 	}
 }
 
-echo json_encode(getStudents($_SESSION['userData']['schoolID']));
+echo json_encode(getStudents($schoolID));
 ?>

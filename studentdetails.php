@@ -1,7 +1,6 @@
 <?php
 require_once("php/functions.php");
 userCheckPrivilege(1);
-$schoolID = $_SESSION['userData']['schoolID'];
 $myStudentID = getStudentID($_SESSION['userData']['userID']);
 $studentID = isset($_REQUEST['myID'])?intval($_REQUEST['myID']):0;
 $year = getCurrentSOYear();

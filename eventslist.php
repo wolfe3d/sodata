@@ -134,7 +134,7 @@ if($result&& $result->num_rows>0)
 		$output .="</div>"; //end button group
 
 		//$yearCollection = $yearCollection?$yearCollection:"Trial Event";
-		$output .=getEventLeader($row['eventID'], $year, $_SESSION['userData']['schoolID'] );
+		$output .=getEventLeader($row['eventID'], $year, $schoolID);
 		$output .=getEventYears($row['eventID']);
 		$output .="<div>Type: ".getEventString($row['type'])."</div>";
 		if($row['calculatorType']){

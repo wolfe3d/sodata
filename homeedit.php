@@ -4,7 +4,7 @@ userCheckPrivilege(4);
 $output = "<div id='note'></div>";
 
 //Search for slides
-$query = "SELECT * FROM `slide` WHERE `schoolID` = ".$_SESSION['userData']['schoolID']." ORDER BY `slideOrder`";
+$query = "SELECT * FROM `slide` WHERE `schoolID` = $schoolID ORDER BY `slideOrder`";
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 $output.="<div id='slideList'  style='display: block; margin: auto; max-width:1080px'>";

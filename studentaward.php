@@ -33,7 +33,7 @@ $action = "javascript:addToSubmit('studentawardadd.php')";
 if($awardID)
 {
 	//search for award and check to make sure the person is editing someone from their own school
-	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `awardID`=$awardID AND `schoolID`=" . $_SESSION['userData']['schoolID'];// where `field` = $fieldId";
+	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `awardID`=$awardID AND `schoolID`= $schoolID";// where `field` = $fieldId";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)
 	{

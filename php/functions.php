@@ -2,7 +2,11 @@
 //include file
 require_once  ("../connectsodb.php");
 require_once 'checksession.php';
-$schoolID = $_SESSION['userData']['schoolID'];
+$schoolID = null;
+if($_SESSION)
+{
+	$schoolID =	$_SESSION['userData']['schoolID'];
+}
 
 //clean text so that it can be a variable in javascript
 function cleanForJavascript($string)
@@ -36,10 +40,10 @@ function points($n)
 //get all students in a select
 function getAllStudents($active, $studentID)
 {
-	global $mysqlConn;
+	global $mysqlConn, $schoolID;
 	$myOutput = "";
 	$whereAND = $active==1?"AND `student`.`active` = 1":"";
-	$query = "SELECT * from `student` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " $whereAND ORDER BY `last`,`first` ASC";
+	$query = "SELECT * from `student` WHERE `schoolID` = $schoolID $whereAND ORDER BY `last`,`first` ASC";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
 	if($result)
@@ -988,9 +992,9 @@ function getLeaderEmails($year)
 	//Return all active students or parents
 	function getStudentEmails($year, $parents=false)
 	{
-		global $mysqlConn;
+		global $mysqlConn, $schoolID;
 		//$year = isset($year)?$year:getCurrentSOYear(); //assumes $year is an integer
-		$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `active`=1";
+		$query = "SELECT DISTINCT `first`, `last`, `email`, `parent1First`, `parent1Last`,`parent1Email`,`parent2First`, `parent2Last`,`parent2Email`,`emailSchool` FROM `student` WHERE `schoolID` = $schoolID AND `active`=1";
 		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 		$emails = "";
 		if(!$parents){

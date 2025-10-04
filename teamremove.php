@@ -5,7 +5,6 @@ require_once  ("php/remove.php"); //Check to make sure user is logged in and has
 require_once("php/functions.php");
 
 userCheckPrivilege(5);
-$schoolID = $_SESSION['userData']['schoolID'];
 $teamID = intval($_POST['myID']);
 if($teamID)
 {

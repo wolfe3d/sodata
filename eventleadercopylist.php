@@ -28,7 +28,6 @@ function getEventLeaders($schoolID, $year)
 		return 0;
 	}
 }
-$schoolID = $_SESSION['userData']['schoolID'];
 $year = getCurrentSOYear();
 echo json_encode(getEventLeaders($schoolID, $year));
 ?>

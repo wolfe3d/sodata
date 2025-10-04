@@ -1,7 +1,6 @@
 <?php
 require_once  ("php/functions.php");
 userCheckPrivilege(1);
-$schoolID = $_SESSION['userData']['schoolID'];
 
 //text output
 $output = "";
@@ -29,7 +28,7 @@ INNER JOIN `course` AS `courseTableCompleted` ON `coursecompleted`.`courseID` = 
 INNER JOIN `courseenrolled` ON `student`.`studentID`=`courseenrolled`.`studentID` 
 INNER JOIN `course` AS `courseTableEnrolled` ON `courseenrolled`.`courseID` = `courseTableEnrolled`.`courseID`
 
-WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] .
+WHERE `schoolID` = $schoolID " .
 " AND 
     (`student`.`last` LIKE '%$search%'
     OR `student`.`first` LIKE '%$search%'
@@ -51,7 +50,7 @@ WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] .
 }
 else
 {
-	$query.=" WHERE `student`.`schoolID` = " . $_SESSION['userData']['schoolID'];
+	$query.=" WHERE `student`.`schoolID` = $schoolID";
 }
 
 if($active)

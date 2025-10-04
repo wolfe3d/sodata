@@ -4,9 +4,9 @@ userCheckPrivilege(4);
 
 function allAwards()
 {
-	global $mysqlConn;
+	global $mysqlConn, $schoolID;
 	$output = "";
-	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " ORDER BY `awardDate` DESC, `last`, `first`";
+	$query = "SELECT * FROM `award` INNER JOIN `student` ON `award`.`studentID`=`student`.`studentID` WHERE `schoolID` = $schoolID ORDER BY `awardDate` DESC, `last`, `first`";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if(mysqli_num_rows($result)>0)
 	{

@@ -7,7 +7,7 @@ $year = isset($_POST['myID'])?intval($_POST['myID']):getCurrentSOYear();
 $output = "<div>" . getSOYears($year, 0) . "</div>";
 $output .= "<br></br><h2>Coaches</h2><div>";
 
-$query = "SELECT * FROM `coach` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'];
+$query = "SELECT * FROM `coach` WHERE `schoolID` = $schoolID ";
 //$output .=$query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -34,7 +34,7 @@ if($result)
 
 //Get current year
 $yearBeg = $year-1;
-$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year ORDER BY `officerID`";
+$query = "SELECT * FROM `officer` INNER JOIN `student` ON `officer`.`studentID`= `student`.`studentID` WHERE `schoolID` = $schoolID AND `year`=$year ORDER BY `officerID`";
 //$output .=$query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
@@ -82,7 +82,7 @@ if($result)
 	$output .="</div>";
 }
 
-$query = "SELECT * FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` WHERE `schoolID` = " . $_SESSION['userData']['schoolID'] . " AND `year`=$year ORDER BY `event`";
+$query = "SELECT * FROM `eventleader` INNER JOIN `student` ON `eventleader`.`studentID`= `student`.`studentID` INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID` WHERE `schoolID` = $schoolID AND `year`=$year ORDER BY `event`";
 //$output .=$query;
 $result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 
