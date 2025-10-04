@@ -95,7 +95,7 @@ if($resultStudent){
 	<?php } ?>
 
 	<p id="tournamentTeamp">
-			<?=getTeamList($tournamentID, "Select Students from a Previous Tournament")?>
+		<?=getTeamList($tournamentID, "Select Students from a Previous Tournament")?>
 		<input class="btn btn-primary" role="button" type="button" onclick="javascript:teamCopy(<?=$teamID?>)" value="Copy Team" />
 	</p>
 

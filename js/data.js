@@ -918,7 +918,7 @@ function teamCopy(thisTeamID)
 			url: "teamcopylist.php",
 			cache: false,
 			method: "POST",
-			data: {myID:copiedTeamID},
+			data: {team:copiedTeamID},
 			dataType: "json"
 		});
 
