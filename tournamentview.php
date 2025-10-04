@@ -46,15 +46,14 @@ $output .="<div>";
 				}
 			}
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-edit-".$row['tournamentID']."'><span class='bi bi-pencil-square'></span> Edit Information</a>";
-
 		}
 
-		if(!$row['notCompetition'] && $row['dateTournament']<=date("Y-m-d") && isset($row['resultsLink']))
+		if(!$row['notCompetition'] && $row['dateTournament']<=getCurrentTimestamp() && isset($row['resultsLink']))
 		{
 			//there are no results for a team assignment, so this is only shown for a real tournament
 			$output .=" <a class='btn btn-primary' role='button' href='".$row['resultsLink']."'><span class='bi bi-trophy'></span> Results</a>";
 		}
-		else
+		if($row["dateTournament"]>=getCurrentTimestamp())
 		{
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-teamadd-".$row['tournamentID']."'><span class='bi bi-plus-circle'></span> Add Teams</a>";
 			$output .=" <a class='btn btn-secondary' role='button' href='#tournament-times-".$row['tournamentID']."'><span class='bi bi-clock-history'></span> Time Blocks</a>";

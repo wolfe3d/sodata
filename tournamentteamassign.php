@@ -508,7 +508,7 @@ else {
 */
 $output .="<div class='noPrint'>";
 
-if(userHasPrivilege(3) & !$rowTeam["locked"])
+if(userHasPrivilege(3) && !$rowTeam["locked"])
 {
 	if($rowTeam["dateTournament"]>getCurrentTimestamp()){
 		$output .="<div>".getTeamList($rowTeam['tournamentID'], "Assign Events from a Previous Tournament").
