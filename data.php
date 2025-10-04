@@ -17,7 +17,7 @@ function checkGoogle($gpUserProfile)
 {
 	global $mysqlConn;
 	// Include User library file
-	require_once 'user.php';
+	require_once ("php/user.php");
 	// Initialize User class
 	$user = new User($mysqlConn);
 
