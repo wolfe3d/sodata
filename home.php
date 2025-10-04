@@ -4,6 +4,73 @@ userCheckPrivilege(1);
 $output = "";
 $userID = $_SESSION['userData']['userID'];
 
+//get home.php carousel for the home schoolID
+function getCarousel()
+{
+	global $mysqlConn, $schoolID;
+	$output = "";
+	//Get student information row information
+	$query = "SELECT * FROM `slide` WHERE `schoolID` = $schoolID ORDER BY `slideOrder`";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
+		$output .="<div style='display: block;   margin-left: auto;  margin-right: auto; max-width: 1080px'><div id='homeCarousel' class='carousel slide carousel-dark' data-bs-ride='carousel' style='height:400px;'>";
+		$output .="<div class='carousel-indicators'>";
+		for ($n = 0; $n < mysqli_num_rows($result); $n++) {
+			$active = "";
+			if(!$n)
+			{
+				$active = "class='active' aria-current='true'";
+			}
+			$output .="<button type='button' data-bs-target='#homeCarousel' data-bs-slide-to='$n' $active aria-label='Slide ". ($n+1) . "'></button>";
+		}
+		$output .="</div>";
+		$output .="<div class='carousel-inner'>";
+		$active = "active";
+		$interval = "5000";
+		while ($row = $result->fetch_assoc()):
+			$output .="<div class='carousel-item $active' data-bs-interval='$interval'>";
+			$output .="<img src='".$row['image']."' class='d-block w-100' alt='...' style='height:360px;object-fit:cover;'>";
+			$output .="<div class='carousel-caption'>";
+			$output .= $row['text'];
+			$output .="</div>";
+			$output .="</div>";
+			$active  = "";
+			$interval ="3000";
+			$n++;
+
+		endwhile;
+		$output .="</div>";
+		$output .="<button class='carousel-control-prev' type='button' data-bs-target='#homeCarousel' data-bs-slide='prev'>";
+		$output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+		$output .="<span class='visually-hidden'>Previous</span>";
+		$output .="</button>";
+		$output .="<button class='carousel-control-next' type='button' data-bs-target='#homeCarousel' data-bs-slide='next'>";
+		$output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+		$output .="<span class='visually-hidden'>Next</span>";
+		$output .="</button>";
+		$output .="</div>";
+		$output .="</div>";
+
+	}
+	return $output;
+}
+
+//get home.php carousel for the home schoolID
+function getInfo()
+{
+	global $mysqlConn, $schoolID;
+	$output = "";
+	//Get student information row information
+	$query = "SELECT * FROM `news` WHERE `schoolID` = $schoolID";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if($result && mysqli_num_rows($result)>0){
+		while ($row = $result->fetch_assoc()):
+		$output .=$row['news'];
+		endwhile;
+	}
+	return $output;
+}
+
 //get upcoming tournament Information for Students
 function getUpcomingTournamentStudent($userID, $studentID)
 {

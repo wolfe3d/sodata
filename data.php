@@ -12,6 +12,32 @@ $gClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $gClient->setRedirectUri(GOOGLE_REDIRECT_URL);
 $gClient->addScope(['email', 'profile']);
 
+//Check to make sure google is logged in and set variables
+function checkGoogle($gpUserProfile)
+{
+	global $mysqlConn;
+	// Include User library file
+	require_once 'user.php';
+	// Initialize User class
+	$user = new User($mysqlConn);
+
+	// Getting user profile info
+	$gpUserData = array();
+	$gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
+	$gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
+	$gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
+	$gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
+	$gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
+	$gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
+	$gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
+
+	// Insert or update user data to the database
+	$gpUserData['oauth_provider'] = 'google';
+	$userData = $user->checkUser($gpUserData);
+	// Storing user data in the session
+	$_SESSION['userData'] = $userData;
+}
+
 //$gClient->setScopes(array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator'));
 
 if (isset($_GET['code'])) {

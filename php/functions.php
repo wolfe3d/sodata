@@ -29,14 +29,6 @@ function ordinal($n)
 	}
     return "Place Not Entered";
 }
-//get pts plural or singular
-function points($n)
-{
-    if($n>1)
-        return $n. ' pts';
-    else
-        return $n. ' pt';
-}
 //get all students in a select
 function getAllStudents($active, $studentID)
 {
@@ -187,29 +179,6 @@ function getEventLeaderThisEvent($studentID, $year, $eventID)
 			if($row = $result->fetch_assoc())
 			{
 				return " <small><span class='badge bg-info' title='".$row['event']." - Event Leader'>EL</span></small>";
-			}
-		}
-	}
-	return "";	
-}
-
-//find if this student is the event leader of the event
-function getEventLeaderOnTeam($teamID, $year, $eventID)
-{
-	global $mysqlConn;
-	if($eventID)
-	{
-		$query = "SELECT `event`,`last`,`first` from `eventleader` 
-		INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
-		INNER JOIN `teammate` ON `eventleader`.`studentID`=`teammate`.`studentID`
-		INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
-		 where `teamID` = $teamID AND `year` = $year AND `eventleader`.`eventID` = $eventID";
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if($result)
-		{
-			if($row = $result->fetch_assoc())
-			{
-				return " <small><span class='badge bg-info' title='".$row['first']." ".$row['last']." - Event Leader'>EL</span></small>";
 			}
 		}
 	}
@@ -1469,12 +1438,6 @@ function studentAwards($studentID)
 	return $output;
 }
 
-//get tournament
-function getTournamentDates()
-{
-
-}
-
 //get tournament ID
 function getTournamentID($teamID)
 {
@@ -1569,31 +1532,6 @@ function editPrivilege($privilege,$userID)
 	}
 	return $output;
 }
-//Check to make sure google is logged in and set variables
-function checkGoogle($gpUserProfile)
-{
-	global $mysqlConn;
-	// Include User library file
-	require_once 'user.php';
-	// Initialize User class
-	$user = new User($mysqlConn);
-
-	// Getting user profile info
-	$gpUserData = array();
-	$gpUserData['oauth_uid']  = !empty($gpUserProfile['id'])?$gpUserProfile['id']:'';
-	$gpUserData['first_name'] = !empty($gpUserProfile['given_name'])?$gpUserProfile['given_name']:'';
-	$gpUserData['last_name']  = !empty($gpUserProfile['family_name'])?$gpUserProfile['family_name']:'';
-	$gpUserData['email'] = !empty($gpUserProfile['email'])?$gpUserProfile['email']:'';
-	$gpUserData['gender'] = !empty($gpUserProfile['gender'])?$gpUserProfile['gender']:'';
-	$gpUserData['locale'] = !empty($gpUserProfile['locale'])?$gpUserProfile['locale']:'';
-	$gpUserData['picture'] = !empty($gpUserProfile['picture'])?$gpUserProfile['picture']:'';
-
-	// Insert or update user data to the database
-	$gpUserData['oauth_provider'] = 'google';
-	$userData = $user->checkUser($gpUserData);
-	// Storing user data in the session
-	$_SESSION['userData'] = $userData;
-}
 
 //a much shorter function than previously
 //this generates a color in an order for using as a rainbow styling
@@ -1608,140 +1546,19 @@ function rainbow($i) {
 	return 'hsla('. $hue .','. $sat .','. $light .','.$t.')';
 }
 
-/**
-* Generate a random string, using a cryptographically secure
-* pseudorandom number generator (random_int)
-*
-* This function uses type hints now (PHP 7+ only), but it was originally
-* written for PHP 5 as well.
-*
-* For PHP 7, random_int is a PHP core function
-* For PHP 5.x, depends on https://github.com/paragonie/random_compat
-*
-* @param int $length      How many characters do we want?
-* @param string $keyspace A string of all possible characters
-*                         to select from
-* @return string
-*/
-function random_str(
-	int $length = 64,
-	string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-	): string {
-		if ($length < 1) {
-			throw new \RangeException("Length must be a positive integer");
-		}
-		$pieces = [];
-		$max = mb_strlen($keyspace, '8bit') - 1;
-		for ($i = 0; $i < $length; ++$i) {
-			$pieces []= $keyspace[random_int(0, $max)];
-		}
-		return implode('', $pieces);
-	}
+//Remove text with parenthesis.  This is used to remove names in parenthesis for alphabetizing in tournaments.
+function removeParenthesisText($string)
+{
+	return preg_replace("/\([^)]+\)/","",$string);
+}
 
-
-	//usage
-	/*
-	$a = random_str(32);
-	$b = random_str(8, 'abcdefghijklmnopqrstuvwxyz');
-	$c = random_str();
-	*/
-
-	/*
-	get a token is not used elsewhere in the table
-	*/
-	function get_uniqueToken($tableName)
-	{
-		global $mysqlConn;
-		$uniqueToken = random_str(20);
-		$query ="SELECT * FROM `$tableName` WHERE `uniqueToken` LIKE '$uniqueToken'";
-		$result = $mysqlConn->query($query);
-		if ($row = $result->fetch_row()) {
-			return get_uniqueToken($tableName);
-		} else {
-			return $uniqueToken;
-		}
-	}
-
-	//Remove text with parenthesis.  This is used to remove names in parenthesis for alphabetizing in tournaments.
-	function removeParenthesisText($string)
-	{
-		return preg_replace("/\([^)]+\)/","",$string);
-	}
-
-	//Gets the MySQL Current Timestamp.  This allows us to look for changes from this timepoint forward.
-	function getCurrentTimestamp()
-	{
-		global $mysqlConn;
-		$query = "SELECT CURRENT_TIMESTAMP(); " ;
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		$row = $result->fetch_assoc();
-		return $row['CURRENT_TIMESTAMP()'];
-	}
-
-	//get home.php carousel for the home schoolID
-	function getCarousel()
-	{
-		global $mysqlConn, $schoolID;
-		$output = "";
-		//Get student information row information
-		$query = "SELECT * FROM `slide` WHERE `schoolID` = $schoolID ORDER BY `slideOrder`";
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if($result && mysqli_num_rows($result)>0){
-			$output .="<div style='display: block;   margin-left: auto;  margin-right: auto; max-width: 1080px'><div id='homeCarousel' class='carousel slide carousel-dark' data-bs-ride='carousel' style='height:400px;'>";
-			$output .="<div class='carousel-indicators'>";
-			for ($n = 0; $n < mysqli_num_rows($result); $n++) {
-				$active = "";
-				if(!$n)
-				{
-					$active = "class='active' aria-current='true'";
-				}
-				$output .="<button type='button' data-bs-target='#homeCarousel' data-bs-slide-to='$n' $active aria-label='Slide ". ($n+1) . "'></button>";
-			}
-			$output .="</div>";
-			$output .="<div class='carousel-inner'>";
-			$active = "active";
-			$interval = "5000";
-			while ($row = $result->fetch_assoc()):
-				$output .="<div class='carousel-item $active' data-bs-interval='$interval'>";
-				$output .="<img src='".$row['image']."' class='d-block w-100' alt='...' style='height:360px;object-fit:cover;'>";
-				$output .="<div class='carousel-caption'>";
-				$output .= $row['text'];
-				$output .="</div>";
-				$output .="</div>";
-				$active  = "";
-				$interval ="3000";
-				$n++;
-
-			endwhile;
-			$output .="</div>";
-			$output .="<button class='carousel-control-prev' type='button' data-bs-target='#homeCarousel' data-bs-slide='prev'>";
-			$output .="<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
-			$output .="<span class='visually-hidden'>Previous</span>";
-			$output .="</button>";
-			$output .="<button class='carousel-control-next' type='button' data-bs-target='#homeCarousel' data-bs-slide='next'>";
-			$output .="<span class='carousel-control-next-icon' aria-hidden='true'></span>";
-			$output .="<span class='visually-hidden'>Next</span>";
-			$output .="</button>";
-			$output .="</div>";
-			$output .="</div>";
-
-		}
-		return $output;
-	}
-
-	//get home.php carousel for the home schoolID
-	function getInfo()
-	{
-		global $mysqlConn, $schoolID;
-		$output = "";
-		//Get student information row information
-		$query = "SELECT * FROM `news` WHERE `schoolID` = $schoolID";
-		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if($result && mysqli_num_rows($result)>0){
-			while ($row = $result->fetch_assoc()):
-			$output .=$row['news'];
-			endwhile;
-		}
-		return $output;
-	}
-	?>
+//Gets the MySQL Current Timestamp.  This allows us to look for changes from this timepoint forward.
+function getCurrentTimestamp()
+{
+	global $mysqlConn;
+	$query = "SELECT CURRENT_TIMESTAMP(); " ;
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	$row = $result->fetch_assoc();
+	return $row['CURRENT_TIMESTAMP()'];
+}
+?>

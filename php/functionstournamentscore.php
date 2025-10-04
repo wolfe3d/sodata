@@ -1,6 +1,15 @@
 <?php
 require_once  ("php/functionstournament.php");
 
+//get pts plural or singular
+function points($n)
+{
+    if($n>1)
+        return $n. ' pts';
+    else
+        return $n. ' pt';
+}
+
 function getAllStudentsParticipated($year)
 {
 	global $mysqlConn, $schoolID;

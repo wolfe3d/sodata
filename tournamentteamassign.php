@@ -10,6 +10,29 @@ if(empty($teamID))
 }
 $mobile = isset($_POST['mobile'])?intval($_POST['mobile']):0;
 
+//find if this student is the event leader of the event
+/*function getEventLeaderOnTeam($teamID, $year, $eventID)
+{
+	global $mysqlConn;
+	if($eventID)
+	{
+		$query = "SELECT `event`,`last`,`first` from `eventleader` 
+		INNER JOIN `event` ON `eventleader`.`eventID`=`event`.`eventID`
+		INNER JOIN `teammate` ON `eventleader`.`studentID`=`teammate`.`studentID`
+		INNER JOIN `student` ON `teammate`.`studentID`=`student`.`studentID`
+		 where `teamID` = $teamID AND `year` = $year AND `eventleader`.`eventID` = $eventID";
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if($result)
+		{
+			if($row = $result->fetch_assoc())
+			{
+				return " <small><span class='badge bg-info' title='".$row['first']." ".$row['last']." - Event Leader'>EL</span></small>";
+			}
+		}
+	}
+	return "";	
+}*/
+
 //Get timeBlock Tournament Schedule
 function timeBlockTournamentSchedule($tournamentID, $timeBlockID, $teamID, $year)
 {
