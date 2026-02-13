@@ -58,7 +58,7 @@ table.tournament input{
 table.tournament input[type="checkbox"]{
 	padding: 0em;
 	text-align: center;
-	display: inline;
+	/*display: inline;*/
 	margin-right: 0;
 	float: none;
 }
