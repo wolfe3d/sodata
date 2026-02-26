@@ -1354,7 +1354,8 @@ function calculateScore(eventPlace, eventWeight, tournamentWeight, teamsAttended
 		//return eventWeight/((eventPlace)^0.5)*(tournamentWeight/100); //old calcuation
 		//var score = (-(eventPlace^2)/100+100)*(tournamentWeight/100)*(eventWeight/100);
 		//$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/$teamsAttended)))*$eventWeight/100;
-		var score = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100;
+		//old var score = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100;
+		var score = (tournamentWeight-((eventPlace-1)*($tournamentWeight/(teamsAttended*(tournamentWeight/100/2)))))*eventWeight/100;
 		if (score <=5)
 		{
 			return 5;

@@ -5,7 +5,8 @@ function calculateScore($eventPlace, $eventWeight, $tournamentWeight, $teamsAtte
 {
 	//formula for scoring here
 	//	$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/$teamsAttended)))*$eventWeight/100;
-	$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/($teamsAttended/4))))*$eventWeight/100;
+	//updated as 02/25/2026
+	$score = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/($teamsAttended*($tournamentWeight/100/2)))))*$eventWeight/100;
 	if ($score <=5)
 	{
 		return 5;

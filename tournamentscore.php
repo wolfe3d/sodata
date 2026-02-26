@@ -4,7 +4,8 @@ userCheckPrivilege(5);
 require_once  ("php/functionstournament.php");
 
 //calculation of score
-// SUM(eventweighting/eventplacement^3) * tournamentWeight
+//Current Formula for = ($tournamentWeight-(($eventPlace-1)*($tournamentWeight/($teamsAttended*($tournamentWeight/100/2)))))*$eventWeight/100;
+//OLD FORMULA = (tournamentWeight-((eventPlace-1)*(tournamentWeight/(teamsAttended/4))))*eventWeight/100
 //With this method number of events is weighted.
 
 $output = "";
