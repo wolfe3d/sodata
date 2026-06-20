@@ -334,7 +334,7 @@ function studentEditPrepare(myID)
 				fieldUpdate(myID, 'student', this.id, $(this).is(":checked")?1:0,this.id,this.id)
 			}
 			else if(this.id == 'privilege'){ //user privilege is defined in the user table
-				fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id);
+				//fieldUpdate(myID, 'user', this.id, this.value,this.id,this.id); - use function
 			}
 			else if(this.id == 'courseList'){ //user privilege is defined in the user table
 				//do nothing wait for add button
@@ -570,7 +570,7 @@ function fieldUpdateValid(myID,table,field,value,messageID)
 	});
 }
 
-function userPrivilege(myUser, field,value)
+function userPrivilege(myUser, field, value)
 {
 	//alert(JSON.stringify(myData) );
 	//myData is a json object type
