@@ -436,7 +436,7 @@ if(!empty($_SESSION['userData'])){
 
 	}
 	//Coach Reminders
-	if(userHasPrivilege(5))
+	if(userHasPrivilege(3))
 	{
 		$output.="<p><div class='btn-group' role='group' aria-label='Coach Analysis Buttons'>";
 		$output.="<a class='btn btn-info' role='button' href='#tournamentsscore' data-toggle='tooltip' data-placement='top' title='Overall Scores'><span class='bi bi-graph-up'></span> Student Ranking</a>";

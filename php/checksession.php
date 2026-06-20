@@ -18,7 +18,7 @@ function userCheckPrivilege($level)
 	}
 	else if($_SESSION['userData']['privilege']<$level)
 	{
-		die("<div style='text-danger'>You must have the correct privilige to access this file. <a href='index.php'>Go home.</a></div>");
+		die("<div style='text-danger'>You must have the correct privilege to access this file. <a href='index.php'>Go home.</a></div>");
 	}
 	else if(!$_SESSION['userData']['active'])
 	{
