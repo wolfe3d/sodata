@@ -20,12 +20,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     // Handle meeting attendance for each student
     $studentData = [];
     foreach ($_POST as $key => $value) {
-        $studentID = $attendance = $engagement = $homework = $type = null;
+        $studentID = $attendance = $ontime = $engagement = $homework = $type = null;
         // Check if the key starts with 'attendance-' (TODO: make this better/less hardcoded)
         if (strpos($key, 'attendance-') === 0) {
             $studentID = explode("-",$key)[1];
             //attendance value will be 1 for present, 0 for absent excused, -1 for absent unexcused
             $attendance = intval($value); //intval ensures that only an integer can be passed as a value (no sql query)
+        }
+        elseif (strpos($key, 'ontime-') === 0) {
+            $studentID = explode("-",$key)[1];
+            $ontime = intval($value);
         }
         elseif (strpos($key, 'engagement-') === 0) {
             $studentID = explode("-",$key)[1];
@@ -40,6 +44,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
                 // Initialize student data at their studentID
                 $studentData[$studentID] = [
                     'attendance' => '',
+                    'ontime' => '',
                     'engagement' => '',
                     'homework' => ''
                 ];
@@ -47,6 +52,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
             // Assign values based on the key
             if ($attendance !== null) {
                 $studentData[$studentID]['attendance'] = $attendance;
+            }
+            if ($ontime !== null) {
+                $studentData[$studentID]['ontime'] = $ontime;
             }
             if ($engagement !== null) {
                 $studentData[$studentID]['engagement'] = $engagement;
@@ -58,11 +66,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     }
     foreach ($studentData as $studentID => $data) {
         $attendance = $data['attendance'];
+        $ontime = $data['ontime'];
         $engagement = $data['engagement'];
         $homework = $data['homework'];
 
-        $query = "INSERT INTO `meetingattendance` (`meetingID`, `studentID`, `attendance`, `engagement`, `homework`) 
-                  VALUES ('$meetingID', '$studentID', '$attendance', '$engagement', '$homework') ";
+        $query = "INSERT INTO `meetingattendance` (`meetingID`, `studentID`, `attendance`, `ontime`, `engagement`, `homework`) 
+                  VALUES ('$meetingID', '$studentID', '$attendance', '$ontime', '$engagement', '$homework') ";
         $result = $mysqlConn->query($query);
 
         if (!$result) {

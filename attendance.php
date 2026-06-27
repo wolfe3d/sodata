@@ -10,7 +10,7 @@ if($studentID)
 }
 
 //TODO: Add function to edit old meetings, load similar way to the teamcopylist.php etc...
-//Must add loading of meeting notes, and meeting homework, attendance, engagement, homework for each student
+//Must add loading of meeting notes, and meeting homework, attendance, ontime, engagement, homework for each student
 //put function in data.js that first loads the meetingID, homework and meeting notes, then loads students 
 //and finally loads this page and puts in all the students
 

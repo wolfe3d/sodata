@@ -25,6 +25,7 @@ function getMeetingAttendance($meetingID)
                 "last" => $row["last"],
                 "first" => $row["first"],
                 "attendance" => $row["attendance"],
+                "ontime" => $row["ontime"],
                 "engagement" => $row["engagement"],
                 "homework" => $row["homework"],
                 "meetingDate" => $row["meetingDate"],

@@ -641,7 +641,7 @@ function attendanceEdit(myID)
 
 }
 // Load a single student and their attendance data onto the page
-function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info, attendance=1, engagement=2, homework=0) {
+function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info, attendance=1, ontime=1, engagement=2, homework=0) {
 	var formattedName = first + ' ' + last;
 	 // adding student to the attendance form, or loading the student for attendance edit
 	if(info == "load") { // for event attendance edit - TODO add additional checks for other types of attendance?
@@ -683,6 +683,16 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 					<label class="form-check-label" for="attendance-${studentID}-${meetingAttendanceID}-AE">AE</label>
 				</div>`;
 				
+			newStudent +=`<p>Timely: 0 for tardy for any reason, 1 for on-time</p>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="ontime-${studentID}-${meetingAttendanceID}" id="ontime-${studentID}-${meetingAttendanceID}-0" value="0" ${ontime==0?'checked':''}>
+					<label class="form-check-label" for="ontime-${studentID}-${meetingAttendanceID}-0">0</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="ontime-${studentID}-${meetingAttendanceID}" id="ontime-${studentID}-${meetingAttendanceID}-1" value="1" ${ontime==1?'checked':''}>
+					<label class="form-check-label" for="ontime-${studentID}-${meetingAttendanceID}-1">1</label>
+				</div>`;
+
 				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding engagement to other meeting types
 				{
 					newStudent +=`<p>Engagement: 0 for not engaged, 1 for partially engaged, 2 for fully participated</p>
@@ -698,9 +708,7 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 					<input class="form-check-input" type="radio" name="engagement-${studentID}-${meetingAttendanceID}" id="engagement-${studentID}-${meetingAttendanceID}-2" value="2" ${engagement==2?'checked':''}>
 					<label class="form-check-label" for="engagement-${studentID}-${meetingAttendanceID}-2">2</label>
 				</div>`;
-				}
-				if(meetingType == 1)//meetingType 1 = event meeting //TODO change here for adding homework to other meeting types
-				{
+	
 					newStudent +=`<p>Homework: 0 for Not Submitted or No Homework, 1 for partially incomplete, 2 for fully complete</p>
 				<div class="form-check form-check-inline">
 					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-0" value="0" ${homework==0?'checked':''}>
@@ -713,7 +721,12 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 				<div class="form-check form-check-inline">
 					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-2" value="2" ${homework==2?'checked':''}>
 					<label class="form-check-label" for="homework-${studentID}-${meetingAttendanceID}-2">2</label>
-				</div>`;
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="homework-${studentID}-${meetingAttendanceID}" id="homework-${studentID}-${meetingAttendanceID}-3" value="3" ${homework==3?'checked':''}>
+					<label class="form-check-label" for="homework-${studentID}-${meetingAttendanceID}-3">3</label>
+				</div>
+				`;
 				}
 				newStudent += "</div><hr>";
 			//document.getElementById("studentID").insertAdjacentHTML('beforebegin', newStudent);
@@ -731,7 +744,21 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 				}
 				if(field == "attendance" && this.value < 1)
 				{
+					//if absent, engagement can only be 0
 					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-0").click();
+					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-1").disabled=true;///TODO: not working
+					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-2").disabled=true;
+					//if absent, ontime can only be 0
+					document.getElementById("ontime-"+studentID+"-"+meetingAttendanceID+"-0").click();
+					document.getElementById("ontime-"+studentID+"-"+meetingAttendanceID+"-1").disabled=true;
+				}
+				else if(field == "attendance" && this.value > 0)
+				{
+					//if present, engagement can be greater than 0
+					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-1").disabled=false;///TODO: not working
+					document.getElementById("engagement-"+studentID+"-"+meetingAttendanceID+"-2").disabled=false;
+					//if absent, ontime can be greater than 0
+					document.getElementById("ontime-"+studentID+"-"+meetingAttendanceID+"-1").disabled=false;
 				}
 			});
 			return 1;
@@ -757,6 +784,7 @@ function attendanceAddStudent(meetingAttendanceID, studentID, last, first, info,
 						student.first,
 						"load",
 						student.attendance,
+						student.ontime,
 						student.engagement,
 						student.homework
 					);

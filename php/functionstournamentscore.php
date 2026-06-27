@@ -106,14 +106,14 @@ function calculateAttendance($studentID, $year)
 	global $mysqlConn;
 	$SOdates = getCompetitionYearBegEnd($year);
 
-	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
+	$query = "SELECT `meetingattendance`.`studentID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`ontime`) AS `ontime`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
 	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
 	AND `meetingattendance`.`studentID` = $studentID";
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
-		return intval($row['attendance'])+intval($row['engagement'])+intval($row['homework']);
+		return intval($row['attendance'])+intval($row['ontime'])+intval($row['engagement'])+intval($row['homework']);
 	}
 	return 0;
 }
@@ -124,7 +124,7 @@ function calculateAttendanceEvent($studentID, $eventID, $year)
 	global $mysqlConn;
 	$SOdates = getCompetitionYearBegEnd($year);
 
-	$query = "SELECT `meeting`.`eventID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
+	$query = "SELECT `meeting`.`eventID`, SUM(`meetingattendance`.`attendance`) AS `attendance`,SUM(`meetingattendance`.`ontime`) AS `ontime`,SUM(`meetingattendance`.`engagement`) AS `engagement`,SUM(`meetingattendance`.`homework`) AS `homework` FROM `meetingattendance` 
 	INNER JOIN `meeting` ON `meetingattendance`.`meetingID`=`meeting`.`meetingID`
 	WHERE `meeting`.`meetingDate`>= '".$SOdates['startDate']."' AND `meeting`.`meetingDate`<= '".$SOdates['endDate']."'
 	AND `meeting`.`eventID` = '$eventID'
@@ -132,7 +132,7 @@ function calculateAttendanceEvent($studentID, $eventID, $year)
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
-		return intval($row['attendance'])+intval($row['engagement'])+intval($row['homework']);
+		return intval($row['attendance'])+intval($row['ontime'])+intval($row['engagement'])+intval($row['homework']);
 	}
 	return 0;
 }
@@ -238,7 +238,7 @@ function calculateAttendanceEventOne($eventID, $year)
 	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
 	if($result->num_rows){
 		$row = $result->fetch_assoc();
-		return intval($row['attendance'])+intval($row['engagement'])+intval($row['homework']);
+		return intval($row['attendance'])+intval($row['ontime'])+intval($row['engagement'])+intval($row['homework']);
 	}
 	return 0;
 }
