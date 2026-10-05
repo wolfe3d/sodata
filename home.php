@@ -1,6 +1,8 @@
 <?php
 require_once("php/functions.php");
 userCheckPrivilege(1);
+require_once  ("php/functionstournamentscore.php");
+
 $output = "";
 $userID = $_SESSION['userData']['userID'];
 
@@ -309,6 +311,7 @@ function getStudentGeneralMeetings($studentID)
 if(!empty($_SESSION['userData'])){
 	$studentID = NULL;
 	$coachID = NULL;
+	$currentSOYear = getCurrentSOYear();
 	if($_SESSION['userData']['type'] =='student')
 	{
 		$studentID = getStudentID($userID);
@@ -356,7 +359,8 @@ if(!empty($_SESSION['userData'])){
 		$currentTeamTournamentID = $currentTeamTournament ? $currentTeamTournament['tournamentID'] : null;
 		$attendance = getAttendanceRequirementForMonth($studentID, $currentTeamTournamentID);
 		$output .= "<hr><h2>My Attendance</h2>";
-		$output .= "<p>My current attendance score: " . $attendance['currentScore'] . "</p>";
+		$output .= "<p>Total attendance score this year: " . calculateAttendance($studentID, $currentSOYear) . "</p>";
+		$output .= "<p>My current attendance score for this month: " . $attendance['currentScore'] . "</p>";
 		$output .= "<p>Required by the end of this month: " . $attendance['requiredByEndOfMonth'] . "</p>";
 	}
 
