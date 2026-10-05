@@ -1,6 +1,6 @@
 <?php
 require_once  ("php/functions.php");
-userCheckPrivilege(3);
+userCheckPrivilege(5);
 require_once  ("php/functionstournamentscore.php");
 
 $output = "";
