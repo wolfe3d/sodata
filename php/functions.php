@@ -1339,13 +1339,15 @@ function getEventLeaderIDs($eventID, $year)
 	return $output;
 }
 
-function getAttendanceRequirementForMonth($studentID, $tournamentID = null)
+function getAttendanceRequirementForMonth($studentID, $tournamentID=NULL)
 {
 	global $mysqlConn;
 
 	$currentMonth = (int) date('n');
 	$monthMultiplier = 0;
 
+	//Attendance is not taken until August
+	//TODO: make attendance starting month a variable set by coach
 	if ($currentMonth >= 8 && $currentMonth <= 12) {
 		$monthMultiplier = $currentMonth - 7;
 	} elseif ($currentMonth >= 1 && $currentMonth <= 5) {
@@ -1366,19 +1368,6 @@ function getAttendanceRequirementForMonth($studentID, $tournamentID = null)
 	];
 
 	$eventCount = 1;
-	if (!$tournamentID) {
-		$latestTournamentQuery = "SELECT `team`.`tournamentID`
-			FROM `teammateplace`
-			INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID`
-			WHERE `teammateplace`.`studentID` = $studentID
-			ORDER BY `team`.`tournamentID` DESC
-			LIMIT 1";
-		$latestTournamentResult = $mysqlConn->query($latestTournamentQuery) or error_log("\n<br />Warning: query failed:$latestTournamentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
-		if ($latestTournamentResult && $latestTournamentResult->num_rows > 0) {
-			$latestTournamentRow = $latestTournamentResult->fetch_assoc();
-			$tournamentID = (int) $latestTournamentRow['tournamentID'];
-		}
-	}
 
 	if ($tournamentID) {
 		$query = "SELECT COUNT(DISTINCT `event`.`eventID`) AS `eventCount`

@@ -348,11 +348,13 @@ if(!empty($_SESSION['userData'])){
 	$output .= '</div>';
 	$output .= '</div>';
 
+	$currentTeamTournament = NULL;
+	$currentTeamTournamentID = NULL;
 	if($studentID)      //Show attendance requirement for the month 
 	{
-		$attendanceTournament = getLatestTeamTournamentStudentRow($studentID);
-		$attendanceTournamentID = $attendanceTournament ? $attendanceTournament['tournamentID'] : null;
-		$attendance = getAttendanceRequirementForMonth($studentID, $attendanceTournamentID);
+		$currentTeamTournament = getLatestTeamTournamentStudentRow($studentID);
+		$currentTeamTournamentID = $currentTeamTournament ? $currentTeamTournament['tournamentID'] : null;
+		$attendance = getAttendanceRequirementForMonth($studentID, $currentTeamTournamentID);
 		$output .= "<hr><h2>My Attendance</h2>";
 		$output .= "<p>My current attendance score: " . $attendance['currentScore'] . "</p>";
 		$output .= "<p>Required by the end of this month: " . $attendance['requiredByEndOfMonth'] . "</p>";
@@ -371,8 +373,7 @@ if(!empty($_SESSION['userData'])){
 	if($studentID)
 	{
 		//Get latest team assignments
-		$teamRow = getLatestTeamTournamentStudentRow($studentID);
-		$myEvents = printLatestTeamTournamentStudent($studentID, $teamRow);
+		$myEvents = printLatestTeamTournamentStudent($studentID, $currentTeamTournament);
 		//show student's event priority
 		//$myEvents .= studentEventPriority($studentID);
 		if($myEvents)
@@ -382,7 +383,7 @@ if(!empty($_SESSION['userData'])){
 		$output .= "<hr><h2>My Meetings</h2>";
 		$output .= "<h3>Event Meetings</h3>";
     	$output .= "<div class='accordion' id='meetingsEventMeetingsAccordion'>";
-		$output .= getEventMeetingsByStudent($teamRow['tournamentID'], $studentID);
+		$output .= getEventMeetingsByStudent($currentTeamTournamentID, $studentID);
     	$output .= "</div>";
 
 		$output .= "<br>";
