@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     // Handle meeting attendance for each student
     $studentData = [];
     foreach ($_POST as $key => $value) {
-        $studentID = $attendance = $ontime = $engagement = $homework = $type = null;
+        $studentID = $attendance = $ontime = $engagement = $homework = NULL;
         // Check if the key starts with 'attendance-' (TODO: make this better/less hardcoded)
         if (strpos($key, 'attendance-') === 0) {
             $studentID = explode("-",$key)[1];
@@ -39,27 +39,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
             $studentID = explode("-",$key)[1];
             $homework = intval($value);
         }
-        if ($studentID !== null) {
+        if ($studentID !== NULL) {
             if (!isset($studentData[$studentID])) {
                 // Initialize student data at their studentID
                 $studentData[$studentID] = [
-                    'attendance' => '',
-                    'ontime' => '',
-                    'engagement' => '',
-                    'homework' => ''
+                    'attendance' => '0',
+                    'ontime' => '0',
+                    'engagement' => '0',
+                    'homework' => '0'
                 ];
             }
             // Assign values based on the key
-            if ($attendance !== null) {
+            if ($attendance !== NULL) {
                 $studentData[$studentID]['attendance'] = $attendance;
             }
-            if ($ontime !== null) {
+            if ($ontime !== NULL) {
                 $studentData[$studentID]['ontime'] = $ontime;
             }
-            if ($engagement !== null) {
+            if ($engagement !== NULL) {
                 $studentData[$studentID]['engagement'] = $engagement;
             }
-            if ($homework !== null) {
+            if ($homework !== NULL) {
                 $studentData[$studentID]['homework'] = $homework;
             }
         } 

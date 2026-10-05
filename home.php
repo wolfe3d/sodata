@@ -179,7 +179,12 @@ function getGeneralMeetings()
         while ($row = $result->fetch_assoc()):
             $output .= "<div class='mb-3'>";
             $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
-            $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
+			if (userHasPrivilege(5))
+			{
+				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-" . $row['meetingID'] . "'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				$output .= "<a class='btn btn-danger btn-sm' role='button' href='javascript:attendanceRemove(" . $row['meetingID'] . ")'><span class='bi bi-eraser'></span> Remove</a>";
+			}
+				$output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
             $output .= "</div>";
         endwhile;
     }
@@ -197,6 +202,11 @@ function getEventLeaderMeetings()
         while ($row = $result->fetch_assoc()):
             $output .= "<div class='mb-3'>";
             $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
+			if (userHasPrivilege(5))
+			{
+				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-" . $row['meetingID'] . "'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				$output .= "<a class='btn btn-danger btn-sm' role='button' href='javascript:attendanceRemove(" . $row['meetingID'] . ")'><span class='bi bi-eraser'></span> Remove</a>";
+				}
             $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
             $output .= "</div>";
         endwhile;
@@ -215,6 +225,11 @@ function getOfficerMeetings()
         while ($row = $result->fetch_assoc()):
             $output .= "<div class='mb-3'>";
             $output .= "<strong id=" . $row['meetingID'] . ">" . $row['meetingDate'] . "</strong>";
+			if (userHasPrivilege(5))
+			{
+				$output .= "<a class='btn btn-warning btn-sm' role='button' href='#attendance-edit-" . $row['meetingID'] . "'><span class='bi bi-pencil-square'></span> Edit Meeting</a>";
+				$output .= "<a class='btn btn-danger btn-sm' role='button' href='javascript:attendanceRemove(" . $row['meetingID'] . ")'><span class='bi bi-eraser'></span> Remove</a>";
+			}
             $output .= "<div>Description: " . $row['meetingDescription'] . "</div>";
             $output .= "</div>";
         endwhile;
