@@ -348,6 +348,16 @@ if(!empty($_SESSION['userData'])){
 	$output .= '</div>';
 	$output .= '</div>';
 
+	if($studentID)      //Show attendance requirement for the month 
+	{
+		$attendanceTournament = getLatestTeamTournamentStudentRow($studentID);
+		$attendanceTournamentID = $attendanceTournament ? $attendanceTournament['tournamentID'] : null;
+		$attendance = getAttendanceRequirementForMonth($studentID, $attendanceTournamentID);
+		$output .= "<hr><h2>My Attendance</h2>";
+		$output .= "<p>My current attendance score: " . $attendance['currentScore'] . "</p>";
+		$output .= "<p>Required by the end of this month: " . $attendance['requiredByEndOfMonth'] . "</p>";
+	}
+
 	//Reminders
 	//Show new tournaments signups with links to tournament pages, priority of events with links to events, previous tournament results.
 	if($studentID)

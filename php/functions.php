@@ -1339,6 +1339,92 @@ function getEventLeaderIDs($eventID, $year)
 	return $output;
 }
 
+function getAttendanceRequirementForMonth($studentID, $tournamentID = null)
+{
+	global $mysqlConn;
+
+	$currentMonth = (int) date('n');
+	$monthMultiplier = 0;
+
+	if ($currentMonth >= 8 && $currentMonth <= 12) {
+		$monthMultiplier = $currentMonth - 7;
+	} elseif ($currentMonth >= 1 && $currentMonth <= 5) {
+		$monthMultiplier = $currentMonth + 5;
+	}
+
+	$role = 'member';
+	if (getOfficerPosition($studentID)) {
+		$role = 'officer';
+	} elseif (count(getEventLeaderPosition($studentID)) > 0) {
+		$role = 'event_leader';
+	}
+
+	$pointsPerEvent = [
+		'member' => 14,
+		'event_leader' => 16,
+		'officer' => 20,
+	];
+
+	$eventCount = 1;
+	if (!$tournamentID) {
+		$latestTournamentQuery = "SELECT `team`.`tournamentID`
+			FROM `teammateplace`
+			INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID`
+			WHERE `teammateplace`.`studentID` = $studentID
+			ORDER BY `team`.`tournamentID` DESC
+			LIMIT 1";
+		$latestTournamentResult = $mysqlConn->query($latestTournamentQuery) or error_log("\n<br />Warning: query failed:$latestTournamentQuery. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if ($latestTournamentResult && $latestTournamentResult->num_rows > 0) {
+			$latestTournamentRow = $latestTournamentResult->fetch_assoc();
+			$tournamentID = (int) $latestTournamentRow['tournamentID'];
+		}
+	}
+
+	if ($tournamentID) {
+		$query = "SELECT COUNT(DISTINCT `event`.`eventID`) AS `eventCount`
+			FROM `teammateplace`
+			INNER JOIN `team` ON `teammateplace`.`teamID` = `team`.`teamID`
+			INNER JOIN `tournamentevent` ON `teammateplace`.`tournamenteventID` = `tournamentevent`.`tournamenteventID`
+			INNER JOIN `event` ON `tournamentevent`.`eventID` = `event`.`eventID`
+			WHERE `teammateplace`.`studentID` = $studentID
+			AND `team`.`tournamentID` = $tournamentID";
+		$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+		if ($result && $result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+			$eventCount = max(1, (int) ($row['eventCount'] ?? 0));
+		}
+	}
+
+	$requiredPerEvent = $pointsPerEvent[$role];
+	$requiredPerMonth = $requiredPerEvent * $eventCount;
+	$requiredByEndOfMonth = $monthMultiplier * $requiredPerMonth;
+
+	$currentMonthStart = date('Y-m-01');
+	$currentMonthEnd = date('Y-m-t');
+
+	$currentScore = 0;
+	$query = "SELECT SUM(`meetingattendance`.`attendance`) AS `totalAttendance`
+		FROM `meetingattendance`
+		INNER JOIN `meeting` ON `meeting`.`meetingID` = `meetingattendance`.`meetingID`
+		WHERE `meetingattendance`.`studentID` = $studentID
+		AND `meeting`.`meetingDate` >= '$currentMonthStart'
+		AND `meeting`.`meetingDate` <= '$currentMonthEnd'";
+	$result = $mysqlConn->query($query) or error_log("\n<br />Warning: query failed:$query. " . $mysqlConn->error. ". At file:". __FILE__ ." by " . $_SERVER['REMOTE_ADDR'] .".");
+	if ($result && $result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$currentScore = (int) ($row['totalAttendance'] ?? 0);
+	}
+
+	return [
+		'currentScore' => $currentScore,
+		'requiredPerMonth' => $requiredPerMonth,
+		'requiredByEndOfMonth' => $requiredByEndOfMonth,
+		'monthMultiplier' => $monthMultiplier,
+		'eventCount' => $eventCount,
+		'role' => $role,
+	];
+}
+
 //get student's grade from their graduation years
 function getStudentGrade($yearGraduating, $requestedYear=0)
 {
