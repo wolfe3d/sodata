@@ -67,7 +67,7 @@ $events = getEventsYear($year);
 	foreach ($events as $event)
 	{
 			$output .="<tr event='".$event['event']."' attendance='".$event['attendance']."' averagePlace='".$event['averagePlace']."' averageScore='".$event['averageScore']."' score='".$event['score'] ."' tournamentScore='".$event['tournamentScore']."' rank='".$event['rank']."' first='".$event['places'][0]."' second='".$event['places'][1]."' third='".$event['places'][2]."'>";
-			$output .="<td class='event' id='event-".$event['eventID']."'><a target='_blank' href='#event-details-".$event['eventID']."'>".$event['event']."</a></td>";
+			$output .="<td class='event' id='event-".$event['eventID']."'><a target='_blank' href='#event-analysis-".$event['eventID']."'>".$event['event']."</a></td>";
 
 			//attendance score
 			$output .= "<td id='attendance-".$event['eventID']."'>".$event['attendance']."</td>";
